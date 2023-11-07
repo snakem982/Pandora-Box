@@ -9,19 +9,19 @@ Just For Simple.
 Please be patient when starting for the first time.
 
 ## Preview
-### light
+### light-general
 ![general.png](img%2F1.png)
-###
+### light-proxies
 ![proxies.png](img%2F2.png)
-###
+### light-profiles
 ![proxies.png](img%2F3.png)
-###
+### light-connection
 ![proxies.png](img%2F4.png)
-### dark
+### dark-general
 ![general.png](img%2Fdark1.png)
-###
+### dark-proxies
 ![general.png](img%2Fdark2.png)
-###
+### dark-profiles
 ![general.png](img%2Fdark3.png)
-###
+### dark-connection
 ![general.png](img%2Fdark4.png)
