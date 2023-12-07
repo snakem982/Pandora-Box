@@ -5,6 +5,16 @@ Just For Simple.
 
 [Download the APP](https://github.com/snakem982/Pandora-Box/releases)
 
+## Features
+
+- Suitable for beginners
+- Local HTTP/HTTPS/SOCKS proxy support
+- Vmess, Vless, Shadowsocks, Trojan, Tuic, Hysteria, Hysteria2, Wireguard protocol support
+- Mihomo configuration file support
+- Sharing link, Subscription link support
+- Node collection support
+- Automatic rule grouping
+
 ## Friendly Reminder
 Please be patient when starting for the first time.
 
