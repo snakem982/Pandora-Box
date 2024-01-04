@@ -12,7 +12,7 @@ Just For Simple.
 - Vmess, Vless, Shadowsocks, Trojan, Tuic, Hysteria, Hysteria2, Wireguard protocol support
 - Mihomo configuration file support
 - Sharing link, Subscription link support
-- Node collection support
+- Node crawling support
 - Automatic rule grouping
 
 ##  Supported Platforms
