@@ -13,6 +13,7 @@ Just For Simple.
 - Mihomo configuration file support
 - Sharing link, Subscription link support
 - Node crawling support
+- Automatically select premium Cloudflare IP when crawling nodes
 - Automatic rule grouping
 
 ##  Supported Platforms
