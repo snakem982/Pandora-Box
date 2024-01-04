@@ -15,6 +15,11 @@ Just For Simple.
 - Node collection support
 - Automatic rule grouping
 
+##  Supported Platforms
+- Windows 10/11 AMD64/ARM64
+- MacOS 10.13+ AMD64
+- MacOS 11.0+ ARM64
+
 ## Friendly Reminder
 Please be patient when starting for the first time.
 
