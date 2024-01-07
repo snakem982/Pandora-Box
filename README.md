@@ -11,7 +11,7 @@ Just For Simple.
 - Local HTTP/HTTPS/SOCKS proxy support
 - Vmess, Vless, Shadowsocks, Trojan, Tuic, Hysteria, Hysteria2, Wireguard protocol support
 - Mihomo configuration file support
-- Sharing link, Subscription link support
+- Sharing link, Subscription link, Base64 format support
 - Node crawling support
 - Automatically select premium Cloudflare IP when crawling nodes
 - Automatic rule grouping
