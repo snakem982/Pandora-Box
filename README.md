@@ -22,7 +22,8 @@ Just For Simple.
 - MacOS 11.0+ ARM64
 
 ## Friendly Reminder
-Please be patient when starting for the first time.
+- New versions released at the end of every month.
+- Please be patient when starting for the first time.
 
 ## Preview
 ### light-general
