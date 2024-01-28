@@ -1,5 +1,5 @@
 # Pandora-Box
-A Simple Mihomo/Clash GUI
+A Simple Mihomo GUI
 <br>
 Just For Simple.
 
