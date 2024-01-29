@@ -1,9 +1,12 @@
 # Pandora-Box
+[中文文档](https://github.com/snakem982/Pandora-Box/blob/main/README-CN.md)
+
 A Simple Mihomo GUI
 <br>
 Just For Simple.
 
 [Download the APP](https://github.com/snakem982/Pandora-Box/releases)
+
 
 ## Features
 
