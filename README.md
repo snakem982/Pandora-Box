@@ -29,6 +29,9 @@ Just For Simple.
 - New versions released at the end of every month.
 - Please be patient when starting for the first time.
 
+## Why not open source?
+Because the code is so poorly written
+
 ## Preview
 ### light-general
 ![general.png](img%2F1.png)
