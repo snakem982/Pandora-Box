@@ -12,6 +12,7 @@
 - 支持 Vmess, Vless, Shadowsocks, Trojan, Tuic, Hysteria, Hysteria2, Wireguard 协议
 - 支持 Mihomo 配置文件
 - 支持 分享链接, 订阅链接, Base64格式
+- 内置订阅转换
 - 支持 节点抓取
 - 在抓取节点时自动优选Cloudflare IP
 - 自动添加规则分组
