@@ -15,7 +15,7 @@ Just For Simple.
 - Vmess, Vless, Shadowsocks, Trojan, Tuic, Hysteria, Hysteria2, Wireguard protocol support
 - Mihomo configuration file support
 - Sharing link, Subscription link, Base64 format support
-- Built-in subscription conversion
+- Conversion of nodes and subscriptions into clash(meta) configurations
 - Node crawling support
 - Automatically select premium Cloudflare IP when crawling nodes
 - Automatic rule grouping
