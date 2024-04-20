@@ -1,7 +1,7 @@
 # Pandora-Box
 [中文文档](https://github.com/snakem982/Pandora-Box/blob/main/README-CN.md)
 
-A Simple Mihomo/Clash.Meta GUI
+A Simple Mihomo/Clash.Meta/Clash GUI
 <br>
 Just For Simple.
 
