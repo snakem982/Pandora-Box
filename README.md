@@ -27,7 +27,6 @@ Just For Simple.
 
 ## Friendly Reminder
 - Because the author does not have a Windows computer, <br>the software is not fully tested on Windows. <br>If it cannot run, please replace it with other software.
-- New versions released at the end of every month.
 - Please be patient when starting for the first time.
 
 ## Why not open source?
