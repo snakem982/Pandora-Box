@@ -28,6 +28,7 @@ Just For Simple.
 ## Friendly Reminder
 - Because the author does not have a Windows computer, <br>the software is not fully tested on Windows. <br>If it cannot run, please replace it with other software.
 - Please be patient when starting for the first time.
+- If you have any questions, welcome issues
 
 ## Why not open source?
 Because the code is so poorly written
