@@ -9,7 +9,7 @@
 
 - 适合新手小白
 - 支持 本地 HTTP/HTTPS/SOCKS 代理
-- 支持 Vmess, Vless, Shadowsocks, Trojan, Tuic, Hysteria, Hysteria2, Wireguard 协议
+- 支持 Vmess, Vless, Shadowsocks, Trojan, Tuic, Hysteria, Hysteria2, Wireguard, Juicity 协议
 - 支持 Mihomo 配置文件
 - 支持 分享链接, 订阅链接, Base64格式
 - 内置将节点和订阅转换为 clash(meta) 配置
@@ -23,6 +23,7 @@
 - MacOS 11.0+ ARM64
 
 ## 友情提示
+- [Juicity 配置详解](https://github.com/snakem982/Pandora-Box/blob/main/Juicity.md)
 - 因为作者没有Windows电脑，<br>所以软件在Windows上测试不充分，<br>如果运行不了请更换其他软件。
 - 首次启动时若页面空白，请以管理员身份运行。
 - 具体文件配置同 [Mihomo](https://wiki.metacubex.one/config/)
