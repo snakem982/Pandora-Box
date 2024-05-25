@@ -16,6 +16,7 @@
 - 支持 节点抓取
 - 在抓取节点时自动优选Cloudflare IP
 - 自动添加规则分组
+- 支持 warp-plus 生成
 
 ##  支持的系统平台
 - Windows 10/11 AMD64/ARM64
