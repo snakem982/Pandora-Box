@@ -26,7 +26,7 @@ proxies:
 ## skip-cert-verify
 跳过证书验证
 ## congestion-controller
-设置拥塞控制算法，可选项为 bbr
+设置拥塞控制算法，可选项为 bbr,cubic,new_reno
 ##  pinned-certchain-sha256
 自签证书hash
 
