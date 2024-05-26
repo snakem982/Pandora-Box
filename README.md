@@ -34,7 +34,7 @@ Just For Simple.
 - If you have any questions, welcome issues
 
 ## Why not open source?
-Because the code is so poorly written
+- Because the code is so poorly written
 
 ## Why is tunnel not supported?
 - Support tunnel, the software requires advanced permissions
