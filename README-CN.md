@@ -1,7 +1,9 @@
 # Pandora-Box
-一个简易的 Mihomo/Clash.Meta/Clash GUI 图形界面
+一个简易的 Mihomo/Clash.Meta/Clash 图形操作界面
 <br>
-一切为了简单。
+一切为了简单
+<br>
+觉得好用你就在家拍拍手，觉得不好用你就在issues吐吐槽
 
 [下载 APP](https://github.com/snakem982/Pandora-Box/releases)
 
@@ -32,7 +34,7 @@
 - 如有疑问欢迎留言。
 
 ## 为什么不公开源代码？
-因为代码写得太烂了
+- 因为代码写得太烂了
 
 ## 为什么不支持tunnel模式？
 - 支持tunnel模式，软件需要高级权限
