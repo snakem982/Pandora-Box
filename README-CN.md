@@ -1,5 +1,5 @@
 # Pandora-Box
-一个简易的 Mihomo/Clash.Meta/Clash 图形操作界面
+一个简易的 Mihomo/Clash.Meta/Clash 客户端
 <br>
 一切为了简单
 <br>
