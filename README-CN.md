@@ -1,5 +1,5 @@
 # Pandora-Box
-一个简易的 Mihomo/Clash.Meta/Clash 客户端
+一个简易的 Mihomo/Clash.Meta/Clash 桌面客户端
 <br>
 一切为了简单
 <br>
@@ -15,8 +15,8 @@
 - 支持 Mihomo 配置文件
 - 支持 分享链接, 订阅链接, Base64格式
 - 内置将节点和订阅转换为 clash(meta) 配置
-- 支持 节点抓取
-- 在抓取节点时自动优选Cloudflare IP
+- 支持 节点爬取
+- 在爬取节点时使用优选后的 Cloudflare IP 替换节点host
 - 自动添加规则分组
 - 支持 warp-plus 生成
 
