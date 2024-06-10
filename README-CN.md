@@ -3,7 +3,7 @@
 <br>
 一切为了简单
 <br>
-觉得好用你就在家拍拍手，觉得不好用你就在issues吐吐槽
+觉得好用你就在家拍拍手，觉得不好用你就在issues吐吐槽 或者 干脆卸载删除 ^_^
 
 [下载 APP](https://github.com/snakem982/Pandora-Box/releases)
 
