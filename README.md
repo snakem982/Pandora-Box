@@ -19,7 +19,7 @@ Just For Simple.
 - Node crawling support
 - Automatically select premium Cloudflare IP when crawling nodes
 - Automatic rule grouping
-- Enable "Unified Rule Grouping" to unify the groups and rules of all subscriptions
+- [Experimental] Enable "Unified Rule Grouping" to unify the groups and rules of all subscriptions
 
 ##  Supported Platforms
 - Windows 10/11 AMD64/ARM64
