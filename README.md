@@ -19,7 +19,7 @@ Just For Simple.
 - Node crawling support
 - Automatically select premium Cloudflare IP when crawling nodes
 - Automatic rule grouping
-- Warp-Plus generation support
+- Enable "Unified Rule Grouping" to unify the groups and rules of all subscriptions
 
 ##  Supported Platforms
 - Windows 10/11 AMD64/ARM64
