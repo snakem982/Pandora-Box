@@ -4,7 +4,6 @@
 [下载 APP](https://github.com/snakem982/Pandora-Box/releases)
 
 ## 功能特点
-
 - 支持 本地 HTTP/HTTPS/SOCKS 代理
 - 支持 Vmess, Vless, Shadowsocks, Trojan, Tuic, Hysteria, Hysteria2, Wireguard, Juicity 协议
 - 支持 Mihomo 配置文件
@@ -19,11 +18,15 @@
 - MacOS 10.13+ AMD64
 - MacOS 11.0+ ARM64
 
+##  使用手册
+- [基本使用](Manual-CN.md)
+- [Juicity 配置详解](Juicity.md)
+- [统一所有订阅的规则和分组](UnifiedRuleGrouping.md)
+- 自定义配置同 [Mihomo](https://wiki.metacubex.one/config/)
+
 ## 友情提示
-- [Juicity 配置详解](https://github.com/snakem982/Pandora-Box/blob/main/Juicity.md)
 - 因为作者没有Windows电脑，<br>所以软件在Windows上测试不充分，<br>如果运行不了请更换其他软件。
 - 首次启动时若页面空白，请以管理员身份运行。
-- 具体文件配置同 [Mihomo](https://wiki.metacubex.one/config/)
 - 提示需要网络连接，请点击允许。
 - 如有疑问请留言。
 
