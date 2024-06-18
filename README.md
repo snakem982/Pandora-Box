@@ -15,7 +15,7 @@ A Simple Mihomo/Clash.Meta/Clash GUI
 - Conversion of nodes and subscriptions into clash(meta) configurations
 - Node crawling support
 - Automatic rule grouping
-- [Experimental] Enable "Unified Rule Grouping" to unify the groups and rules of all subscriptions. Requires version v0.2.10+
+- [Experimental] Enable "Unified Rule Grouping" to unify the groups and rules of all subscriptions. Since v0.2.10+
 
 ##  Supported Platforms
 - Windows 10/11 AMD64/ARM64
