@@ -10,7 +10,6 @@ Just For Simple.
 
 ## Features
 
-- Suitable for beginners
 - Local HTTP/HTTPS/SOCKS proxy support
 - Vmess, Vless, Shadowsocks, Trojan, Tuic, Hysteria, Hysteria2, Wireguard, Juicity protocol support
 - Mihomo configuration file support
