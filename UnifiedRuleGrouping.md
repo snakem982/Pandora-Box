@@ -1,6 +1,6 @@
 # 统一规则分组 <br> Unified Rule Grouping 
 需要版本 v0.2.10+ <br>
-Requires version v0.2.10+
+Since version v0.2.10+
 
 ## 实现原理 （Implementation principle）
 ### 使用以下代码导入订阅节点 <br> Using the following code to import the subscription node 
