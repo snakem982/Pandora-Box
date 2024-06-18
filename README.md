@@ -2,8 +2,6 @@
 [中文文档](https://github.com/snakem982/Pandora-Box/blob/main/README-CN.md)
 
 A Simple Mihomo/Clash.Meta/Clash GUI
-<br>
-Just For Simple.
 
 [Download the APP](https://github.com/snakem982/Pandora-Box/releases)
 
@@ -16,7 +14,6 @@ Just For Simple.
 - Sharing link, Subscription link, Base64 format support
 - Conversion of nodes and subscriptions into clash(meta) configurations
 - Node crawling support
-- Automatically select premium Cloudflare IP when crawling nodes
 - Automatic rule grouping
 - [Experimental] Enable "Unified Rule Grouping" to unify the groups and rules of all subscriptions. Requires version v0.2.10+
 
@@ -35,10 +32,14 @@ Just For Simple.
 ## Why not open source?
 - Because the code is so poorly written
 
-## Why is tunnel not supported?
-- Support tunnel, the software requires advanced permissions
-- Opening a tunnel sometimes causes high CPU usage
-- Close the tunnel and the software memory usage will be stable
+## About tun mode
+### How to enable tun?
+- Right-click on Win and run as administrator
+- Enter the command sudo /Applications/pandora-box-amd64.app/Contents/MacOS/Pandora-Box in the Mac terminal
+### Why is it not recommended to enable it?
+- To support tunnel mode, the software requires advanced permissions
+- Tunnel mode sometimes causes CPU usage to explode
+- Disable tunnel, the software memory usage is relatively stable
 
 ## Preview
 ### light-general
