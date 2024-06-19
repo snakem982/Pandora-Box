@@ -32,15 +32,6 @@ A Simple Mihomo/Clash.Meta/Clash GUI
 ## Why not open source?
 - Because the code is so poorly written
 
-## About tun mode
-### How to enable tun?
-- Right-click on Win and run as administrator
-- Enter the command sudo /Applications/pandora-box-amd64.app/Contents/MacOS/Pandora-Box in the Mac terminal
-### Why is it not recommended to enable it?
-- To support tunnel mode, the software requires advanced permissions
-- Tunnel mode sometimes causes CPU usage to explode
-- Disable tunnel, the software memory usage is relatively stable
-
 ## Preview
 ### light-general
 ![general.png](img%2F1.png)
