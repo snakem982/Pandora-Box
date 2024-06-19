@@ -14,6 +14,7 @@
 <img src="img/manual/step4-2.png"  style="width:600px;" />
 
 ## 5、开启系统代理
+**在抓取时先关闭Tun**,**在抓取时先关闭Tun**,**在抓取时先关闭Tun**<br>
 开启系统代理后，打开浏览器输入谷歌地址，页面可以显示出来就OK了
 <img src="img/manual/step5.png"  style="width:600px;" />
 
