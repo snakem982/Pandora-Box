@@ -234,7 +234,7 @@ func reset(sub, key string) error {
 	if sub != "" {
 		scheme = scheme + "." + sub
 	}
-	_, err := command("gsettings", "reset", scheme, key)
+	_, err := Command("gsettings", "reset", scheme, key)
 	return err
 }
 
@@ -243,7 +243,7 @@ func get(sub, key string) (string, error) {
 	if sub != "" {
 		scheme = scheme + "." + sub
 	}
-	out, err := command("gsettings", "get", scheme, key)
+	out, err := Command("gsettings", "get", scheme, key)
 	if err != nil {
 		return "", err
 	}
@@ -256,11 +256,11 @@ func set(sub, key string, val string) error {
 	if sub != "" {
 		scheme = scheme + "." + sub
 	}
-	_, err := command("gsettings", "set", scheme, key, val)
+	_, err := Command("gsettings", "set", scheme, key, val)
 	return err
 }
 
-func command(name string, arg ...string) (string, error) {
+func Command(name string, arg ...string) (string, error) {
 	c := exec.Command(name, arg...)
 	out, err := c.CombinedOutput()
 	if err != nil {
