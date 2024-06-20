@@ -30,9 +30,6 @@ A Simple Mihomo/Clash.Meta/Clash GUI
 - The specific file configuration is the same as [Mihomo](https://wiki.metacubex.one/config/)
 - If you have any questions, welcome issues
 
-## Why not open source?
-- Because the code is so poorly written
-
 ## Preview
 ### light-general
 ![general.png](img%2F1.png)
