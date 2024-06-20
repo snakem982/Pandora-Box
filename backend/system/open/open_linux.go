@@ -4,6 +4,7 @@ package open
 
 import (
 	C "github.com/metacubex/mihomo/constant"
+	"pandora-box/backend/system/proxy"
 )
 
 func OpenConfigDirectory() (string, error) {

@@ -1,4 +1,4 @@
-name: Build Pre Release
+name: Build Prerelease
 
 on:
   push:
@@ -64,7 +64,8 @@ jobs:
         if: runner.os == 'Linux'
         run: |
           sudo apt-get update
-          sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.1-dev
+          sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.1-dev build-essential pkg-config
+          wails doctor
 
       - name: Build Frontend
         run: cd frontend && npm run build
@@ -74,7 +75,7 @@ jobs:
         env:
           GOOS: ${{ matrix.build.GOOS }}
           GOARCH: ${{ matrix.build.GOARCH }}
-        run: ~/go/bin/wails build -tags with_gvisor -skipbindings -m -s -trimpath -nosyncgomod -o ${{ env.APP_NAME }}.exe
+        run: ~/go/bin/wails build -tags with_gvisor,webkit2_41 -skipbindings -m -s -trimpath -nosyncgomod -o ${{ env.APP_NAME }}.exe
 
       # Compress: macOS
       - name: Create a compressed file for macOS
