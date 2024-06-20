@@ -71,8 +71,8 @@ jobs:
       - name: Linux arm64 dependencies
         if: runner.os == 'Linux' && ${{ matrix.build.GOARCH }} == 'arm64'
         run: |
-          sudo apt-get install g++-arm-linux-gnueabi
-          sudo apt-get install gcc-arm-linux-gnueabi
+          sudo apt-get install -y g++-arm-linux-gnueabi
+          sudo apt-get install -y gcc-arm-linux-gnueabi
 
       - name: Build Frontend
         run: cd frontend && npm run build
