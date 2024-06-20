@@ -106,7 +106,7 @@ jobs:
           file: ./build/bin/${{ env.ZIP_FILE }}
           asset_name: ${{ env.ZIP_FILE }}
           tag: Prerelease-${{ github.ref_name }}
-          release_name: ${{ github.ref_name }}
+          release_name: Prerelease-${{ github.ref_name }}
           overwrite: true
           draft: false
           prerelease: true
