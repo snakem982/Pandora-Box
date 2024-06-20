@@ -5,7 +5,7 @@
 
 ## 功能特点
 - 支持 本地 HTTP/HTTPS/SOCKS 代理
-- 支持 Vmess, Vless, Shadowsocks, Trojan, Tuic, Hysteria, Hysteria2, Wireguard, Juicity 协议
+- 支持 Vmess, Vless, Shadowsocks, Trojan, Tuic, Hysteria, Hysteria2, Wireguard, ~~Juicity~~ 协议
 - 支持 Mihomo 配置文件
 - 支持 分享链接, 订阅链接, Base64格式
 - 内置将节点和订阅转换为 clash(meta) 配置
