@@ -5,10 +5,10 @@ on:
     paths-ignore:
       - "README.md"
       - "script/**"
+      - ".idea/**"
+      - "frontend/.idea/**"
     branches:
       - v2
-    tags:
-      - "v*"
   pull_request_target:
     branches:
       - v2
@@ -37,8 +37,8 @@ jobs:
             GOARCH: amd64
     runs-on: ${{ matrix.build.os }}
     env:
-      APP_NAME: Pandora-Box
-      ZIP_FILE: Pandora-Box-${{ matrix.build.GOOS }}-${{ matrix.build.GOARCH }}.zip
+      APP_NAME: pandora-box-${{ matrix.build.GOARCH }}
+      ZIP_FILE: ${{ matrix.build.GOOS }}-${{ matrix.build.GOARCH }}.zip
     steps:
       - uses: actions/checkout@v4
       - name: Set up Go
