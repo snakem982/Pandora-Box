@@ -51,7 +51,7 @@ func main() {
 	route.Register(api.Ignore)
 	route.Register(api.MyRules)
 
-	addr := startHttpApi(9527)
+	addr := startHttpApi()
 
 	meta.SwitchProfile(false)
 
@@ -100,18 +100,19 @@ func main() {
 	}
 }
 
-func startHttpApi(freePort int) (addr string) {
-	addr = fmt.Sprintf("127.0.0.1:%d", freePort)
+func startHttpApi() (addr string) {
+	meta.HttpApiOn.Add(1)
+	addr = fmt.Sprintf("127.0.0.1:%d", 0)
 	go route.Start(addr, "", "", "", "", false)
+	meta.HttpApiOn.Wait()
 
 	timeOut := 500 * time.Millisecond
-	apiOk := false
 	for i := 0; i < 5; i++ {
-		okUrl := fmt.Sprintf("http://%s/ok", addr)
+		okUrl := fmt.Sprintf("http://%s/ok", meta.HttpApi)
 		body, _, err := tools.HttpGetWithTimeout(okUrl, timeOut, false)
 		if err == nil && string(body) == "ok" {
+			addr = meta.HttpApi
 			log.Infoln("Start Http Serve Success.Addr is %s", addr)
-			apiOk = true
 			break
 		} else {
 			log.Errorln("Start Http Serve Error: %s.Addr is %s", err.Error(), addr)
@@ -120,11 +121,7 @@ func startHttpApi(freePort int) (addr string) {
 		time.Sleep(timeOut)
 	}
 
-	if apiOk {
-		return
-	} else {
-		return startHttpApi(freePort + 1)
-	}
+	return
 }
 
 func startMacInAdmin(pwd string) {
