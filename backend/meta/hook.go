@@ -3,8 +3,6 @@ package meta
 import (
 	"github.com/sirupsen/logrus"
 	"os"
-	"strings"
-	"sync"
 )
 
 type LogHook struct {
@@ -14,22 +12,7 @@ type LogHook struct {
 var Size5m int64 = 1024 * 1024 * 5
 var step = 0
 
-var HttpApi = ""
-var HttpApiFind = false
-var HttpApiOn = sync.WaitGroup{}
-
-func (hook *LogHook) Fire(entry *logrus.Entry) error {
-	prefix := "RESTful API listening at: "
-	if !HttpApiFind {
-		cut, ok := strings.CutPrefix(entry.Message, prefix)
-		if ok {
-			HttpApi = cut
-			HttpApiFind = true
-			HttpApiOn.Done()
-		}
-		return nil
-	}
-
+func (hook *LogHook) Fire(_ *logrus.Entry) error {
 	if step < 1024 {
 		step++
 		return nil

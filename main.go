@@ -43,6 +43,9 @@ func main() {
 
 	meta.Init()
 
+	log.Infoln("Pandora-Box %s %s %s with %s",
+		constant.PandoraVersion, runtime.GOOS, runtime.GOARCH, runtime.Version())
+
 	route.Register(api.Hello)
 	route.Register(api.Version)
 	route.Register(api.Profile)
@@ -101,17 +104,13 @@ func main() {
 }
 
 func startHttpApi() (addr string) {
-	meta.HttpApiOn.Add(1)
-	addr = fmt.Sprintf("127.0.0.1:%d", 0)
-	go route.Start(addr, "", "", "", "", false)
-	meta.HttpApiOn.Wait()
+	addr = route.StartByPandora()
 
 	timeOut := 500 * time.Millisecond
 	for i := 0; i < 5; i++ {
-		okUrl := fmt.Sprintf("http://%s/ok", meta.HttpApi)
+		okUrl := fmt.Sprintf("http://%s/ok", addr)
 		body, _, err := tools.HttpGetWithTimeout(okUrl, timeOut, false)
 		if err == nil && string(body) == "ok" {
-			addr = meta.HttpApi
 			log.Infoln("Start Http Serve Success.Addr is %s", addr)
 			break
 		} else {
