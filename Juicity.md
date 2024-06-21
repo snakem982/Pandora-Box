@@ -1,4 +1,6 @@
 # yaml配置
+v0.2.11后不再支持<br>
+No longer supported after v0.2.11
 ```yaml
 proxies:
     - name: "juicity-client"
