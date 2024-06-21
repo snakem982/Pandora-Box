@@ -79,7 +79,8 @@ jobs:
         run: |
           cd ./build/bin
           # The compiled product name of macos is always "${{ env.APP_NAME }}.app"
-          zip -q -r ${{ env.ZIP_FILE }} Pandora-Box.app
+          mv Pandora-Box.app pandora-box-${{ matrix.build.GOARCH }}.app
+          zip -q -r macos-${{ matrix.build.GOARCH }}.zip pandora-box-${{ matrix.build.GOARCH }}.app
 
       # Compress: Windows
       - name: Create a compressed file for Windows
