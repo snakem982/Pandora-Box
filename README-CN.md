@@ -25,7 +25,7 @@
 
 ##  使用手册
 - [基本使用](Manual-CN.md)
-- [Juicity 配置详解](Juicity.md)
+- [Juicity 配置详解 v0.2.11后不再支持](Juicity.md)
 - [统一所有订阅的规则和分组](UnifiedRuleGrouping.md)
 - 自定义配置同 [Mihomo](https://wiki.metacubex.one/config/)
 
