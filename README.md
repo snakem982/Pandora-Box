@@ -28,7 +28,7 @@ A Simple Mihomo/Clash.Meta/Clash GUI
 - [v2](https://github.com/snakem982/Pandora-Box/tree/v2)
 
 ## Friendly Reminder
-- [Juicity configuration introduction](https://github.com/snakem982/Pandora-Box/blob/main/Juicity.md)
+- [Juicity configuration introduction](https://github.com/snakem982/Pandora-Box/blob/main/Juicity.md) No longer supported after v0.2.11
 - Because the author does not have a Windows computer, <br>the software is not fully tested on Windows. <br>If it cannot run, please replace it with other software.
 - Please be patient when starting for the first time.
 - The specific file configuration is the same as [Mihomo](https://wiki.metacubex.one/config/)
