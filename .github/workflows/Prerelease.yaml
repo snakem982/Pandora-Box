@@ -7,8 +7,11 @@ on:
       - "script/**"
       - ".idea/**"
       - "frontend/.idea/**"
+      - ".gitignore"
     branches:
       - v2
+    tags:
+      - "v*"
   pull_request_target:
     branches:
       - v2
