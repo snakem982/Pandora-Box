@@ -1,5 +1,5 @@
 <div align="center">
-<img src="build/540x540.png"  style="width:200px" />
+<img src="build/540x540.png"  style="width:160px" />
 <h1>Pandora-Box</h1>
 <p>A Simple Mihomo/Clash.Meta/Clash GUI.</p>
 </div>
