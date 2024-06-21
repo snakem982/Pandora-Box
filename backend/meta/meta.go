@@ -4,7 +4,6 @@ import (
 	_ "embed"
 	"encoding/json"
 	"fmt"
-	"github.com/metacubex/mihomo/component/mmdb"
 	"github.com/metacubex/mihomo/component/profile/cachefile"
 	"github.com/metacubex/mihomo/config"
 	C "github.com/metacubex/mihomo/constant"
@@ -43,7 +42,7 @@ func init() {
 
 	path := C.Path.HomeDir() + "/uploads"
 	_ = os.MkdirAll(path, 0666)
-	mmdb.LoadFromBytes(metadata)
+	_ = os.WriteFile(C.Path.HomeDir()+"/geoip.metadb", metadata, 0666)
 }
 
 // Init
