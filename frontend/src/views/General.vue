@@ -230,9 +230,6 @@ onBeforeMount(async () => {
               @blur="patchConfig({'mixed-port':form.mix_port})"
           />
         </el-form-item>
-        <el-form-item label="开启TUN" v-if="!showTun">
-          <el-button type="primary" size="small" @click="authorize" round>{{ acStatusVal }}</el-button>
-        </el-form-item>
         <el-form-item label="开启TUN" v-if="showTun">
           <el-select v-model="form.tun" @change="setTun" style="width: 150px">
             <el-option label="关闭 Off" value="off"/>
@@ -240,6 +237,9 @@ onBeforeMount(async () => {
             <el-option label="gVisor" value="gVisor"/>
             <el-option label="Mixed" value="Mixed"/>
           </el-select>
+        </el-form-item>
+        <el-form-item label="开启TUN" v-else>
+          <el-button type="primary" size="small" @click="authorize" round>{{ acStatusVal }}</el-button>
         </el-form-item>
         <el-form-item label="允许局域网连接 allow-lan">
           <el-switch v-model="form.allow_lan" @change="patchConfig({'allow-lan':form.allow_lan,'bind-address':'*'})"/>
