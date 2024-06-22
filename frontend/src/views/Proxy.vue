@@ -70,7 +70,7 @@ async function getProvider() {
   }
 }
 
-let interval = 0
+let interval: any
 
 const flushDelay = async () => {
   for (let i = 0; i < GROUP.proxies.length; i++) {

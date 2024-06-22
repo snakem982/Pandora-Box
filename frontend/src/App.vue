@@ -167,10 +167,6 @@ onMounted(async () => {
   border-right: solid 1px var(--el-menu-border-color);
 }
 
-.main {
-  //background-color: #ecf2ec;
-}
-
 .is-active {
   border-left-style: solid;
   border-left-width: 5px;
