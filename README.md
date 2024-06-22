@@ -3,6 +3,8 @@
 
 A Simple Mihomo/Clash.Meta/Clash GUI
 
+Branch [v2](https://github.com/snakem982/Pandora-Box/tree/v2) open source
+<br>
 [Download the latest APP](https://github.com/snakem982/Pandora-Box/releases/latest)
 <br>
 [Download the prerelease APP](https://github.com/snakem982/Pandora-Box/releases/tag/Prerelease-v2)
