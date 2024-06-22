@@ -1,7 +1,9 @@
 # Pandora-Box
 一个简易的 Mihomo/Clash.Meta/Clash 桌面客户端
 
-[下载 APP](https://github.com/snakem982/Pandora-Box/releases)
+[下载APP](https://github.com/snakem982/Pandora-Box/releases/latest)
+<br>
+[下载预发布APP](https://github.com/snakem982/Pandora-Box/releases/tag/Prerelease-v2)
 
 ## 功能特点
 - 支持 本地 HTTP/HTTPS/SOCKS 代理
