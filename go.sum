@@ -45,8 +45,8 @@ github.com/fsnotify/fsnotify v1.7.0 h1:8JEhPFa5W2WU7YfeZzPNqzMP6Lwt7L2715Ggo0nos
 github.com/fsnotify/fsnotify v1.7.0/go.mod h1:40Bi/Hjc2AVfZrqy+aj+yEI+/bRxZnMJyTJwOpGvigM=
 github.com/gaukas/godicttls v0.0.4 h1:NlRaXb3J6hAnTmWdsEKb9bcSBD6BvcIjdGdeb0zfXbk=
 github.com/gaukas/godicttls v0.0.4/go.mod h1:l6EenT4TLWgTdwslVb4sEMOCf7Bv0JAK67deKr9/NCI=
-github.com/go-chi/chi/v5 v5.0.13 h1:JlH2F2M8qnwl0N1+JFFzlX9TlKJYas3aPXdiuTmJL+w=
-github.com/go-chi/chi/v5 v5.0.13/go.mod h1:DslCQbL2OYiznFReuXYUmQ2hGd1aDpCnlMNITLSKoi8=
+github.com/go-chi/chi/v5 v5.0.14 h1:PyEwo2Vudraa0x/Wl6eDRRW2NXBvekgfxyydcM0WGE0=
+github.com/go-chi/chi/v5 v5.0.14/go.mod h1:DslCQbL2OYiznFReuXYUmQ2hGd1aDpCnlMNITLSKoi8=
 github.com/go-chi/cors v1.2.1 h1:xEC8UT3Rlp2QuWNEr4Fs/c2EAGVKBwy/1vHx3bppil4=
 github.com/go-chi/cors v1.2.1/go.mod h1:sSbTewc+6wYHBBCW7ytsFSn836hqM7JxpglAy2Vzc58=
 github.com/go-chi/render v1.0.3 h1:AsXqd2a1/INaIfUSKq3G5uA8weYx20FOsM7uSoCyyt4=
@@ -151,8 +151,8 @@ github.com/metacubex/sing-shadowsocks v0.2.6 h1:6oEB3QcsFYnNiFeoevcXrCwJ3sAablwV
 github.com/metacubex/sing-shadowsocks v0.2.6/go.mod h1:zIkMeSnb8Mbf4hdqhw0pjzkn1d99YJ3JQm/VBg5WMTg=
 github.com/metacubex/sing-shadowsocks2 v0.2.0 h1:hqwT/AfI5d5UdPefIzR6onGHJfDXs5zgOM5QSgaM/9A=
 github.com/metacubex/sing-shadowsocks2 v0.2.0/go.mod h1:LCKF6j1P94zN8ZS+LXRK1gmYTVGB3squivBSXAFnOg8=
-github.com/metacubex/sing-tun v0.2.7-0.20240619023810-d442c40abab0 h1:J7YWMrEaYM9WF4qG8ZaCCHGw/ylbZc8FvIHr4rdOzP8=
-github.com/metacubex/sing-tun v0.2.7-0.20240619023810-d442c40abab0/go.mod h1:WwJGbCx7bQcBzuQXiDOJvZH27R0kIjKNNlISIWsL6kM=
+github.com/metacubex/sing-tun v0.2.7-0.20240622050320-d74a7240f063 h1:l0kqvpBCy1yUAlr79qc0w70nbELJiqs+tWH61b5poiU=
+github.com/metacubex/sing-tun v0.2.7-0.20240622050320-d74a7240f063/go.mod h1:WwJGbCx7bQcBzuQXiDOJvZH27R0kIjKNNlISIWsL6kM=
 github.com/metacubex/sing-vmess v0.1.9-0.20231207122118-72303677451f h1:QjXrHKbTMBip/C+R79bvbfr42xH1gZl3uFb0RELdZiQ=
 github.com/metacubex/sing-vmess v0.1.9-0.20231207122118-72303677451f/go.mod h1:olVkD4FChQ5gKMHG4ZzuD7+fMkJY1G8vwOKpRehjrmY=
 github.com/metacubex/sing-wireguard v0.0.0-20240618022557-a6efaa37127a h1:NpSGclHJUYndUwBmyIpFBSoBVg8PoVX7QQKhYg0DjM0=
@@ -231,8 +231,8 @@ github.com/sina-ghaderi/rabbitio v0.0.0-20220730151941-9ce26f4f872e h1:ur8uMsPIF
 github.com/sina-ghaderi/rabbitio v0.0.0-20220730151941-9ce26f4f872e/go.mod h1:+e5fBW3bpPyo+3uLo513gIUblc03egGjMM0+5GKbzK8=
 github.com/sirupsen/logrus v1.9.3 h1:dueUQJ1C2q9oE3F7wvmSGAaVtTmUizReu6fjN8uqzbQ=
 github.com/sirupsen/logrus v1.9.3/go.mod h1:naHLuLoDiP4jHNo9R0sCBMtWGeIprob74mVsIT4qYEQ=
-github.com/snakem982/mihomo v1.11.9-0.20240621223428-df7b1b3f8936 h1:y5Z5fEGvHEPzJzdlZQsoFUSuEUka0sME7nYU8xGQrC4=
-github.com/snakem982/mihomo v1.11.9-0.20240621223428-df7b1b3f8936/go.mod h1:UOf4K9pzGFUKtGVP6+YyFBU7pM0f+3ac9/7wQaIZwYo=
+github.com/snakem982/mihomo v1.11.9-0.20240622124650-da0474b0ade2 h1:co2geop4mCWEQQh/WKJ/SWLLwTz3CrrOT9IaskIuMXU=
+github.com/snakem982/mihomo v1.11.9-0.20240622124650-da0474b0ade2/go.mod h1:Fkv0PqyEhEcCJjLwSy9zbY2P04ktzCX5Jpn3UzrHnVU=
 github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=
 github.com/stretchr/objx v0.4.0/go.mod h1:YvHI0jy2hoMjB+UWwv71VJQ9isScKT/TqJzVSSt89Yw=
 github.com/stretchr/objx v0.5.0/go.mod h1:Yh+to48EsGEfYuaHDzXPcE3xhTkx73EhmCGUpEOglKo=

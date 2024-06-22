@@ -3,7 +3,7 @@ module pandora-box
 go 1.22.4
 
 require (
-	github.com/go-chi/chi/v5 v5.0.13
+	github.com/go-chi/chi/v5 v5.0.14
 	github.com/go-chi/render v1.0.3
 	github.com/keybase/go-keychain v0.0.0-20231219164618-57a3676c3af6
 	github.com/metacubex/mihomo v1.18.5
@@ -74,7 +74,7 @@ require (
 	github.com/metacubex/sing-quic v0.0.0-20240518034124-7696d3f7da72 // indirect
 	github.com/metacubex/sing-shadowsocks v0.2.6 // indirect
 	github.com/metacubex/sing-shadowsocks2 v0.2.0 // indirect
-	github.com/metacubex/sing-tun v0.2.7-0.20240619023810-d442c40abab0 // indirect
+	github.com/metacubex/sing-tun v0.2.7-0.20240622050320-d74a7240f063 // indirect
 	github.com/metacubex/sing-vmess v0.1.9-0.20231207122118-72303677451f // indirect
 	github.com/metacubex/sing-wireguard v0.0.0-20240618022557-a6efaa37127a // indirect
 	github.com/metacubex/tfo-go v0.0.0-20240523172816-7577e13e1731 // indirect
@@ -133,6 +133,6 @@ require (
 )
 
 replace (
-	github.com/metacubex/mihomo => github.com/snakem982/mihomo v1.11.9-0.20240621223428-df7b1b3f8936
+	github.com/metacubex/mihomo => github.com/snakem982/mihomo v1.11.9-0.20240622124650-da0474b0ade2
 	github.com/sagernet/sing => github.com/metacubex/sing v0.0.0-20240617013425-3e3bd9dab6a2
 )
