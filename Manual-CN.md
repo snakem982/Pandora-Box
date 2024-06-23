@@ -2,7 +2,8 @@
 
 ## 1、确认软件启动成功
 确认方法：查看软件左下角显示的版本号，跟你下载的版本号一致
-<img src="img/manual/step1.png"  style="width:600px;" />
+<br>若不显示v0.2.0为启动成功
+<br><img src="img/manual/step1.png"  style="width:600px;" />
 ## 2、点击配置导入订阅
 <img src="img/manual/step2.png"  style="width:600px;" />
 
@@ -19,10 +20,10 @@
 
 ## 6、抓取使用
 **在抓取时先关闭Tun**,**在抓取时先关闭Tun**,**在抓取时先关闭Tun**<br>
-抓取成功，回到配置页面，启用默认配置，即可切换使用抓取到的节点
 <img src="img/manual/step6-1.png"  style="width:600px;" />
 <img src="img/manual/step6-2.png"  style="width:600px;" />
 <img src="img/manual/step6-3.png"  style="width:600px;" />
+<br>**抓取成功，回到配置页面，启用默认配置，即可切换使用抓取到的节点**
 
 附：
 <details>
