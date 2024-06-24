@@ -38,7 +38,8 @@ func GetFileName(header http.Header) (fileName string) {
 	if disposition != "" {
 		split := strings.Split(disposition, "=")
 		fileName, _ = url.QueryUnescape(split[len(split)-1])
-		fileName = strings.Replace(fileName, "UTF-8''", "", 1)
+		fileName = strings.TrimLeft(fileName, "UTF-8''")
+		fileName = strings.TrimLeft(fileName, "utf-8''")
 	}
 
 	return fileName
