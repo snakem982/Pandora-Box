@@ -41,8 +41,8 @@ func init() {
 	C.SetHomeDir(homeDir)
 
 	path := C.Path.HomeDir() + "/uploads"
-	_ = os.MkdirAll(path, 0666)
-	_ = os.WriteFile(C.Path.HomeDir()+"/geoip.metadb", metadata, 0666)
+	_ = os.MkdirAll(path, 0777)
+	_ = os.WriteFile(C.Path.HomeDir()+"/geoip.metadb", metadata, 0777)
 }
 
 // Init
@@ -58,7 +58,7 @@ func Init() {
 
 	// 设置输出目录
 	logFilePath := filepath.Join(C.Path.HomeDir(), "log.log")
-	f, err := os.OpenFile(logFilePath, os.O_CREATE|os.O_APPEND|os.O_RDWR, 0666)
+	f, err := os.OpenFile(logFilePath, os.O_CREATE|os.O_APPEND|os.O_RDWR, 0777)
 	if err != nil {
 		return
 	}
@@ -110,7 +110,7 @@ func Init() {
 //
 // 返回值：错误信息
 func saveProfile2Local(name, suffix string, all []byte) error {
-	return os.WriteFile(C.Path.HomeDir()+"/uploads/"+name+"."+suffix, all, 0666)
+	return os.WriteFile(C.Path.HomeDir()+"/uploads/"+name+"."+suffix, all, 0777)
 }
 
 var NowConfig *config.Config

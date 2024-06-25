@@ -67,7 +67,7 @@ func MyRules(r chi.Router) {
 			return
 		}
 
-		err := os.WriteFile(filepath.Join(C.Path.HomeDir(), constant.DefaultTemplate), []byte(body.Data), 0666)
+		err := os.WriteFile(filepath.Join(C.Path.HomeDir(), constant.DefaultTemplate), []byte(body.Data), 0777)
 		if err != nil {
 			log.Warnln("save file error: %s", err.Error())
 			render.JSON(w, r, render.M{"status": "save file error " + err.Error()})

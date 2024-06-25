@@ -164,7 +164,7 @@ func Crawl() bool {
 	all, _ := yaml.Marshal(data)
 	filePath := C.Path.HomeDir() + "/uploads/" + constant.PrefixProfile + "0.yaml"
 	_ = os.Remove(filePath)
-	_ = os.WriteFile(filePath, all, 0666)
+	_ = os.WriteFile(filePath, all, 0777)
 
 	return true
 }

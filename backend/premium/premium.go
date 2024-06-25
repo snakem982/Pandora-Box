@@ -47,7 +47,7 @@ func GetExcellentIps(cdnType CdnType) (Ips CfIps) {
 			return
 		}
 
-		if err := os.WriteFile(C.Path.HomeDir()+cdnType.String(), out, 0666); err != nil {
+		if err := os.WriteFile(C.Path.HomeDir()+cdnType.String(), out, 0777); err != nil {
 			println("save cloudflare ip error: " + err.Error())
 		}
 	}

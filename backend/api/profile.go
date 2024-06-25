@@ -8,7 +8,6 @@ import (
 	"github.com/metacubex/mihomo/common/convert"
 	"github.com/metacubex/mihomo/config"
 	C "github.com/metacubex/mihomo/constant"
-	"github.com/metacubex/mihomo/hub/executor"
 	"github.com/metacubex/mihomo/hub/route"
 	"github.com/metacubex/mihomo/log"
 	"golang.org/x/net/html"
@@ -23,6 +22,8 @@ import (
 	"pandora-box/backend/resolve"
 	"pandora-box/backend/spider"
 	"pandora-box/backend/tools"
+	"path/filepath"
+	"strconv"
 	"strings"
 )
 
@@ -77,78 +78,14 @@ func postFileProfile(w http.ResponseWriter, r *http.Request) {
 
 		}
 	}(open)
-	all, _ := io.ReadAll(open)
-	// 对内容进行html解码
-	temp := html.UnescapeString(string(all))
-	temp = strings.Replace(temp, "\"HOST\"", "\"Host\"", -1)
-	all = []byte(temp)
-	ko, yamlError := executor.ParseWithBytes(all)
-	suffix := "yaml"
-	kind := 41
-	if yamlError != nil {
-		log.Errorln("postFileProfile parse error-1: %s", yamlError.Error())
-		var ray []map[string]any
-		var base64Error error
-		rawCfg, err := config.UnmarshalRawConfig(all)
-		if err == nil && len(rawCfg.Proxy) > 0 {
-			ray = rawCfg.Proxy
-		} else {
-			log.Errorln("postFileProfile parse error-2: %s", err.Error())
-			ray, base64Error = convert.ConvertsV2Ray(all)
-			if base64Error != nil {
-				log.Errorln("postFileProfile parse error-3: %s", base64Error.Error())
-				render.Status(r, http.StatusBadRequest)
-				render.JSON(w, r, route.HTTPError{Message: yamlError.Error()})
-				return
-			}
-			suffix = "txt"
-			kind = 42
-		}
-		ray = resolve.MapsToProxies(ray)
-		rails := spider.SortAddIndex(ray)
-		if len(rails) == 0 {
-			render.Status(r, http.StatusBadRequest)
-			render.JSON(w, r, route.HTTPError{Message: "节点数为零<br/>Node size is 0."})
-			return
-		}
-		if len(rails) > 512 {
-			render.Status(r, http.StatusBadRequest)
-			render.JSON(w, r, route.HTTPError{Message: "节点数超过限制512<br/>Node size is more than 512."})
-			return
-		}
-		proxies := make(map[string]any)
-		proxies["proxies"] = rails
-		all, _ = yaml.Marshal(proxies)
-	} else {
-		if len(ko.Proxies) < 7 {
-			render.Status(r, http.StatusBadRequest)
-			render.JSON(w, r, route.HTTPError{Message: "节点数为零<br/>Node size is 0."})
-			return
-		}
-		if len(ko.Proxies) > 512 {
-			render.Status(r, http.StatusBadRequest)
-			render.JSON(w, r, route.HTTPError{Message: "节点数超过限制512<br/>Node size is more than 512."})
-			return
-		}
-	}
-
-	snowflakeId := tools.SnowflakeId()
-	profile := resolve.Profile{}
-	profile.Id = fmt.Sprintf("%s%d", constant.PrefixProfile, snowflakeId)
-	profile.Type = kind
-	profile.Title = header.Filename
-	profile.Order = snowflakeId
-	profile.Path = "uploads/" + profile.Id + "." + suffix
-
-	fileSaveError := saveProfile2Local(profile.Id, suffix, all)
-	if fileSaveError != nil {
-		render.Status(r, http.StatusInternalServerError)
-		render.JSON(w, r, route.HTTPError{Message: fileSaveError.Error()})
+	content, _ := io.ReadAll(open)
+	err := resolveConfig(false, "", "", header.Filename, 41, content)
+	if err != nil {
+		log.Errorln("[%s] %v", header.Filename, err)
+		render.Status(r, http.StatusBadRequest)
+		render.JSON(w, r, route.HTTPError{Message: err.Error()})
 		return
 	}
-
-	bytes, _ := json.Marshal(profile)
-	_ = cache.Put(profile.Id, bytes)
 
 	render.NoContent(w, r)
 }
@@ -184,73 +121,11 @@ func postProfile(w http.ResponseWriter, r *http.Request) {
 	}
 
 	for _, url := range urls {
-		all, fileName := tools.ConcurrentHttpGet(url)
-		if all != nil && len(all) > 128 {
-			// 对内容进行html解码
-			temp := html.UnescapeString(string(all))
-			temp = strings.Replace(temp, "\"HOST\"", "\"Host\"", -1)
-			all = []byte(temp)
-			ko, yamlError := executor.ParseWithBytes(all)
-			suffix := "yaml"
-			kind := 31
-			if yamlError != nil {
-				log.Errorln("postProfile parse error-1: %s", yamlError.Error())
-				var ray []map[string]any
-				var base64Error error
-				rawCfg, err := config.UnmarshalRawConfig(all)
-				if err == nil && len(rawCfg.Proxy) > 0 {
-					ray = rawCfg.Proxy
-				} else {
-					log.Errorln("postProfile parse error-2: %s", err.Error())
-					ray, base64Error = convert.ConvertsV2Ray(all)
-					if base64Error != nil {
-						log.Errorln("postProfile parse error-3: %s", base64Error.Error())
-						continue
-					}
-					suffix = "txt"
-					kind = 32
-				}
-				ray = resolve.MapsToProxies(ray)
-				rails := spider.SortAddIndex(ray)
-				if len(rails) == 0 {
-					continue
-				}
-				if len(rails) > 512 {
-					continue
-				}
-				proxies := make(map[string]any)
-				proxies["proxies"] = rails
-				all, _ = yaml.Marshal(proxies)
-			} else {
-				if len(ko.Proxies) < 7 {
-					continue
-				}
-				if len(ko.Proxies) > 512 {
-					continue
-				}
-			}
-
-			snowflakeId := tools.SnowflakeId()
-			profile := resolve.Profile{}
-			profile.Id = fmt.Sprintf("%s%d", constant.PrefixProfile, snowflakeId)
-			profile.Type = kind
-			if fileName == "" {
-				fileName = fmt.Sprintf("sub-%d", snowflakeId)
-			}
-			profile.Title = fileName
-			profile.Url = url
-			profile.Order = snowflakeId
-			profile.Path = "uploads/" + profile.Id + "." + suffix
-
-			fileSaveError := saveProfile2Local(profile.Id, suffix, all)
-			if fileSaveError != nil {
-				continue
-			}
-
-			bytes, _ := json.Marshal(profile)
-			_ = cache.Put(profile.Id, bytes)
-		} else {
-			log.Errorln("postProfile url get null or length less 128 [%s]", url)
+		content, fileName := tools.ConcurrentHttpGet(url)
+		err := resolveConfig(false, "", url, fileName, 31, content)
+		if err != nil {
+			log.Errorln("url[%s] %v", url, err)
+			continue
 		}
 	}
 
@@ -284,7 +159,7 @@ func postProfile(w http.ResponseWriter, r *http.Request) {
 			profile.Order = snowflakeId
 			profile.Path = "uploads/" + profile.Id + "." + suffix
 
-			fileSaveError := saveProfile2Local(profile.Id, suffix, all)
+			fileSaveError := saveProfile2Local(profile.Path, all)
 			if fileSaveError == nil {
 				bytes, _ := json.Marshal(profile)
 				_ = cache.Put(profile.Id, bytes)
@@ -317,14 +192,28 @@ func deleteProfile(w http.ResponseWriter, r *http.Request) {
 		render.NoContent(w, r)
 		return
 	}
-	_ = os.Remove(C.Path.HomeDir() + "/" + profile.Path)
+	path := C.Path.HomeDir() + "/" + profile.Path
+	dir := filepath.Dir(path)
+	if strings.HasSuffix(dir, "uploads") {
+		_ = os.Remove(path)
+	} else {
+		_ = os.RemoveAll(dir)
+	}
 	_ = cache.Delete(id)
 
 	render.NoContent(w, r)
 }
 
-func saveProfile2Local(name, suffix string, all []byte) error {
-	return os.WriteFile(C.Path.HomeDir()+"/uploads/"+name+"."+suffix, all, 0666)
+func saveProfile2Local(profilePath string, all []byte) error {
+	path := C.Path.HomeDir() + "/" + profilePath
+	dir := filepath.Dir(path)
+	if _, err := os.Stat(dir); os.IsNotExist(err) {
+		// 必须分成两步：先创建文件夹、再修改权限
+		_ = os.Mkdir(dir, 0777)
+		_ = os.Chmod(dir, 0777)
+	}
+	_ = os.Remove(path)
+	return os.WriteFile(path, all, 0777)
 }
 
 func patchProfile(w http.ResponseWriter, r *http.Request) {
@@ -348,80 +237,145 @@ func refreshProfile(w http.ResponseWriter, r *http.Request) {
 	}
 
 	url := req.Url
-	all, _ := tools.ConcurrentHttpGet(url)
+	content, _ := tools.ConcurrentHttpGet(url)
+	err := resolveConfig(true, req.Id, url, req.Title, req.Type, content)
+	if err != nil {
+		log.Errorln("url[%s] %v", url, err)
+		render.Status(r, http.StatusBadRequest)
+		render.JSON(w, r, route.HTTPError{Message: err.Error()})
+		return
+	}
 
-	if all != nil && len(all) > 128 {
-		// 对内容进行html解码
-		temp := html.UnescapeString(string(all))
-		temp = strings.Replace(temp, "\"HOST\"", "\"Host\"", -1)
-		all = []byte(temp)
-		ko, yamlError := executor.ParseWithBytes(all)
-		kind := 31
+	render.NoContent(w, r)
+}
+
+func changeProvidersPath(snowflakeId int64, config *config.RawConfig) (findProvider bool) {
+	findProvider = false
+
+	dir := fmt.Sprintf("./uploads/%d/", snowflakeId)
+	proxyProviders := config.ProxyProvider
+	for _, provider := range proxyProviders {
+		path := provider["path"].(string)
+		provider["path"] = dir + ReplaceTwoPoint(path)
+		findProvider = true
+	}
+	ruleProviders := config.RuleProvider
+	for _, ruleProvider := range ruleProviders {
+		path := ruleProvider["path"].(string)
+		ruleProvider["path"] = dir + ReplaceTwoPoint(path)
+		findProvider = true
+	}
+
+	return
+}
+
+func ReplaceTwoPoint(path string) string {
+	path = filepath.Join(path)
+	return strings.Replace(path, "../", "", 1)
+}
+
+func resolveConfig(refresh bool, id string, url string, fileName string, kind int, content []byte) error {
+
+	if content == nil || len(content) < 128 {
+		return fmt.Errorf("content is nil or length less 128")
+	}
+
+	// 如果不是刷新创建snowflakeId
+	snowflakeId := tools.SnowflakeId()
+	if refresh {
+		if kind == 32 || kind == 42 {
+			kind = kind - 1
+		}
+		id = strings.TrimLeft(id, constant.PrefixProfile)
+		i, err := strconv.ParseInt(id, 10, 64)
+		if err != nil {
+			return fmt.Errorf("strconv.ParseInt: %v", err)
+		} else {
+			snowflakeId = i
+		}
+	}
+	// 是否使用Provider
+	findProvider := false
+	// 对内容进行html解码
+	temp := html.UnescapeString(string(content))
+	temp = strings.Replace(temp, "\"HOST\"", "\"Host\"", -1)
+	content = []byte(temp)
+	rawCfg, rawErr := config.UnmarshalRawConfig(content)
+	var ray []map[string]any
+	suffix := "yaml"
+	// yaml解析失败，尝试base64解码
+	if rawErr != nil {
+		log.Errorln("config.UnmarshalRawConfig error: %s", rawErr.Error())
+		var base64Error error
+		ray, base64Error = convert.ConvertsV2Ray(content)
+		if base64Error != nil {
+			return fmt.Errorf("convert.ConvertsV2Ray error: %s", base64Error.Error())
+		}
+		ray = resolve.MapsToProxies(ray)
+		if len(ray) == 0 {
+			return fmt.Errorf("resolve.MapsToProxies error: %s", "Node is 0")
+		}
+		rails := spider.SortAddIndex(ray)
+		if len(rails) > 511 {
+			rails = rails[0:512]
+		}
+		proxies := make(map[string]any)
+		proxies["proxies"] = rails
+		content, _ = yaml.Marshal(proxies)
+		kind = kind + 1
+		suffix = "txt"
+	} else {
+		// yaml解析成功，进行配置校验
+		ko, yamlError := config.ParseRawConfig(rawCfg)
 		if yamlError != nil {
-			log.Errorln("refreshProfile parse error-1: %s", yamlError.Error())
-			var ray []map[string]any
-			var base64Error error
-			rawCfg, err := config.UnmarshalRawConfig(all)
-			if err == nil && len(rawCfg.Proxy) > 0 {
-				ray = rawCfg.Proxy
-			} else {
-				log.Errorln("refreshProfile parse error-2: %s", err.Error())
-				ray, base64Error = convert.ConvertsV2Ray(all)
-				if base64Error != nil {
-					log.Errorln("refreshProfile parse error-3: %s", base64Error.Error())
-					render.Status(r, http.StatusBadRequest)
-					render.JSON(w, r, route.HTTPError{Message: yamlError.Error()})
-					return
-				}
-				kind = 32
+			log.Errorln("config.ParseRawConfig error: %s", yamlError.Error())
+			// 配置校验失败，尝试提取可用节点
+			ray = resolve.MapsToProxies(rawCfg.Proxy)
+			if len(ray) == 0 {
+				return fmt.Errorf("resolve.MapsToProxies error: %s", "Node is 0")
 			}
-			ray = resolve.MapsToProxies(ray)
 			rails := spider.SortAddIndex(ray)
-			if len(rails) == 0 {
-				render.Status(r, http.StatusBadRequest)
-				render.JSON(w, r, route.HTTPError{Message: "节点数为零<br/>Node size is 0."})
-				return
-			}
-			if len(rails) > 512 {
-				render.Status(r, http.StatusBadRequest)
-				render.JSON(w, r, route.HTTPError{Message: "节点数超过限制512<br/>Node size is more than 512."})
-				return
+			if len(rails) > 511 {
+				rails = rails[0:512]
 			}
 			proxies := make(map[string]any)
 			proxies["proxies"] = rails
-			all, _ = yaml.Marshal(proxies)
+			content, _ = yaml.Marshal(proxies)
 		} else {
 			if len(ko.Proxies) < 7 {
-				render.Status(r, http.StatusBadRequest)
-				render.JSON(w, r, route.HTTPError{Message: "节点数为零<br/>Node size is 0."})
-				return
+				return fmt.Errorf("config.ParseRawConfig error: %s", "Node is 0")
 			}
 			if len(ko.Proxies) > 512 {
-				render.Status(r, http.StatusBadRequest)
-				render.JSON(w, r, route.HTTPError{Message: "节点数超过限制512<br/>Node size is more than 512."})
-				return
+				return fmt.Errorf("config.ParseRawConfig error: %s", "Node size is more than 512.")
 			}
+			findProvider = changeProvidersPath(snowflakeId, rawCfg)
 		}
-
-		req.Type = kind
-
-		filePath := C.Path.HomeDir() + "/" + req.Path
-		_ = os.Remove(filePath)
-		fileSaveError := os.WriteFile(filePath, all, 0666)
-		if fileSaveError != nil {
-			render.Status(r, http.StatusAccepted)
-			render.JSON(w, r, route.HTTPError{Message: "服务内部错误"})
-			return
-		}
-
-		bytes, _ := json.Marshal(req)
-		_ = cache.Put(req.Id, bytes)
-
-		render.NoContent(w, r)
-	} else {
-		log.Errorln("refreshProfile url get null or length less 128 [%s]", url)
-		render.Status(r, http.StatusAccepted)
-		render.JSON(w, r, route.ErrRequestTimeout)
-		return
 	}
+
+	profile := resolve.Profile{}
+	profile.Id = fmt.Sprintf("%s%d", constant.PrefixProfile, snowflakeId)
+	profile.Type = kind
+	if fileName == "" {
+		fileName = fmt.Sprintf("sub-%d", snowflakeId)
+	}
+
+	profile.Title = fileName
+	profile.Url = url
+	profile.Order = snowflakeId
+
+	if findProvider {
+		content, _ = yaml.Marshal(rawCfg)
+		profile.Path = fmt.Sprintf("uploads/%d/%s%d.%s", snowflakeId, constant.PrefixProfile, snowflakeId, suffix)
+	} else {
+		profile.Path = "uploads/" + profile.Id + "." + suffix
+	}
+
+	fileSaveError := saveProfile2Local(profile.Path, content)
+	if fileSaveError != nil {
+		return fmt.Errorf("fileSaveError:%v", fileSaveError)
+	}
+	bytes, _ := json.Marshal(profile)
+	_ = cache.Put(profile.Id, bytes)
+
+	return nil
 }
