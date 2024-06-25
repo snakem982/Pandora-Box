@@ -46,7 +46,7 @@ require (
 	github.com/gofrs/uuid/v5 v5.2.0 // indirect
 	github.com/google/btree v1.1.2 // indirect
 	github.com/google/go-cmp v0.6.0 // indirect
-	github.com/google/pprof v0.0.0-20240618054019-d3b898a103f8 // indirect
+	github.com/google/pprof v0.0.0-20240625030939-27f56978b8b0 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/hashicorp/yamux v0.1.1 // indirect
 	github.com/insomniacslk/dhcp v0.0.0-20240529192340-51bc6136a0a6 // indirect
@@ -89,7 +89,7 @@ require (
 	github.com/pkg/browser v0.0.0-20240102092130-5ac0b6a4141c // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/power-devops/perfstat v0.0.0-20240221224432-82ca36839d55 // indirect
-	github.com/puzpuzpuz/xsync/v3 v3.1.0 // indirect
+	github.com/puzpuzpuz/xsync/v3 v3.2.0 // indirect
 	github.com/quic-go/qpack v0.4.0 // indirect
 	github.com/quic-go/qtls-go1-20 v0.4.1 // indirect
 	github.com/rivo/uniseg v0.4.7 // indirect
