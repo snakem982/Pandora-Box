@@ -14,6 +14,6 @@ const (
 	CollectFuzzy     = "fuzzy"
 )
 
-const PandoraVersion = "v0.2.11"
+const PandoraVersion = "v0.2.12"
 const PandoraVersionUrl = "https://raw.githubusercontent.com/snakem982/Pandora-Box/main/version.txt"
 const PandoraDownloadUrl = "https://github.com/snakem982/Pandora-Box/releases/download/%s/%s-%s.zip"
