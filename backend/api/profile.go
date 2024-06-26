@@ -79,7 +79,7 @@ func postFileProfile(w http.ResponseWriter, r *http.Request) {
 		}
 	}(open)
 	content, _ := io.ReadAll(open)
-	err := resolveConfig(false, "", "", header.Filename, 41, content)
+	err := resolveConfig(false, false, "", "", header.Filename, 41, content)
 	if err != nil {
 		log.Errorln("[%s] %v", header.Filename, err)
 		render.Status(r, http.StatusBadRequest)
@@ -122,7 +122,7 @@ func postProfile(w http.ResponseWriter, r *http.Request) {
 
 	for _, url := range urls {
 		content, fileName := tools.ConcurrentHttpGet(url)
-		err := resolveConfig(false, "", url, fileName, 31, content)
+		err := resolveConfig(false, false, "", url, fileName, 31, content)
 		if err != nil {
 			log.Errorln("url[%s] %v", url, err)
 			continue
@@ -238,7 +238,7 @@ func refreshProfile(w http.ResponseWriter, r *http.Request) {
 
 	url := req.Url
 	content, _ := tools.ConcurrentHttpGet(url)
-	err := resolveConfig(true, req.Id, url, req.Title, req.Type, content)
+	err := resolveConfig(true, req.Selected, req.Id, url, req.Title, req.Type, content)
 	if err != nil {
 		log.Errorln("url[%s] %v", url, err)
 		render.Status(r, http.StatusBadRequest)
@@ -274,7 +274,9 @@ func ReplaceTwoPoint(path string) string {
 	return strings.Replace(path, "../", "", 1)
 }
 
-func resolveConfig(refresh bool, id string, url string, fileName string, kind int, content []byte) error {
+func resolveConfig(refresh, selected bool,
+	id string, url string, fileName string,
+	kind int, content []byte) error {
 
 	if content == nil || len(content) < 128 {
 		return fmt.Errorf("content is nil or length less 128")
@@ -362,6 +364,7 @@ func resolveConfig(refresh bool, id string, url string, fileName string, kind in
 	profile.Title = fileName
 	profile.Url = url
 	profile.Order = snowflakeId
+	profile.Selected = selected
 
 	if findProvider {
 		content, _ = yaml.Marshal(rawCfg)
