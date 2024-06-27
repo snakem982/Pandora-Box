@@ -59,6 +59,8 @@ rules:
   - DOMAIN-SUFFIX,github.io,🚀 节点选择
   - DOMAIN-SUFFIX,tiktok.com,🚀 节点选择
   - DOMAIN-SUFFIX,tiktokcdn.com,🚀 节点选择
+  - DOMAIN-KEYWORD,openai,🚀 节点选择
+  - DOMAIN-KEYWORD,chatgpt,🚀 节点选择
   - DOMAIN-SUFFIX,ip6-localhost,🎯 全球直连
   - DOMAIN-SUFFIX,ip6-loopback,🎯 全球直连
   - DOMAIN-SUFFIX,lan,🎯 全球直连
@@ -7672,7 +7674,6 @@ rules:
   - DOMAIN-SUFFIX,olevod.io,🚀 节点选择
   - DOMAIN-SUFFIX,olevod.tv,🚀 节点选择
   - DOMAIN-SUFFIX,olevodtv.com,🚀 节点选择
-  - DOMAIN-KEYWORD,openai,🚀 节点选择
   - DOMAIN-SUFFIX,auth0.com,🚀 节点选择
   - DOMAIN-SUFFIX,challenges.cloudflare.com,🚀 节点选择
   - DOMAIN-SUFFIX,client-api.arkoselabs.com,🚀 节点选择
@@ -7683,8 +7684,6 @@ rules:
   - DOMAIN-SUFFIX,intercomcdn.com,🚀 节点选择
   - DOMAIN-SUFFIX,oaistatic.com,🚀 节点选择
   - DOMAIN-SUFFIX,oaiusercontent.com,🚀 节点选择
-  - DOMAIN-SUFFIX,openai.com,🚀 节点选择
-  - DOMAIN-SUFFIX,openaiapi-site.azureedge.net,🚀 节点选择
   - DOMAIN-SUFFIX,sentry.io,🚀 节点选择
   - DOMAIN-SUFFIX,stripe.com,🚀 节点选择
   - DOMAIN-SUFFIX,pbs.org,🚀 节点选择
@@ -8044,7 +8043,6 @@ rules:
   - IP-CIDR,119.235.236.0/23,🚀 节点选择,no-resolve
   - IP-CIDR,147.92.128.0/17,🚀 节点选择,no-resolve
   - IP-CIDR,203.104.128.0/19,🚀 节点选择,no-resolve
-  - DOMAIN-SUFFIX,openai.com,🚀 节点选择
   - DOMAIN-SUFFIX,challenges.cloudflare.com,🚀 节点选择
   - DOMAIN-KEYWORD,1drv,🚀 节点选择
   - DOMAIN-KEYWORD,onedrive,🚀 节点选择
