@@ -4,10 +4,6 @@
 A Simple Mihomo/Clash.Meta/Clash GUI
 
 [Download the latest APP](https://github.com/snakem982/Pandora-Box/releases/latest)
-<br>
-[Download the prerelease APP](https://github.com/snakem982/Pandora-Box/releases/tag/Prerelease-v2)
-
-
 
 ## Features
 
