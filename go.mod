@@ -74,7 +74,7 @@ require (
 	github.com/metacubex/sing-quic v0.0.0-20240518034124-7696d3f7da72 // indirect
 	github.com/metacubex/sing-shadowsocks v0.2.6 // indirect
 	github.com/metacubex/sing-shadowsocks2 v0.2.0 // indirect
-	github.com/metacubex/sing-tun v0.2.7-0.20240622050320-d74a7240f063 // indirect
+	github.com/metacubex/sing-tun v0.2.7-0.20240627012306-9d1f5fc0b45e // indirect
 	github.com/metacubex/sing-vmess v0.1.9-0.20231207122118-72303677451f // indirect
 	github.com/metacubex/sing-wireguard v0.0.0-20240618022557-a6efaa37127a // indirect
 	github.com/metacubex/tfo-go v0.0.0-20240523172816-7577e13e1731 // indirect
@@ -133,6 +133,6 @@ require (
 )
 
 replace (
-	github.com/metacubex/mihomo => github.com/snakem982/mihomo v1.11.9-0.20240625084406-0518658de5fd
+	github.com/metacubex/mihomo => github.com/snakem982/mihomo v1.11.9-0.20240629004847-e68c80dd379f
 	github.com/sagernet/sing => github.com/metacubex/sing v0.0.0-20240617013425-3e3bd9dab6a2
 )

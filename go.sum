@@ -151,8 +151,8 @@ github.com/metacubex/sing-shadowsocks v0.2.6 h1:6oEB3QcsFYnNiFeoevcXrCwJ3sAablwV
 github.com/metacubex/sing-shadowsocks v0.2.6/go.mod h1:zIkMeSnb8Mbf4hdqhw0pjzkn1d99YJ3JQm/VBg5WMTg=
 github.com/metacubex/sing-shadowsocks2 v0.2.0 h1:hqwT/AfI5d5UdPefIzR6onGHJfDXs5zgOM5QSgaM/9A=
 github.com/metacubex/sing-shadowsocks2 v0.2.0/go.mod h1:LCKF6j1P94zN8ZS+LXRK1gmYTVGB3squivBSXAFnOg8=
-github.com/metacubex/sing-tun v0.2.7-0.20240622050320-d74a7240f063 h1:l0kqvpBCy1yUAlr79qc0w70nbELJiqs+tWH61b5poiU=
-github.com/metacubex/sing-tun v0.2.7-0.20240622050320-d74a7240f063/go.mod h1:WwJGbCx7bQcBzuQXiDOJvZH27R0kIjKNNlISIWsL6kM=
+github.com/metacubex/sing-tun v0.2.7-0.20240627012306-9d1f5fc0b45e h1:o+zohxPRo45P35fS9u1zfdBgr+L/7S0ObGU6YjbVBIc=
+github.com/metacubex/sing-tun v0.2.7-0.20240627012306-9d1f5fc0b45e/go.mod h1:WwJGbCx7bQcBzuQXiDOJvZH27R0kIjKNNlISIWsL6kM=
 github.com/metacubex/sing-vmess v0.1.9-0.20231207122118-72303677451f h1:QjXrHKbTMBip/C+R79bvbfr42xH1gZl3uFb0RELdZiQ=
 github.com/metacubex/sing-vmess v0.1.9-0.20231207122118-72303677451f/go.mod h1:olVkD4FChQ5gKMHG4ZzuD7+fMkJY1G8vwOKpRehjrmY=
 github.com/metacubex/sing-wireguard v0.0.0-20240618022557-a6efaa37127a h1:NpSGclHJUYndUwBmyIpFBSoBVg8PoVX7QQKhYg0DjM0=
@@ -231,8 +231,8 @@ github.com/sina-ghaderi/rabbitio v0.0.0-20220730151941-9ce26f4f872e h1:ur8uMsPIF
 github.com/sina-ghaderi/rabbitio v0.0.0-20220730151941-9ce26f4f872e/go.mod h1:+e5fBW3bpPyo+3uLo513gIUblc03egGjMM0+5GKbzK8=
 github.com/sirupsen/logrus v1.9.3 h1:dueUQJ1C2q9oE3F7wvmSGAaVtTmUizReu6fjN8uqzbQ=
 github.com/sirupsen/logrus v1.9.3/go.mod h1:naHLuLoDiP4jHNo9R0sCBMtWGeIprob74mVsIT4qYEQ=
-github.com/snakem982/mihomo v1.11.9-0.20240625084406-0518658de5fd h1:s9YfRfJIdOb7H1yuBKGkJZackwUsz4GoebyWXdLQm0g=
-github.com/snakem982/mihomo v1.11.9-0.20240625084406-0518658de5fd/go.mod h1:Fkv0PqyEhEcCJjLwSy9zbY2P04ktzCX5Jpn3UzrHnVU=
+github.com/snakem982/mihomo v1.11.9-0.20240629004847-e68c80dd379f h1:vyV/Y9U06PWXvrRvehFYMXJcs0h7Z2x0SvpdouPpVII=
+github.com/snakem982/mihomo v1.11.9-0.20240629004847-e68c80dd379f/go.mod h1:4k6CJ9MoYhuQP40evJUSc3p1uRXASyyS8O+63k3nHVU=
 github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=
 github.com/stretchr/objx v0.4.0/go.mod h1:YvHI0jy2hoMjB+UWwv71VJQ9isScKT/TqJzVSSt89Yw=
 github.com/stretchr/objx v0.5.0/go.mod h1:Yh+to48EsGEfYuaHDzXPcE3xhTkx73EhmCGUpEOglKo=
