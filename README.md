@@ -31,8 +31,6 @@ A Simple Mihomo/Clash.Meta/Clash GUI
 
 ## Friendly Reminder
 
-- My personal ability is limited. If you have any good ideas or implementation ideas, you are welcome to open pull
-  request.
 - [Juicity configuration introduction](https://github.com/snakem982/Pandora-Box/blob/main/Juicity.md) No longer
   supported after v0.2.11
 - The specific file configuration is the same as [Mihomo](https://wiki.metacubex.one/config/)
