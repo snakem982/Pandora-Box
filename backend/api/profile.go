@@ -328,6 +328,7 @@ func resolveConfig(refresh, selected bool,
 		suffix = "txt"
 	} else {
 		// yaml解析成功，进行配置校验
+		rawCfg.GeodataMode = false
 		ko, yamlError := config.ParseRawConfig(rawCfg)
 		if yamlError != nil {
 			log.Errorln("config.ParseRawConfig error: %s", yamlError.Error())
