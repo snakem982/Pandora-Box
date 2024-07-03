@@ -7,7 +7,7 @@
 ## 功能特点
 
 - 支持 本地 HTTP/HTTPS/SOCKS 代理
-- 支持 Vmess, Vless, Shadowsocks, Trojan, Tuic, Hysteria, Hysteria2, Wireguard, ~~Juicity~~ 协议
+- 支持 Vmess, Vless, Shadowsocks, Trojan, Tuic, Hysteria, Hysteria2, Wireguard 协议
 - 支持 Mihomo/Clash.Meta/Clash 配置文件
 - 支持 分享链接, 订阅链接, Base64格式
 - 内置将节点和订阅转换为 clash(meta) 配置
@@ -30,7 +30,6 @@
 ## 使用手册
 
 - [基本使用](Manual-CN.md)
-- [Juicity 配置详解 v0.2.11后不再支持](Juicity.md)
 - [统一所有订阅的规则和分组](UnifiedRuleGrouping.md)
 - 自定义配置同 [Mihomo](https://wiki.metacubex.one/config/)
 
