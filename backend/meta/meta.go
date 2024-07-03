@@ -231,7 +231,7 @@ func StartCore(profile resolve.Profile, reload bool) {
 		return
 	}
 
-	C.UA = "Clash.Meta/1.18.5"
+	C.UA = "Clash.Meta/1.18.6"
 	if !reload {
 		freePort, err := tools.GetFreeWithPort(10000)
 		if err != nil {
