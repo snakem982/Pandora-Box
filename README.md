@@ -9,7 +9,7 @@ A Simple Mihomo/Clash.Meta/Clash GUI
 ## Features
 
 - Local HTTP/HTTPS/SOCKS proxy support
-- Vmess, Vless, Shadowsocks, Trojan, Tuic, Hysteria, Hysteria2, Wireguard, ~~Juicity~~ protocol support
+- Vmess, Vless, Shadowsocks, Trojan, Tuic, Hysteria, Hysteria2, Wireguard protocol support
 - Mihomo/Clash.Meta/Clash configuration file support
 - Sharing link, Subscription link, Base64 format support
 - Conversion of nodes and subscriptions into clash(meta) configurations
@@ -31,8 +31,6 @@ A Simple Mihomo/Clash.Meta/Clash GUI
 
 ## Friendly Reminder
 
-- [Juicity configuration introduction](https://github.com/snakem982/Pandora-Box/blob/main/Juicity.md) No longer
-  supported after v0.2.11
 - The specific file configuration is the same as [Mihomo](https://wiki.metacubex.one/config/)
 - If you have any questions, welcome issues
 
