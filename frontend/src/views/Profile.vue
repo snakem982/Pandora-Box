@@ -215,7 +215,7 @@ function toCrawl() {
       <el-col :span="18">
         <el-input
             v-model="subOrShare"
-            placeholder="订阅地址、分享链接、Base64、Subscription、ShareLink"
+            placeholder="订阅地址、分享链接、Base64、Yaml、Subscription、ShareLink"
             size="large"
             type="textarea"
             autocomplete="off"

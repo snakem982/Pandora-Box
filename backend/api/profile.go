@@ -91,6 +91,12 @@ func postFileProfile(w http.ResponseWriter, r *http.Request) {
 }
 
 func postProfile(w http.ResponseWriter, r *http.Request) {
+	if r.ContentLength > 2097152 {
+		render.Status(r, http.StatusBadRequest)
+		render.JSON(w, r, route.HTTPError{Message: "内容大小超过限制<br/>Content size is more than 2MB."})
+		return
+	}
+
 	body := struct {
 		Data string `json:"data"`
 	}{}
@@ -98,6 +104,14 @@ func postProfile(w http.ResponseWriter, r *http.Request) {
 		render.Status(r, http.StatusBadRequest)
 		render.JSON(w, r, route.ErrBadRequest)
 		return
+	}
+
+	if strings.Contains(body.Data, "proxies:") {
+		err := resolveConfig(false, false, "", "", "", 41, []byte(body.Data))
+		if err == nil {
+			render.NoContent(w, r)
+			return
+		}
 	}
 
 	builder := strings.Builder{}
@@ -278,8 +292,8 @@ func resolveConfig(refresh, selected bool,
 	id string, url string, fileName string,
 	kind int, content []byte) error {
 
-	if content == nil || len(content) < 128 {
-		return fmt.Errorf("content is nil or length less 128")
+	if content == nil || len(content) < 32 {
+		return fmt.Errorf("content is nil or length less 32")
 	}
 
 	// 如果不是刷新创建snowflakeId

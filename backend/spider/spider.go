@@ -233,6 +233,12 @@ func Unique(mappings []map[string]any, needTls bool) (maps map[string]map[string
 			proxyId = fmt.Sprintf("%s|%v|%v|%v", "wireguard", server, port, authStr)
 		case "tuic":
 			proxyId = fmt.Sprintf("%s|%v|%v|%v|%v", "tuic", server, port, uuid, password)
+		case "socks5":
+			username := mapping["username"]
+			proxyId = fmt.Sprintf("%s|%v|%v|%v|%v", "socks5", server, port, username, password)
+		case "http":
+			username := mapping["username"]
+			proxyId = fmt.Sprintf("%s|%v|%v|%v|%v", "http", server, port, username, password)
 		default:
 			err = fmt.Errorf("unsupport proxy type: %s", proxyType)
 		}
