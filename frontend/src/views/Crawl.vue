@@ -2,8 +2,9 @@
 import {computed, onMounted, reactive, ref} from 'vue'
 import {mdiBookInformationVariant, mdiPlusBoxMultiple, mdiRadar, mdiSquareEditOutline, mdiTrashCan} from "@mdi/js";
 import SvgIcon from "@jamescoyle/vue-icon";
-import {del, get, post, put} from "../api/http";
+import {del, get, patch, post, put} from "../api/http";
 import {ElLoading, ElMessage} from "element-plus";
+import {IsAdmin} from "../../wailsjs/go/main/App";
 
 interface Getter {
   id: string
@@ -74,7 +75,7 @@ function addShow() {
   addFlag.value = true;
   form.id = ""
   form.type = ""
-  form.url = ""
+  form.url = search.value || ""
 }
 
 function editShow(getter: Getter) {
@@ -122,6 +123,8 @@ async function addOrEdit() {
 
 onMounted(getGetter)
 
+const ToDelay = (delay: number) => new Promise((resolve) => setTimeout(resolve, delay))
+
 async function crawling() {
   const loading = ElLoading.service({
     lock: true,
@@ -130,8 +133,23 @@ async function crawling() {
   })
 
   try {
+    let needTun = false
+    const isAdmin = await IsAdmin()
+    const tun = localStorage.getItem("tun")
+    if (isAdmin == "true") {
+      if (tun != "off") {
+        await patch("/configs", {tun: {enable: false}})
+        needTun = true
+        await ToDelay(500)
+      }
+    }
+
     await get<any>("/crawl")
     ElMessage.success("抓取成功Crawling Success")
+
+    if (needTun) {
+      await patch("/configs", {tun: {enable: true, "stack": tun}})
+    }
   } catch (error) {
     console.error(error);
     ElMessage.error("抓取失败Crawling Failed")
@@ -285,29 +303,48 @@ async function crawling() {
     <div>
       <el-text class="el-text--primary title">2、抓取类型 Crawl Type</el-text>
       <div class="content">
-        <el-text>- clash订阅(clash subscription)</el-text><br>
-        <el-text>&emsp;一般用yaml编码</el-text><br>
-        <el-text>&emsp;Generally encoded in yaml</el-text><br>
+        <el-text>- clash订阅(clash subscription)</el-text>
         <br>
-        <el-text>- v2ray订阅(v2ray subscription)</el-text><br>
-        <el-text>&emsp;一般用Base64编码</el-text><br>
-        <el-text>&emsp;Generally encoded in Base64</el-text><br>
+        <el-text>&emsp;一般用yaml编码</el-text>
+        <br>
+        <el-text>&emsp;Generally encoded in yaml</el-text>
+        <br>
+        <br>
+        <el-text>- v2ray订阅(v2ray subscription)</el-text>
+        <br>
+        <el-text>&emsp;一般用Base64编码</el-text>
+        <br>
+        <el-text>&emsp;Generally encoded in Base64</el-text>
+        <br>
         <br>
         <el-text>- 分享链接(share link)</el-text>
         <br>
-        <el-text>&emsp;以下开头的文字视为分享链接</el-text><br>
-        <el-text>&emsp;Text starting with the following text is considered a share link.</el-text><br>
-        <el-text>&emsp;ss://...</el-text><br>
-        <el-text>&emsp;ssr://...</el-text><br>
-        <el-text>&emsp;vmess://...</el-text><br>
-        <el-text>&emsp;vless://...</el-text><br>
-        <el-text>&emsp;trojan://...</el-text><br>
-        <el-text>&emsp;tuic://...</el-text><br>
-        <el-text>&emsp;hysteria://...</el-text><br>
-        <el-text>&emsp;hysteria2://...</el-text><br><br>
-        <el-text>- 模糊抓取(fuzzy crawling)</el-text><br>
-        <el-text>&emsp;当内容包含订阅地址和共享链接时使用。</el-text><br>
-        <el-text>&emsp;Used when content contains subscription addresses and sharing links.</el-text><br>
+        <el-text>&emsp;以下开头的文字视为分享链接</el-text>
+        <br>
+        <el-text>&emsp;Text starting with the following text is considered a share link.</el-text>
+        <br>
+        <el-text>&emsp;ss://...</el-text>
+        <br>
+        <el-text>&emsp;ssr://...</el-text>
+        <br>
+        <el-text>&emsp;vmess://...</el-text>
+        <br>
+        <el-text>&emsp;vless://...</el-text>
+        <br>
+        <el-text>&emsp;trojan://...</el-text>
+        <br>
+        <el-text>&emsp;tuic://...</el-text>
+        <br>
+        <el-text>&emsp;hysteria://...</el-text>
+        <br>
+        <el-text>&emsp;hysteria2://...</el-text>
+        <br><br>
+        <el-text>- 模糊抓取(fuzzy crawling)</el-text>
+        <br>
+        <el-text>&emsp;当内容包含订阅地址和共享链接时使用。</el-text>
+        <br>
+        <el-text>&emsp;Used when content contains subscription addresses and sharing links.</el-text>
+        <br>
         <br>
       </div>
     </div>
