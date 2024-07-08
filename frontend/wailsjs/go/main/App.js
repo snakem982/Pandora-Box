@@ -18,6 +18,10 @@ export function IsMac() {
   return window['go']['main']['App']['IsMac']();
 }
 
+export function IsUnifiedDelay() {
+  return window['go']['main']['App']['IsUnifiedDelay']();
+}
+
 export function OpenConfigDirectory() {
   return window['go']['main']['App']['OpenConfigDirectory']();
 }

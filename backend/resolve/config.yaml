@@ -4,7 +4,7 @@ pr: &pr { type: select, proxies: [ ♻️ 自动选择 ] }
 pr2: &pr2 { type: select, proxies: [ 🚀 节点选择,🎯 全球直连,♻️ 自动选择 ] }
 
 #这里是订阅更新和延迟测试相关的
-p: &p { type: file, health-check: { enable: true, url: https://www.gstatic.com/generate_204, interval: 900 } }
+p: &p { type: file, health-check: { enable: true, url: https://www.gstatic.com/generate_204, interval: 600 } }
 
 use: &use
   type: select
@@ -24,7 +24,7 @@ proxy-providers:
 mode: rule
 log-level: info
 mixed-port: 10000
-unified-delay: false
+unified-delay: true
 tcp-concurrent: true
 find-process-mode: strict
 global-client-fingerprint: 360
@@ -47,7 +47,7 @@ dns:
 proxies:
 proxy-groups:
   - { name: 🚀 节点选择, <<: [ *pr,*use ], }
-  - { name: ♻️ 自动选择, <<: *use, url: https://www.gstatic.com/generate_204,lazy: true,interval: 3600,tolerance: 50, type: url-test }
+  - { name: ♻️ 自动选择, <<: *use, url: https://www.gstatic.com/generate_204,lazy: true,interval: 600,tolerance: 50, type: url-test }
   - { name: 🎯 全球直连, proxies: [ DIRECT,🚀 节点选择,♻️ 自动选择 ], type: select }
   - { name: 🛑 全球拦截, proxies: [ REJECT,DIRECT ], type: select }
   - { name: 🐟 漏网之鱼, <<: [ *pr2,*use ], type: select }

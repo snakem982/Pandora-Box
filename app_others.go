@@ -66,3 +66,11 @@ func (a *App) OpenConfigDirectory() {
 		log.Errorln("OpenConfigDirectory error:", err)
 	}
 }
+
+func (a *App) IsUnifiedDelay() string {
+	if meta.NowConfig.General.UnifiedDelay {
+		return "true"
+	}
+
+	return "false"
+}

@@ -7,6 +7,7 @@ import (
 	"github.com/keybase/go-keychain"
 	"github.com/metacubex/mihomo/log"
 	"os/exec"
+	"pandora-box/backend/meta"
 	isadmin "pandora-box/backend/system/admin"
 	"pandora-box/backend/system/open"
 	"runtime"
@@ -127,4 +128,12 @@ func (a *App) OpenConfigDirectory() {
 	if err != nil {
 		log.Errorln("OpenConfigDirectory error:", err)
 	}
+}
+
+func (a *App) IsUnifiedDelay() string {
+	if meta.NowConfig.General.UnifiedDelay {
+		return "true"
+	}
+
+	return "false"
 }

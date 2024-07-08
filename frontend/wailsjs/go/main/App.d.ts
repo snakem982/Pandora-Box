@@ -9,6 +9,8 @@ export function IsAdmin():Promise<string>;
 
 export function IsMac():Promise<string>;
 
+export function IsUnifiedDelay():Promise<string>;
+
 export function OpenConfigDirectory():Promise<void>;
 
 export function SetMacAc(arg1:string):Promise<string>;
