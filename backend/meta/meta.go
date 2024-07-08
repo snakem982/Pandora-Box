@@ -201,10 +201,11 @@ func StartCore(profile resolve.Profile, reload bool) {
 	rawCfg.TProxyPort = 0
 	rawCfg.RedirPort = 0
 	if reload {
-		rawCfg.MixedPort = executor.GetGeneral().MixedPort
-		rawCfg.AllowLan = executor.GetGeneral().AllowLan
-		rawCfg.IPv6 = executor.GetGeneral().IPv6
-		rawCfg.Tun.Enable = executor.GetGeneral().Tun.Enable
+		rawCfg.MixedPort = NowConfig.General.MixedPort
+		rawCfg.AllowLan = NowConfig.General.AllowLan
+		rawCfg.IPv6 = NowConfig.General.IPv6
+		rawCfg.Tun.Enable = NowConfig.General.Tun.Enable
+		rawCfg.UnifiedDelay = NowConfig.General.UnifiedDelay
 	}
 	if rawCfg.AllowLan {
 		rawCfg.BindAddress = "*"
