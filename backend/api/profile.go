@@ -107,7 +107,7 @@ func postProfile(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if strings.Contains(body.Data, "proxies:") {
-		err := resolveConfig(false, false, "", "", "", 41, []byte(body.Data))
+		err := resolveConfig(false, false, "", "", tools.Dec(15), 41, []byte(body.Data))
 		if err == nil {
 			render.NoContent(w, r)
 			return
