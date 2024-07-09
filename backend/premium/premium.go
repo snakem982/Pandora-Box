@@ -5,7 +5,6 @@ import (
 	"gopkg.in/yaml.v3"
 	"net"
 	"os"
-	"sync"
 	"time"
 )
 
@@ -15,41 +14,36 @@ type CfIps struct {
 	HttpsIps   []string  `json:"https-ips" yaml:"https-ips"`
 }
 
-var preLock = sync.Mutex{}
-
 func GetExcellentIps(cdnType CdnType) (Ips CfIps) {
-	if preLock.TryLock() {
-		defer preLock.Unlock()
 
-		cfIps := GetIpsFromFile(cdnType)
-		if cfIps != nil {
-			LoadIPRanges(cdnType)
-			Ips = *cfIps
-			return
-		}
+	cfIps := GetIpsFromFile(cdnType)
+	if cfIps != nil {
+		LoadIPRanges(cdnType)
+		Ips = *cfIps
+		return
+	}
 
-		// 置随机数种子
-		InitRandSeed()
-		// 开始延迟测速 + 过滤延迟/丢包
-		TcpPort = 443
-		httpsIps := NewPing(cdnType).Run().FilterDelay().FilterLossRate()
+	// 置随机数种子
+	InitRandSeed()
+	// 开始延迟测速 + 过滤延迟/丢包
+	TcpPort = 443
+	httpsIps := NewPing(cdnType).Run().FilterDelay().FilterLossRate()
 
-		Ips.UpdateTime = time.Now()
+	Ips.UpdateTime = time.Now()
 
-		Ips.HttpsIps = make([]string, httpsIps.Len())
-		for index, value := range httpsIps {
-			Ips.HttpsIps[index] = value.IP.String()
-		}
+	Ips.HttpsIps = make([]string, httpsIps.Len())
+	for index, value := range httpsIps {
+		Ips.HttpsIps[index] = value.IP.String()
+	}
 
-		out, err := yaml.Marshal(Ips)
-		if err != nil {
-			println("marshal cloudflare ip error: " + err.Error())
-			return
-		}
+	out, err := yaml.Marshal(Ips)
+	if err != nil {
+		println("marshal cloudflare ip error: " + err.Error())
+		return
+	}
 
-		if err := os.WriteFile(C.Path.HomeDir()+cdnType.String(), out, 0777); err != nil {
-			println("save cloudflare ip error: " + err.Error())
-		}
+	if err := os.WriteFile(C.Path.HomeDir()+cdnType.String(), out, 0777); err != nil {
+		println("save cloudflare ip error: " + err.Error())
 	}
 
 	return
@@ -75,6 +69,10 @@ func GetIpsFromFile(cdnType CdnType) *CfIps {
 	}
 
 	if time.Since(cf.UpdateTime) > 168*time.Hour {
+		return nil
+	}
+
+	if len(cf.HttpsIps) == 0 {
 		return nil
 	}
 

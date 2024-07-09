@@ -144,7 +144,7 @@ async function crawling() {
       }
     }
 
-    await get<any>("/crawl")
+    await get<any>("/crawl",{timeout:1800000})
     ElMessage.success("抓取成功Crawling Success")
 
     if (needTun) {
