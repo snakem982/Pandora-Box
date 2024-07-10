@@ -11,7 +11,7 @@ A Simple Mihomo/Clash.Meta/Clash GUI
 - Local HTTP/HTTPS/SOCKS proxy support
 - Vmess, Vless, Shadowsocks, Trojan, Tuic, Hysteria, Hysteria2, Wireguard protocol support
 - Mihomo/Clash.Meta/Clash configuration file support
-- Sharing link, Subscription link, Base64 format support
+- Sharing link, Subscription link, Base64, Yaml format support
 - Conversion of nodes and subscriptions into clash(meta) configurations
 - Node crawling support
 - Automatic rule grouping
