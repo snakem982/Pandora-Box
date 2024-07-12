@@ -19,7 +19,7 @@
 <img src="img/manual/step5.png"  style="width:600px;" />
 
 ## 6、抓取使用
-**在抓取时先关闭Tun**,**在抓取时先关闭Tun**,**在抓取时先关闭Tun**<br>
+**在抓取时先关闭Tun**<br>**在抓取时先关闭Tun**<br>**在抓取时先关闭Tun**<br><br>
 <img src="img/manual/step6-1.png"  style="width:600px;" />
 <img src="img/manual/step6-2.png"  style="width:600px;" />
 <img src="img/manual/step6-3.png"  style="width:600px;" />
