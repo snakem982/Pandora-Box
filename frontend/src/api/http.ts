@@ -4,7 +4,7 @@ import {GetFreePort} from "../../wailsjs/go/main/App";
 export async function get<T>(url: string, params?: any): Promise<T> {
     const baseUrl = await GetFreePort()
     const fullUrl = 'http://'+baseUrl + url
-    const response = await axiosInstance.get<T>(fullUrl, {params});
+    const response = await axiosInstance.get<T>(fullUrl, params);
     return response.data;
 }
 

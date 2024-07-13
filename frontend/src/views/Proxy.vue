@@ -178,10 +178,12 @@ async function getDelay() {
   activeNames.value = ""
   try {
     const param = "/delay?url=https%3A%2F%2Fwww.gstatic.com%2Fgenerate_204&timeout=3000"
-    await get("/group/" + tempName + param);
-    await getProvider()
+    const timeout = Math.min(GROUP.proxies.length * 3000, 20000)
+    await get("/group/" + tempName + param, {timeout});
   } catch (error) {
     console.error(error);
+  } finally {
+    await getProvider()
   }
   activeNames.value = tempName
   loading.close()
