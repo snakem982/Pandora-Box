@@ -22,6 +22,7 @@ import (
 	"path/filepath"
 	"runtime"
 	"strings"
+	"sync"
 )
 
 //go:embed geoip.metadb
@@ -114,9 +115,13 @@ func saveProfile2Local(name, suffix string, all []byte) error {
 }
 
 var NowConfig *config.Config
+var StartLock = sync.Mutex{}
 
 // StartCore 函数用于启动核心功能，接收两个参数：profile和reload，分别为配置文件和是否自动reload的标志位
 func StartCore(profile resolve.Profile, reload bool) {
+	StartLock.Lock()
+	defer StartLock.Unlock()
+
 	on := cache.Get(constant.DefaultTemplate)
 	useTemplate := false
 	var providerBuf []byte
@@ -181,7 +186,6 @@ func StartCore(profile resolve.Profile, reload bool) {
 			providerBuf = []byte(replace)
 		}
 	}
-
 	rawCfg, err := config.UnmarshalRawConfig(providerBuf)
 	if err != nil {
 		log.Warnln("Unmarshal config error: %s", err.Error())
@@ -201,7 +205,7 @@ func StartCore(profile resolve.Profile, reload bool) {
 	rawCfg.TProxyPort = 0
 	rawCfg.RedirPort = 0
 	if reload {
-		general := executor.GetGeneral()
+		general := NowConfig.General
 		rawCfg.MixedPort = general.MixedPort
 		rawCfg.AllowLan = general.AllowLan
 		rawCfg.IPv6 = general.IPv6
@@ -210,9 +214,6 @@ func StartCore(profile resolve.Profile, reload bool) {
 	}
 	if rawCfg.AllowLan {
 		rawCfg.BindAddress = "*"
-	}
-	if NowConfig == nil {
-		rawCfg.UnifiedDelay = true
 	}
 
 	rawCfg.ExternalController = ""
@@ -230,7 +231,7 @@ func StartCore(profile resolve.Profile, reload bool) {
 		rawCfg.Tun.Enable = false
 	}
 
-	cfg, err := config.ParseRawConfig(rawCfg)
+	NowConfig, err = config.ParseRawConfig(rawCfg)
 	if err != nil {
 		log.Warnln("Parse config error: %s", err.Error())
 		return
@@ -242,9 +243,8 @@ func StartCore(profile resolve.Profile, reload bool) {
 		if err != nil {
 			freePort, _ = tools.GetFreePort()
 		}
-		cfg.General.MixedPort = freePort
+		NowConfig.General.MixedPort = freePort
 	}
 
-	NowConfig = cfg
-	executor.ApplyConfig(cfg, true)
+	executor.ApplyConfig(NowConfig, true)
 }

@@ -69,6 +69,9 @@ func (a *App) OpenConfigDirectory() {
 }
 
 func (a *App) IsUnifiedDelay() string {
+	meta.StartLock.Lock()
+	defer meta.StartLock.Unlock()
+
 	if meta.NowConfig.General.UnifiedDelay {
 		return "true"
 	}
