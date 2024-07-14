@@ -355,7 +355,7 @@ func GetCountryName(keys []string, maps map[string]map[string]any) []map[string]
 				ctx, cancel := context.WithTimeout(context.Background(), time.Millisecond*500)
 				defer cancel()
 				ips, err := r.LookupIP(ctx, ipOrDomain)
-				if err == nil && ips != nil {
+				if err == nil && ips != nil && len(ips) > 0 {
 					m["name"] = getCountryCode(ips[0].String())
 				}
 			} else {
