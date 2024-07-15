@@ -115,6 +115,7 @@ async function addOrEdit() {
       return
     }
     await postGetter(form)
+    form.url = ""
   } else {
     await putGetter(form)
   }
