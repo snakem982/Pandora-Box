@@ -96,7 +96,6 @@ function isValidHttpUrl(url: string): boolean {
 }
 
 async function addOrEdit() {
-  dialogFormVisible.value = false
   if (form.url == "") {
     ElMessage.error("地址不能为空 Url cannot be empty")
     return
@@ -119,6 +118,7 @@ async function addOrEdit() {
   } else {
     await putGetter(form)
   }
+  dialogFormVisible.value = false
 }
 
 onMounted(getGetter)
