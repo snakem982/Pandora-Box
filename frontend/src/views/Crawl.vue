@@ -341,9 +341,13 @@ async function crawling() {
         <br><br>
         <el-text>- 模糊抓取(fuzzy crawling)</el-text>
         <br>
-        <el-text>&emsp;当内容包含订阅地址和共享链接时使用。</el-text>
+        <el-text>&emsp;当内容既包含订阅地址又包含分享链接时使用。</el-text>
+        <br>
+        <el-text>&emsp;不知道填写什么类型时也可以使用此选项。</el-text>
         <br>
         <el-text>&emsp;Used when content contains subscription addresses and sharing links.</el-text>
+        <br>
+        <el-text>&emsp;You can also use this option when you don't know what type to fill in.</el-text>
         <br>
         <br>
       </div>

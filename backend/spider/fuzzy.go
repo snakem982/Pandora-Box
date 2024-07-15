@@ -67,6 +67,20 @@ func ComputeFuzzy(content []byte) []map[string]any {
 		return proxies
 	}
 
+	// 尝试clash解析 成功返回
+	rawCfg, err := config.UnmarshalRawConfig(content)
+	if err == nil && rawCfg.Proxy != nil {
+		proxies = rawCfg.Proxy
+		return proxies
+	}
+
+	// 尝试v2ray解析 成功返回
+	v2ray, err := convert.ConvertsV2Ray(content)
+	if err == nil && v2ray != nil {
+		proxies = v2ray
+		return proxies
+	}
+
 	// 进行订阅抓取
 	fuzzy := grepFuzzy(content)
 	pool := mypool.NewTimeoutPoolWithDefaults()
