@@ -115,7 +115,7 @@ async function addOrEdit() {
       return
     }
     await postGetter(form)
-    form.url = ""
+    search.value = ""
   } else {
     await putGetter(form)
   }
