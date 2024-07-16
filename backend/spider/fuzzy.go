@@ -46,8 +46,8 @@ var re = regexp.MustCompile(`proxies|api|token|raw|subscribe|txt|yaml|yml|sub|uu
 var not = regexp.MustCompile(`svg|png|mp4|mp3|jpg|jpeg|m3u8|flv|gif|icon|ktv|mov|webcam`)
 var urlRe = regexp.MustCompile("(https|http)://[-A-Za-z0-9\u4e00-\u9ea5+&@#/%?=~_!:,.;]+[-A-Za-z0-9\u4e00-\u9ea5+&@#/%=~_]")
 
-func grepFuzzy(all []byte) map[string]void {
-	set := make(map[string]void) // New empty set
+func grepFuzzy(all []byte, providerUrl map[string]void) map[string]void {
+	set := providerUrl
 
 	subUrls := urlRe.FindAllString(string(all), -1)
 	for _, url := range subUrls {
@@ -67,26 +67,43 @@ func ComputeFuzzy(content []byte) []map[string]any {
 		return proxies
 	}
 
+	// 处理 proxyProvider
+	var providerUrl = make(map[string]void)
+
 	// 尝试clash解析 成功返回
 	rawCfg, err := config.UnmarshalRawConfig(content)
-	if err == nil && rawCfg.Proxy != nil {
-		proxies = rawCfg.Proxy
-		return proxies
-	}
-
-	// 尝试v2ray解析 成功返回
-	v2ray, err := convert.ConvertsV2Ray(content)
-	if err == nil && v2ray != nil {
-		proxies = v2ray
-		return proxies
+	if err == nil {
+		provider := rawCfg.ProxyProvider
+		if provider != nil && len(provider) > 0 {
+			for _, m := range provider {
+				s := m["url"].(string)
+				if strings.HasPrefix(s, "http") {
+					providerUrl[s] = nullValue
+				}
+			}
+		}
+		proxy := rawCfg.Proxy
+		if proxy != nil && len(proxy) > 0 {
+			proxies = proxy
+		}
+		if len(providerUrl) == 0 && len(proxies) > 0 {
+			return proxies
+		}
+	} else {
+		// 尝试v2ray解析 成功返回
+		v2ray, err := convert.ConvertsV2Ray(content)
+		if err == nil && v2ray != nil {
+			proxies = v2ray
+			return proxies
+		}
 	}
 
 	// 进行订阅抓取
-	fuzzy := grepFuzzy(content)
+	fuzzy := grepFuzzy(content, providerUrl)
 	pool := mypool.NewTimeoutPoolWithDefaults()
 	pool.WaitCount(len(fuzzy))
 
-	var cFlag = regexp.MustCompile(`proxies|clash|yaml|yml`)
+	var cFlag = regexp.MustCompile(`proxies|provider|clash|yaml|yml`)
 	lock := sync.Mutex{}
 	for temp := range fuzzy {
 		url := temp
