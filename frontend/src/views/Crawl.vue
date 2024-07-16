@@ -74,7 +74,7 @@ function addShow() {
   dialogFormVisible.value = true;
   addFlag.value = true;
   form.id = ""
-  form.type = ""
+  form.type = "fuzzy"
   form.url = search.value || ""
 }
 

@@ -1,7 +1,6 @@
 package spider
 
 import (
-	"github.com/metacubex/mihomo/common/convert"
 	"github.com/metacubex/mihomo/log"
 	"pandora-box/backend/constant"
 	"sync"
@@ -16,17 +15,7 @@ type V2ray struct {
 }
 
 func (c *V2ray) Get() []map[string]any {
-	proxies := make([]map[string]any, 0)
-
-	all := GetBytes(c.Url)
-	if all != nil {
-		v2ray, err := convert.ConvertsV2Ray(all)
-		if err == nil && v2ray != nil {
-			proxies = v2ray
-		}
-	}
-
-	return proxies
+	return ComputeFuzzy(GetBytes(c.Url))
 }
 
 func (c *V2ray) Get2ChanWG(pc chan []map[string]any, wg *sync.WaitGroup) {

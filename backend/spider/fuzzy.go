@@ -21,8 +21,7 @@ type Fuzzy struct {
 }
 
 func (c *Fuzzy) Get() []map[string]any {
-	content := GetBytes(c.Url)
-	return ComputeFuzzy(content)
+	return ComputeFuzzy(GetBytes(c.Url))
 }
 
 func (c *Fuzzy) Get2ChanWG(pc chan []map[string]any, wg *sync.WaitGroup) {
@@ -119,8 +118,13 @@ func ComputeFuzzy(content []byte) []map[string]any {
 			getter := Getter{Url: url}
 			var ok []map[string]any
 			if cFlag.MatchString(url) {
-				collect, _ := NewCollect(constant.CollectClash, getter)
-				ok = collect.Get()
+				all := GetBytes(url)
+				if all != nil {
+					rawCfgInner, err := config.UnmarshalRawConfig(all)
+					if err == nil && rawCfgInner.Proxy != nil {
+						ok = rawCfgInner.Proxy
+					}
+				}
 			} else if strings.Contains(url, "README.md") {
 				collect, _ := NewCollect(constant.CollectSharelink, getter)
 				ok = collect.Get()

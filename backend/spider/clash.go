@@ -1,7 +1,6 @@
 package spider
 
 import (
-	"github.com/metacubex/mihomo/config"
 	"github.com/metacubex/mihomo/log"
 	"pandora-box/backend/constant"
 	"sync"
@@ -16,17 +15,7 @@ type Clash struct {
 }
 
 func (c *Clash) Get() []map[string]any {
-	proxies := make([]map[string]any, 0)
-
-	all := GetBytes(c.Url)
-	if all != nil {
-		rawCfg, err := config.UnmarshalRawConfig(all)
-		if err == nil && rawCfg.Proxy != nil {
-			proxies = rawCfg.Proxy
-		}
-	}
-
-	return proxies
+	return ComputeFuzzy(GetBytes(c.Url))
 }
 
 func (c *Clash) Get2ChanWG(pc chan []map[string]any, wg *sync.WaitGroup) {
