@@ -134,9 +134,9 @@ func ComputeFuzzy(content []byte) []map[string]any {
 					return
 				}
 				isGo := true
-				rawCfg, err := config.UnmarshalRawConfig(all)
-				if err == nil && rawCfg.Proxy != nil {
-					ok = rawCfg.Proxy
+				rawCfgInner, err := config.UnmarshalRawConfig(all)
+				if err == nil && rawCfgInner.Proxy != nil {
+					ok = rawCfgInner.Proxy
 					isGo = false
 				}
 				if isGo {
