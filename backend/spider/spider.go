@@ -74,7 +74,7 @@ func Crawl() bool {
 	}
 
 	// 进行抓取
-	if len(getters) > 0 {
+	if len(getters) > 0 && len(proxies) < 512 {
 		wg := &sync.WaitGroup{}
 		var pc = make(chan []map[string]any)
 		for _, g := range getters {
@@ -115,16 +115,11 @@ func Crawl() bool {
 				server := proxy["server"].(string)
 				if premium.IsCdnIp(CloudflareCIDR, server) {
 					c1 := make(map[string]any)
-					c2 := make(map[string]any)
 					marshal, _ := json.Marshal(proxyCopy)
 					_ = json.Unmarshal(marshal, &c1)
-					_ = json.Unmarshal(marshal, &c2)
 					x := _rand.Intn(httpsIpsLen)
 					c1["server"] = httpsIps[x]
-					x = _rand.Intn(httpsIpsLen)
-					c2["server"] = httpsIps[x]
 					proxies = append(proxies, c1)
-					proxies = append(proxies, c2)
 				}
 			}
 		}
