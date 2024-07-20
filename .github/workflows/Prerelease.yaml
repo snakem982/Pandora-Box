@@ -4,6 +4,7 @@ on:
   push:
     paths-ignore:
       - "README.md"
+      - "version.txt"
       - "script/**"
       - "docs/**"
       - ".idea/**"
