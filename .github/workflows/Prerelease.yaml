@@ -5,16 +5,15 @@ on:
     paths-ignore:
       - "README.md"
       - "script/**"
+      - "docs/**"
       - ".idea/**"
       - "frontend/.idea/**"
       - ".gitignore"
     branches:
-      - v2
-    tags:
-      - "v*"
+      - main
   pull_request_target:
     branches:
-      - v2
+      - main
 
 jobs:
   Build:

@@ -1,8 +1,14 @@
 <div align="center">
 <img src="build/540x540.png"  style="width:160px" />
 <h1>Pandora-Box</h1>
-<p>A Simple Mihomo/Clash.Meta/Clash GUI.</p>
+<p>A Simple Mihomo GUI.</p>
 </div>
+
+## Introduction
+
+- [English](docs/README.md)
+- [中文](docs/README-CN.md)
+
 
 ## Build
 
@@ -15,7 +21,7 @@
 2、Pull and Build
 
 ```bash
-git clone -b v2 --single-branch https://github.com/snakem982/Pandora-Box.git
+git clone https://github.com/snakem982/Pandora-Box.git
 
 cd Pandora-Box/frontend
 
