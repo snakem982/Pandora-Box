@@ -74,7 +74,7 @@ func Crawl() bool {
 	}
 
 	// 进行抓取
-	if len(getters) > 0 && len(proxies) < 512 {
+	if len(getters) > 0 {
 		wg := &sync.WaitGroup{}
 		var pc = make(chan []map[string]any)
 		for _, g := range getters {
