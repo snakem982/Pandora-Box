@@ -1,5 +1,7 @@
 package constant
 
+import _ "embed"
+
 const (
 	DefaultProfile  = "Profile_0"
 	DefaultTemplate = "Template_0.yaml"
@@ -14,6 +16,8 @@ const (
 	CollectFuzzy     = "fuzzy"
 )
 
-const PandoraVersion = "v0.2.15"
-const PandoraVersionUrl = "https://raw.githubusercontent.com/snakem982/Pandora-Box/main/version.txt"
+//go:embed version.txt
+var PandoraVersion string
+
+const PandoraVersionUrl = "https://raw.githubusercontent.com/snakem982/Pandora-Box/main/backend/constant/version.txt"
 const PandoraDownloadUrl = "https://github.com/snakem982/Pandora-Box/releases/download/%s/%s-%s.zip"
