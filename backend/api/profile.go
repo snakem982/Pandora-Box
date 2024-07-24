@@ -363,9 +363,17 @@ func resolveConfig(refresh, selected bool,
 				return fmt.Errorf("config.ParseRawConfig error: %s", "Node is 0")
 			}
 			if len(ko.Proxies) > 512 {
-				return fmt.Errorf("config.ParseRawConfig error: %s", "Node size is more than 512.")
+				// 对于超过512的节点进行截取
+				log.Infoln("config.ParseRawConfig : %s Try to cut", "Node size is more than 512.")
+				ray = resolve.MapsToProxies(rawCfg.Proxy)
+				rails := spider.SortAddIndex(ray)
+				rails = rails[0:512]
+				proxies := make(map[string]any)
+				proxies["proxies"] = rails
+				content, _ = yaml.Marshal(proxies)
+			} else {
+				findProvider = changeProvidersPath(snowflakeId, rawCfg)
 			}
-			findProvider = changeProvidersPath(snowflakeId, rawCfg)
 		}
 	}
 

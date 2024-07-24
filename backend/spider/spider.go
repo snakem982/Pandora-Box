@@ -146,7 +146,7 @@ func Crawl() bool {
 	}
 
 	// 国家代码查询
-	proxies = GetCountryName(keys, maps)
+	proxies = GetCountryName(keys, maps, true)
 
 	// 排序添加emoji
 	SortAddEmoji(proxies)
@@ -369,7 +369,7 @@ func getRealIp(ctx context.Context, m map[string]any) (string, error) {
 	}
 }
 
-func GetCountryName(keys []string, maps map[string]map[string]any) []map[string]any {
+func GetCountryName(keys []string, maps map[string]map[string]any, need bool) []map[string]any {
 	c := meta.NowConfig.DNS
 	cfg := dns.Config{
 		Main:         c.NameServer,
@@ -424,12 +424,14 @@ func GetCountryName(keys []string, maps map[string]map[string]any) []map[string]
 				m["name"] = getCountryCode(ipOrDomain)
 			}
 
-			// 获取落地ip,获取失败使用server中的ip
-			realIp, err := getRealIp(ctx, m)
-			if err == nil {
-				cc := getCountryCode(realIp)
-				if cc != "ZZ" {
-					m["name"] = cc
+			if need {
+				// 获取落地ip,获取失败使用server中的ip
+				realIp, err := getRealIp(ctx, m)
+				if err == nil {
+					cc := getCountryCode(realIp)
+					if cc != "ZZ" {
+						m["name"] = cc
+					}
 				}
 			}
 
@@ -507,7 +509,7 @@ func SortAddIndex(proxies []map[string]any) []map[string]any {
 		keys = append(keys, k)
 	}
 	// 国家代码查询
-	proxies = GetCountryName(keys, maps)
+	proxies = GetCountryName(keys, maps, false)
 	// 排序添加emoji
 	SortAddEmoji(proxies)
 
