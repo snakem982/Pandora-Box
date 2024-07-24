@@ -156,7 +156,8 @@ function setHide() {
 }
 
 function goTop() {
-  location.href = "#goTop"
+  const ele: any = document.querySelector('.el-collapse-item .is-active')
+  ele.scrollIntoView({ behavior: "smooth", block: "end"});
 }
 
 
