@@ -93,9 +93,10 @@ require (
 	github.com/quic-go/qpack v0.4.0 // indirect
 	github.com/quic-go/qtls-go1-20 v0.4.1 // indirect
 	github.com/rivo/uniseg v0.4.7 // indirect
+	github.com/sagernet/fswatch v0.1.1 // indirect
 	github.com/sagernet/netlink v0.0.0-20240612041022-b9a21c07ac6a // indirect
 	github.com/sagernet/nftables v0.3.0-beta.4 // indirect
-	github.com/sagernet/sing v0.5.0-alpha.12 // indirect
+	github.com/sagernet/sing v0.5.0-alpha.13 // indirect
 	github.com/sagernet/sing-mux v0.2.1-0.20240124034317-9bfb33698bb6 // indirect
 	github.com/sagernet/sing-shadowtls v0.1.4 // indirect
 	github.com/sagernet/smux v0.0.0-20231208180855-7041f6ea79e7 // indirect
@@ -134,6 +135,6 @@ require (
 )
 
 replace (
-	github.com/metacubex/mihomo => github.com/snakem982/mihomo v1.11.9-0.20240724020840-b0e72a5ea2b5
+	github.com/metacubex/mihomo => github.com/snakem982/mihomo v1.11.9-0.20240724102115-da57a7209e77
 	github.com/sagernet/sing => github.com/metacubex/sing v0.0.0-20240617013425-3e3bd9dab6a2
 )

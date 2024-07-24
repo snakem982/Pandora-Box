@@ -203,6 +203,8 @@ github.com/rogpeppe/go-internal v1.11.0 h1:cWPaGQEPrBb5/AsnsZesgZZ9yb1OQ+GOISoDN
 github.com/rogpeppe/go-internal v1.11.0/go.mod h1:ddIwULY96R17DhadqLgMfk9H9tvdUzkipdSkR5nkCZA=
 github.com/sagernet/bbolt v0.0.0-20231014093535-ea5cb2fe9f0a h1:+NkI2670SQpQWvkkD2QgdTuzQG263YZ+2emfpeyGqW0=
 github.com/sagernet/bbolt v0.0.0-20231014093535-ea5cb2fe9f0a/go.mod h1:63s7jpZqcDAIpj8oI/1v4Izok+npJOHACFCU6+huCkM=
+github.com/sagernet/fswatch v0.1.1 h1:YqID+93B7VRfqIH3PArW/XpJv5H4OLEVWDfProGoRQs=
+github.com/sagernet/fswatch v0.1.1/go.mod h1:nz85laH0mkQqJfaOrqPpkwtU1znMFNVTpT/5oRsVz/o=
 github.com/sagernet/netlink v0.0.0-20240612041022-b9a21c07ac6a h1:ObwtHN2VpqE0ZNjr6sGeT00J8uU7JF4cNUdb44/Duis=
 github.com/sagernet/netlink v0.0.0-20240612041022-b9a21c07ac6a/go.mod h1:xLnfdiJbSp8rNqYEdIW/6eDO4mVoogml14Bh2hSiFpM=
 github.com/sagernet/nftables v0.3.0-beta.4 h1:kbULlAwAC3jvdGAC1P5Fa3GSxVwQJibNenDW2zaXr8I=
@@ -231,8 +233,8 @@ github.com/sina-ghaderi/rabbitio v0.0.0-20220730151941-9ce26f4f872e h1:ur8uMsPIF
 github.com/sina-ghaderi/rabbitio v0.0.0-20220730151941-9ce26f4f872e/go.mod h1:+e5fBW3bpPyo+3uLo513gIUblc03egGjMM0+5GKbzK8=
 github.com/sirupsen/logrus v1.9.3 h1:dueUQJ1C2q9oE3F7wvmSGAaVtTmUizReu6fjN8uqzbQ=
 github.com/sirupsen/logrus v1.9.3/go.mod h1:naHLuLoDiP4jHNo9R0sCBMtWGeIprob74mVsIT4qYEQ=
-github.com/snakem982/mihomo v1.11.9-0.20240724020840-b0e72a5ea2b5 h1:0RPfxstTTWf/8QJf6hWfRx9LceJsdGCczlVioHXUZQo=
-github.com/snakem982/mihomo v1.11.9-0.20240724020840-b0e72a5ea2b5/go.mod h1:PoXZwuHPl4Kx8Oyj7rhUX49M1OETo161pyAE1nk/Tz4=
+github.com/snakem982/mihomo v1.11.9-0.20240724102115-da57a7209e77 h1:IjsJODGIoqbRaGMxv0b6/tMSX74Cz4bE4ot6k+Uyxl4=
+github.com/snakem982/mihomo v1.11.9-0.20240724102115-da57a7209e77/go.mod h1:eBycr52gQZCojl8OlShp37z9ER2iNEZzsAvQfyMBHRA=
 github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=
 github.com/stretchr/objx v0.4.0/go.mod h1:YvHI0jy2hoMjB+UWwv71VJQ9isScKT/TqJzVSSt89Yw=
 github.com/stretchr/objx v0.5.0/go.mod h1:Yh+to48EsGEfYuaHDzXPcE3xhTkx73EhmCGUpEOglKo=
