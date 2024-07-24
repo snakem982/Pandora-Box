@@ -13,8 +13,10 @@ import (
 	"github.com/metacubex/mihomo/dns"
 	"github.com/metacubex/mihomo/log"
 	"gopkg.in/yaml.v3"
+	"io"
 	"math/rand"
 	"net"
+	"net/http"
 	"os"
 	"pandora-box/backend/cache"
 	"pandora-box/backend/constant"
@@ -318,6 +320,55 @@ func urlTest(proxies []C.Proxy) []string {
 	return keys
 }
 
+func getRealIp(ctx context.Context, m map[string]any) (string, error) {
+	req, err := http.NewRequest(http.MethodGet, "https://ipinfo.io/ip", nil)
+	if err != nil {
+		return "", err
+	}
+	req.Header.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36")
+	req = req.WithContext(ctx)
+
+	transport := &http.Transport{
+		// from http.DefaultTransport
+		DisableKeepAlives:     true,
+		MaxIdleConns:          100,
+		IdleConnTimeout:       30 * time.Second,
+		TLSHandshakeTimeout:   10 * time.Second,
+		ExpectContinueTimeout: 1 * time.Second,
+		DialContext: func(ctx context.Context, network, address string) (net.Conn, error) {
+			proxy, _ := adapter.ParseProxy(m)
+			addr := C.Metadata{
+				Host:    "ipinfo.io",
+				DstPort: 443,
+			}
+			return proxy.DialContext(ctx, &addr)
+		},
+	}
+
+	client := http.Client{Transport: transport}
+	resp, err := client.Do(req)
+	if err != nil {
+		return "", err
+	}
+
+	defer func(Body io.ReadCloser) {
+		err = Body.Close()
+		if err != nil {
+
+		}
+	}(resp.Body)
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return "", err
+	}
+	if len(body) < 8 {
+		return "", nil
+	} else {
+		return string(body), nil
+	}
+}
+
 func GetCountryName(keys []string, maps map[string]map[string]any) []map[string]any {
 	c := meta.NowConfig.DNS
 	cfg := dns.Config{
@@ -344,18 +395,27 @@ func GetCountryName(keys []string, maps map[string]map[string]any) []map[string]
 
 	proxies := make([]map[string]any, 0)
 	ipLock := sync.Mutex{}
-	wg := sync.WaitGroup{}
-	wg.Add(len(keys))
+
+	pool := mypool.NewTimeoutPoolWithDefaults()
+	pool.WaitCount(len(keys))
+
 	for _, key := range keys {
 		m := maps[key]
 		m["name"] = "ZZ"
-		go func() {
-			defer wg.Done()
+
+		pool.SubmitWithTimeout(func(done chan struct{}) {
+			defer func() {
+				if e := recover(); e != nil {
+					log.Errorln("===GetCountryName===%s", e)
+				}
+				done <- struct{}{}
+			}()
+
+			ctx, cancel := context.WithTimeout(context.Background(), time.Second*3)
+			defer cancel()
 
 			ipOrDomain := m["server"].(string)
 			if tools.CheckStringAlphabet(ipOrDomain) {
-				ctx, cancel := context.WithTimeout(context.Background(), time.Millisecond*500)
-				defer cancel()
 				ips, err := r.LookupIP(ctx, ipOrDomain)
 				if err == nil && ips != nil && len(ips) > 0 {
 					m["name"] = getCountryCode(ips[0].String())
@@ -363,13 +423,24 @@ func GetCountryName(keys []string, maps map[string]map[string]any) []map[string]
 			} else {
 				m["name"] = getCountryCode(ipOrDomain)
 			}
+
+			// 获取落地ip,获取失败使用server中的ip
+			realIp, err := getRealIp(ctx, m)
+			if err == nil {
+				cc := getCountryCode(realIp)
+				if cc != "ZZ" {
+					m["name"] = cc
+				}
+			}
+
 			ipLock.Lock()
 			proxies = append(proxies, m)
 			ipLock.Unlock()
-		}()
+
+		}, 4*time.Second)
 	}
 
-	wg.Wait()
+	pool.StartAndWait()
 	return proxies
 }
 
