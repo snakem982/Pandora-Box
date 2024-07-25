@@ -320,7 +320,18 @@ func urlTest(proxies []C.Proxy) []string {
 	return keys
 }
 
+var realIps = make(map[string]string)
+var realLock = sync.RWMutex{}
+
 func getRealIp(ctx context.Context, m map[string]any) (string, error) {
+	ipOrDomain := m["server"].(string)
+	realLock.RLock()
+	if realIps[ipOrDomain] != "" {
+		realLock.RUnlock()
+		return realIps[ipOrDomain], nil
+	}
+	realLock.RUnlock()
+
 	req, err := http.NewRequest(http.MethodGet, "https://ipinfo.io/ip", nil)
 	if err != nil {
 		return "", err
@@ -363,8 +374,11 @@ func getRealIp(ctx context.Context, m map[string]any) (string, error) {
 		return "", err
 	}
 	if len(body) < 8 {
-		return "", nil
+		return "", fmt.Errorf("ip is invalid")
 	} else {
+		realLock.Lock()
+		realIps[ipOrDomain] = string(body)
+		realLock.Unlock()
 		return string(body), nil
 	}
 }
