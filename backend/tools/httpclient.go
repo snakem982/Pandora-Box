@@ -49,7 +49,6 @@ func GetFileName(header http.Header) (fileName string) {
 func HttpGetByProxy(requestUrl string) ([]byte, string, error) {
 	// 拼接代理地址
 	proxyUrl := fmt.Sprintf("http://127.0.0.1:%d", executor.GetGeneral().MixedPort)
-	log.Infoln("proxyUrl is %v", proxyUrl)
 	uri, _ := url.Parse(proxyUrl)
 
 	// 创建一个带代理的HTTP客户端
