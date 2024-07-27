@@ -369,6 +369,10 @@ func getRealIp(ctx context.Context, m map[string]any) (string, error) {
 		}
 	}(resp.Body)
 
+	if resp.StatusCode != 200 {
+		return "", fmt.Errorf("get real ip error, code: %d", resp.StatusCode)
+	}
+
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return "", err
