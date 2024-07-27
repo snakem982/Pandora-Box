@@ -323,8 +323,8 @@ func urlTest(proxies []C.Proxy) []string {
 var realIps = make(map[string]string)
 var realLock = sync.RWMutex{}
 
-func getRealIp(ctx context.Context, m map[string]any) (string, error) {
-	ipOrDomain := m["server"].(string)
+func getRealIpCountryCode(ctx context.Context, m map[string]any) (string, error) {
+	ipOrDomain := fmt.Sprintf("%v:%v", m["server"], m["port"])
 	realLock.RLock()
 	if realIps[ipOrDomain] != "" {
 		realLock.RUnlock()
@@ -332,7 +332,7 @@ func getRealIp(ctx context.Context, m map[string]any) (string, error) {
 	}
 	realLock.RUnlock()
 
-	req, err := http.NewRequest(http.MethodGet, "https://ipinfo.io/ip", nil)
+	req, err := http.NewRequest(http.MethodGet, "https://ipinfo.io/json", nil)
 	if err != nil {
 		return "", err
 	}
@@ -377,14 +377,19 @@ func getRealIp(ctx context.Context, m map[string]any) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	if len(body) < 8 {
-		return "", fmt.Errorf("ip is invalid")
-	} else {
-		realLock.Lock()
-		realIps[ipOrDomain] = string(body)
-		realLock.Unlock()
-		return string(body), nil
+	ipInfo := struct {
+		Ip      string `json:"ip"`
+		Country string `json:"country"`
+	}{}
+	err = json.Unmarshal(body, &ipInfo)
+	if err != nil {
+		return "", err
 	}
+
+	realLock.Lock()
+	realIps[ipOrDomain] = ipInfo.Country
+	realLock.Unlock()
+	return ipInfo.Country, nil
 }
 
 func GetCountryName(keys []string, maps map[string]map[string]any, need bool) []map[string]any {
@@ -429,7 +434,7 @@ func GetCountryName(keys []string, maps map[string]map[string]any, need bool) []
 				done <- struct{}{}
 			}()
 
-			ctx, cancel := context.WithTimeout(context.Background(), time.Second*3)
+			ctx, cancel := context.WithTimeout(context.Background(), time.Millisecond*3600)
 			defer cancel()
 
 			ipOrDomain := m["server"].(string)
@@ -443,13 +448,10 @@ func GetCountryName(keys []string, maps map[string]map[string]any, need bool) []
 			}
 
 			if need {
-				// 获取落地ip,获取失败使用server中的ip
-				realIp, err := getRealIp(ctx, m)
+				// 获取落地ip国家代码
+				realIpCC, err := getRealIpCountryCode(ctx, m)
 				if err == nil {
-					cc := getCountryCode(realIp)
-					if cc != "ZZ" {
-						m["name"] = cc
-					}
+					m["name"] = realIpCC
 				}
 			}
 
