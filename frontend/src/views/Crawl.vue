@@ -276,8 +276,6 @@ async function crawling() {
         <br>
         <el-text>- 节点延迟在4s内</el-text>
         <br>
-        <el-text>- 节点开启Tls</el-text>
-        <br>
         <el-text>- 检测节点server字段是否为Cloudflare Ip,
           如果为Cloudflare Ip则根据本机网络环境自动优选Cloudflare Ip后，新增一个节点到列表中
         </el-text>
@@ -288,8 +286,6 @@ async function crawling() {
         <el-text>- Node available</el-text>
         <br>
         <el-text>- Node delay is within 4s</el-text>
-        <br>
-        <el-text>- Node enables Tls</el-text>
         <br>
         <el-text>- Detect whether the node server field is Cloudflare IP. If it is Cloudflare IP, Cloudflare IP will be
           automatically selected according to the local network environment and a new node will be added to the list.

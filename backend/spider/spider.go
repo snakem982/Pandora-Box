@@ -128,7 +128,7 @@ func Crawl() bool {
 	}
 
 	// 去重
-	maps := Unique(proxies, true)
+	maps := Unique(proxies, false)
 	if len(maps) == 0 {
 		return false
 	}
