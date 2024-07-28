@@ -123,81 +123,39 @@ func StartCore(profile resolve.Profile, reload bool) {
 	defer StartLock.Unlock()
 
 	on := cache.Get(constant.DefaultTemplate)
+	templateBuf := resolve.PandoraDefaultConfig
 	useTemplate := false
-	var providerBuf []byte
-	var templateBuf []byte
-	needRuleCheck := false
 	path := profile.Path
 
 	if string(on) == "on" {
 		template, err := os.ReadFile(filepath.Join(C.Path.HomeDir(), constant.DefaultTemplate))
 		if err == nil && len(template) > 0 {
-			useTemplate = true
 			templateBuf = template
+			useTemplate = true
 		}
 	}
 
-	if useTemplate {
-		switch profile.Type {
-		case 31, 41:
-			var err error
-			providerBuf, err = os.ReadFile(filepath.Join(C.Path.HomeDir(), path))
-			if err != nil {
-				log.Warnln("Read config error: %s", err.Error())
-				return
-			}
-			if !strings.Contains(string(providerBuf), "proxy-providers") {
-				replace := strings.Replace(string(templateBuf),
-					resolve.PandoraDefaultPlace,
-					path,
-					1)
-				providerBuf = []byte(replace)
-			}
-		default:
-			replace := strings.Replace(string(templateBuf),
-				resolve.PandoraDefaultPlace,
-				path,
-				1)
-			providerBuf = []byte(replace)
-		}
-	} else {
-		switch profile.Type {
-		case 31, 41:
-			var err error
-			providerBuf, err = os.ReadFile(filepath.Join(C.Path.HomeDir(), path))
-			if err != nil {
-				log.Warnln("Read config error: %s", err.Error())
-				return
-			}
-			if !strings.Contains(string(providerBuf), "proxy-groups") {
-				replace := strings.Replace(string(resolve.PandoraDefaultConfig),
-					resolve.PandoraDefaultPlace,
-					path,
-					1)
-				providerBuf = []byte(replace)
-			} else {
-				needRuleCheck = true
-			}
-		default:
-			replace := strings.Replace(string(resolve.PandoraDefaultConfig),
-				resolve.PandoraDefaultPlace,
-				path,
-				1)
-			providerBuf = []byte(replace)
-		}
+	providerBuf, err := os.ReadFile(filepath.Join(C.Path.HomeDir(), path))
+	if err != nil {
+		log.Warnln("Read config error: %s", err.Error())
+		return
 	}
+
 	rawCfg, err := config.UnmarshalRawConfig(providerBuf)
 	if err != nil {
 		log.Warnln("Unmarshal config error: %s", err.Error())
 		return
 	}
-	if !useTemplate && needRuleCheck && len(rawCfg.Rule) > 10240 {
-		replace := strings.Replace(string(resolve.PandoraDefaultConfig),
-			resolve.PandoraDefaultPlace,
-			path,
-			1)
-		providerBuf = []byte(replace)
-		rawCfg, _ = config.UnmarshalRawConfig(providerBuf)
+
+	if len(rawCfg.ProxyProvider) == 0 {
+		if useTemplate || len(rawCfg.Rule) == 0 || len(rawCfg.Rule) > 10240 {
+			replace := strings.Replace(string(templateBuf),
+				resolve.PandoraDefaultPlace,
+				path,
+				1)
+			providerBuf = []byte(replace)
+			rawCfg, _ = config.UnmarshalRawConfig(providerBuf)
+		}
 	}
 
 	rawCfg.Port = 0
