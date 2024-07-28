@@ -53,3 +53,15 @@ func Delete(key string) error {
 		return nil
 	})
 }
+
+func DeleteList(m map[string]any) error {
+	return BDb.Update(func(tx *bbolt.Tx) error {
+		b := tx.Bucket(BName)
+		return b.ForEach(func(k, v []byte) error {
+			if _, find := m[string(k)]; find {
+				_ = b.Delete(k)
+			}
+			return nil
+		})
+	})
+}

@@ -161,6 +161,9 @@ func Crawl() bool {
 	// 存盘
 	save2Local(proxies, "0.yaml")
 
+	// 清理realIp缓存
+	go cleanRealIpCache()
+
 	return true
 }
 
@@ -320,19 +323,31 @@ func urlTest(proxies []C.Proxy) []string {
 	return keys
 }
 
-var realIps = make(map[string]string)
-var realLock = sync.RWMutex{}
+func cleanRealIpCache() {
+	values := cache.GetList(constant.RealIpHeader)
+	vLen := len(values)
+	if vLen < 20480 {
+		log.Infoln("real ip cache len is %d", vLen)
+		return
+	}
+	log.Infoln("real ip cache len is %d,clean start...", vLen)
+	m := make(map[string]any)
+	for i := 0; i < vLen/2; i++ {
+		key := string(values[i])
+		m[key] = 1
+	}
+	_ = cache.DeleteList(m)
+	log.Infoln("real ip cache len is %d,clean end.", vLen)
+}
 
 func getRealIpCountryCode(ctx context.Context, m map[string]any) (string, error) {
-	ipOrDomain := fmt.Sprintf("%v:%v", m["server"], m["port"])
-	realLock.RLock()
-	if realIps[ipOrDomain] != "" {
-		realLock.RUnlock()
-		return realIps[ipOrDomain], nil
+	realIpKey := fmt.Sprintf("%s%v:%v", constant.RealIpHeader, m["server"], m["port"])
+	value := cache.Get(realIpKey)
+	if string(value) != "" {
+		return string(value), nil
 	}
-	realLock.RUnlock()
 
-	req, err := http.NewRequest(http.MethodGet, "https://ipinfo.io/json", nil)
+	req, err := http.NewRequest(http.MethodGet, "http://ip-api.com/json/", nil)
 	if err != nil {
 		return "", err
 	}
@@ -349,8 +364,8 @@ func getRealIpCountryCode(ctx context.Context, m map[string]any) (string, error)
 		DialContext: func(ctx context.Context, network, address string) (net.Conn, error) {
 			proxy, _ := adapter.ParseProxy(m)
 			addr := C.Metadata{
-				Host:    "ipinfo.io",
-				DstPort: 443,
+				Host:    "ip-api.com",
+				DstPort: 80,
 			}
 			return proxy.DialContext(ctx, &addr)
 		},
@@ -378,17 +393,15 @@ func getRealIpCountryCode(ctx context.Context, m map[string]any) (string, error)
 		return "", err
 	}
 	ipInfo := struct {
-		Ip      string `json:"ip"`
-		Country string `json:"country"`
+		Ip      string `json:"query"`
+		Country string `json:"countryCode"`
 	}{}
 	err = json.Unmarshal(body, &ipInfo)
 	if err != nil {
 		return "", err
 	}
 
-	realLock.Lock()
-	realIps[ipOrDomain] = ipInfo.Country
-	realLock.Unlock()
+	_ = cache.Put(realIpKey, []byte(ipInfo.Country))
 	return ipInfo.Country, nil
 }
 

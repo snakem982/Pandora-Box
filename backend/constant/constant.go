@@ -7,6 +7,7 @@ const (
 	DefaultTemplate = "Template_0.yaml"
 	PrefixProfile   = "Profile_"
 	PrefixGetter    = "Getter_"
+	RealIpHeader    = "RealIp_"
 )
 
 const (
