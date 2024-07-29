@@ -64,6 +64,54 @@ func Crawl() bool {
 		}
 	}
 
+	// 低于节点阈值进行抓取
+	if len(proxies) < 1536 {
+		proxies = append(doCrawl(), proxies...)
+	}
+
+	// 去重
+	maps := Unique(proxies, false)
+	if len(maps) == 0 {
+		return false
+	}
+
+	// 转换
+	nodes := map2proxies(maps)
+	if len(nodes) == 0 {
+		return false
+	}
+
+	// url测速
+	keys := urlTest(nodes)
+	if len(keys) == 0 {
+		return false
+	}
+
+	// 国家代码查询
+	proxies = GetCountryName(keys, maps, true)
+
+	// 排序添加emoji
+	SortAddEmoji(proxies)
+
+	// 放入缓存
+	save2Local(proxies, "0_cache.yaml")
+
+	if len(proxies) > 255 {
+		proxies = proxies[0:256]
+	}
+
+	// 存盘
+	save2Local(proxies, "0.yaml")
+
+	// 清理realIp缓存
+	go cleanRealIpCache()
+
+	return true
+}
+
+func doCrawl() []map[string]any {
+	proxies := make([]map[string]any, 0)
+
 	// 获取getters
 	getters := make([]Getter, 0)
 	values := cache.GetList(constant.PrefixGetter)
@@ -127,44 +175,7 @@ func Crawl() bool {
 		}
 	}
 
-	// 去重
-	maps := Unique(proxies, false)
-	if len(maps) == 0 {
-		return false
-	}
-
-	// 转换
-	nodes := map2proxies(maps)
-	if len(nodes) == 0 {
-		return false
-	}
-
-	// url测速
-	keys := urlTest(nodes)
-	if len(keys) == 0 {
-		return false
-	}
-
-	// 国家代码查询
-	proxies = GetCountryName(keys, maps, true)
-
-	// 排序添加emoji
-	SortAddEmoji(proxies)
-
-	// 放入缓存
-	save2Local(proxies, "0_cache.yaml")
-
-	if len(proxies) > 255 {
-		proxies = proxies[0:256]
-	}
-
-	// 存盘
-	save2Local(proxies, "0.yaml")
-
-	// 清理realIp缓存
-	go cleanRealIpCache()
-
-	return true
+	return proxies
 }
 
 func save2Local(proxies []map[string]any, fileName string) {
