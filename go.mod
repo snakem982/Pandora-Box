@@ -135,6 +135,6 @@ require (
 )
 
 replace (
-	github.com/metacubex/mihomo => github.com/snakem982/mihomo v1.11.9-0.20240724102115-da57a7209e77
+	github.com/metacubex/mihomo => github.com/snakem982/mihomo v1.11.9-0.20240729055726-a08ef5a4998a
 	github.com/sagernet/sing => github.com/metacubex/sing v0.0.0-20240617013425-3e3bd9dab6a2
 )
