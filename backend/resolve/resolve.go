@@ -11,6 +11,10 @@ import (
 
 //go:embed config.yaml
 var PandoraDefaultConfig []byte
+
+//go:embed config_rule_set.yaml
+var PandoraDefaultRuleSetConfig []byte
+
 var PandoraDefaultPlace = "{{PANDORA-BOX}}"
 
 // MapsToProxies 将任意数量的 map[string]any 切片转换为任意数量的 map[string]any 切片，
