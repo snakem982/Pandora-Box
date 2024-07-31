@@ -106,8 +106,11 @@ func postProfile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if strings.Contains(body.Data, "proxies:") {
-		err := resolveConfig(false, false, "", "", tools.Dec(15), 41, []byte(body.Data))
+	// 尝试clash解析 成功返回
+	bytes := []byte(body.Data)
+	_, err := config.UnmarshalRawConfig(bytes)
+	if err == nil {
+		err = resolveConfig(false, false, "", "", tools.Dec(15), 41, bytes)
 		if err == nil {
 			render.NoContent(w, r)
 			return
@@ -120,18 +123,22 @@ func postProfile(w http.ResponseWriter, r *http.Request) {
 
 	subs := strings.Split(body.Data, "\n")
 	for _, subTemp := range subs {
-		sub := strings.TrimRight(subTemp, " \r")
+		sub := strings.TrimSpace(subTemp)
 		if sub == "" {
 			continue
 		}
+		sub = strings.Split(sub, " ")[0]
 		if strings.HasPrefix(sub, "http") {
 			urls = append(urls, sub)
 		} else if strings.Contains(sub, "://") {
 			builder.WriteString(sub + "\n")
 		} else {
 			b64 = sub
-			break
 		}
+	}
+
+	if len(urls) > 0 || builder.Len() > 0 {
+		b64 = ""
 	}
 
 	for _, url := range urls {
