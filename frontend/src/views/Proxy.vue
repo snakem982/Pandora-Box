@@ -209,7 +209,7 @@ function getLocal() {
 function allDelay(cao: any): number {
   let history: any = cao.history
   let type: any = cao.type
-  const types = ["URLTest", "Direct", "Selector", "Reject", "Reject", "Fallback", "LoadBalance"]
+  const types = ["URLTest", "Direct", "Selector", "Reject", "Relay", "Fallback", "LoadBalance"]
   if (types.includes(type)) {
     return -9999
   }

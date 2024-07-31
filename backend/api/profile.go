@@ -405,6 +405,11 @@ func resolveConfig(refresh, selected bool,
 	profile.Selected = selected
 
 	if findProvider {
+		pg := struct {
+			ProxyGroup []map[string]any `yaml:"proxy-groups"`
+		}{}
+		_ = yaml.Unmarshal(content, &pg)
+		rawCfg.ProxyGroup = pg.ProxyGroup
 		content, _ = yaml.Marshal(rawCfg)
 		profile.Path = fmt.Sprintf("uploads/%d/%s%d.%s", snowflakeId, constant.PrefixProfile, snowflakeId, suffix)
 	} else {
@@ -415,8 +420,8 @@ func resolveConfig(refresh, selected bool,
 	if fileSaveError != nil {
 		return fmt.Errorf("fileSaveError:%v", fileSaveError)
 	}
-	bytes, _ := json.Marshal(profile)
-	_ = cache.Put(profile.Id, bytes)
+	marshal, _ := json.Marshal(profile)
+	_ = cache.Put(profile.Id, marshal)
 
 	return nil
 }
