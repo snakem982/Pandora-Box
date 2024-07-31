@@ -59,6 +59,7 @@ jobs:
       - run: node -v
       - name: Install dependencies
         run: |
+          wget -O backend/meta/geoip.metadb https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geoip.metadb
           cd frontend && npm install
           go install github.com/wailsapp/wails/v2/cmd/wails@latest
 
