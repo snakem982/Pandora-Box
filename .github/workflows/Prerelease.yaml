@@ -62,7 +62,8 @@ jobs:
       - name: get latest geo ip for windows
         if: runner.os == 'Windows'
         run: |
-          curl.exe -o backend/meta/geoip.metadb https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geoip.metadb
+          choco install wget --no-progress
+          wget -O backend/meta/geoip.metadb https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geoip.metadb
 
       - name: get latest geo ip for others
         if: runner.os != 'Windows'
