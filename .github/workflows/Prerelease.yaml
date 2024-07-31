@@ -52,14 +52,25 @@ jobs:
         with:
           go-version-file: ./go.mod
       - run: go version
+
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
       - run: node -v
+
+      - name: get latest geo ip for windows
+        if: runner.os == 'Windows'
+        run: |
+          curl.exe -o backend/meta/geoip.metadb https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geoip.metadb
+
+      - name: get latest geo ip for others
+        if: runner.os != 'Windows'
+        run: |
+          wget -O backend/meta/geoip.metadb https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geoip.metadb  
+
       - name: Install dependencies
         run: |
-          wget -O backend/meta/geoip.metadb https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geoip.metadb
           cd frontend && npm install
           go install github.com/wailsapp/wails/v2/cmd/wails@latest
 
