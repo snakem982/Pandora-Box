@@ -143,8 +143,8 @@ github.com/metacubex/quic-go v0.45.1-0.20240610004319-163fee60637e h1:bLYn3GuRvW
 github.com/metacubex/quic-go v0.45.1-0.20240610004319-163fee60637e/go.mod h1:Yza2H7Ax1rxWPUcJx0vW+oAt9EsPuSiyQFhFabUPzwU=
 github.com/metacubex/randv2 v0.2.0 h1:uP38uBvV2SxYfLj53kuvAjbND4RUDfFJjwr4UigMiLs=
 github.com/metacubex/randv2 v0.2.0/go.mod h1:kFi2SzrQ5WuneuoLLCMkABtiBu6VRrMrWFqSPyj2cxY=
-github.com/metacubex/sing v0.0.0-20240617013425-3e3bd9dab6a2 h1:N5tidgg/FRmkgPw/AjRwhLUinKDx/ODCSbvv9xqRoLM=
-github.com/metacubex/sing v0.0.0-20240617013425-3e3bd9dab6a2/go.mod h1:ARkL0gM13/Iv5VCZmci/NuoOlePoIsW0m7BWfln/Hak=
+github.com/metacubex/sing v0.0.0-20240724044459-6f3cf5896297 h1:YG/JkwGPbca5rUtEMHIu8ZuqzR7BSVm1iqY8hNoMeMA=
+github.com/metacubex/sing v0.0.0-20240724044459-6f3cf5896297/go.mod h1:ARkL0gM13/Iv5VCZmci/NuoOlePoIsW0m7BWfln/Hak=
 github.com/metacubex/sing-quic v0.0.0-20240518034124-7696d3f7da72 h1:Wr4g1HCb5Z/QIFwFiVNjO2qL+dRu25+Mdn9xtAZZ+ew=
 github.com/metacubex/sing-quic v0.0.0-20240518034124-7696d3f7da72/go.mod h1:g7Mxj7b7zm7YVqD975mk/hSmrb0A0G4bVvIMr2MMzn8=
 github.com/metacubex/sing-shadowsocks v0.2.7 h1:9f3Dt2+71TNp0e202llA2ug5h/rkWs2EZxQ5IMpf+9g=
