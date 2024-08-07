@@ -2,8 +2,8 @@
 import {onBeforeMount, reactive, ref} from 'vue'
 import {del, get, patch, put} from "../api/http";
 import {toggleDark} from "../composables";
-import {WindowSetDarkTheme, WindowSetLightTheme} from "../../wailsjs/runtime";
-import {GetMacAcStatus, IsAdmin, IsMac, OpenConfigDirectory, SetMacAc} from "../../wailsjs/go/main/App";
+import {ClipboardSetText, WindowSetDarkTheme, WindowSetLightTheme} from "../../wailsjs/runtime";
+import {GetFreePort, GetMacAcStatus, IsAdmin, IsMac, OpenConfigDirectory, SetMacAc} from "../../wailsjs/go/main/App";
 import {ElMessage, ElMessageBox} from "element-plus";
 
 const form = reactive({
@@ -15,7 +15,8 @@ const form = reactive({
 
   is_dark: false,
   system_proxy: false,
-  boot_start: false
+  boot_start: false,
+  clash_api: ''
 })
 
 const showTun = ref(false)
@@ -92,6 +93,15 @@ async function openConfig() {
   await OpenConfigDirectory()
 }
 
+function copyApi() {
+  ClipboardSetText(form.clash_api)
+  ElMessage({
+    showClose: true,
+    message: "复制成功 Copy Success",
+    type: 'success',
+  })
+}
+
 const pwdVisible = ref(false)
 const pwd = ref("")
 const isMac = ref(false)
@@ -161,6 +171,9 @@ async function authorizeConfirm() {
 }
 
 onBeforeMount(async () => {
+  const baseUrl = await GetFreePort()
+  form.clash_api = 'http://' + baseUrl
+
   form.is_dark = localStorage.getItem("vueuse-color-scheme") == "dark"
 
   const mac = await IsMac()
@@ -267,6 +280,10 @@ onBeforeMount(async () => {
         </el-form-item>
         <el-form-item label="配置目录 configs directory">
           <el-button type="primary" size="small" @click="openConfig" round>打开 open</el-button>
+        </el-form-item>
+        <el-form-item label="控制面板 clash api">
+          <el-text>{{ form.clash_api }}</el-text>&emsp;&emsp;
+          <el-button type="primary" size="small" @click="copyApi" round>复制 copy</el-button>
         </el-form-item>
       </el-form>
     </div>
