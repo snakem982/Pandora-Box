@@ -426,16 +426,9 @@ func GetCountryName(keys []string, maps map[string]map[string]any, need bool) []
 		EnhancedMode: c.EnhancedMode,
 		Pool:         c.FakeIPRange,
 		Hosts:        c.Hosts,
-		FallbackFilter: dns.FallbackFilter{
-			GeoIP:     c.FallbackFilter.GeoIP,
-			GeoIPCode: c.FallbackFilter.GeoIPCode,
-			IPCIDR:    c.FallbackFilter.IPCIDR,
-			Domain:    c.FallbackFilter.Domain,
-			GeoSite:   c.FallbackFilter.GeoSite,
-		},
-		Default:     c.DefaultNameserver,
-		Policy:      c.NameServerPolicy,
-		ProxyServer: c.ProxyServerNameserver,
+		Default:      c.DefaultNameserver,
+		Policy:       c.NameServerPolicy,
+		ProxyServer:  c.ProxyServerNameserver,
 	}
 
 	r := dns.NewResolver(cfg)
