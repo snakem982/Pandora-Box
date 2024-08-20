@@ -4,7 +4,6 @@ import (
 	"errors"
 	"golang.org/x/net/html"
 	"pandora-box/backend/tools"
-	"strings"
 	"sync"
 )
 
@@ -27,21 +26,18 @@ func Register(sourceType string, c collector) {
 	collectorMap[sourceType] = c
 }
 
-var ErrorCreateNotSupported = errors.New("type not supported")
-
 func NewCollect(sourceType string, getter Getter) (Collect, error) {
 	if c, ok := collectorMap[sourceType]; ok {
 		return c(getter), nil
 	}
 
-	return nil, ErrorCreateNotSupported
+	return nil, errors.New("type not supported")
 }
 
 func GetBytes(url string) []byte {
 	all, _ := tools.ConcurrentHttpGet(url)
 	if all != nil {
 		temp := html.UnescapeString(string(all))
-		temp = strings.Replace(temp, "\"HOST\"", "\"Host\"", -1)
 		all = []byte(temp)
 	}
 

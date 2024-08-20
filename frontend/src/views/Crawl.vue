@@ -110,7 +110,7 @@ async function addOrEdit() {
     return
   }
   if (addFlag.value) {
-    if (!isValidHttpUrl(form.url)) {
+    if (form.type != "local" && !isValidHttpUrl(form.url)) {
       ElMessage.error("地址格式不正确 Url format is incorrect")
       return
     }
@@ -145,7 +145,7 @@ async function crawling() {
       }
     }
 
-    await get<any>("/crawl",{timeout:1800000})
+    await get<any>("/crawl", {timeout: 1800000})
     ElMessage.success("抓取成功Crawling Success")
 
     if (needTun) {
@@ -222,7 +222,15 @@ async function crawling() {
             empty-text="暂无数据 No Data"
             stripe>
     <el-table-column fixed prop="type" label="抓取类型 Type" width="150em"/>
-    <el-table-column prop="url" label="抓取地址 Url"/>
+    <el-table-column label="抓取地址 Url" show-overflow-tooltip>
+      <template #default="scope">
+        <el-text truncated size="large" v-if="scope.row.url.length > 128"> {{
+            scope.row.url.substring(0, 128)
+          }}...
+        </el-text>
+        <el-text truncated size="large" v-else> {{ scope.row.url }}</el-text>
+      </template>
+    </el-table-column>
     <el-table-column label="操作 Option" width="150em" align="center">
       <template #default="scope">
         <svg-icon type="mdi"
@@ -247,10 +255,11 @@ async function crawling() {
           <el-option label="v2ray订阅(v2ray subscription)" value="v2ray"/>
           <el-option label="分享链接(share link)" value="share"/>
           <el-option label="模糊抓取(fuzzy crawling)" value="fuzzy"/>
+          <el-option label="自定义输入(custom input)" value="local"/>
         </el-select>
       </el-form-item>
       <el-form-item label="抓取地址 Url" :label-width="formLabelWidth">
-        <el-input v-model="form.url" autocomplete="off" clearable/>
+        <el-input v-model="form.url" autocomplete="off" type="textarea"/>
       </el-form-item>
     </el-form>
     <template #footer>
@@ -335,6 +344,8 @@ async function crawling() {
         <el-text>&emsp;hysteria://...</el-text>
         <br>
         <el-text>&emsp;hysteria2://...</el-text>
+        <br>
+        <el-text>&emsp;hy2://...</el-text>
         <br><br>
         <el-text>- 模糊抓取(fuzzy crawling)</el-text>
         <br>
@@ -345,6 +356,13 @@ async function crawling() {
         <el-text>&emsp;Used when content contains subscription addresses and sharing links.</el-text>
         <br>
         <el-text>&emsp;You can also use this option when you don't know what type to fill in.</el-text>
+        <br>
+        <br>
+        <el-text>- 自定义输入(custom input)</el-text>
+        <br>
+        <el-text>&emsp;用于抓取本地文件，可将本地文件的内容直接输入到url。</el-text>
+        <br>
+        <el-text>&emsp;Used to grab local files, the content of local files can be directly input into the URL.</el-text>
         <br>
         <br>
       </div>
