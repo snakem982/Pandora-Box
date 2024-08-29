@@ -66,18 +66,19 @@ require (
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/mdlayher/netlink v1.7.2 // indirect
 	github.com/mdlayher/socket v0.5.1 // indirect
+	github.com/metacubex/bbolt v0.0.0-20240822011022-aed6d4850399 // indirect
 	github.com/metacubex/chacha v0.1.0 // indirect
 	github.com/metacubex/gopacket v1.1.20-0.20230608035415-7e2f98a3e759 // indirect
 	github.com/metacubex/gvisor v0.0.0-20240320004321-933faba989ec // indirect
 	github.com/metacubex/quic-go v0.46.1-0.20240807232329-1c6cb2d67f58 // indirect
 	github.com/metacubex/randv2 v0.2.0 // indirect
-	github.com/metacubex/sing-quic v0.0.0-20240518034124-7696d3f7da72 // indirect
+	github.com/metacubex/sing-quic v0.0.0-20240827003841-cd97758ed8b4 // indirect
 	github.com/metacubex/sing-shadowsocks v0.2.8 // indirect
 	github.com/metacubex/sing-shadowsocks2 v0.2.2 // indirect
 	github.com/metacubex/sing-tun v0.2.7-0.20240729131039-ed03f557dee1 // indirect
 	github.com/metacubex/sing-vmess v0.1.9-0.20240719134745-1df6fb20bbf9 // indirect
-	github.com/metacubex/sing-wireguard v0.0.0-20240618022557-a6efaa37127a // indirect
-	github.com/metacubex/tfo-go v0.0.0-20240523172816-7577e13e1731 // indirect
+	github.com/metacubex/sing-wireguard v0.0.0-20240826061955-1e4e67afe5cd // indirect
+	github.com/metacubex/tfo-go v0.0.0-20240821025650-e9be0afd5e7d // indirect
 	github.com/metacubex/utls v1.6.6 // indirect
 	github.com/miekg/dns v1.1.62 // indirect
 	github.com/mroth/weightedrand/v2 v2.1.0 // indirect
@@ -136,6 +137,6 @@ require (
 )
 
 replace (
-	github.com/metacubex/mihomo => github.com/snakem982/mihomo v1.11.9-0.20240816134903-6b149ac2c6bb
+	github.com/metacubex/mihomo => github.com/snakem982/mihomo v1.11.9-0.20240829091441-14d67d9b3a84
 	github.com/sagernet/sing => github.com/metacubex/sing v0.0.0-20240724044459-6f3cf5896297
 )

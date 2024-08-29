@@ -130,6 +130,8 @@ github.com/mdlayher/netlink v1.7.2 h1:/UtM3ofJap7Vl4QWCPDGXY8d3GIY2UGSDbK+QWmY8/
 github.com/mdlayher/netlink v1.7.2/go.mod h1:xraEF7uJbxLhc5fpHL4cPe221LI2bdttWlU+ZGLfQSw=
 github.com/mdlayher/socket v0.5.1 h1:VZaqt6RkGkt2OE9l3GcC6nZkqD3xKeQLyfleW/uBcos=
 github.com/mdlayher/socket v0.5.1/go.mod h1:TjPLHI1UgwEv5J1B5q0zTZq12A/6H7nKmtTanQE37IQ=
+github.com/metacubex/bbolt v0.0.0-20240822011022-aed6d4850399 h1:oBowHVKZycNtAFbZ6avaCSZJYeme2Nrj+4RpV2cNJig=
+github.com/metacubex/bbolt v0.0.0-20240822011022-aed6d4850399/go.mod h1:4xcieuIK+M4bGQmQYZVqEaIYqjS1ahO4kXG7EmDgEro=
 github.com/metacubex/chacha v0.1.0 h1:tg9RSJ18NvL38cCWNyYH1eiG6qDCyyXIaTLQthon0sc=
 github.com/metacubex/chacha v0.1.0/go.mod h1:Djn9bPZxLTXbJFSeyo0/qzEzQI+gUSSzttuzZM75GH8=
 github.com/metacubex/gopacket v1.1.20-0.20230608035415-7e2f98a3e759 h1:cjd4biTvOzK9ubNCCkQ+ldc4YSH/rILn53l/xGBFHHI=
@@ -142,8 +144,8 @@ github.com/metacubex/randv2 v0.2.0 h1:uP38uBvV2SxYfLj53kuvAjbND4RUDfFJjwr4UigMiL
 github.com/metacubex/randv2 v0.2.0/go.mod h1:kFi2SzrQ5WuneuoLLCMkABtiBu6VRrMrWFqSPyj2cxY=
 github.com/metacubex/sing v0.0.0-20240724044459-6f3cf5896297 h1:YG/JkwGPbca5rUtEMHIu8ZuqzR7BSVm1iqY8hNoMeMA=
 github.com/metacubex/sing v0.0.0-20240724044459-6f3cf5896297/go.mod h1:ARkL0gM13/Iv5VCZmci/NuoOlePoIsW0m7BWfln/Hak=
-github.com/metacubex/sing-quic v0.0.0-20240518034124-7696d3f7da72 h1:Wr4g1HCb5Z/QIFwFiVNjO2qL+dRu25+Mdn9xtAZZ+ew=
-github.com/metacubex/sing-quic v0.0.0-20240518034124-7696d3f7da72/go.mod h1:g7Mxj7b7zm7YVqD975mk/hSmrb0A0G4bVvIMr2MMzn8=
+github.com/metacubex/sing-quic v0.0.0-20240827003841-cd97758ed8b4 h1:HobpULaPK6OoxrHMmgcwLkwwIduXVmwdcznwUfH1GQM=
+github.com/metacubex/sing-quic v0.0.0-20240827003841-cd97758ed8b4/go.mod h1:g7Mxj7b7zm7YVqD975mk/hSmrb0A0G4bVvIMr2MMzn8=
 github.com/metacubex/sing-shadowsocks v0.2.8 h1:wIhlaigswzjPw4hej75sEvWte3QR0+AJRafgwBHO5B4=
 github.com/metacubex/sing-shadowsocks v0.2.8/go.mod h1:X3x88XtJpBxG0W0/ECOJL6Ib0SJ3xdniAkU/6/RMWU0=
 github.com/metacubex/sing-shadowsocks2 v0.2.2 h1:eaf42uVx4Lr21S6MDYs0ZdTvGA0GEhDpb9no4+gdXPo=
@@ -152,10 +154,10 @@ github.com/metacubex/sing-tun v0.2.7-0.20240729131039-ed03f557dee1 h1:ypfofGDZbP
 github.com/metacubex/sing-tun v0.2.7-0.20240729131039-ed03f557dee1/go.mod h1:olbEx9yVcaw5tHTNlRamRoxmMKcvDvcVS1YLnQGzvWE=
 github.com/metacubex/sing-vmess v0.1.9-0.20240719134745-1df6fb20bbf9 h1:OAXiCosqY8xKDp3pqTW3qbrCprZ1l6WkrXSFSCwyY4I=
 github.com/metacubex/sing-vmess v0.1.9-0.20240719134745-1df6fb20bbf9/go.mod h1:olVkD4FChQ5gKMHG4ZzuD7+fMkJY1G8vwOKpRehjrmY=
-github.com/metacubex/sing-wireguard v0.0.0-20240618022557-a6efaa37127a h1:NpSGclHJUYndUwBmyIpFBSoBVg8PoVX7QQKhYg0DjM0=
-github.com/metacubex/sing-wireguard v0.0.0-20240618022557-a6efaa37127a/go.mod h1:uY+BYb0UEknLrqvbGcwi9i++KgrKxsurysgI6G1Pveo=
-github.com/metacubex/tfo-go v0.0.0-20240523172816-7577e13e1731 h1:zl5xisCG2CzN1QKeIBAgEQntOaj3hhMVF0ATGJmEdxc=
-github.com/metacubex/tfo-go v0.0.0-20240523172816-7577e13e1731/go.mod h1:c7bVFM9f5+VzeZ/6Kg77T/jrg1Xp8QpqlSHvG/aXVts=
+github.com/metacubex/sing-wireguard v0.0.0-20240826061955-1e4e67afe5cd h1:r7alry8u4qlUFLNMwGvG1A8ZcfPM6AMSmrm6E2yKdB4=
+github.com/metacubex/sing-wireguard v0.0.0-20240826061955-1e4e67afe5cd/go.mod h1:uY+BYb0UEknLrqvbGcwi9i++KgrKxsurysgI6G1Pveo=
+github.com/metacubex/tfo-go v0.0.0-20240821025650-e9be0afd5e7d h1:j9LtzkYstLFoNvXW824QQeN7Y26uPL5249kzWKbzO9U=
+github.com/metacubex/tfo-go v0.0.0-20240821025650-e9be0afd5e7d/go.mod h1:c7bVFM9f5+VzeZ/6Kg77T/jrg1Xp8QpqlSHvG/aXVts=
 github.com/metacubex/utls v1.6.6 h1:3D12YKHTf2Z41UPhQU2dWerNWJ5TVQD9gKoQ+H+iLC8=
 github.com/metacubex/utls v1.6.6/go.mod h1:+WLFUnXjcpdxXCnyX25nggw8C6YonZ8zOK2Zm/oRvdo=
 github.com/miekg/dns v1.1.62 h1:cN8OuEF1/x5Rq6Np+h1epln8OiyPWV+lROx9LxcGgIQ=
@@ -232,8 +234,8 @@ github.com/sina-ghaderi/rabbitio v0.0.0-20220730151941-9ce26f4f872e h1:ur8uMsPIF
 github.com/sina-ghaderi/rabbitio v0.0.0-20220730151941-9ce26f4f872e/go.mod h1:+e5fBW3bpPyo+3uLo513gIUblc03egGjMM0+5GKbzK8=
 github.com/sirupsen/logrus v1.9.3 h1:dueUQJ1C2q9oE3F7wvmSGAaVtTmUizReu6fjN8uqzbQ=
 github.com/sirupsen/logrus v1.9.3/go.mod h1:naHLuLoDiP4jHNo9R0sCBMtWGeIprob74mVsIT4qYEQ=
-github.com/snakem982/mihomo v1.11.9-0.20240816134903-6b149ac2c6bb h1:1WKBjKOtYi+rlVsdNZ0YG0cj281nnkKtWU7FleNssGY=
-github.com/snakem982/mihomo v1.11.9-0.20240816134903-6b149ac2c6bb/go.mod h1:wlc8HByj1rPB5EY5r15Ody32vEx9Iv/Ir/i9NjFEdLg=
+github.com/snakem982/mihomo v1.11.9-0.20240829091441-14d67d9b3a84 h1:gwo9ippMAc8IvkTbGXNFCMRn3HdRFnFX7IyLfpYLIrU=
+github.com/snakem982/mihomo v1.11.9-0.20240829091441-14d67d9b3a84/go.mod h1:83CZBePeNs7L3jVHWiFvc3TTcDA0VegmJM40eGqhsDE=
 github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=
 github.com/stretchr/objx v0.4.0/go.mod h1:YvHI0jy2hoMjB+UWwv71VJQ9isScKT/TqJzVSSt89Yw=
 github.com/stretchr/objx v0.5.0/go.mod h1:Yh+to48EsGEfYuaHDzXPcE3xhTkx73EhmCGUpEOglKo=
