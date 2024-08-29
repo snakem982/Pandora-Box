@@ -1,7 +1,7 @@
 package cache
 
 import (
-	"github.com/sagernet/bbolt"
+	"github.com/metacubex/bbolt"
 	"strings"
 )
 
