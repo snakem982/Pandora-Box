@@ -6,9 +6,9 @@ require (
 	github.com/go-chi/chi/v5 v5.1.0
 	github.com/go-chi/render v1.0.3
 	github.com/keybase/go-keychain v0.0.0-20231219164618-57a3676c3af6
+	github.com/metacubex/bbolt v0.0.0-20240822011022-aed6d4850399
 	github.com/metacubex/mihomo v1.18.7
 	github.com/panjf2000/ants/v2 v2.10.0
-	github.com/sagernet/bbolt v0.0.0-20231014093535-ea5cb2fe9f0a
 	github.com/sirupsen/logrus v1.9.3
 	github.com/wailsapp/wails/v2 v2.9.1
 	golang.org/x/net v0.28.0
@@ -66,7 +66,6 @@ require (
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/mdlayher/netlink v1.7.2 // indirect
 	github.com/mdlayher/socket v0.5.1 // indirect
-	github.com/metacubex/bbolt v0.0.0-20240822011022-aed6d4850399 // indirect
 	github.com/metacubex/chacha v0.1.0 // indirect
 	github.com/metacubex/gopacket v1.1.20-0.20230608035415-7e2f98a3e759 // indirect
 	github.com/metacubex/gvisor v0.0.0-20240320004321-933faba989ec // indirect
@@ -137,6 +136,6 @@ require (
 )
 
 replace (
-	github.com/metacubex/mihomo => github.com/snakem982/mihomo v1.11.9-0.20240829091441-14d67d9b3a84
+	github.com/metacubex/mihomo => github.com/snakem982/mihomo v1.11.9-0.20240829122803-2c38d5884ecd
 	github.com/sagernet/sing => github.com/metacubex/sing v0.0.0-20240724044459-6f3cf5896297
 )
