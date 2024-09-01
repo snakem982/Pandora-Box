@@ -11,11 +11,13 @@ func init() {
 }
 
 type Clash struct {
-	Url string
+	Url     string
+	Headers map[string]string
 }
 
 func (c *Clash) Get() []map[string]any {
-	return ComputeFuzzy(GetBytes(c.Url))
+	content := GetBytes(c.Url, c.Headers)
+	return ComputeFuzzy(content, c.Headers)
 }
 
 func (c *Clash) Get2ChanWG(pc chan []map[string]any, wg *sync.WaitGroup) {
@@ -27,6 +29,6 @@ func (c *Clash) Get2ChanWG(pc chan []map[string]any, wg *sync.WaitGroup) {
 	}
 }
 
-func NewClashCollect(getter Getter) Collect {
-	return &Clash{Url: getter.Url}
+func NewClashCollect(g Getter) Collect {
+	return &Clash{Url: g.Url, Headers: g.Headers}
 }

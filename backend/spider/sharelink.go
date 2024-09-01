@@ -14,13 +14,14 @@ func init() {
 }
 
 type ShareLink struct {
-	Url string
+	Url     string
+	Headers map[string]string
 }
 
 func (c *ShareLink) Get() []map[string]any {
 	proxies := make([]map[string]any, 0)
 
-	all := GetBytes(c.Url)
+	all := GetBytes(c.Url, c.Headers)
 	if all != nil {
 		builder := strings.Builder{}
 		for _, link := range grepShareLink(all) {
@@ -46,8 +47,8 @@ func (c *ShareLink) Get2ChanWG(pc chan []map[string]any, wg *sync.WaitGroup) {
 	}
 }
 
-func NewShareLinkCollect(getter Getter) Collect {
-	return &ShareLink{Url: getter.Url}
+func NewShareLinkCollect(g Getter) Collect {
+	return &ShareLink{Url: g.Url, Headers: g.Headers}
 }
 
 var shareLinkReg = regexp.MustCompile("(vless|vmess|trojan|ss|ssr|tuic|hysteria|hysteria2|hy2)://([A-Za-z0-9+/_&?=@:%.-])+")

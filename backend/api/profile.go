@@ -150,7 +150,7 @@ func postProfile(w http.ResponseWriter, r *http.Request) {
 	}
 
 	for _, url := range urls {
-		content, fileName := tools.ConcurrentHttpGet(url)
+		content, fileName := tools.ConcurrentHttpGet(url, nil)
 		err := resolveConfig(false, false, "", url, fileName, 31, content)
 		if err != nil {
 			log.Errorln("url[%s] %v", url, err)
@@ -190,8 +190,8 @@ func postProfile(w http.ResponseWriter, r *http.Request) {
 
 			fileSaveError := saveProfile2Local(profile.Path, all)
 			if fileSaveError == nil {
-				bytes, _ := json.Marshal(profile)
-				_ = cache.Put(profile.Id, bytes)
+				marshal, _ := json.Marshal(profile)
+				_ = cache.Put(profile.Id, marshal)
 			}
 		}
 	}
@@ -206,17 +206,17 @@ func putProfile(w http.ResponseWriter, r *http.Request) {
 		render.JSON(w, r, route.ErrBadRequest)
 		return
 	}
-	bytes, _ := json.Marshal(req)
-	_ = cache.Put(req.Id, bytes)
+	marshal, _ := json.Marshal(req)
+	_ = cache.Put(req.Id, marshal)
 
 	render.NoContent(w, r)
 }
 
 func deleteProfile(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
-	bytes := cache.Get(id)
+	value := cache.Get(id)
 	profile := resolve.Profile{}
-	err := json.Unmarshal(bytes, &profile)
+	err := json.Unmarshal(value, &profile)
 	if err != nil {
 		render.NoContent(w, r)
 		return
@@ -266,7 +266,7 @@ func refreshProfile(w http.ResponseWriter, r *http.Request) {
 	}
 
 	url := req.Url
-	content, _ := tools.ConcurrentHttpGet(url)
+	content, _ := tools.ConcurrentHttpGet(url, nil)
 	err := resolveConfig(true, req.Selected, req.Id, url, req.Title, req.Type, content)
 	if err != nil {
 		log.Errorln("url[%s] %v", url, err)
@@ -284,14 +284,28 @@ func changeProvidersPath(snowflakeId int64, config *config.RawConfig) (findProvi
 	dir := fmt.Sprintf("./uploads/%d/", snowflakeId)
 	proxyProviders := config.ProxyProvider
 	for _, provider := range proxyProviders {
-		path := provider["path"].(string)
-		provider["path"] = dir + ReplaceTwoPoint(path)
+
+		if path, findPath := provider["path"]; findPath {
+			provider["path"] = dir + ReplaceTwoPoint(path.(string))
+		} else {
+			if url, findUrl := provider["url"]; findUrl {
+				provider["path"] = dir + tools.MD5(url.(string))
+			}
+		}
+
 		findProvider = true
 	}
 	ruleProviders := config.RuleProvider
 	for _, ruleProvider := range ruleProviders {
-		path := ruleProvider["path"].(string)
-		ruleProvider["path"] = dir + ReplaceTwoPoint(path)
+
+		if path, findPath := ruleProvider["path"]; findPath {
+			ruleProvider["path"] = dir + ReplaceTwoPoint(path.(string))
+		} else {
+			if url, findUrl := ruleProvider["url"]; findUrl {
+				ruleProvider["path"] = dir + tools.MD5(url.(string))
+			}
+		}
+
 		findProvider = true
 	}
 
@@ -374,9 +388,13 @@ func resolveConfig(refresh, selected bool,
 			proxies["proxies"] = rails
 			content, _ = yaml.Marshal(proxies)
 		} else {
-			if len(ko.Proxies) < 7 {
-				return fmt.Errorf("config.ParseRawConfig error: %s", "Node is 0")
+			findProvider = changeProvidersPath(snowflakeId, rawCfg)
+			if !findProvider {
+				if len(ko.Proxies) < 7 {
+					return fmt.Errorf("config.ParseRawConfig error: %s", "Node is 0")
+				}
 			}
+
 			if len(ko.Proxies) > 512 {
 				// 对于超过512的节点进行截取
 				log.Infoln("config.ParseRawConfig : %s Try to cut", "Node size is more than 512.")
@@ -386,8 +404,6 @@ func resolveConfig(refresh, selected bool,
 				proxies := make(map[string]any)
 				proxies["proxies"] = rails
 				content, _ = yaml.Marshal(proxies)
-			} else {
-				findProvider = changeProvidersPath(snowflakeId, rawCfg)
 			}
 		}
 	}

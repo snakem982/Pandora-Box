@@ -6,11 +6,13 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"pandora-box/backend/constant"
+	"pandora-box/backend/tools"
 	"time"
 )
 
 func IsNeedUpdate() bool {
-	all, _ := tools.ConcurrentHttpGet(constant.PandoraVersionUrl)
+	all, _ := tools.ConcurrentHttpGet(constant.PandoraVersionUrl, nil)
 	if all != nil && len(all) > 0 {
 		return string(all) != constant.PandoraVersion
 	}

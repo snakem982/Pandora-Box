@@ -17,11 +17,13 @@ func init() {
 }
 
 type Fuzzy struct {
-	Url string
+	Url     string
+	Headers map[string]string
 }
 
 func (c *Fuzzy) Get() []map[string]any {
-	return ComputeFuzzy(GetBytes(c.Url))
+	content := GetBytes(c.Url, c.Headers)
+	return ComputeFuzzy(content, c.Headers)
 }
 
 func (c *Fuzzy) Get2ChanWG(pc chan []map[string]any, wg *sync.WaitGroup) {
@@ -33,8 +35,8 @@ func (c *Fuzzy) Get2ChanWG(pc chan []map[string]any, wg *sync.WaitGroup) {
 	}
 }
 
-func NewFuzzyCollect(getter Getter) Collect {
-	return &Fuzzy{Url: getter.Url}
+func NewFuzzyCollect(g Getter) Collect {
+	return &Fuzzy{Url: g.Url, Headers: g.Headers}
 }
 
 type void struct{}
@@ -59,7 +61,7 @@ func grepFuzzy(all []byte, providerUrl map[string]void) map[string]void {
 	return set
 }
 
-func ComputeFuzzy(content []byte) []map[string]any {
+func ComputeFuzzy(content []byte, headers map[string]string) []map[string]any {
 
 	proxies := make([]map[string]any, 0)
 	if content == nil {
@@ -115,10 +117,10 @@ func ComputeFuzzy(content []byte) []map[string]any {
 				done <- struct{}{}
 			}()
 
-			getter := Getter{Url: url}
+			getter := Getter{Url: url, Headers: headers}
 			var ok []map[string]any
 			if cFlag.MatchString(url) {
-				all := GetBytes(url)
+				all := GetBytes(url, headers)
 				if all != nil {
 					rawCfgInner, err := config.UnmarshalRawConfig(all)
 					if err == nil && rawCfgInner.Proxy != nil {
@@ -129,7 +131,7 @@ func ComputeFuzzy(content []byte) []map[string]any {
 				collect, _ := NewCollect(constant.CollectSharelink, getter)
 				ok = collect.Get()
 			} else {
-				all := GetBytes(url)
+				all := GetBytes(url, headers)
 				if all == nil || len(all) < 16 {
 					return
 				}

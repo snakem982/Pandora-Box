@@ -18,7 +18,7 @@ import (
 )
 
 func IsNeedUpdate() (bool, string) {
-	all, _ := tools.ConcurrentHttpGet(constant.PandoraVersionUrl)
+	all, _ := tools.ConcurrentHttpGet(constant.PandoraVersionUrl, nil)
 	if all != nil && len(all) > 0 {
 		ver := string(all)
 		return ver != constant.PandoraVersion, ver
@@ -33,7 +33,7 @@ func Replace(version string) bool {
 	// 获取下载地址
 	url := fmt.Sprintf(constant.PandoraDownloadUrl, version, "macos", arch)
 	// 获取压缩文件
-	all, _ := tools.ConcurrentHttpGet(url)
+	all, _ := tools.ConcurrentHttpGet(url, nil)
 	if all != nil && len(all) > 0 {
 		log.Infoln("new version file download success")
 		// 解压

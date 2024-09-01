@@ -46,7 +46,7 @@ func GetFileName(header http.Header) (fileName string) {
 }
 
 // HttpGetByProxy 使用代理访问指定的URL并返回响应数据
-func HttpGetByProxy(requestUrl string) ([]byte, string, error) {
+func HttpGetByProxy(requestUrl string, headers map[string]string) ([]byte, string, error) {
 	// 拼接代理地址
 	proxyUrl := fmt.Sprintf("http://127.0.0.1:%d", executor.GetGeneral().MixedPort)
 	uri, _ := url.Parse(proxyUrl)
@@ -73,6 +73,11 @@ func HttpGetByProxy(requestUrl string) ([]byte, string, error) {
 	req.Header.Set("Accept-Encoding", "utf-8")
 	req.Header.Set("Accept", "*/*")
 	req.Header.Set("User-Agent", C.UA)
+	if headers != nil && len(headers) > 0 {
+		for k, v := range headers {
+			req.Header.Set(k, v)
+		}
+	}
 
 	// 发送请求并获取响应
 	resp, err := client.Do(req)
@@ -102,7 +107,7 @@ func HttpGetByProxy(requestUrl string) ([]byte, string, error) {
 }
 
 // HttpGet 使用HTTP GET方法请求指定的URL，并返回响应的数据和可能的错误。
-func HttpGet(requestUrl string) ([]byte, string, error) {
+func HttpGet(requestUrl string, headers map[string]string) ([]byte, string, error) {
 	timeOut := 30 * time.Second
 
 	priUrl := "https://github.com/snakem982/Pandora-Box/releases/download"
@@ -110,11 +115,11 @@ func HttpGet(requestUrl string) ([]byte, string, error) {
 		timeOut = time.Minute
 	}
 
-	return HttpGetWithTimeout(requestUrl, timeOut, true)
+	return HttpGetWithTimeout(requestUrl, timeOut, true, headers)
 }
 
 // HttpGetWithTimeout 使用HTTP GET方法请求指定的URL，并返回响应的数据和可能的错误。
-func HttpGetWithTimeout(requestUrl string, outTime time.Duration, needDail bool) ([]byte, string, error) {
+func HttpGetWithTimeout(requestUrl string, outTime time.Duration, needDail bool, headers map[string]string) ([]byte, string, error) {
 	client := http.Client{
 		Timeout: outTime, // 请求超时时间
 	}
@@ -134,6 +139,11 @@ func HttpGetWithTimeout(requestUrl string, outTime time.Duration, needDail bool)
 	req.Header.Set("Accept-Encoding", "utf-8") // 设置响应内容编码为utf-8
 	req.Header.Set("Accept", "*/*")            // 设置响应内容类型为全部
 	req.Header.Set("User-Agent", C.UA)         // 设置用户代理为C.UA
+	if headers != nil && len(headers) > 0 {
+		for k, v := range headers {
+			req.Header.Set(k, v)
+		}
+	}
 
 	resp, err := client.Do(req) // 发送请求并获取响应
 	if err != nil {
@@ -160,56 +170,8 @@ func HttpGetWithTimeout(requestUrl string, outTime time.Duration, needDail bool)
 	return data, GetFileName(resp.Header), nil // 返回响应数据和无错误
 }
 
-// HttpGetWithDial 使用HTTP GET方法请求指定的URL，并返回响应的数据和可能的错误。
-func HttpGetWithDial(requestUrl, fastlyHost, host string) ([]byte, error) {
-	dialContext := func(ctx context.Context, network, addr string) (net.Conn, error) {
-		return net.Dial(network, fastlyHost)
-	}
-
-	client := http.Client{
-		Transport: &http.Transport{
-			DialContext:     dialContext,
-			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
-		},
-		Timeout: 20 * time.Second,
-	}
-
-	req, _ := http.NewRequest("GET", requestUrl, nil)
-	req.Header.Set("Accept-Encoding", "utf-8") // 设置响应内容编码为utf-8
-	req.Header.Set("Accept", "*/*")            // 设置响应内容类型为全部
-	req.Header.Set("User-Agent", C.UA)         // 设置用户代理为C.UA
-	if host != "" {
-		req.Header.Set("Host", host)
-	}
-
-	resp, err := client.Do(req)
-	if err != nil {
-		log.Warnln("HttpGetWithDial client.Do %s %v", requestUrl, err)
-		return nil, err
-	}
-
-	defer func(Body io.ReadCloser) {
-		err := Body.Close()
-		if err != nil {
-		}
-	}(resp.Body)
-
-	data, err := io.ReadAll(resp.Body)
-	if err != nil {
-		log.Warnln("HttpGetWithDial io.ReadAll %s %v", requestUrl, err)
-		return nil, err
-	}
-
-	if resp.StatusCode != http.StatusOK {
-		log.Warnln("HttpGetWithDial StatusCode %s %d", requestUrl, resp.StatusCode)
-		return nil, fmt.Errorf("StatusCode %d", resp.StatusCode)
-	}
-
-	return data, nil
-}
-
 // ConcurrentHttpGet 并发获取指定URL的HTTP内容
-func ConcurrentHttpGet(url string) (all []byte, fileName string) {
+func ConcurrentHttpGet(url string, headers map[string]string) (all []byte, fileName string) {
 	// 开启多线程请求
 	cLock := sync.Mutex{}
 	done := make(chan bool, 1)
@@ -219,7 +181,7 @@ func ConcurrentHttpGet(url string) (all []byte, fileName string) {
 	go func() {
 		defer wg.Done()
 
-		content, name, err := HttpGetByProxy(url)
+		content, name, err := HttpGetByProxy(url, headers)
 		if err == nil {
 			cLock.Lock()
 			if all == nil && len(content) > length {
@@ -230,10 +192,11 @@ func ConcurrentHttpGet(url string) (all []byte, fileName string) {
 			done <- true
 		}
 	}()
+
 	go func() {
 		defer wg.Done()
 
-		content, name, err := HttpGet(url)
+		content, name, err := HttpGet(url, headers)
 		if err == nil {
 			cLock.Lock()
 			if all == nil && len(content) > length {

@@ -17,7 +17,7 @@ import (
 	"pandora-box/backend/api"
 	"pandora-box/backend/constant"
 	"pandora-box/backend/meta"
-	isadmin "pandora-box/backend/system/admin"
+	IsAdmin "pandora-box/backend/system/admin"
 	"pandora-box/backend/system/proxy"
 	"pandora-box/backend/tools"
 	"runtime"
@@ -33,7 +33,7 @@ var icon []byte
 
 func main() {
 
-	if runtime.GOOS == "darwin" && !isadmin.Check() {
+	if runtime.GOOS == "darwin" && !IsAdmin.Check() {
 		status, pwd := GetAcStatus()
 		if status == "3" {
 			startMacInAdmin(pwd)
@@ -109,12 +109,12 @@ func startHttpApi() (addr string) {
 	timeOut := 500 * time.Millisecond
 	for i := 0; i < 5; i++ {
 		okUrl := fmt.Sprintf("http://%s/ok", addr)
-		body, _, err := tools.HttpGetWithTimeout(okUrl, timeOut, false)
+		body, _, err := tools.HttpGetWithTimeout(okUrl, timeOut, false, nil)
 		if err == nil && string(body) == "ok" {
 			log.Infoln("Start Http Serve Success.Addr is %s", addr)
 			break
 		} else {
-			log.Errorln("Start Http Serve Error: %s.Addr is %s", err.Error(), addr)
+			log.Errorln("Start Http Serve Error: %v.Addr is %s", err, addr)
 		}
 
 		time.Sleep(timeOut)

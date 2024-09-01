@@ -8,9 +8,10 @@ import (
 )
 
 type Getter struct {
-	Id   string `json:"id,omitempty" yaml:"id,omitempty"`
-	Type string `json:"type" yaml:"type"`
-	Url  string `json:"url" yaml:"url"`
+	Id      string            `json:"id,omitempty" yaml:"id,omitempty"`
+	Type    string            `json:"type" yaml:"type"`
+	Url     string            `json:"url" yaml:"url"`
+	Headers map[string]string `json:"headers,omitempty" yaml:"headers,omitempty"`
 }
 
 type Collect interface {
@@ -34,8 +35,8 @@ func NewCollect(sourceType string, getter Getter) (Collect, error) {
 	return nil, errors.New("type not supported")
 }
 
-func GetBytes(url string) []byte {
-	all, _ := tools.ConcurrentHttpGet(url)
+func GetBytes(url string, headers map[string]string) []byte {
+	all, _ := tools.ConcurrentHttpGet(url, headers)
 	if all != nil {
 		temp := html.UnescapeString(string(all))
 		all = []byte(temp)

@@ -11,11 +11,13 @@ func init() {
 }
 
 type V2ray struct {
-	Url string
+	Url     string
+	Headers map[string]string
 }
 
 func (c *V2ray) Get() []map[string]any {
-	return ComputeFuzzy(GetBytes(c.Url))
+	content := GetBytes(c.Url, c.Headers)
+	return ComputeFuzzy(content, c.Headers)
 }
 
 func (c *V2ray) Get2ChanWG(pc chan []map[string]any, wg *sync.WaitGroup) {
@@ -27,6 +29,6 @@ func (c *V2ray) Get2ChanWG(pc chan []map[string]any, wg *sync.WaitGroup) {
 	}
 }
 
-func NewV2rayCollect(getter Getter) Collect {
-	return &V2ray{Url: getter.Url}
+func NewV2rayCollect(g Getter) Collect {
+	return &V2ray{Url: g.Url, Headers: g.Headers}
 }

@@ -11,11 +11,12 @@ func init() {
 }
 
 type Local struct {
-	Url string
+	Url     string
+	Headers map[string]string
 }
 
 func (c *Local) Get() []map[string]any {
-	return ComputeFuzzy([]byte(c.Url))
+	return ComputeFuzzy([]byte(c.Url), c.Headers)
 }
 
 func (c *Local) Get2ChanWG(pc chan []map[string]any, wg *sync.WaitGroup) {
@@ -34,6 +35,6 @@ func (c *Local) Get2ChanWG(pc chan []map[string]any, wg *sync.WaitGroup) {
 	}
 }
 
-func NewLocalCollect(getter Getter) Collect {
-	return &Local{Url: getter.Url}
+func NewLocalCollect(g Getter) Collect {
+	return &Local{Url: g.Url, Headers: g.Headers}
 }
