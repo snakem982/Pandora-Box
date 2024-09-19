@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/metacubex/bbolt"
+	ctp "github.com/metacubex/mihomo/component/http"
 	"github.com/metacubex/mihomo/component/profile/cachefile"
 	"github.com/metacubex/mihomo/config"
 	C "github.com/metacubex/mihomo/constant"
@@ -122,15 +123,15 @@ func StartCore(profile resolve.Profile, reload bool) {
 	StartLock.Lock()
 	defer StartLock.Unlock()
 
-	on := cache.Get(constant.DefaultTemplate)
 	templateBuf := resolve.PandoraDefaultConfig
 	useTemplate := false
 	path := profile.Path
 
-	if string(on) == "on" {
-		template, err := os.ReadFile(filepath.Join(C.Path.HomeDir(), constant.DefaultTemplate))
-		if err == nil && len(template) > 0 {
-			templateBuf = template
+	template, err := os.ReadFile(filepath.Join(C.Path.HomeDir(), constant.DefaultTemplate))
+	if err == nil && len(template) > 0 {
+		templateBuf = template
+		on := cache.Get(constant.DefaultTemplate)
+		if string(on) == "on" {
 			useTemplate = true
 		}
 	}
@@ -195,7 +196,7 @@ func StartCore(profile resolve.Profile, reload bool) {
 		return
 	}
 
-	C.UA = "Clash.Meta/1.18.7"
+	ctp.SetUA("Clash.Meta/1.18.8")
 	if !reload {
 		freePort, err := tools.GetFreeWithPort(10000)
 		if err != nil {

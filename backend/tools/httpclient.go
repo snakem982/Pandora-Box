@@ -3,7 +3,7 @@ package tools
 import (
 	"crypto/tls"
 	"fmt"
-	C "github.com/metacubex/mihomo/constant"
+	ctp "github.com/metacubex/mihomo/component/http"
 	"github.com/metacubex/mihomo/hub/executor"
 	"github.com/metacubex/mihomo/log"
 	"golang.org/x/net/context"
@@ -72,7 +72,7 @@ func HttpGetByProxy(requestUrl string, headers map[string]string) ([]byte, strin
 	}
 	req.Header.Set("Accept-Encoding", "utf-8")
 	req.Header.Set("Accept", "*/*")
-	req.Header.Set("User-Agent", C.UA)
+	req.Header.Set("User-Agent", ctp.UA())
 	if headers != nil && len(headers) > 0 {
 		for k, v := range headers {
 			req.Header.Set(k, v)
@@ -138,7 +138,7 @@ func HttpGetWithTimeout(requestUrl string, outTime time.Duration, needDail bool,
 	}
 	req.Header.Set("Accept-Encoding", "utf-8") // 设置响应内容编码为utf-8
 	req.Header.Set("Accept", "*/*")            // 设置响应内容类型为全部
-	req.Header.Set("User-Agent", C.UA)         // 设置用户代理为C.UA
+	req.Header.Set("User-Agent", ctp.UA())     // 设置用户代理为C.UA
 	if headers != nil && len(headers) > 0 {
 		for k, v := range headers {
 			req.Header.Set(k, v)
