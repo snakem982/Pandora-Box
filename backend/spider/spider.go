@@ -431,7 +431,7 @@ func GetCountryName(keys []string, maps map[string]map[string]any, need bool) []
 		ProxyServer:  c.ProxyServerNameserver,
 	}
 
-	r := dns.NewResolver(cfg)
+	r, _ := dns.NewResolver(cfg)
 
 	proxies := make([]map[string]any, 0)
 	ipLock := sync.Mutex{}
