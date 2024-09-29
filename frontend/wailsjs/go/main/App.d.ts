@@ -5,6 +5,8 @@ export function GetFreePort():Promise<string>;
 
 export function GetMacAcStatus():Promise<string>;
 
+export function GetSecret():Promise<string>;
+
 export function IsAdmin():Promise<string>;
 
 export function IsMac():Promise<string>;

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import {onBeforeUnmount, onMounted, reactive, ref} from 'vue'
 import {WS} from '../api/ws'
-import {GetFreePort} from "../../wailsjs/go/main/App";
+import {GetFreePort, GetSecret} from "../../wailsjs/go/main/App";
 
 interface Getter {
   time: string
@@ -51,7 +51,8 @@ let ws: WS
 onMounted(async () => {
   const addr = await GetFreePort()
   const split = addr.split(":")
-  ws = new WS(split[0], split[1], '/logs?token=&level=info', null, onmessage);
+  const secret = await GetSecret()
+  ws = new WS(split[0], split[1], '/logs?token=' + secret + '&level=info', null, onmessage);
 })
 
 onBeforeUnmount(() => {

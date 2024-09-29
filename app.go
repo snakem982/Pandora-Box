@@ -7,6 +7,8 @@ import (
 	"github.com/keybase/go-keychain"
 	"github.com/metacubex/mihomo/log"
 	"os/exec"
+	"pandora-box/backend/cache"
+	"pandora-box/backend/constant"
 	"pandora-box/backend/meta"
 	isadmin "pandora-box/backend/system/admin"
 	"pandora-box/backend/system/open"
@@ -121,6 +123,11 @@ func (a *App) IsAdmin() string {
 
 func (a *App) GetFreePort() string {
 	return a.addr
+}
+
+func (a *App) GetSecret() string {
+	value := cache.Get(constant.SecretKey)
+	return string(value)
 }
 
 func (a *App) OpenConfigDirectory() {

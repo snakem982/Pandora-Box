@@ -8,6 +8,7 @@ const (
 	PrefixProfile   = "Profile_"
 	PrefixGetter    = "Getter_"
 	RealIpHeader    = "RealIp_"
+	SecretKey       = "SecretKey_pb"
 )
 
 const (

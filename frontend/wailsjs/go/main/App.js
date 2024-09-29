@@ -10,6 +10,10 @@ export function GetMacAcStatus() {
   return window['go']['main']['App']['GetMacAcStatus']();
 }
 
+export function GetSecret() {
+  return window['go']['main']['App']['GetSecret']();
+}
+
 export function IsAdmin() {
   return window['go']['main']['App']['IsAdmin']();
 }

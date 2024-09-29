@@ -15,9 +15,9 @@ import (
 	"os"
 	"os/exec"
 	"pandora-box/backend/api"
+	"pandora-box/backend/cache"
 	"pandora-box/backend/constant"
 	"pandora-box/backend/meta"
-	IsAdmin "pandora-box/backend/system/admin"
 	"pandora-box/backend/system/proxy"
 	"pandora-box/backend/tools"
 	"runtime"
@@ -33,13 +33,13 @@ var icon []byte
 
 func main() {
 
-	if runtime.GOOS == "darwin" && !IsAdmin.Check() {
-		status, pwd := GetAcStatus()
-		if status == "3" {
-			startMacInAdmin(pwd)
-			return
-		}
-	}
+	//if runtime.GOOS == "darwin" && !IsAdmin.Check() {
+	//	status, pwd := GetAcStatus()
+	//	if status == "3" {
+	//		startMacInAdmin(pwd)
+	//		return
+	//	}
+	//}
 
 	meta.Init()
 
@@ -104,10 +104,18 @@ func main() {
 }
 
 func startHttpApi() (addr string) {
-	addr = route.StartByPandora()
+	var secret string
+	value := cache.Get(constant.SecretKey)
+	if value != nil {
+		secret = string(value)
+	} else {
+		secret = tools.String(32)
+		_ = cache.Put(constant.SecretKey, []byte(secret))
+	}
+	addr = route.StartByPandora(secret)
 
 	timeOut := 500 * time.Millisecond
-	for i := 0; i < 5; i++ {
+	for i := 0; i < 3; i++ {
 		okUrl := fmt.Sprintf("http://%s/ok", addr)
 		body, _, err := tools.HttpGetWithTimeout(okUrl, timeOut, false, nil)
 		if err == nil && string(body) == "ok" {

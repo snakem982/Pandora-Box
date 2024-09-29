@@ -5,7 +5,7 @@ import {Connection, Connections, Metadata} from "../api/pandora";
 import {formatDistance} from 'date-fns';
 import {enUS, zhCN} from 'date-fns/locale'
 import {del} from "../api/http";
-import {GetFreePort} from "../../wailsjs/go/main/App";
+import {GetFreePort, GetSecret} from "../../wailsjs/go/main/App";
 
 
 const search = ref('')
@@ -37,7 +37,8 @@ let ws: WS
 onMounted(async () => {
   const addr = await GetFreePort()
   const split = addr.split(":")
-  ws = new WS(split[0], split[1], '/connections?token=', null, onmessage);
+  const secret = await GetSecret()
+  ws = new WS(split[0], split[1], '/connections?token=' + secret, null, onmessage);
 })
 
 onBeforeUnmount(() => {
