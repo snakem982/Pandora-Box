@@ -18,6 +18,7 @@ import (
 	"pandora-box/backend/cache"
 	"pandora-box/backend/constant"
 	"pandora-box/backend/meta"
+	IsAdmin "pandora-box/backend/system/admin"
 	"pandora-box/backend/system/proxy"
 	"pandora-box/backend/tools"
 	"runtime"
@@ -33,13 +34,13 @@ var icon []byte
 
 func main() {
 
-	//if runtime.GOOS == "darwin" && !IsAdmin.Check() {
-	//	status, pwd := GetAcStatus()
-	//	if status == "3" {
-	//		startMacInAdmin(pwd)
-	//		return
-	//	}
-	//}
+	if runtime.GOOS == "darwin" && !IsAdmin.Check() {
+		status, pwd := GetAcStatus()
+		if status == "3" {
+			startMacInAdmin(pwd)
+			return
+		}
+	}
 
 	meta.Init()
 
