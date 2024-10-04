@@ -25,6 +25,7 @@ import (
 	"pandora-box/backend/premium"
 	"pandora-box/backend/tools"
 	"path/filepath"
+	"runtime"
 	"sort"
 	"strings"
 	"sync"
@@ -105,6 +106,12 @@ func Crawl() bool {
 
 	// 清理realIp缓存
 	go cleanRealIpCache()
+
+	// 垃圾回收
+	go func() {
+		time.Sleep(2 * time.Minute)
+		runtime.GC()
+	}()
 
 	return true
 }

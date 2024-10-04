@@ -24,6 +24,7 @@ import (
 	"runtime"
 	"strings"
 	"sync"
+	"time"
 )
 
 //go:embed geoip.metadb
@@ -204,6 +205,12 @@ func StartCore(profile resolve.Profile, reload bool) {
 		}
 		NowConfig.General.MixedPort = freePort
 	}
+
+	// 垃圾回收
+	go func() {
+		time.Sleep(3 * time.Minute)
+		runtime.GC()
+	}()
 
 	executor.ApplyConfig(NowConfig, true)
 }

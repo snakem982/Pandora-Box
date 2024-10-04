@@ -7,7 +7,7 @@ import {ClipboardGetText, ClipboardSetText} from "../../wailsjs/runtime";
 import {mdiDownload, mdiFileReplace, mdiFolderOpen} from "@mdi/js";
 import SvgIcon from "@jamescoyle/vue-icon";
 import {useRouter} from "vue-router";
-import {GetFreePort} from "../../wailsjs/go/main/App";
+import {GetFreePort, GetSecret} from "../../wailsjs/go/main/App";
 
 const subOrShare = ref('')
 const drawer = ref(false)
@@ -94,11 +94,16 @@ async function delProfile(id: string) {
 }
 
 const uploadUrl = ref('')
+const uploadHeader = reactive({
+  Authorization: ''
+})
 
 onMounted(async () => {
   await getProfile()
   const host = await GetFreePort()
   uploadUrl.value = "http://" + host + "/profile/file"
+  const secret = await GetSecret()
+  uploadHeader.Authorization = 'Bearer ' + secret
 })
 
 const toolFormVisible = ref(false)
@@ -420,6 +425,7 @@ function toCrawl() {
         :on-error="uploadError"
         :on-success="uploadSuccess"
         ref="drawerUpload"
+        :headers = uploadHeader
     >
       <el-icon size="50" class="el-icon--upload">
         <UploadFilled/>
