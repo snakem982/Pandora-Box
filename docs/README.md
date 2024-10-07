@@ -20,7 +20,7 @@ A Simple Mihomo GUI
 - Windows 10/11 AMD64/ARM64
 - MacOS 10.13+ AMD64
 - MacOS 11.0+ ARM64
-- Linux AMD64/ARM64 [You need to build it from source code yourself]
+- Linux AMD64/ARM64 [You need to build it from source code yourself](https://github.com/snakem982/Pandora-Box?tab=readme-ov-file#build)
 
 ## Friendly Reminder
 

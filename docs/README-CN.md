@@ -20,7 +20,7 @@
 - Windows 10/11 AMD64/ARM64
 - MacOS 10.13+ AMD64
 - MacOS 11.0+ ARM64
-- Linux AMD64/ARM64 [需要你自己从源代码构建]
+- Linux AMD64/ARM64 [需要你自己从源代码构建](https://github.com/snakem982/Pandora-Box?tab=readme-ov-file#build)
 
 ## 使用手册
 
