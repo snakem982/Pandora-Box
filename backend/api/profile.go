@@ -121,7 +121,6 @@ func postProfile(w http.ResponseWriter, r *http.Request) {
 
 	builder := strings.Builder{}
 	urls := make([]string, 0)
-	isB64 := false
 
 	// 按行读取文件
 	reader := bytes.NewReader(bodyData)
@@ -141,12 +140,7 @@ func postProfile(w http.ResponseWriter, r *http.Request) {
 		} else if strings.Contains(sub, "://") {
 			builder.WriteString(sub + "\n")
 		} else {
-			isB64 = true
 		}
-	}
-
-	if len(urls) > 0 || builder.Len() > 0 {
-		isB64 = false
 	}
 
 	for _, url := range urls {
@@ -158,7 +152,7 @@ func postProfile(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	if builder.Len() > 0 || isB64 {
+	if builder.Len() > 0 || len(urls) == 0 {
 		var all []byte
 		if builder.Len() > 0 {
 			all = []byte(builder.String())
