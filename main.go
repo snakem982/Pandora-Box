@@ -114,11 +114,13 @@ func startHttpApi() (addr string) {
 		_ = cache.Put(constant.SecretKey, []byte(secret))
 	}
 	addr = route.StartByPandora(secret)
-
+	headers := map[string]string{
+		"Authorization": fmt.Sprintf("Bearer %s", secret),
+	}
 	timeOut := 500 * time.Millisecond
 	for i := 0; i < 3; i++ {
 		okUrl := fmt.Sprintf("http://%s/ok", addr)
-		body, _, err := tools.HttpGetWithTimeout(okUrl, timeOut, false, nil)
+		body, _, err := tools.HttpGetWithTimeout(okUrl, timeOut, false, headers)
 		if err == nil && string(body) == "ok" {
 			log.Infoln("Start Http Serve Success.Addr is %s", addr)
 			break
