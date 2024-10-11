@@ -396,8 +396,8 @@ func resolveConfig(refresh, selected bool,
 				// 对于超过512的节点进行截取
 				log.Infoln("config.ParseRawConfig : %s Try to cut", "Node size is more than 512.")
 				ray = resolve.MapsToProxies(rawCfg.Proxy)
-				rails := spider.SortAddIndex(ray)
-				rails = rails[0:512]
+				spider.SortProxies(ray)
+				rails := ray[0:512]
 				proxies := make(map[string]any)
 				proxies["proxies"] = rails
 				content, _ = yaml.Marshal(proxies)

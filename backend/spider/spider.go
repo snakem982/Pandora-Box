@@ -66,7 +66,7 @@ func Crawl() bool {
 	}
 
 	// 低于节点阈值进行抓取
-	if len(proxies) < 1536 {
+	if len(proxies) < 1024 {
 		proxies = append(doCrawl(), proxies...)
 	}
 
@@ -438,7 +438,7 @@ func GetCountryName(keys []string, maps map[string]map[string]any, need bool) []
 		ProxyServer:  c.ProxyServerNameserver,
 	}
 
-	r, _ := dns.NewResolver(cfg)
+	r := dns.NewResolver(cfg)
 
 	proxies := make([]map[string]any, 0)
 	ipLock := sync.Mutex{}
@@ -522,7 +522,7 @@ func getIndex(at string) int {
 	}
 }
 
-func SortAddEmoji(proxies []map[string]any) {
+func SortProxies(proxies []map[string]any) {
 	sort.Slice(proxies, func(i, j int) bool {
 		iProtocol := proxies[i]["type"].(string)
 		jProtocol := proxies[j]["type"].(string)
@@ -537,6 +537,10 @@ func SortAddEmoji(proxies []map[string]any) {
 
 		return tools.Reverse(proxies[i]["server"].(string)) < tools.Reverse(proxies[j]["server"].(string))
 	})
+}
+
+func SortAddEmoji(proxies []map[string]any) {
+	SortProxies(proxies)
 
 	for i, _ := range proxies {
 		name := proxies[i]["name"].(string)
