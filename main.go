@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"embed"
+	"flag"
 	"fmt"
 	"github.com/metacubex/mihomo/hub/executor"
 	"github.com/metacubex/mihomo/hub/route"
@@ -26,6 +27,12 @@ import (
 	"time"
 )
 
+var devFlag = flag.Bool("dev", false, "布尔类型参数")
+
+func init() {
+	flag.Parse()
+}
+
 //go:embed all:frontend/dist
 var assets embed.FS
 
@@ -34,7 +41,7 @@ var icon []byte
 
 func main() {
 
-	if runtime.GOOS == "darwin" && !IsAdmin.Check() {
+	if !*devFlag && runtime.GOOS == "darwin" && !IsAdmin.Check() {
 		status, pwd := GetAcStatus()
 		if status == "3" {
 			startMacInAdmin(pwd)

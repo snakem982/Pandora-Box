@@ -50,6 +50,10 @@ var KeyChainId = "Pandora-Box"
 
 func GetAcStatus() (string, string) {
 
+	if *devFlag {
+		return "1", ""
+	}
+
 	query := keychain.NewItem()
 	query.SetSecClass(keychain.SecClassGenericPassword)
 	query.SetService(KeyChainId)
