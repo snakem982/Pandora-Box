@@ -150,7 +150,7 @@ func StartCore(profile resolve.Profile, reload bool) {
 	}
 
 	if len(rawCfg.ProxyProvider) == 0 {
-		if useTemplate || len(rawCfg.Rule) == 0 || len(rawCfg.Rule) > 10240 {
+		if useTemplate || len(rawCfg.Rule) == 0 || len(rawCfg.Rule) > 12000 {
 			replace := strings.Replace(string(templateBuf),
 				resolve.PandoraDefaultPlace,
 				path,
