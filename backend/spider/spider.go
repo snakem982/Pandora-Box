@@ -375,9 +375,9 @@ func getRealIpCountryCode(ctx context.Context, m map[string]any) (string, error)
 	transport := &http.Transport{
 		// from http.DefaultTransport
 		DisableKeepAlives:     true,
-		MaxIdleConns:          100,
-		IdleConnTimeout:       30 * time.Second,
-		TLSHandshakeTimeout:   10 * time.Second,
+		MaxIdleConns:          32,
+		IdleConnTimeout:       16 * time.Second,
+		TLSHandshakeTimeout:   8 * time.Second,
 		ExpectContinueTimeout: 1 * time.Second,
 		DialContext: func(ctx context.Context, network, address string) (net.Conn, error) {
 			proxy, _ := adapter.ParseProxy(m)
