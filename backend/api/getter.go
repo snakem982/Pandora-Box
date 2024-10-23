@@ -40,16 +40,7 @@ func crawling(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	bytes := cache.Get(constant.DefaultProfile)
-	profile := resolve.Profile{}
-	err := json.Unmarshal(bytes, &profile)
-	if err != nil {
-		render.NoContent(w, r)
-		return
-	}
-	if profile.Selected {
-		meta.StartCore(profile, true)
-	}
+	reloadDefaultConfig()
 
 	render.NoContent(w, r)
 }
@@ -101,4 +92,16 @@ func deleteGetter(w http.ResponseWriter, r *http.Request) {
 	_ = cache.Delete(id)
 
 	render.NoContent(w, r)
+}
+
+func reloadDefaultConfig() {
+	bytes := cache.Get(constant.DefaultProfile)
+	profile := resolve.Profile{}
+	err := json.Unmarshal(bytes, &profile)
+	if err != nil {
+		return
+	}
+	if profile.Selected {
+		meta.StartCore(profile, true)
+	}
 }

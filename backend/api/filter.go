@@ -103,6 +103,7 @@ func Filter(r chi.Router) {
 					return
 				case 2:
 					spider.Save2Local(proxies, "0.yaml")
+					reloadDefaultConfig()
 					render.PlainText(w, r, "true")
 					return
 				case 3:
@@ -214,8 +215,4 @@ func judge(array []string, key string) bool {
 	}
 
 	return false
-}
-
-func saveFile() {
-
 }
