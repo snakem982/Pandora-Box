@@ -1,10 +1,18 @@
 <script lang="ts" setup>
 import {computed, onMounted, reactive, ref} from 'vue'
-import {mdiBookInformationVariant, mdiPlusBoxMultiple, mdiRadar, mdiSquareEditOutline, mdiTrashCan} from "@mdi/js";
+import {
+  mdiBookInformationVariant,
+  mdiFilterMultipleOutline,
+  mdiPlusBoxMultiple,
+  mdiRadar,
+  mdiSquareEditOutline,
+  mdiTrashCan
+} from "@mdi/js";
 import SvgIcon from "@jamescoyle/vue-icon";
 import {del, get, patch, post, put} from "../api/http";
 import {ElLoading, ElMessage} from "element-plus";
 import {IsAdmin} from "../../wailsjs/go/main/App";
+import FilterAndDownload from "../weight/FilterAndDownload.vue";
 
 interface Getter {
   id: string
@@ -160,12 +168,25 @@ async function crawling() {
 }
 
 
+const filterShow = ref(false)
+const fad = ref(54321)
+
+async function filter() {
+  const have = await get<any>("/nodeHave")
+  if (have) {
+    fad.value = new Date().getTime()
+    filterShow.value = true
+  } else {
+    ElMessage.warning("暂无节点缓存，请进行抓取 There is no node cache yet, please crawl")
+  }
+}
+
 </script>
 
 <template>
   <div class="header">
     <el-row :gutter="24">
-      <el-col :span="18">
+      <el-col :span="16">
         <el-input
             v-model="search"
             placeholder="搜索地址 Search Url"
@@ -173,7 +194,7 @@ async function crawling() {
             autocomplete="off"
         ></el-input>
       </el-col>
-      <el-col :span="6">
+      <el-col :span="8">
 
         <el-tooltip
             content="添加 Add"
@@ -198,6 +219,19 @@ async function crawling() {
               size="large"
               circle>
             <svg-icon type="mdi" :path="mdiRadar" :size="23"></svg-icon>
+          </el-button>
+        </el-tooltip>
+
+        <el-tooltip
+            content="节点筛选 Node Filter"
+            placement="bottom"
+        >
+          <el-button
+              @click="filter"
+              type="danger"
+              size="large"
+              circle>
+            <svg-icon type="mdi" :path="mdiFilterMultipleOutline" :size="23"></svg-icon>
           </el-button>
         </el-tooltip>
 
@@ -362,7 +396,8 @@ async function crawling() {
         <br>
         <el-text>&emsp;用于抓取本地文件，可将本地文件的内容直接输入到url。</el-text>
         <br>
-        <el-text>&emsp;Used to grab local files, the content of local files can be directly input into the URL.</el-text>
+        <el-text>&emsp;Used to grab local files, the content of local files can be directly input into the URL.
+        </el-text>
         <br>
         <br>
       </div>
@@ -370,6 +405,14 @@ async function crawling() {
 
   </el-drawer>
 
+  <el-drawer
+      title="节点筛选 Node Filter"
+      v-model="filterShow"
+      direction="btt"
+      size="100vh"
+  >
+    <FilterAndDownload :key="fad"></FilterAndDownload>
+  </el-drawer>
 </template>
 
 <style scoped>
@@ -395,7 +438,8 @@ async function crawling() {
   margin-bottom: 10px;
 }
 
-:deep(.el-drawer__header) {
+:global(.el-drawer__header) {
+  margin-top: 10px;
   margin-bottom: 0;
 }
 

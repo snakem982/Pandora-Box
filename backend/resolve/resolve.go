@@ -12,8 +12,8 @@ import (
 //go:embed config.yaml
 var PandoraDefaultConfig []byte
 
-//go:embed config_rule_set.yaml
-var PandoraDefaultRuleSetConfig []byte
+//go:embed config_download.yaml
+var PandoraDefaultDownloadConfig []byte
 
 var PandoraDefaultPlace = "{{PANDORA-BOX}}"
 

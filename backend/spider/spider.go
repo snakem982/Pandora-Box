@@ -55,7 +55,7 @@ func init() {
 
 func Crawl() bool {
 	// 加载默认配置中的节点
-	defaultBuf, defaultErr := os.ReadFile(filepath.Join(C.Path.HomeDir(), "uploads/"+constant.PrefixProfile+"0_cache.yaml"))
+	defaultBuf, defaultErr := GetNodesCache()
 	proxies := make([]map[string]any, 0)
 	if defaultErr == nil && len(defaultBuf) > 0 {
 		rawCfg, err := config.UnmarshalRawConfig(defaultBuf)
@@ -95,14 +95,14 @@ func Crawl() bool {
 	SortAddEmoji(proxies)
 
 	// 放入缓存
-	save2Local(proxies, "0_cache.yaml")
+	Save2Local(proxies, "0_cache.yaml")
 
 	if len(proxies) > 255 {
 		proxies = proxies[0:256]
 	}
 
 	// 存盘
-	save2Local(proxies, "0.yaml")
+	Save2Local(proxies, "0.yaml")
 
 	// 清理realIp缓存
 	go cleanRealIpCache()
@@ -185,7 +185,7 @@ func doCrawl() []map[string]any {
 	return proxies
 }
 
-func save2Local(proxies []map[string]any, fileName string) {
+func Save2Local(proxies []map[string]any, fileName string) {
 	data := make(map[string]any)
 	data["proxies"] = proxies
 	all, _ := yaml.Marshal(data)
@@ -562,4 +562,8 @@ func SortAddIndex(proxies []map[string]any) []map[string]any {
 	SortAddEmoji(proxies)
 
 	return proxies
+}
+
+func GetNodesCache() ([]byte, error) {
+	return os.ReadFile(filepath.Join(C.Path.HomeDir(), "uploads/"+constant.PrefixProfile+"0_cache.yaml"))
 }

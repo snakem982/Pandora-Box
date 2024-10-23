@@ -1,17 +1,12 @@
-# 以下代码不能缺少
-# The following code cannot be missing
-proxy-providers:
-  pandora-box:
-    type: file
-    path: {{PANDORA-BOX}}
-
-mode: rule
+port: 7890
+socks-port: 7891
+mode: Rule
 log-level: info
-mixed-port: 10000
+
 unified-delay: true
 tcp-concurrent: true
 find-process-mode: strict
-global-client-fingerprint: 360
+global-client-fingerprint: chrome
 
 profile:
   store-selected: true
@@ -28,20 +23,22 @@ dns:
   proxy-server-nameserver:
     - https://doh.pub/dns-query
     - https://dns.alidns.com/dns-query
-proxies:
+
+{{PANDORA-BOX}}
+
 proxy-groups:
   - name: 🚀 节点选择
     type: select
     proxies:
       - ♻️ 自动选择
-    include-all: true
+    include-all-proxies: true
 
   - name: ♻️ 自动选择
     type: url-test
     url: https://www.gstatic.com/generate_204
     interval: 600
     tolerance: 50
-    include-all: true
+    include-all-proxies: true
 
   - name: 🎯 全球直连
     type: select
@@ -63,7 +60,6 @@ proxy-groups:
       - 🎯 全球直连
       - 🛑 全球拦截
       - ♻️ 自动选择
-    include-all: true
 
 rules:
   - DOMAIN-SUFFIX,icloud.com,DIRECT

@@ -61,6 +61,7 @@ func main() {
 	route.Register(api.System)
 	route.Register(api.Ignore)
 	route.Register(api.MyRules)
+	route.Register(api.Filter)
 
 	addr := startHttpApi()
 

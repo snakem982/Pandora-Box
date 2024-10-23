@@ -101,7 +101,7 @@ onMounted(async () => {
   getProxies()
   activeNames.value = acName
 
-  interval = setInterval(flushDelay, 15000)
+  interval = setInterval(flushDelay, 30000)
 })
 
 watch(labelPosition, getProxies)
@@ -157,7 +157,7 @@ function setHide() {
 
 function goTop() {
   const ele: any = document.querySelector('.el-collapse-item .is-active')
-  ele.scrollIntoView({ behavior: "smooth", block: "end"});
+  ele.scrollIntoView({behavior: "smooth", block: "end"});
 }
 
 
@@ -188,7 +188,7 @@ async function getDelay() {
   }
   activeNames.value = tempName
   loading.close()
-  interval = setInterval(flushDelay, 15000)
+  interval = setInterval(flushDelay, 30000)
 }
 
 function getLocal() {
@@ -265,6 +265,10 @@ function fType(type: any): any {
   return type
 }
 
+function getIndex(prefix: string, index: number): any {
+  return prefix + "_" + new Date().getTime() + "_" + index
+}
+
 </script>
 
 <template>
@@ -291,7 +295,7 @@ function fType(type: any): any {
     <el-collapse accordion
                  v-model="activeNames"
                  v-for="(item,index) in GROUP.proxies"
-                 :key="index"
+                 :key="getIndex('active',index)"
     >
       <el-collapse-item
           :title="item.name"
@@ -299,7 +303,7 @@ function fType(type: any): any {
       >
         <el-row v-if="activeNames==item.name">
           <el-col :span="isGrid" v-for="(all,index) in reSort(item.all)"
-                  :key="'all' + index"
+                  :key="getIndex('all',index)"
                   v-show="colShow(PROVIDER[all],isHide)"
                   @click="setProxy(item,all)"
                   :id="item.name+all"

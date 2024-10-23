@@ -5,6 +5,7 @@ import _ "embed"
 const (
 	DefaultProfile  = "Profile_0"
 	DefaultTemplate = "Template_0.yaml"
+	DefaultDownload = "Download_0.yaml"
 	PrefixProfile   = "Profile_"
 	PrefixGetter    = "Getter_"
 	RealIpHeader    = "RealIp_"

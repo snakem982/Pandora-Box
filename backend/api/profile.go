@@ -81,7 +81,7 @@ func postFileProfile(w http.ResponseWriter, r *http.Request) {
 		}
 	}(open)
 	content, _ := io.ReadAll(open)
-	err := resolveConfig(false, false, "", "", header.Filename, 41, content)
+	err := ResolveConfig(false, false, "", "", header.Filename, 41, content)
 	if err != nil {
 		log.Errorln("[%s] %v", header.Filename, err)
 		render.Status(r, http.StatusBadRequest)
@@ -112,7 +112,7 @@ func postProfile(w http.ResponseWriter, r *http.Request) {
 	bodyData := []byte(body.Data)
 	_, err := config.UnmarshalRawConfig(bodyData)
 	if err == nil {
-		err = resolveConfig(false, false, "", "", tools.Dec(15), 41, bodyData)
+		err = ResolveConfig(false, false, "", "", tools.Dec(15), 41, bodyData)
 		if err == nil {
 			render.NoContent(w, r)
 			return
@@ -145,7 +145,7 @@ func postProfile(w http.ResponseWriter, r *http.Request) {
 
 	for _, url := range urls {
 		content, fileName := tools.ConcurrentHttpGet(url, nil)
-		err := resolveConfig(false, false, "", url, fileName, 31, content)
+		err := ResolveConfig(false, false, "", url, fileName, 31, content)
 		if err != nil {
 			log.Errorln("url[%s] %v", url, err)
 			continue
@@ -264,7 +264,7 @@ func refreshProfile(w http.ResponseWriter, r *http.Request) {
 
 	url := req.Url
 	content, _ := tools.ConcurrentHttpGet(url, nil)
-	err := resolveConfig(true, req.Selected, req.Id, url, req.Title, req.Type, content)
+	err := ResolveConfig(true, req.Selected, req.Id, url, req.Title, req.Type, content)
 	if err != nil {
 		log.Errorln("url[%s] %v", url, err)
 		render.Status(r, http.StatusBadRequest)
@@ -314,7 +314,7 @@ func ReplaceTwoPoint(path string) string {
 	return strings.Replace(path, "../", "", 1)
 }
 
-func resolveConfig(refresh, selected bool,
+func ResolveConfig(refresh, selected bool,
 	id string, url string, fileName string,
 	kind int, content []byte) error {
 

@@ -217,7 +217,7 @@ function toCrawl() {
 <template>
   <div class="header">
     <el-row :gutter="24">
-      <el-col :span="18">
+      <el-col :span="16">
         <el-input
             v-model="subOrShare"
             placeholder="订阅地址、分享链接、Base64、Yaml、Subscription、ShareLink"
@@ -226,7 +226,7 @@ function toCrawl() {
             autocomplete="off"
         ></el-input>
       </el-col>
-      <el-col :span="6" style="padding-top: 5px">
+      <el-col :span="8" style="padding-top: 5px">
         <el-tooltip
             content="下载 Download"
             placement="bottom"

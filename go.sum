@@ -237,8 +237,8 @@ github.com/sirupsen/logrus v1.9.3 h1:dueUQJ1C2q9oE3F7wvmSGAaVtTmUizReu6fjN8uqzbQ
 github.com/sirupsen/logrus v1.9.3/go.mod h1:naHLuLoDiP4jHNo9R0sCBMtWGeIprob74mVsIT4qYEQ=
 github.com/snakem982/mieru/v3 v3.8.1-moshen h1:2MVkQ5cxinMvF7vx/kNgsZN5sfcEB9fEEzhuXPDXagM=
 github.com/snakem982/mieru/v3 v3.8.1-moshen/go.mod h1:GIo4q5nOusvSjN0bYOHYfNejHqdSQIKFolsgh5iYC5k=
-github.com/snakem982/mihomo v1.0.5-moshen h1:UFiI7n6AGilbqvf+T9zXhqzg41UmqFzxQPr4rw+zgvE=
-github.com/snakem982/mihomo v1.0.5-moshen/go.mod h1:qa8edUIERvaCiiCKd7viRWT53czPhxmZ8xRpu+jAEbc=
+github.com/snakem982/mihomo v1.0.6-moshen h1:SE6pCcnfxmQv8rGPiBr9ZF3uHFqa1Kg8ZiX3Y0FdATI=
+github.com/snakem982/mihomo v1.0.6-moshen/go.mod h1:qa8edUIERvaCiiCKd7viRWT53czPhxmZ8xRpu+jAEbc=
 github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=
 github.com/stretchr/objx v0.4.0/go.mod h1:YvHI0jy2hoMjB+UWwv71VJQ9isScKT/TqJzVSSt89Yw=
 github.com/stretchr/objx v0.5.0/go.mod h1:Yh+to48EsGEfYuaHDzXPcE3xhTkx73EhmCGUpEOglKo=
