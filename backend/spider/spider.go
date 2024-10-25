@@ -156,6 +156,9 @@ func doCrawl() []map[string]any {
 	// 优选ip
 	isNeedPremium := false
 	for _, proxy := range proxies {
+		if proxy["server"] == nil {
+			continue
+		}
 		server := proxy["server"].(string)
 		if premium.IsCdnIp(CloudflareCIDR, server) {
 			isNeedPremium = true
@@ -168,6 +171,9 @@ func doCrawl() []map[string]any {
 			_rand.Seed(time.Now().UnixNano())
 			httpsIpsLen := len(httpsIps) - 1
 			for _, proxy := range proxies {
+				if proxy["server"] == nil {
+					continue
+				}
 				proxyCopy := proxy
 				server := proxy["server"].(string)
 				if premium.IsCdnIp(CloudflareCIDR, server) {
