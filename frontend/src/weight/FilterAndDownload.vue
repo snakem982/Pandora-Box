@@ -32,6 +32,8 @@ onMounted(async () => {
     nodeFilterValue.value = 128
   } else if (msg.count > 64) {
     nodeFilterValue.value = 64
+  } else if (msg.count > 32) {
+    nodeFilterValue.value = 32
   }
 })
 
@@ -81,6 +83,10 @@ const handleCountryCheckAll = (val: CheckboxValueType) => {
 
 const options = [
   {
+    value: 32,
+    label: 32,
+  },
+  {
     value: 64,
     label: 64,
   },
@@ -112,13 +118,8 @@ function getReq(option: number) {
     option: option
   }
 
-  if (!protocolCheckAll.value) {
-    req["protocol"] = protocol.value.map((k, _) => k) as any
-  }
-
-  if (!countryCheckAll.value) {
-    req["country"] = country.value.map((k, _) => k) as any
-  }
+  req["protocol"] = protocol.value.map((k, _) => k) as any
+  req["country"] = country.value.map((k, _) => k) as any
 
   return req
 }
