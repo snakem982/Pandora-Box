@@ -94,7 +94,7 @@ onMounted(async () => {
           <el-icon>
             <MagicStick/>
           </el-icon>
-          <span>抓取 CRAWL</span>
+          <span>爬取 CRAWL</span>
         </el-menu-item>
         <el-menu-item index="/connection">
           <el-icon>

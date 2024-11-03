@@ -55,7 +55,7 @@ var shareLinkReg = regexp.MustCompile("(vless|vmess|trojan|ss|ssr|tuic|hysteria|
 
 // grepShareLink
 //
-//	@Description: 抓取分享链接
+//	@Description: 爬取分享链接
 //	@param all
 //	@return []string
 func grepShareLink(all []byte) []string {

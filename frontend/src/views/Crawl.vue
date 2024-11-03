@@ -137,7 +137,7 @@ const ToDelay = (delay: number) => new Promise((resolve) => setTimeout(resolve, 
 async function crawling() {
   const loading = ElLoading.service({
     lock: true,
-    text: '抓取中Crawling...',
+    text: '爬取中Crawling...',
     background: 'rgba(0, 0, 0, 0.7)',
   })
 
@@ -154,14 +154,15 @@ async function crawling() {
     }
 
     await get<any>("/crawl", {timeout: 1800000})
-    ElMessage.success("抓取成功Crawling Success")
 
     if (needTun) {
       await patch("/configs", {tun: {enable: true, "stack": tun}})
     }
+
+    ElMessage.success("爬取成功Crawling Success")
   } catch (error) {
     console.error(error);
-    ElMessage.error("抓取失败Crawling Failed")
+    ElMessage.error("爬取失败Crawling Failed")
   }
 
   loading.close()
@@ -177,7 +178,7 @@ async function filter() {
     fad.value = new Date().getTime()
     filterShow.value = true
   } else {
-    ElMessage.warning("暂无节点缓存，请进行抓取 There is no node cache yet, please crawl")
+    ElMessage.warning("暂无节点缓存，请进行爬取 There is no node cache yet, please crawl")
   }
 }
 
@@ -210,7 +211,7 @@ async function filter() {
         </el-tooltip>
 
         <el-tooltip
-            content="抓取 Crawl"
+            content="爬取 Crawl"
             placement="bottom"
         >
           <el-button
@@ -255,8 +256,8 @@ async function filter() {
             max-height="85vh"
             empty-text="暂无数据 No Data"
             stripe>
-    <el-table-column fixed prop="type" label="抓取类型 Type" width="150em"/>
-    <el-table-column label="抓取地址 Url" show-overflow-tooltip>
+    <el-table-column fixed prop="type" label="爬取类型 Type" width="150em"/>
+    <el-table-column label="爬取地址 Url" show-overflow-tooltip>
       <template #default="scope">
         <el-text truncated size="large" v-if="scope.row.url.length > 128"> {{
             scope.row.url.substring(0, 128)
@@ -283,16 +284,16 @@ async function filter() {
 
   <el-dialog v-model="dialogFormVisible" :title="addFlag?'添加 Add':'编辑 Edit'">
     <el-form :model="form">
-      <el-form-item label="抓取类型 Type" :label-width="formLabelWidth">
+      <el-form-item label="爬取类型 Type" :label-width="formLabelWidth">
         <el-select v-model="form.type" placeholder="选择类型 Select type" style="width: 100%">
           <el-option label="clash订阅(clash subscription)" value="clash"/>
           <el-option label="v2ray订阅(v2ray subscription)" value="v2ray"/>
           <el-option label="分享链接(share link)" value="share"/>
-          <el-option label="模糊抓取(fuzzy crawling)" value="fuzzy"/>
+          <el-option label="模糊爬取(fuzzy crawling)" value="fuzzy"/>
           <el-option label="自定义输入(custom input)" value="local"/>
         </el-select>
       </el-form-item>
-      <el-form-item label="抓取地址 Url" :label-width="formLabelWidth">
+      <el-form-item label="爬取地址 Url" :label-width="formLabelWidth">
         <el-input v-model="form.url" autocomplete="off" type="textarea"/>
       </el-form-item>
     </el-form>
@@ -313,7 +314,7 @@ async function filter() {
       size="100vh"
   >
     <div>
-      <el-text class="el-text--primary title">1、抓取逻辑 Crawl Logic</el-text>
+      <el-text class="el-text--primary title">1、爬取逻辑 Crawl Logic</el-text>
       <div class="content">
         <el-text>- 节点可用</el-text>
         <br>
@@ -323,7 +324,7 @@ async function filter() {
           如果为Cloudflare Ip则根据本机网络环境自动优选Cloudflare Ip后，新增一个节点到列表中
         </el-text>
         <br>
-        <el-text class="el-text--danger">- 抓取成功会更新默认配置</el-text>
+        <el-text class="el-text--danger">- 爬取成功会更新默认配置</el-text>
         <br><br>
 
         <el-text>- Node available</el-text>
@@ -341,7 +342,7 @@ async function filter() {
     </div>
 
     <div>
-      <el-text class="el-text--primary title">2、抓取类型 Crawl Type</el-text>
+      <el-text class="el-text--primary title">2、爬取类型 Crawl Type</el-text>
       <div class="content">
         <el-text>- clash订阅(clash subscription)</el-text>
         <br>
@@ -381,7 +382,7 @@ async function filter() {
         <br>
         <el-text>&emsp;hy2://...</el-text>
         <br><br>
-        <el-text>- 模糊抓取(fuzzy crawling)</el-text>
+        <el-text>- 模糊爬取(fuzzy crawling)</el-text>
         <br>
         <el-text>&emsp;当内容既包含订阅地址又包含分享链接时使用。</el-text>
         <br>
@@ -394,7 +395,7 @@ async function filter() {
         <br>
         <el-text>- 自定义输入(custom input)</el-text>
         <br>
-        <el-text>&emsp;用于抓取本地文件，可将本地文件的内容直接输入到url。</el-text>
+        <el-text>&emsp;用于爬取本地文件，可将本地文件的内容直接输入到url。</el-text>
         <br>
         <el-text>&emsp;Used to grab local files, the content of local files can be directly input into the URL.
         </el-text>

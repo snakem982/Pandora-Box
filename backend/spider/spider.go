@@ -65,7 +65,7 @@ func Crawl() bool {
 		}
 	}
 
-	// 低于节点阈值进行抓取
+	// 低于节点阈值进行爬取
 	if len(proxies) < 1024 {
 		proxies = append(doCrawl(), proxies...)
 	}
@@ -130,7 +130,7 @@ func doCrawl() []map[string]any {
 		}
 	}
 
-	// 进行抓取
+	// 进行爬取
 	if len(getters) > 0 {
 		wg := &sync.WaitGroup{}
 		var pc = make(chan []map[string]any)

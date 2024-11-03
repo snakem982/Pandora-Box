@@ -19,16 +19,14 @@ const country = ref<CheckboxValueType[]>([])
 const countries = ref<any[]>([])
 
 const nodeCount = ref(0)
-const nodeFilterValue = ref(256)
+const nodeFilterValue = ref(128)
 
 onMounted(async () => {
   const msg = await get<any>("/nodeCache");
   protocols.value = msg.protocol
   countries.value = msg.country
   nodeCount.value = msg.count
-  if (msg.count > 256) {
-    nodeFilterValue.value = 256
-  } else if (msg.count > 128) {
+  if (msg.count > 128) {
     nodeFilterValue.value = 128
   } else if (msg.count > 64) {
     nodeFilterValue.value = 64

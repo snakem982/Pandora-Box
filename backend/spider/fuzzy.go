@@ -99,7 +99,7 @@ func ComputeFuzzy(content []byte, headers map[string]string) []map[string]any {
 		}
 	}
 
-	// 进行订阅抓取
+	// 进行订阅爬取
 	fuzzy := grepFuzzy(content, providerUrl)
 	pool := mypool.NewTimeoutPoolWithDefaults()
 	pool.WaitCount(len(fuzzy))
@@ -112,7 +112,7 @@ func ComputeFuzzy(content []byte, headers map[string]string) []map[string]any {
 			defer func() {
 				// 每个协程内部使用recover捕获可能在调用逻辑中发生的panic
 				if e := recover(); e != nil {
-					log.Errorln("====抓取错误====%s", e)
+					log.Errorln("====爬取错误====%s", e)
 				}
 				done <- struct{}{}
 			}()
@@ -172,7 +172,7 @@ func ComputeFuzzy(content []byte, headers map[string]string) []map[string]any {
 	}
 	pool.StartAndWait()
 
-	// 进行分享链接抓取
+	// 进行分享链接爬取
 	builder := strings.Builder{}
 	for _, link := range grepShareLink(content) {
 		builder.WriteString(link + "\n")

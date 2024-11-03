@@ -18,10 +18,10 @@
 开启系统代理后，打开浏览器输入谷歌地址，页面可以显示出来就OK了
 <img src="img/manual/step5.png"  style="width:600px;" />
 
-## 6、抓取使用
+## 6、爬取使用
 **不知道选什么类型？**<br>
-**使用模糊抓取即可**<br>
-<br>**抓取成功，回到配置页面，启用默认配置，即可使用抓取到的节点**
+**使用模糊爬取即可**<br>
+<br>**爬取成功，回到配置页面，启用默认配置，即可使用爬取到的节点**
 <br><br>
 <img src="img/manual/step6-1.png"  style="width:600px;" />
 <img src="img/manual/step6-2.png"  style="width:600px;" />
