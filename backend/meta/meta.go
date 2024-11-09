@@ -197,7 +197,7 @@ func StartCore(profile resolve.Profile, reload bool) {
 		return
 	}
 
-	ctp.SetUA("Clash.Meta/1.18.9")
+	ctp.SetUA("Clash.Meta/1.18.10")
 	if !reload {
 		freePort, err := tools.GetFreeWithPort(10000)
 		if err != nil {
