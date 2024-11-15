@@ -107,10 +107,18 @@ func Filter(r chi.Router) {
 					render.PlainText(w, r, "true")
 					return
 				case 3:
+					profileName := "Filter-"
+					if len(req.Country) == 1 {
+						profileName = req.Country[0] + "-"
+					}
+					if len(req.Protocol) == 1 {
+						profileName += req.Protocol[0] + "-"
+					}
+					profileName += tools.Dec(5)
 					nodes := make(map[string]any)
 					nodes["proxies"] = proxies
 					content, _ := yaml.Marshal(nodes)
-					_ = ResolveConfig(false, false, "", "", "Filter_"+tools.Dec(8), 41, content)
+					_ = ResolveConfig(false, false, "", "", profileName, 41, content)
 					render.PlainText(w, r, "true")
 					return
 				case 4:
