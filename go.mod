@@ -143,7 +143,7 @@ require (
 
 replace (
 	github.com/enfein/mieru/v3 => github.com/snakem982/mieru/v3 v3.8.1-moshen
-	github.com/metacubex/mihomo => github.com/snakem982/mihomo v1.0.9-moshen
+	github.com/metacubex/mihomo => github.com/snakem982/mihomo v1.0.10-moshen
 	github.com/metacubex/sing-tun => github.com/metacubex/sing-tun v0.2.7-0.20241021011113-857bcd6ee47c
 	github.com/sagernet/sing => github.com/metacubex/sing v0.0.0-20241021005542-18b67490300a
 )
