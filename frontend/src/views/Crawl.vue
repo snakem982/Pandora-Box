@@ -14,10 +14,15 @@ import {ElLoading, ElMessage} from "element-plus";
 import {IsAdmin} from "../../wailsjs/go/main/App";
 import FilterAndDownload from "../weight/FilterAndDownload.vue";
 
+interface Headers {
+  [key: string]: any;
+}
+
 interface Getter {
   id: string
   type: string
   url: string
+  headers: Headers
 }
 
 const drawer = ref(false)
@@ -36,6 +41,9 @@ const form = reactive({
   id: '',
   type: '',
   url: '',
+  auth: '',
+  ua: '',
+  cookie: '',
 })
 const dialogFormVisible = ref(false)
 const addFlag = ref(true)
@@ -51,8 +59,23 @@ async function getGetter() {
   }
 }
 
-async function postGetter(getter: Getter) {
+async function postGetter(formData: any) {
   try {
+    const getter: Getter = {
+      id: formData.id,
+      type: formData.type,
+      url: formData.url,
+      headers: {},
+    }
+    if (formData.auth) {
+      getter.headers['Authorization'] = formData.auth
+    }
+    if (formData.ua) {
+      getter.headers['User-Agent'] = formData.ua
+    }
+    if (formData.cookie) {
+      getter.headers['Cookie'] = formData.cookie
+    }
     await post<any>("/getter", getter)
     await getGetter()
   } catch (error) {
@@ -60,8 +83,23 @@ async function postGetter(getter: Getter) {
   }
 }
 
-async function putGetter(getter: Getter) {
+async function putGetter(formData: any) {
   try {
+    const getter: Getter = {
+      id: formData.id,
+      type: formData.type,
+      url: formData.url,
+      headers: {},
+    }
+    if (formData.auth) {
+      getter.headers['Authorization'] = formData.auth
+    }
+    if (formData.ua) {
+      getter.headers['User-Agent'] = formData.ua
+    }
+    if (formData.cookie) {
+      getter.headers['Cookie'] = formData.cookie
+    }
     await put<any>("/getter/" + getter.id, getter)
     await getGetter()
   } catch (error) {
@@ -84,6 +122,9 @@ function addShow() {
   form.id = ""
   form.type = "fuzzy"
   form.url = search.value || ""
+  form.auth = ""
+  form.ua = ""
+  form.cookie = ""
 }
 
 function editShow(getter: Getter) {
@@ -92,6 +133,19 @@ function editShow(getter: Getter) {
   form.id = getter.id
   form.type = getter.type
   form.url = getter.url
+  let headers = getter.headers
+  if (!headers) {
+    return
+  }
+  if (headers['Authorization']) {
+    form.auth = headers['Authorization']
+  }
+  if (headers['User-Agent']) {
+    form.ua = headers['User-Agent']
+  }
+  if (headers['Cookie']) {
+    form.cookie = headers['Cookie']
+  }
 }
 
 function isValidHttpUrl(url: string): boolean {
@@ -112,16 +166,20 @@ async function addOrEdit() {
     ElMessage.error("类型不能为空 Type cannot be empty")
     return
   }
-  const filter = tableData.filter(data => data.type == form.type && data.url == form.url);
-  if (filter.length != 0) {
-    ElMessage.error("地址已存在 Url already exists")
-    return
-  }
+
   if (addFlag.value) {
+
+    const filter = tableData.filter(data => data.type == form.type && data.url == form.url);
+    if (filter.length != 0) {
+      ElMessage.error("地址已存在 Url already exists")
+      return
+    }
+
     if (form.type != "local" && !isValidHttpUrl(form.url)) {
       ElMessage.error("地址格式不正确 Url format is incorrect")
       return
     }
+
     await postGetter(form)
     search.value = ""
   } else {
@@ -296,6 +354,19 @@ async function filter() {
       <el-form-item label="爬取地址 Url" :label-width="formLabelWidth">
         <el-input v-model="form.url" autocomplete="off" type="textarea"/>
       </el-form-item>
+
+      <el-form-item label="Authorization" :label-width="formLabelWidth">
+        <el-input v-model="form.auth" autocomplete="off" type="text"/>
+      </el-form-item>
+
+      <el-form-item label="User-Agent" :label-width="formLabelWidth">
+        <el-input v-model="form.ua" autocomplete="off" type="text"/>
+      </el-form-item>
+
+      <el-form-item label="Cookie" :label-width="formLabelWidth">
+        <el-input v-model="form.cookie" autocomplete="off" type="text"/>
+      </el-form-item>
+
     </el-form>
     <template #footer>
       <span class="dialog-footer">
