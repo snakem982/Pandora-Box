@@ -2,17 +2,18 @@
 import {onBeforeMount, reactive, ref} from 'vue'
 import {del, get, patch, put} from "../api/http";
 import {toggleDark} from "../composables";
-import {ClipboardSetText, WindowSetDarkTheme, WindowSetLightTheme} from "../../wailsjs/runtime";
+import {BrowserOpenURL, ClipboardSetText, WindowSetDarkTheme, WindowSetLightTheme} from "../../wailsjs/runtime";
 import {
   GetFreePort,
   GetMacAcStatus,
   GetSecret,
   IsAdmin,
   IsMac,
+  IsNeedUpdate,
   OpenConfigDirectory,
   SetMacAc
 } from "../../wailsjs/go/main/App";
-import {ElMessage, ElMessageBox} from "element-plus";
+import {ElLoading, ElMessage, ElMessageBox} from "element-plus";
 
 const form = reactive({
   mode: "rule",
@@ -120,6 +121,37 @@ function copySecret() {
   })
 }
 
+async function checkUpdate() {
+  const loading = ElLoading.service({
+    lock: true,
+    text: '检查中Checking...',
+    background: 'rgba(0, 0, 0, 0.7)',
+  })
+
+  const isNeedUpdate = await IsNeedUpdate()
+  loading.close()
+
+  if (isNeedUpdate === "true") {
+    ElMessageBox.confirm(
+        '发现新版本，前往下载 Found a new version, Continue?',
+        '更新提示 Warning',
+        {
+          confirmButtonText: '确定 OK',
+          cancelButtonText: '取消 Cancel',
+          type: 'warning',
+        }
+    )
+        .then(() => {
+          BrowserOpenURL('https://github.com/snakem982/Pandora-Box/releases/latest')
+        })
+  } else {
+    ElMessage({
+      message: "已经是最新版本 No updates available",
+      type: 'success',
+    })
+  }
+}
+
 const pwdVisible = ref(false)
 const pwd = ref("")
 const isMac = ref(false)
@@ -203,7 +235,7 @@ onBeforeMount(async () => {
   await getConfig()
 
   const isAdmin = await IsAdmin()
-  if (isAdmin == "true") {
+  if (isAdmin === "true") {
     showTun.value = true
     const tun = localStorage.getItem("tun")
     if (tun && form.tun != tun) {
@@ -309,6 +341,9 @@ onBeforeMount(async () => {
         <el-form-item label="控制密钥 clash secret">
           <el-text>{{ form.clash_secret }}</el-text>&emsp;&emsp;
           <el-button type="primary" size="small" @click="copySecret" round>复制 copy</el-button>
+        </el-form-item>
+        <el-form-item label="软件更新 software update">
+          <el-button type="primary" size="small" @click="checkUpdate" round>检查 check</el-button>
         </el-form-item>
       </el-form>
     </div>

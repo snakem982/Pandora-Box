@@ -12,6 +12,7 @@ import (
 	"pandora-box/backend/meta"
 	isadmin "pandora-box/backend/system/admin"
 	"pandora-box/backend/system/open"
+	"pandora-box/backend/system/update"
 	"runtime"
 	"strings"
 )
@@ -145,6 +146,15 @@ func (a *App) IsUnifiedDelay() string {
 	meta.StartLock.Lock()
 	defer meta.StartLock.Unlock()
 	if meta.NowConfig.General.UnifiedDelay {
+		return "true"
+	}
+
+	return "false"
+}
+
+func (a *App) IsNeedUpdate() string {
+	needUpdate, _ := update.IsNeedUpdate()
+	if needUpdate {
 		return "true"
 	}
 

@@ -22,6 +22,10 @@ export function IsMac() {
   return window['go']['main']['App']['IsMac']();
 }
 
+export function IsNeedUpdate() {
+  return window['go']['main']['App']['IsNeedUpdate']();
+}
+
 export function IsUnifiedDelay() {
   return window['go']['main']['App']['IsUnifiedDelay']();
 }

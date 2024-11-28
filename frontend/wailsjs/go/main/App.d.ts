@@ -11,6 +11,8 @@ export function IsAdmin():Promise<string>;
 
 export function IsMac():Promise<string>;
 
+export function IsNeedUpdate():Promise<string>;
+
 export function IsUnifiedDelay():Promise<string>;
 
 export function OpenConfigDirectory():Promise<void>;

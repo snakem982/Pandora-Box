@@ -43,7 +43,7 @@ type void struct{}
 
 var nullValue void
 
-var re = regexp.MustCompile(`proxies|api|token|raw|subscribe|txt|yaml|yml|sub|uuid`)
+var re = regexp.MustCompile(`proxies|api|clash|Clash|v2ray|token|raw|subscribe|txt|yaml|yml|sub|uuid`)
 var not = regexp.MustCompile(`svg|png|mp4|mp3|jpg|jpeg|m3u8|flv|gif|icon|ktv|mov|webcam`)
 var urlRe = regexp.MustCompile("(https|http)://[-A-Za-z0-9\u4e00-\u9ea5+&@#/%?=~_!:,.;]+[-A-Za-z0-9\u4e00-\u9ea5+&@#/%=~_]")
 

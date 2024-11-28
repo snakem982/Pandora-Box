@@ -11,13 +11,14 @@ import (
 	"time"
 )
 
-func IsNeedUpdate() bool {
+func IsNeedUpdate() (bool, string) {
 	all, _ := tools.ConcurrentHttpGet(constant.PandoraVersionUrl, nil)
 	if all != nil && len(all) > 0 {
-		return string(all) != constant.PandoraVersion
+		ver := string(all)
+		return ver != constant.PandoraVersion, ver
 	}
 
-	return false
+	return false, constant.PandoraVersion
 }
 
 func Replace() bool {

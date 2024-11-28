@@ -51,7 +51,7 @@ onMounted(async () => {
       }
 
       const isAdmin = await IsAdmin()
-      if (isAdmin == "true") {
+      if (isAdmin === "true") {
         const tun = localStorage.getItem("tun")
         if (tun != "off") {
           await patch("/configs", {tun: {enable: false}})
