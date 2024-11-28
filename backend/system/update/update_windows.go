@@ -25,7 +25,7 @@ func Replace() bool {
 	err := os.Rename("./cms-test.exe", "./cms-test-temp.exe")
 	if err != nil {
 		fmt.Print(err)
-		return
+		return false
 	}
 	time.Sleep(5 * time.Second)
 	os.Rename("./cms.exe", "./cms-test.exe")
