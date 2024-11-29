@@ -7,7 +7,7 @@ import {ClipboardGetText, ClipboardSetText} from "../../wailsjs/runtime";
 import {mdiDownload, mdiFileReplace, mdiFolderOpen} from "@mdi/js";
 import SvgIcon from "@jamescoyle/vue-icon";
 import {useRouter} from "vue-router";
-import {GetFreePort, GetSecret} from "../../wailsjs/go/main/App";
+import {GetFreePort, GetSecret, IsAdmin} from "../../wailsjs/go/main/App";
 
 const subOrShare = ref('')
 const drawer = ref(false)
@@ -147,10 +147,24 @@ function cardSelectClass(isSelect: boolean): string {
   }
 }
 
+const ToDelay = (delay: number) => new Promise((resolve) => setTimeout(resolve, delay))
+
 async function selectProfile(profile: Profile) {
   if (profile.selected) {
     return
   }
+
+  let needTun = false
+  const isAdmin = await IsAdmin()
+  const tun = localStorage.getItem("tun")
+  if (isAdmin == "true") {
+    if (tun != "off") {
+      await patch("/configs", {tun: {enable: false}})
+      needTun = true
+      await ToDelay(500)
+    }
+  }
+
   for (let datum of data) {
     if (datum.selected) {
       datum.selected = false
@@ -163,6 +177,11 @@ async function selectProfile(profile: Profile) {
   await patch<any>("/profile/" + profile.id, profile)
 
   setTimeout(() => del("/connections"), 3000)
+
+  if (needTun) {
+    await patch("/configs", {tun: {enable: true, "stack": tun}})
+  }
+
 }
 
 async function pastTxt() {
