@@ -7,7 +7,7 @@ A Simple Mihomo GUI
 ## Features
 
 - Local HTTP/HTTPS/SOCKS proxy support
-- Vmess, Vless, Shadowsocks, Trojan, Tuic, Hysteria, Hysteria2, Wireguard protocol support
+- Vmess, Vless, Shadowsocks, Trojan, Tuic, Hysteria, Hysteria2, Wireguard, [Mieru](./Mieru.md) protocol support
 - Sharing link, Subscription link, Base64, Yaml format support
 - Conversion of nodes and subscriptions into mihomo configurations
 - Node crawling support
