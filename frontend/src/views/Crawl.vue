@@ -346,6 +346,7 @@ async function filter() {
         <el-select v-model="form.type" placeholder="选择类型 Select type" style="width: 100%">
           <el-option label="clash订阅(clash subscription)" value="clash"/>
           <el-option label="v2ray订阅(v2ray subscription)" value="v2ray"/>
+          <el-option label="sing-box订阅(sing-box subscription)" value="sing"/>
           <el-option label="分享链接(share link)" value="share"/>
           <el-option label="模糊爬取(fuzzy crawling)" value="fuzzy"/>
           <el-option label="自定义输入(custom input)" value="local"/>
@@ -427,6 +428,13 @@ async function filter() {
         <el-text>&emsp;一般用Base64编码</el-text>
         <br>
         <el-text>&emsp;Generally encoded in Base64</el-text>
+        <br>
+        <br>
+        <el-text>- sing-box订阅(sing-box subscription)</el-text>
+        <br>
+        <el-text>&emsp;一般用Json编码</el-text>
+        <br>
+        <el-text>&emsp;Generally encoded in Json</el-text>
         <br>
         <br>
         <el-text>- 分享链接(share link)</el-text>

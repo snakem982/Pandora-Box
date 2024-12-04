@@ -94,8 +94,13 @@ func ComputeFuzzy(content []byte, headers map[string]string) []map[string]any {
 		// 尝试v2ray解析 成功返回
 		v2ray, err := convert.ConvertsV2Ray(content)
 		if err == nil && v2ray != nil {
-			proxies = v2ray
-			return proxies
+			return v2ray
+		}
+
+		// 尝试sing解析 成功返回
+		sing, err := convert.ConvertsSingBox(content)
+		if err == nil && sing != nil {
+			return sing
 		}
 	}
 

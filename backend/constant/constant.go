@@ -18,6 +18,7 @@ const (
 	CollectV2ray     = "v2ray"
 	CollectSharelink = "share"
 	CollectFuzzy     = "fuzzy"
+	CollectSingBox   = "sing"
 )
 
 //go:embed version.txt

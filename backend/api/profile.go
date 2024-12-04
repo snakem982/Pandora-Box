@@ -319,6 +319,7 @@ func ResolveConfig(refresh, selected bool,
 	kind int, content []byte) error {
 
 	if content == nil || len(content) < 32 {
+		log.Errorln("ResolveConfig error: %s", "content is nil or length less 32")
 		return fmt.Errorf("content is nil or length less 32")
 	}
 
@@ -349,15 +350,23 @@ func ResolveConfig(refresh, selected bool,
 	if rawErr != nil {
 		log.Errorln("config.UnmarshalRawConfig error: %s", rawErr.Error())
 		var base64Error error
+		var jsonError error
 		ray, base64Error = convert.ConvertsV2Ray(content)
 		if base64Error != nil {
-			return fmt.Errorf("convert.ConvertsV2Ray error: %s", base64Error.Error())
+			log.Errorln("convert.ConvertsV2Ray error: %s", base64Error.Error())
+			// base64解析失败，尝试json解码
+			ray, jsonError = convert.ConvertsSingBox(content)
+			if jsonError != nil {
+				log.Errorln("convert.ConvertsSingBox error: %s", jsonError.Error())
+				return fmt.Errorf("convert.ConvertsSingBox error: %s", jsonError.Error())
+			}
 		}
-		ray = resolve.MapsToProxies(ray)
-		if len(ray) == 0 {
+		rails := resolve.MapsToProxies(ray)
+		if len(rails) == 0 {
+			log.Errorln("resolve.MapsToProxies error: %s", "Node is 0")
 			return fmt.Errorf("resolve.MapsToProxies error: %s", "Node is 0")
 		}
-		rails := spider.SortAddIndex(ray)
+		spider.SortProxies(rails)
 		if len(rails) > 511 {
 			rails = rails[0:512]
 		}
@@ -373,11 +382,12 @@ func ResolveConfig(refresh, selected bool,
 		if yamlError != nil {
 			log.Errorln("config.ParseRawConfig error: %s", yamlError.Error())
 			// 配置校验失败，尝试提取可用节点
-			ray = resolve.MapsToProxies(rawCfg.Proxy)
-			if len(ray) == 0 {
+			rails := resolve.MapsToProxies(rawCfg.Proxy)
+			if len(rails) == 0 {
+				log.Errorln("resolve.MapsToProxies error: %s", "Node is 0")
 				return fmt.Errorf("resolve.MapsToProxies error: %s", "Node is 0")
 			}
-			rails := spider.SortAddIndex(ray)
+			spider.SortProxies(rails)
 			if len(rails) > 511 {
 				rails = rails[0:512]
 			}
