@@ -35,6 +35,7 @@ func MapsToProxies(ray []map[string]any) []map[string]any {
 				}
 				done <- struct{}{}
 			}()
+			proxy["skip-cert-verify"] = true
 			_, err := adapter.ParseProxy(proxy)
 			if err == nil {
 				mutex.Lock()
