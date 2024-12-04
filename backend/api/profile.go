@@ -12,7 +12,6 @@ import (
 	C "github.com/metacubex/mihomo/constant"
 	"github.com/metacubex/mihomo/hub/route"
 	"github.com/metacubex/mihomo/log"
-	"golang.org/x/net/html"
 	"gopkg.in/yaml.v3"
 	"io"
 	"mime/multipart"
@@ -314,6 +313,14 @@ func ReplaceTwoPoint(path string) string {
 	return strings.Replace(path, "../", "", 1)
 }
 
+type result struct {
+	findProvider bool
+	content      []byte
+	suffix       string
+	kind         int
+	rawCfg       *config.RawConfig
+}
+
 func ResolveConfig(refresh, selected bool,
 	id string, url string, fileName string,
 	kind int, content []byte) error {
@@ -337,82 +344,19 @@ func ResolveConfig(refresh, selected bool,
 			snowflakeId = i
 		}
 	}
-	// 是否使用Provider
-	findProvider := false
-	// 对内容进行html解码
-	temp := html.UnescapeString(string(content))
-	temp = strings.Replace(temp, "\"HOST\"", "\"Host\"", -1)
-	content = []byte(temp)
-	rawCfg, rawErr := config.UnmarshalRawConfig(content)
-	var ray []map[string]any
-	suffix := "yaml"
-	// yaml解析失败，尝试base64解码
-	if rawErr != nil {
-		log.Errorln("config.UnmarshalRawConfig error: %s", rawErr.Error())
-		var base64Error error
-		var jsonError error
-		ray, base64Error = convert.ConvertsV2Ray(content)
-		if base64Error != nil {
-			log.Errorln("convert.ConvertsV2Ray error: %s", base64Error.Error())
-			// base64解析失败，尝试json解码
-			ray, jsonError = convert.ConvertsSingBox(content)
-			if jsonError != nil {
-				log.Errorln("convert.ConvertsSingBox error: %s", jsonError.Error())
-				return fmt.Errorf("convert.ConvertsSingBox error: %s", jsonError.Error())
-			}
-		}
-		rails := resolve.MapsToProxies(ray)
-		if len(rails) == 0 {
-			log.Errorln("resolve.MapsToProxies error: %s", "Node is 0")
-			return fmt.Errorf("resolve.MapsToProxies error: %s", "Node is 0")
-		}
-		spider.SortProxies(rails)
-		if len(rails) > 511 {
-			rails = rails[0:512]
-		}
-		proxies := make(map[string]any)
-		proxies["proxies"] = rails
-		content, _ = yaml.Marshal(proxies)
-		kind = kind + 1
-		suffix = "txt"
-	} else {
-		// yaml解析成功，进行配置校验
-		rawCfg.GeodataMode = false
-		ko, yamlError := config.ParseRawConfig(rawCfg)
-		if yamlError != nil {
-			log.Errorln("config.ParseRawConfig error: %s", yamlError.Error())
-			// 配置校验失败，尝试提取可用节点
-			rails := resolve.MapsToProxies(rawCfg.Proxy)
-			if len(rails) == 0 {
-				log.Errorln("resolve.MapsToProxies error: %s", "Node is 0")
-				return fmt.Errorf("resolve.MapsToProxies error: %s", "Node is 0")
-			}
-			spider.SortProxies(rails)
-			if len(rails) > 511 {
-				rails = rails[0:512]
-			}
-			proxies := make(map[string]any)
-			proxies["proxies"] = rails
-			content, _ = yaml.Marshal(proxies)
-		} else {
-			findProvider = changeProvidersPath(snowflakeId, rawCfg)
-			if !findProvider {
-				if len(ko.Proxies) < 7 {
-					return fmt.Errorf("config.ParseRawConfig error: %s", "Node is 0")
-				}
-			}
 
-			if len(ko.Proxies) > 512 {
-				// 对于超过512的节点进行截取
-				log.Infoln("config.ParseRawConfig : %s Try to cut", "Node size is more than 512.")
-				ray = resolve.MapsToProxies(rawCfg.Proxy)
-				spider.SortProxies(ray)
-				rails := ray[0:512]
-				proxies := make(map[string]any)
-				proxies["proxies"] = rails
-				content, _ = yaml.Marshal(proxies)
-			}
-		}
+	// 尝试 clash 订阅解析
+	r, err := resolveYaml(kind, snowflakeId, content)
+	// 尝试 v2ray 订阅解析
+	if err != nil {
+		r, err = resolveBase64(kind, content)
+	}
+	// 尝试 sing-box 订阅解析
+	if err != nil {
+		r, err = resolveJson(kind, content)
+	}
+	if err != nil {
+		return err
 	}
 
 	profile := resolve.Profile{}
@@ -427,16 +371,17 @@ func ResolveConfig(refresh, selected bool,
 	profile.Order = snowflakeId
 	profile.Selected = selected
 
-	if findProvider {
+	content = r.content
+	if r.findProvider {
 		pg := struct {
 			ProxyGroup []map[string]any `yaml:"proxy-groups"`
 		}{}
 		_ = yaml.Unmarshal(content, &pg)
-		rawCfg.ProxyGroup = pg.ProxyGroup
-		content, _ = yaml.Marshal(rawCfg)
-		profile.Path = fmt.Sprintf("uploads/%d/%s%d.%s", snowflakeId, constant.PrefixProfile, snowflakeId, suffix)
+		r.rawCfg.ProxyGroup = pg.ProxyGroup
+		content, _ = yaml.Marshal(r.rawCfg)
+		profile.Path = fmt.Sprintf("uploads/%d/%s%d.%s", snowflakeId, constant.PrefixProfile, snowflakeId, r.suffix)
 	} else {
-		profile.Path = "uploads/" + profile.Id + "." + suffix
+		profile.Path = "uploads/" + profile.Id + "." + r.suffix
 	}
 
 	fileSaveError := saveProfile2Local(profile.Path, content)
@@ -447,4 +392,124 @@ func ResolveConfig(refresh, selected bool,
 	_ = cache.Put(profile.Id, marshal)
 
 	return nil
+}
+
+func resolveYaml(kind int, snowflakeId int64, content []byte) (*result, error) {
+
+	// 是否使用Provider
+	findProvider := false
+	rawCfg, rawErr := config.UnmarshalRawConfig(content)
+	var ray []map[string]any
+
+	if rawErr != nil {
+		log.Errorln("resolveYaml error: %s", rawErr.Error())
+		return nil, rawErr
+	}
+
+	// yaml解析成功，进行配置校验
+	rawCfg.GeodataMode = false
+	ko, yamlError := config.ParseRawConfig(rawCfg)
+	if yamlError != nil {
+		log.Errorln("resolveYaml config.ParseRawConfig error: %s", yamlError.Error())
+		// 配置校验失败，尝试提取可用节点
+		rails := resolve.MapsToProxies(rawCfg.Proxy)
+		if len(rails) == 0 {
+			log.Errorln("resolveYaml resolve.MapsToProxies error: %s", "Node is 0")
+			return nil, fmt.Errorf("resolveYaml resolve.MapsToProxies error: %s", "Node is 0")
+		}
+		spider.SortProxies(rails)
+		if len(rails) > 511 {
+			rails = rails[0:512]
+		}
+		proxies := make(map[string]any)
+		proxies["proxies"] = rails
+		content, _ = yaml.Marshal(proxies)
+	} else {
+		findProvider = changeProvidersPath(snowflakeId, rawCfg)
+		if !findProvider {
+			if len(ko.Proxies) < 7 {
+				log.Errorln("resolveYaml config.ParseRawConfig error: %s", "Node is 0")
+				return nil, fmt.Errorf("resolveYaml config.ParseRawConfig error: %s", "Node is 0")
+			}
+		}
+
+		if len(ko.Proxies) > 512 {
+			// 对于超过512的节点进行截取
+			log.Infoln("config.ParseRawConfig : %s Try to cut", "Node size is more than 512.")
+			ray = resolve.MapsToProxies(rawCfg.Proxy)
+			spider.SortProxies(ray)
+			rails := ray[0:512]
+			proxies := make(map[string]any)
+			proxies["proxies"] = rails
+			content, _ = yaml.Marshal(proxies)
+		}
+	}
+
+	return &result{
+		findProvider: findProvider,
+		content:      content,
+		suffix:       "yaml",
+		kind:         kind,
+		rawCfg:       rawCfg,
+	}, nil
+}
+
+func resolveBase64(kind int, content []byte) (*result, error) {
+
+	ray, base64Error := convert.ConvertsV2Ray(content)
+	if base64Error != nil {
+		log.Errorln("resolveBase64 convert.ConvertsV2Ray error: %s", base64Error.Error())
+		return nil, base64Error
+	}
+
+	rails := resolve.MapsToProxies(ray)
+	if len(rails) == 0 {
+		log.Errorln("resolveBase64 resolve.MapsToProxies error: %s", "Node is 0")
+		return nil, fmt.Errorf("resolveBase64 resolve.MapsToProxies error: %s", "Node is 0")
+	}
+	spider.SortProxies(rails)
+	if len(rails) > 511 {
+		rails = rails[0:512]
+	}
+	proxies := make(map[string]any)
+	proxies["proxies"] = rails
+	content, _ = yaml.Marshal(proxies)
+	kind = kind + 1
+
+	return &result{
+		findProvider: false,
+		content:      content,
+		suffix:       "txt",
+		kind:         kind,
+	}, nil
+}
+
+func resolveJson(kind int, content []byte) (*result, error) {
+
+	ray, jsonError := convert.ConvertsSingBox(content)
+	if jsonError != nil {
+		log.Errorln("resolveJson convert.ConvertsSingBox error: %s", jsonError.Error())
+		return nil, jsonError
+	}
+
+	rails := resolve.MapsToProxies(ray)
+	if len(rails) == 0 {
+		log.Errorln("resolveJson resolve.MapsToProxies error: %s", "Node is 0")
+		return nil, fmt.Errorf("resolveJson resolve.MapsToProxies error: %s", "Node is 0")
+	}
+	spider.SortProxies(rails)
+	if len(rails) > 511 {
+		rails = rails[0:512]
+	}
+	proxies := make(map[string]any)
+	proxies["proxies"] = rails
+	content, _ = yaml.Marshal(proxies)
+	kind = kind + 1
+
+	return &result{
+		findProvider: false,
+		content:      content,
+		suffix:       "txt",
+		kind:         kind,
+	}, nil
 }

@@ -2,6 +2,7 @@ package resolve
 
 import (
 	_ "embed"
+	"encoding/json"
 	"github.com/metacubex/mihomo/adapter"
 	"github.com/metacubex/mihomo/log"
 	"pandora-box/backend/mypool"
@@ -39,6 +40,11 @@ func MapsToProxies(ray []map[string]any) []map[string]any {
 				mutex.Lock()
 				proxies = append(proxies, proxy)
 				mutex.Unlock()
+			} else {
+				marshal, err2 := json.Marshal(proxy)
+				if err2 == nil {
+					log.Warnln("===MapsToProxies=== proxy: %s ,err: %s", string(marshal), err.Error())
+				}
 			}
 		}, 2*time.Second)
 	}
