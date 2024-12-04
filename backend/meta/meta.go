@@ -212,5 +212,5 @@ func StartCore(profile resolve.Profile, reload bool) {
 		runtime.GC()
 	}()
 
-	executor.ApplyConfig(NowConfig, true)
+	executor.ApplyConfig(NowConfig, !reload)
 }
