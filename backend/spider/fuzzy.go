@@ -47,12 +47,12 @@ var re = regexp.MustCompile(`proxies|api|clash|Clash|v2ray|token|raw|subscribe|t
 var not = regexp.MustCompile(`svg|png|mp4|mp3|jpg|jpeg|m3u8|flv|gif|icon|ktv|mov|webcam`)
 var urlRe = regexp.MustCompile("(https|http)://[-A-Za-z0-9\u4e00-\u9ea5+&@#/%?=~_!:,.;]+[-A-Za-z0-9\u4e00-\u9ea5+&@#/%=~_]")
 
-func grepFuzzy(all []byte, providerUrl map[string]void) map[string]void {
-	set := providerUrl
+func grepFuzzy(all []byte, proxyProviderUrl map[string]void, ruleProviderUrl map[string]bool) map[string]void {
+	set := proxyProviderUrl
 
 	subUrls := urlRe.FindAllString(string(all), -1)
 	for _, url := range subUrls {
-		if !re.MatchString(url) || not.MatchString(url) {
+		if !re.MatchString(url) || not.MatchString(url) || ruleProviderUrl[url] {
 			continue
 		}
 		set[url] = nullValue
@@ -68,29 +68,38 @@ func ComputeFuzzy(content []byte, headers map[string]string) []map[string]any {
 		return proxies
 	}
 
-	// 处理 proxyProvider
-	var providerUrl = make(map[string]void)
+	// 处理 proxyProviderUrl
+	var proxyProviderUrl = make(map[string]void)
+	// 处理 ruleProvider
+	var ruleProviderUrl = make(map[string]bool)
 
 	// 尝试clash解析 成功返回
 	rawCfg, err := config.UnmarshalRawConfig(content)
 	if err == nil {
-		provider := rawCfg.ProxyProvider
-		if provider != nil && len(provider) > 0 {
-			for _, m := range provider {
-				s := m["url"].(string)
-				if strings.HasPrefix(s, "http") {
-					providerUrl[s] = nullValue
-				}
+		for _, m := range rawCfg.ProxyProvider {
+			if _, find := m["url"]; !find {
+				continue
+			}
+			s := m["url"].(string)
+			if strings.HasPrefix(s, "http") {
+				proxyProviderUrl[s] = nullValue
 			}
 		}
-		proxy := rawCfg.Proxy
-		if proxy != nil && len(proxy) > 0 {
-			proxies = proxy
+
+		for _, m := range rawCfg.RuleProvider {
+			if _, find := m["url"]; !find {
+				continue
+			}
+			s := m["url"].(string)
+			if strings.HasPrefix(s, "http") {
+				ruleProviderUrl[s] = true
+			}
 		}
-		if len(providerUrl) == 0 && len(proxies) > 0 {
-			return proxies
-		}
-	} else {
+
+		proxies = rawCfg.Proxy
+	}
+
+	if len(proxyProviderUrl) == 0 && len(proxies) == 0 {
 		// 尝试v2ray解析 成功返回
 		v2ray, err := convert.ConvertsV2Ray(content)
 		if err == nil && v2ray != nil {
@@ -105,7 +114,7 @@ func ComputeFuzzy(content []byte, headers map[string]string) []map[string]any {
 	}
 
 	// 进行订阅爬取
-	fuzzy := grepFuzzy(content, providerUrl)
+	fuzzy := grepFuzzy(content, proxyProviderUrl, ruleProviderUrl)
 	pool := mypool.NewTimeoutPoolWithDefaults()
 	pool.WaitCount(len(fuzzy))
 

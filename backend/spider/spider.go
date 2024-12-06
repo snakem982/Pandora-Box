@@ -300,10 +300,17 @@ func map2proxies(maps map[string]map[string]any) (proxies []C.Proxy) {
 				}
 				done <- struct{}{}
 			}()
-			if proxy["dialer-proxy"] != nil {
+
+			switch proxy["type"] {
+			case "wireguard":
 				return
+			case "ss":
+				delete(proxy, "dialer-proxy")
+			default:
+				delete(proxy, "dialer-proxy")
+				proxy["skip-cert-verify"] = true
 			}
-			proxy["skip-cert-verify"] = true
+
 			proxyT, err := adapter.ParseProxy(proxy)
 			if err == nil {
 				mutex.Lock()
