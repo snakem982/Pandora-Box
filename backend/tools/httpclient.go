@@ -3,7 +3,7 @@ package tools
 import (
 	"crypto/tls"
 	"fmt"
-	ctp "github.com/metacubex/mihomo/component/http"
+	C "github.com/metacubex/mihomo/constant"
 	"github.com/metacubex/mihomo/hub/executor"
 	"github.com/metacubex/mihomo/log"
 	"golang.org/x/net/context"
@@ -15,6 +15,8 @@ import (
 	"sync"
 	"time"
 )
+
+var UA = "clash-verge/v2.0.2"
 
 var dialerBaidu = &net.Dialer{
 	Resolver: &net.Resolver{
@@ -30,6 +32,14 @@ var dialerBaidu = &net.Dialer{
 
 var dialBaiduContext = func(ctx context.Context, network, addr string) (net.Conn, error) {
 	return dialerBaidu.DialContext(ctx, network, addr)
+}
+
+func SetUA(ua string) {
+	if ua != "clash.meta/"+C.Version {
+		UA = ua
+	} else {
+		UA = "clash-verge/v2.0.2"
+	}
 }
 
 // GetFileName 获取响应头中的文件名
@@ -72,7 +82,7 @@ func HttpGetByProxy(requestUrl string, headers map[string]string) ([]byte, strin
 	}
 	req.Header.Set("Accept-Encoding", "utf-8")
 	req.Header.Set("Accept", "*/*")
-	req.Header.Set("User-Agent", ctp.UA())
+	req.Header.Set("User-Agent", UA)
 	if headers != nil && len(headers) > 0 {
 		for k, v := range headers {
 			req.Header.Set(k, v)
@@ -136,9 +146,9 @@ func HttpGetWithTimeout(requestUrl string, outTime time.Duration, needDail bool,
 		log.Warnln("HttpGetWithTimeout http.NewRequest %s %v", requestUrl, err)
 		return nil, "", err
 	}
-	req.Header.Set("Accept-Encoding", "utf-8") // 设置响应内容编码为utf-8
-	req.Header.Set("Accept", "*/*")            // 设置响应内容类型为全部
-	req.Header.Set("User-Agent", ctp.UA())     // 设置用户代理为C.UA
+	req.Header.Set("Accept-Encoding", "utf-8")
+	req.Header.Set("Accept", "*/*")
+	req.Header.Set("User-Agent", UA)
 	if headers != nil && len(headers) > 0 {
 		for k, v := range headers {
 			req.Header.Set(k, v)

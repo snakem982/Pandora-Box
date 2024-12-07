@@ -109,16 +109,6 @@ func postProfile(w http.ResponseWriter, r *http.Request) {
 
 	// 尝试clash解析 成功返回
 	bodyData := []byte(body.Data)
-	_, err := config.UnmarshalRawConfig(bodyData)
-	if err == nil {
-		err = ResolveConfig(false, false, "", "", tools.Dec(15), 41, bodyData)
-		if err == nil {
-			render.NoContent(w, r)
-			return
-		}
-	}
-
-	builder := strings.Builder{}
 	urls := make([]string, 0)
 
 	// 按行读取文件
@@ -136,12 +126,10 @@ func postProfile(w http.ResponseWriter, r *http.Request) {
 		sub = strings.Split(sub, " ")[0]
 		if strings.HasPrefix(sub, "http") {
 			urls = append(urls, sub)
-		} else if strings.Contains(sub, "://") {
-			builder.WriteString(sub + "\n")
-		} else {
 		}
 	}
 
+	// 获取url订阅中的内容
 	for _, url := range urls {
 		content, fileName := tools.ConcurrentHttpGet(url, nil)
 		err := ResolveConfig(false, false, "", url, fileName, 31, content)
@@ -151,45 +139,9 @@ func postProfile(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	if builder.Len() > 0 || len(urls) == 0 {
-		var all []byte
-		if builder.Len() > 0 {
-			all = []byte(builder.String())
-		} else {
-			all = bodyData
-		}
-
-		ray, base64Error := convert.ConvertsV2Ray(all)
-		if base64Error == nil && len(ray) > 0 {
-			ray = resolve.MapsToProxies(ray)
-			rails := spider.SortAddIndex(ray)
-			if len(rails) == 0 {
-				render.NoContent(w, r)
-				return
-			}
-			if len(rails) > 511 {
-				rails = rails[0:512]
-			}
-			proxies := make(map[string]any)
-			proxies["proxies"] = rails
-			all, _ = yaml.Marshal(proxies)
-
-			suffix := "txt"
-			kind := 2
-			snowflakeId := tools.SnowflakeId()
-			profile := resolve.Profile{}
-			profile.Id = fmt.Sprintf("%s%d", constant.PrefixProfile, snowflakeId)
-			profile.Type = kind
-			profile.Title = fmt.Sprintf("%d", snowflakeId)
-			profile.Order = snowflakeId
-			profile.Path = "uploads/" + profile.Id + "." + suffix
-
-			fileSaveError := saveProfile2Local(profile.Path, all)
-			if fileSaveError == nil {
-				marshal, _ := json.Marshal(profile)
-				_ = cache.Put(profile.Id, marshal)
-			}
-		}
+	// 解析直接输入的内容
+	if len(urls) == 0 {
+		_ = ResolveConfig(false, false, "", "", tools.Dec(15), 41, bodyData)
 	}
 
 	render.NoContent(w, r)

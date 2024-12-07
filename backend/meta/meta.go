@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/metacubex/bbolt"
-	ctp "github.com/metacubex/mihomo/component/http"
 	"github.com/metacubex/mihomo/component/profile/cachefile"
 	"github.com/metacubex/mihomo/config"
 	C "github.com/metacubex/mihomo/constant"
@@ -191,13 +190,15 @@ func StartCore(profile resolve.Profile, reload bool) {
 		rawCfg.Tun.Enable = false
 	}
 
+	// 设置UA
+	tools.SetUA(rawCfg.GlobalUA)
+
 	NowConfig, err = config.ParseRawConfig(rawCfg)
 	if err != nil {
 		log.Warnln("Parse config error: %s", err.Error())
 		return
 	}
 
-	ctp.SetUA("Clash.Meta/1.18.10")
 	if !reload {
 		freePort, err := tools.GetFreeWithPort(10000)
 		if err != nil {

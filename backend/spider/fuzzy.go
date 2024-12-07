@@ -146,12 +146,12 @@ func ComputeFuzzy(content []byte, headers map[string]string) []map[string]any {
 				ok = collect.Get()
 			} else {
 				all := GetBytes(url, headers)
-				if all == nil || len(all) < 16 {
+				if all == nil || len(all) < 32 {
 					return
 				}
 				isGo := true
 				rawCfgInner, err := config.UnmarshalRawConfig(all)
-				if err == nil && rawCfgInner.Proxy != nil {
+				if err == nil && len(rawCfgInner.Proxy) > 0 {
 					ok = rawCfgInner.Proxy
 					isGo = false
 				}
@@ -159,6 +159,13 @@ func ComputeFuzzy(content []byte, headers map[string]string) []map[string]any {
 					v2ray, err := convert.ConvertsV2Ray(all)
 					if err == nil && v2ray != nil {
 						ok = v2ray
+						isGo = false
+					}
+				}
+				if isGo {
+					sing, err := convert.ConvertsSingBox(all)
+					if err == nil && sing != nil {
+						ok = sing
 						isGo = false
 					}
 				}
