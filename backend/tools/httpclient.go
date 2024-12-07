@@ -175,7 +175,6 @@ func ConcurrentHttpGet(url string, headers map[string]string) (all []byte, fileN
 	// 开启多线程请求
 	cLock := sync.Mutex{}
 	done := make(chan bool, 1)
-	length := 128
 	wg := sync.WaitGroup{}
 	wg.Add(2)
 	go func() {
@@ -184,7 +183,7 @@ func ConcurrentHttpGet(url string, headers map[string]string) (all []byte, fileN
 		content, name, err := HttpGetByProxy(url, headers)
 		if err == nil {
 			cLock.Lock()
-			if all == nil && len(content) > length {
+			if all == nil && len(content) > 0 {
 				all = content
 				fileName = name
 			}
@@ -199,7 +198,7 @@ func ConcurrentHttpGet(url string, headers map[string]string) (all []byte, fileN
 		content, name, err := HttpGet(url, headers)
 		if err == nil {
 			cLock.Lock()
-			if all == nil && len(content) > length {
+			if all == nil && len(content) > 0 {
 				all = content
 				fileName = name
 			}
