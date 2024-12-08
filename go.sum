@@ -239,8 +239,8 @@ github.com/sina-ghaderi/rabbitio v0.0.0-20220730151941-9ce26f4f872e h1:ur8uMsPIF
 github.com/sina-ghaderi/rabbitio v0.0.0-20220730151941-9ce26f4f872e/go.mod h1:+e5fBW3bpPyo+3uLo513gIUblc03egGjMM0+5GKbzK8=
 github.com/sirupsen/logrus v1.9.3 h1:dueUQJ1C2q9oE3F7wvmSGAaVtTmUizReu6fjN8uqzbQ=
 github.com/sirupsen/logrus v1.9.3/go.mod h1:naHLuLoDiP4jHNo9R0sCBMtWGeIprob74mVsIT4qYEQ=
-github.com/snakem982/mihomo v1.0.19-moshen h1:No6B6k+KUFvk27Uh9MlRO1h/3kZG6vEA9gNlEGN6gA8=
-github.com/snakem982/mihomo v1.0.19-moshen/go.mod h1:MzLar/Q1J80hTUkuwNH4njg/7I/kjhiDGwqUFCkXUFk=
+github.com/snakem982/mihomo v1.0.20-moshen h1:Cn4UnKwXasJ4F96Tt0tll6QpLI3yGEfVdDgbUvOlDhc=
+github.com/snakem982/mihomo v1.0.20-moshen/go.mod h1:MzLar/Q1J80hTUkuwNH4njg/7I/kjhiDGwqUFCkXUFk=
 github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=
 github.com/stretchr/objx v0.4.0/go.mod h1:YvHI0jy2hoMjB+UWwv71VJQ9isScKT/TqJzVSSt89Yw=
 github.com/stretchr/objx v0.5.0/go.mod h1:Yh+to48EsGEfYuaHDzXPcE3xhTkx73EhmCGUpEOglKo=
