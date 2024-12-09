@@ -11,7 +11,6 @@ proxies:
     transport: TCP # Available: "TCP".
     username: user
     password: password
-    # mtu: 1450 # Available: 1280 - 1500. Default: 1400.
 ```
 ## server
 必须 
@@ -25,5 +24,3 @@ proxies:
 必须，填写 TCP
 ## port-range
 跳跃端口，不可同时填写 port 和 port-range
-## mtu
-默认 1400，可选值 1280 - 1500
