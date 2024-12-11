@@ -1,7 +1,11 @@
 package cache
 
 import (
+	"fmt"
 	"github.com/metacubex/bbolt"
+	"github.com/metacubex/mihomo/log"
+	"os"
+	"pandora-box/backend/constant"
 	"strings"
 )
 
@@ -62,6 +66,69 @@ func DeleteList(m map[string]any) error {
 				_ = b.Delete(k)
 			}
 			return nil
+		})
+	})
+}
+
+func Dump(dstDBPath string) error {
+	_, err := os.Stat(dstDBPath)
+	if !os.IsNotExist(err) {
+		_ = os.Remove(dstDBPath)
+	}
+
+	// 创建目标数据库
+	dstDB, err := bbolt.Open(dstDBPath, 0600, nil)
+	if err != nil {
+		return err
+	}
+	defer dstDB.Close()
+
+	return dstDB.Batch(func(tx *bbolt.Tx) error {
+		newBucket, err := tx.CreateBucketIfNotExists(BName)
+		if err != nil {
+			log.Warnln("[DumpFile] can't create bucket: %s", err.Error())
+			return fmt.Errorf("create bucket: %v", err)
+		}
+
+		return BDb.View(func(tx *bbolt.Tx) error {
+			b := tx.Bucket(BName)
+			return b.ForEach(func(k, v []byte) error {
+				key := string(k)
+				if key == constant.SecretKey {
+					return nil
+				}
+
+				if key == constant.QuitSignal {
+					return nil
+				}
+
+				if !strings.HasPrefix(key, constant.RealIpHeader) {
+					return newBucket.Put(k, v)
+				}
+
+				return nil
+			})
+		})
+	})
+}
+
+func Recovery(srcDBPath string) error {
+	_, err := os.Stat(srcDBPath)
+	if os.IsNotExist(err) {
+		return err
+	}
+
+	// 打开源数据库
+	srcDB, err := bbolt.Open(srcDBPath, 0600, nil)
+	if err != nil {
+		return err
+	}
+	defer srcDB.Close()
+
+	return srcDB.View(func(tx *bbolt.Tx) error {
+		b := tx.Bucket(BName)
+		return b.ForEach(func(k, v []byte) error {
+			return Put(string(k), v)
 		})
 	})
 }

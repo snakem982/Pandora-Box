@@ -10,6 +10,8 @@ const (
 	PrefixGetter    = "Getter_"
 	RealIpHeader    = "RealIp_"
 	SecretKey       = "SecretKey_pb"
+	RecoverTmp      = "RecoverTmp"
+	QuitSignal      = "QuitSignal"
 )
 
 const (

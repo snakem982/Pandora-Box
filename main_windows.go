@@ -1,3 +1,5 @@
+//go:build windows
+
 package main
 
 import (
@@ -9,12 +11,9 @@ import (
 	"github.com/metacubex/mihomo/hub/route"
 	"github.com/metacubex/mihomo/log"
 	"github.com/wailsapp/wails/v2"
-	"github.com/wailsapp/wails/v2/pkg/menu"
 	"github.com/wailsapp/wails/v2/pkg/options"
 	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
-	"github.com/wailsapp/wails/v2/pkg/options/mac"
-	"os"
-	"os/exec"
+	"github.com/wailsapp/wails/v2/pkg/runtime"
 	"pandora-box/backend/api"
 	"pandora-box/backend/cache"
 	"pandora-box/backend/constant"
@@ -22,8 +21,7 @@ import (
 	IsAdmin "pandora-box/backend/system/admin"
 	"pandora-box/backend/system/proxy"
 	"pandora-box/backend/tools"
-	"runtime"
-	"strings"
+	goruntime "runtime"
 	"time"
 )
 
@@ -41,18 +39,10 @@ var icon []byte
 
 func main() {
 
-	if !*devFlag && runtime.GOOS == "darwin" && !IsAdmin.Check() {
-		status, pwd := GetAcStatus()
-		if status == "3" {
-			startMacInAdmin(pwd)
-			return
-		}
-	}
-
 	meta.Init()
 
 	log.Infoln("Pandora-Box %s %s %s with %s",
-		constant.PandoraVersion, runtime.GOOS, runtime.GOARCH, runtime.Version())
+		constant.PandoraVersion, goruntime.GOOS, goruntime.GOARCH, goruntime.Version())
 
 	route.Register(api.Hello)
 	route.Register(api.Version)
@@ -72,38 +62,32 @@ func main() {
 	option := &options.App{
 		Title:     "Pandora-Box",
 		Width:     1200,
-		Height:    780,
+		Height:    785,
 		MinWidth:  925,
 		MinHeight: 675,
 		AssetServer: &assetserver.Options{
 			Assets: assets,
 		},
+		OnBeforeClose: func(ctx context.Context) (prevent bool) {
+
+			value := cache.Get(constant.QuitSignal)
+			if value != nil && string(value) == "1" {
+				_ = cache.Put(constant.QuitSignal, []byte("0"))
+				return false
+			}
+
+			runtime.WindowMinimise(ctx)
+			return true
+		},
 		OnStartup: app.startup,
 		OnShutdown: func(ctx context.Context) {
 			executor.Shutdown()
 			proxy.RemoveProxy()
+			_ = IsAdmin.KillProcessesByName("Pandora-Box")
 		},
 		Bind: []interface{}{
 			app,
 		},
-	}
-
-	if runtime.GOOS == "darwin" {
-		AppMenu := menu.NewMenu()
-		AppMenu.Append(menu.AppMenu())
-		AppMenu.Append(menu.EditMenu())
-		option.Menu = AppMenu
-		option.HideWindowOnClose = true
-		option.Mac = &mac.Options{
-			TitleBar: mac.TitleBarHidden(),
-			About: &mac.AboutInfo{
-				Title:   constant.PandoraVersion,
-				Message: "Copyright © 2024 snakem982",
-				Icon:    icon,
-			},
-		}
-		option.CSSDragProperty = "widows"
-		option.CSSDragValue = "1"
 	}
 
 	err := wails.Run(option)
@@ -140,19 +124,4 @@ func startHttpApi() (addr string) {
 	}
 
 	return
-}
-
-func startMacInAdmin(pwd string) {
-	exePath, err := os.Executable()
-	if err != nil {
-		log.Errorln("get exe path error：%s", err.Error())
-		return
-	}
-
-	cmd := exec.Command("sudo", "-b", exePath, ">", "/dev/null")
-	cmd.Stdin = strings.NewReader(pwd)
-	err = cmd.Run()
-	if err != nil {
-		log.Errorln("cmd.Run() error：%s", err.Error())
-	}
 }

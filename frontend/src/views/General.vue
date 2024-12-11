@@ -4,14 +4,16 @@ import {del, get, patch, put} from "../api/http";
 import {toggleDark} from "../composables";
 import {BrowserOpenURL, ClipboardSetText, WindowSetDarkTheme, WindowSetLightTheme} from "../../wailsjs/runtime";
 import {
+  ExportConfig,
   GetFreePort,
   GetMacAcStatus,
   GetSecret,
+  ImportConfig,
   IsAdmin,
   IsMac,
   IsNeedUpdate,
   OpenConfigDirectory,
-  SetMacAc
+  SetMacAc, SfQuit
 } from "../../wailsjs/go/main/App";
 import {ElLoading, ElMessage, ElMessageBox} from "element-plus";
 
@@ -103,6 +105,66 @@ async function openConfig() {
   await OpenConfigDirectory()
 }
 
+async function importConfig() {
+  const loading = ElLoading.service({
+    lock: true,
+    text: '导入中Importing...',
+    background: 'rgba(0, 0, 0, 0.7)',
+  })
+  const ok = await ImportConfig()
+  loading.close()
+
+  switch (ok) {
+    case "false":
+      break;
+    case "true":
+      ElMessage({
+        showClose: true,
+        message: "导入成功 Import Success",
+        type: 'success',
+      })
+      break;
+    default:
+      ElMessage({
+        showClose: true,
+        message: "导入失败 Import failed : " + ok,
+        type: 'error',
+      })
+      break;
+  }
+}
+
+async function exportConfig() {
+
+  const loading = ElLoading.service({
+    lock: true,
+    text: '导出中Exporting...',
+    background: 'rgba(0, 0, 0, 0.7)',
+  })
+
+  const ok = await ExportConfig()
+  loading.close()
+
+  switch (ok) {
+    case "false":
+      break;
+    case "true":
+      ElMessage({
+        showClose: true,
+        message: "导出成功 Export Success",
+        type: 'success',
+      })
+      break;
+    default:
+      ElMessage({
+        showClose: true,
+        message: "导出失败 Export failed : " + ok,
+        type: 'error',
+      })
+      break;
+  }
+}
+
 function copyApi() {
   ClipboardSetText(form.clash_api)
   ElMessage({
@@ -151,6 +213,11 @@ async function checkUpdate() {
     })
   }
 }
+
+async function quit() {
+  await SfQuit()
+}
+
 
 const pwdVisible = ref(false)
 const pwd = ref("")
@@ -333,6 +400,8 @@ onBeforeMount(async () => {
         </el-form-item>
         <el-form-item label="配置目录 configs directory">
           <el-button type="primary" size="small" @click="openConfig" round>打开 open</el-button>
+          <el-button type="danger" size="small" @click="exportConfig" round>导出 export</el-button>
+          <el-button type="success" size="small" @click="importConfig" round>导入 import</el-button>
         </el-form-item>
         <el-form-item label="控制面板 clash api">
           <el-text>{{ form.clash_api }}</el-text>&emsp;&emsp;
@@ -342,8 +411,9 @@ onBeforeMount(async () => {
           <el-text>{{ form.clash_secret }}</el-text>&emsp;&emsp;
           <el-button type="primary" size="small" @click="copySecret" round>复制 copy</el-button>
         </el-form-item>
-        <el-form-item label="软件更新 software update">
-          <el-button type="primary" size="small" @click="checkUpdate" round>检查 check</el-button>
+        <el-form-item label="软件操作 software option">
+          <el-button type="primary" size="small" @click="checkUpdate" round>检查更新 check update</el-button>
+          <el-button type="danger" size="small" @click="quit" round>退出软件 quit software</el-button>
         </el-form-item>
       </el-form>
     </div>

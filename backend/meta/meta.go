@@ -215,3 +215,57 @@ func StartCore(profile resolve.Profile, reload bool) {
 
 	executor.ApplyConfig(NowConfig, !reload)
 }
+
+func Dump(dst string) error {
+
+	_, err := os.Stat(dst)
+	if !os.IsNotExist(err) {
+		_ = os.Remove(dst)
+	}
+
+	base := C.Path.HomeDir()
+
+	dump := filepath.Join(base, "dump.db")
+	err = cache.Dump(dump)
+	if err != nil {
+		return err
+	}
+
+	exclude := []string{
+		"geoip.metadb",
+		"cache.db",
+		"log.log",
+		"Cloudflare.yaml",
+		".DS_Store",
+	}
+
+	err = tools.ZipDirectory(base, dst, exclude)
+	_ = os.Remove(dump)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func Recovery(src string) error {
+	// 临时目录
+	tmp := filepath.Join(C.Path.HomeDir(), constant.RecoverTmp)
+	err := tools.Unzip(src, tmp)
+	if err != nil {
+		return err
+	}
+	srcDb := filepath.Join(tmp, "dump.db")
+	err = cache.Recovery(srcDb)
+	if err != nil {
+		return err
+	}
+	_ = os.Remove(srcDb)
+	_ = tools.CopyDirectory(tmp, C.Path.HomeDir())
+
+	SwitchProfile(false)
+
+	_ = os.RemoveAll(tmp)
+
+	return nil
+}

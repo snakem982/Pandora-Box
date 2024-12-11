@@ -5,8 +5,7 @@ import {CheckboxValueType, ElMessage} from 'element-plus'
 import {mdiShare} from "@mdi/js";
 import SvgIcon from "@jamescoyle/vue-icon";
 import {get, post} from "../api/http";
-import {BrowserOpenURL} from "../../wailsjs/runtime";
-import {GetFreePort} from "../../wailsjs/go/main/App";
+import {ExportCrawl} from "../../wailsjs/go/main/App";
 
 const protocolCheckAll = ref(false)
 const protocolIndeterminate = ref(false)
@@ -155,10 +154,28 @@ async function Generate() {
 
 async function Export() {
   const msg = await post<any>("/nodeFilter", getReq(4));
-  if (msg) {
-    const baseUrl = await GetFreePort()
-    BrowserOpenURL('http://' + baseUrl + '/Pandora-Box-Download')
-    ElMessage.success("导出配置成功,请在浏览器中查看 Export Config Successfully. Please view it in the browser.")
+  if (!msg) {
+    ElMessage.error("生成新配置失败 Generate New Config Failed")
+    return
+  }
+  const ok = await ExportCrawl()
+  switch (ok) {
+    case "false":
+      break;
+    case "true":
+      ElMessage({
+        showClose: true,
+        message: "导出成功 Export Success",
+        type: 'success',
+      })
+      break;
+    default:
+      ElMessage({
+        showClose: true,
+        message: "导出失败 Export failed : " + ok,
+        type: 'error',
+      })
+      break;
   }
 }
 
