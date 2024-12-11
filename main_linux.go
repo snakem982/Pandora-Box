@@ -13,6 +13,7 @@ import (
 	"github.com/wailsapp/wails/v2"
 	"github.com/wailsapp/wails/v2/pkg/options"
 	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
+	"github.com/wailsapp/wails/v2/pkg/runtime"
 	"pandora-box/backend/api"
 	"pandora-box/backend/cache"
 	"pandora-box/backend/constant"
@@ -20,7 +21,7 @@ import (
 	IsAdmin "pandora-box/backend/system/admin"
 	"pandora-box/backend/system/proxy"
 	"pandora-box/backend/tools"
-	"runtime"
+	goruntime "runtime"
 	"time"
 )
 
@@ -41,7 +42,7 @@ func main() {
 	meta.Init()
 
 	log.Infoln("Pandora-Box %s %s %s with %s",
-		constant.PandoraVersion, runtime.GOOS, runtime.GOARCH, runtime.Version())
+		constant.PandoraVersion, goruntime.GOOS, goruntime.GOARCH, goruntime.Version())
 
 	route.Register(api.Hello)
 	route.Register(api.Version)
