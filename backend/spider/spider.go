@@ -267,6 +267,9 @@ func Unique(mappings []map[string]any, needTls bool) (maps map[string]map[string
 		case "socks5":
 			username := mapping["username"]
 			proxyId = fmt.Sprintf("%s|%v|%v|%v|%v", "socks5", server, port, username, password)
+		case "mieru":
+			username := mapping["username"]
+			proxyId = fmt.Sprintf("%s|%v|%v|%v|%v", "mieru", server, port, username, password)
 		case "http":
 			username := mapping["username"]
 			proxyId = fmt.Sprintf("%s|%v|%v|%v|%v", "http", server, port, username, password)
@@ -391,11 +394,7 @@ func getRealIpCountryCode(ctx context.Context, m map[string]any) (string, error)
 
 	transport := &http.Transport{
 		// from http.DefaultTransport
-		DisableKeepAlives:     true,
-		MaxIdleConns:          32,
-		IdleConnTimeout:       16 * time.Second,
-		TLSHandshakeTimeout:   8 * time.Second,
-		ExpectContinueTimeout: 1 * time.Second,
+		DisableKeepAlives: true,
 		DialContext: func(ctx context.Context, network, address string) (net.Conn, error) {
 			proxy, _ := adapter.ParseProxy(m)
 			addr := C.Metadata{
