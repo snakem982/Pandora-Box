@@ -348,8 +348,8 @@ func urlTest(proxies []C.Proxy) []string {
 
 			ctx, cancel := context.WithTimeout(context.Background(), time.Millisecond*4500)
 			defer cancel()
-			delay, err := proxy.URLTest(ctx, url, expectedStatus)
-			if err == nil && delay > 0 {
+			pass := proxy.URLTestByPandora(ctx, url, expectedStatus)
+			if pass {
 				m.Lock()
 				keys = append(keys, proxy.Name())
 				m.Unlock()
