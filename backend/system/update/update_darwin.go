@@ -18,7 +18,8 @@ import (
 )
 
 func IsNeedUpdate() (bool, string) {
-	all, _ := tools.ConcurrentHttpGet(constant.PandoraVersionUrl, nil)
+	url := fmt.Sprintf("%s?v=%s", constant.PandoraVersionUrl, tools.Dec(8))
+	all, _ := tools.ConcurrentHttpGet(url, nil)
 	if all != nil && len(all) > 0 {
 		ver := string(all)
 		return ver != constant.PandoraVersion, ver
