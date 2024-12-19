@@ -10,7 +10,6 @@ import (
 	"io"
 	"net/textproto"
 	"os/exec"
-	"sort"
 	"strconv"
 	"strings"
 	"syscall"
@@ -54,180 +53,37 @@ func GetIgnore() ([]string, error) {
 }
 
 func OnHttps(addr Addr) error {
-	b, err := getProxy()
+	err := set("ProxyServer", "REG_SZ", addr.String())
 	if err != nil {
 		return err
 	}
-	m := map[string]string{}
-	if b {
-		m, err = getAllProxy()
-		if err != nil {
-			return err
-		}
-	}
-	m["https"] = addr.String()
-	return setAllProxy(m)
+
+	return useProxy(true)
 }
 
 func OffHttps() error {
-	b, err := getProxy()
+	err := useProxy(false)
 	if err != nil {
 		return err
 	}
-	m := map[string]string{}
-	if b {
-		m, err = getAllProxy()
-		if err != nil {
-			return err
-		}
-	}
-	delete(m, "https")
-	return setAllProxy(m)
-}
 
-func GetHttps() (*Addr, error) {
-	b, err := getProxy()
-	if err != nil {
-		return nil, err
-	}
-	if !b {
-		return nil, nil
-	}
-	m, err := getAllProxy()
-	if err != nil {
-		return nil, err
-	}
-	return ParseAddrPtr(m["https"]), nil
+	return set("ProxyServer", "REG_SZ", "")
 }
 
 func OnHttp(addr Addr) error {
-	b, err := getProxy()
-	if err != nil {
-		return err
-	}
-	m := map[string]string{}
-	if b {
-		m, err = getAllProxy()
-		if err != nil {
-			return err
-		}
-	}
-	m["http"] = addr.String()
-	return setAllProxy(m)
+	return nil
 }
 
 func OffHttp() error {
-	b, err := getProxy()
-	if err != nil {
-		return err
-	}
-	m := map[string]string{}
-	if b {
-		m, err = getAllProxy()
-		if err != nil {
-			return err
-		}
-	}
-	delete(m, "http")
-	return setAllProxy(m)
-}
-
-func GetHttp() (*Addr, error) {
-	b, err := getProxy()
-	if err != nil {
-		return nil, err
-	}
-	if !b {
-		return nil, nil
-	}
-	m, err := getAllProxy()
-	if err != nil {
-		return nil, err
-	}
-	return ParseAddrPtr(m["http"]), nil
+	return nil
 }
 
 func OnSocks(addr Addr) error {
-	b, err := getProxy()
-	if err != nil {
-		return err
-	}
-	m := map[string]string{}
-	if b {
-		m, err = getAllProxy()
-		if err != nil {
-			return err
-		}
-	}
-	m["socks"] = addr.String()
-	return setAllProxy(m)
+	return nil
 }
 
 func OffSocks() error {
-	b, err := getProxy()
-	if err != nil {
-		return err
-	}
-	m := map[string]string{}
-	if b {
-		m, err = getAllProxy()
-		if err != nil {
-			return err
-		}
-	}
-	delete(m, "socks")
-	return setAllProxy(m)
-}
-
-func GetSocks() (*Addr, error) {
-	b, err := getProxy()
-	if err != nil {
-		return nil, err
-	}
-	if !b {
-		return nil, nil
-	}
-	m, err := getAllProxy()
-	if err != nil {
-		return nil, err
-	}
-	return ParseAddrPtr(m["socks"]), nil
-}
-
-func setAllProxy(m map[string]string) error {
-	list := make([]string, 0, len(m))
-	for key, item := range m {
-		if item == "" {
-			continue
-		}
-		list = append(list, strings.Join([]string{key, item}, "="))
-	}
-	sort.Strings(list)
-	err := set("ProxyServer", "REG_SZ", strings.Join(list, ";"))
-	if err != nil {
-		return err
-	}
-	return useProxy(len(list) != 0)
-}
-
-func getAllProxy() (map[string]string, error) {
-	m, err := get("ProxyServer")
-	if err != nil {
-		return nil, err
-	}
-	list := strings.Split(m["ProxyServer"], ";")
-	proxy := map[string]string{}
-	for _, item := range list {
-		n := strings.SplitN(item, "=", 2)
-		if len(n) == 1 {
-			proxy["http"] = item
-			proxy["https"] = item
-			proxy["socks"] = item
-			break
-		}
-		proxy[n[0]] = n[1]
-	}
-	return proxy, nil
+	return nil
 }
 
 const settingPath = `HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Internet Settings`
