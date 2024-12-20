@@ -14,6 +14,7 @@ import (
 
 func init() {
 	Register(constant.CollectFuzzy, NewFuzzyCollect)
+	Register(constant.CollectAuto, NewFuzzyCollect)
 }
 
 type Fuzzy struct {
@@ -29,7 +30,7 @@ func (c *Fuzzy) Get() []map[string]any {
 func (c *Fuzzy) Get2ChanWG(pc chan []map[string]any, wg *sync.WaitGroup) {
 	defer wg.Done()
 	nodes := c.Get()
-	log.Infoln("STATISTIC: Fuzzy count=%d url=%s", len(nodes), c.Url)
+	log.Infoln("STATISTIC: Auto|Fuzzy count=%d url=%s", len(nodes), c.Url)
 	if len(nodes) > 0 {
 		pc <- nodes
 	}

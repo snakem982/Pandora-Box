@@ -120,7 +120,7 @@ function addShow() {
   dialogFormVisible.value = true;
   addFlag.value = true;
   form.id = ""
-  form.type = "fuzzy"
+  form.type = "auto"
   form.url = search.value || ""
   form.auth = ""
   form.ua = ""
@@ -344,11 +344,11 @@ async function filter() {
     <el-form :model="form">
       <el-form-item label="爬取类型 Type" :label-width="formLabelWidth">
         <el-select v-model="form.type" placeholder="选择类型 Select type" style="width: 100%">
+          <el-option label="自动识别(auto identify)" value="auto"/>
           <el-option label="clash订阅(clash subscription)" value="clash"/>
           <el-option label="v2ray订阅(v2ray subscription)" value="v2ray"/>
           <el-option label="sing-box订阅(sing-box subscription)" value="sing"/>
           <el-option label="分享链接(share link)" value="share"/>
-          <el-option label="模糊爬取(fuzzy crawling)" value="fuzzy"/>
           <el-option label="自定义输入(custom input)" value="local"/>
         </el-select>
       </el-form-item>
@@ -416,6 +416,13 @@ async function filter() {
     <div>
       <el-text class="el-text--primary title">2、爬取类型 Crawl Type</el-text>
       <div class="content">
+        <el-text>- 自动识别(auto identify)</el-text>
+        <br>
+        <el-text>&emsp;自动识别url地址返回的内容。</el-text>
+        <br>
+        <el-text>&emsp;Automatically identify the content returned by the URL address.</el-text>
+        <br>
+        <br>
         <el-text>- clash订阅(clash subscription)</el-text>
         <br>
         <el-text>&emsp;一般用yaml编码</el-text>
@@ -460,16 +467,6 @@ async function filter() {
         <el-text>&emsp;hysteria2://...</el-text>
         <br>
         <el-text>&emsp;hy2://...</el-text>
-        <br><br>
-        <el-text>- 模糊爬取(fuzzy crawling)</el-text>
-        <br>
-        <el-text>&emsp;当内容既包含订阅地址又包含分享链接时使用。</el-text>
-        <br>
-        <el-text>&emsp;不知道填写什么类型时也可以使用此选项。</el-text>
-        <br>
-        <el-text>&emsp;Used when content contains subscription addresses and sharing links.</el-text>
-        <br>
-        <el-text>&emsp;You can also use this option when you don't know what type to fill in.</el-text>
         <br>
         <br>
         <el-text>- 自定义输入(custom input)</el-text>

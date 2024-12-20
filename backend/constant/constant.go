@@ -20,6 +20,7 @@ const (
 	CollectV2ray     = "v2ray"
 	CollectSharelink = "share"
 	CollectFuzzy     = "fuzzy"
+	CollectAuto      = "auto"
 	CollectSingBox   = "sing"
 )
 
