@@ -4,7 +4,6 @@ import (
 	"github.com/metacubex/mihomo/common/convert"
 	"github.com/metacubex/mihomo/log"
 	"pandora-box/backend/constant"
-	"strings"
 	"sync"
 )
 
@@ -22,15 +21,9 @@ func (c *SingBox) Get() []map[string]any {
 
 	all := GetBytes(c.Url, c.Headers)
 	if all != nil {
-		builder := strings.Builder{}
-		for _, link := range grepShareLink(all) {
-			builder.WriteString(link + "\n")
-		}
-		if builder.Len() > 0 {
-			sing, err := convert.ConvertsSingBox([]byte(builder.String()))
-			if err == nil && sing != nil {
-				proxies = sing
-			}
+		sing, err := convert.ConvertsSingBox(all)
+		if err == nil && sing != nil {
+			proxies = sing
 		}
 	}
 
