@@ -105,7 +105,7 @@ func startHttpApi() (addr string) {
 		secret = tools.String(32)
 		_ = cache.Put(constant.SecretKey, []byte(secret))
 	}
-	addr = route.StartByPandora(secret)
+	addr = route.StartByPandora(*devFlag, secret)
 	headers := map[string]string{
 		"Authorization": fmt.Sprintf("Bearer %s", secret),
 	}
