@@ -333,7 +333,7 @@ func urlTest(proxies []C.Proxy) []string {
 	m := sync.Mutex{}
 
 	expectedStatus, _ := utils.NewUnsignedRanges[uint16]("200/204/301/302")
-	url := "https://www.gstatic.com/generate_204"
+	url := "https://www.google.com/blank.html"
 
 	pool.WaitCount(len(proxies))
 	for _, p := range proxies {

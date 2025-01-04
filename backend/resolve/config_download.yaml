@@ -1,6 +1,6 @@
 port: 7890
 socks-port: 7891
-mode: Rule
+mode: rule
 log-level: info
 
 unified-delay: true
@@ -15,14 +15,21 @@ profile:
 dns:
   enable: true
   ipv6: false
+  prefer-h3: true
+  listen: 0.0.0.0:1053
   enhanced-mode: fake-ip
   fake-ip-range: 198.18.0.1/16
   nameserver:
-    - https://doh.pub/dns-query
-    - https://dns.alidns.com/dns-query
+    - tls://8.8.4.4
+    - tls://1.1.1.1
+  nameserver-policy:
+    'geosite:cn':
+      - system
+      - 223.5.5.5
+      - 114.114.114.114
   proxy-server-nameserver:
-    - https://doh.pub/dns-query
-    - https://dns.alidns.com/dns-query
+    - tls://8.8.4.4
+    - tls://1.1.1.1
 
 {{PANDORA-BOX}}
 

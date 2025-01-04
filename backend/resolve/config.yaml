@@ -4,6 +4,8 @@ proxy-providers:
   pandora-box:
     type: file
     path: {{PANDORA-BOX}}
+# 以上代码不能缺少
+# The above code cannot be missing
 
 mode: rule
 log-level: info
@@ -11,7 +13,7 @@ mixed-port: 10000
 unified-delay: true
 tcp-concurrent: true
 find-process-mode: strict
-global-client-fingerprint: 360
+global-client-fingerprint: chrome
 
 profile:
   store-selected: true
@@ -20,15 +22,24 @@ profile:
 dns:
   enable: true
   ipv6: false
+  prefer-h3: true
+  listen: 0.0.0.0:1053
   enhanced-mode: fake-ip
   fake-ip-range: 198.18.0.1/16
   nameserver:
-    - https://doh.pub/dns-query
-    - https://dns.alidns.com/dns-query
+    - tls://8.8.4.4
+    - tls://1.1.1.1
+  nameserver-policy:
+    'geosite:cn':
+      - system
+      - 223.5.5.5
+      - 114.114.114.114
   proxy-server-nameserver:
-    - https://doh.pub/dns-query
-    - https://dns.alidns.com/dns-query
+    - tls://8.8.4.4
+    - tls://1.1.1.1
+
 proxies:
+
 proxy-groups:
   - name: 🚀 节点选择
     type: select
@@ -38,7 +49,7 @@ proxy-groups:
 
   - name: ♻️ 自动选择
     type: url-test
-    url: https://www.gstatic.com/generate_204
+    url: https://www.google.com/blank.html
     interval: 600
     tolerance: 50
     include-all: true

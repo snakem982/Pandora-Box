@@ -27,7 +27,10 @@ import (
 )
 
 //go:embed geoip.metadb
-var metadata []byte
+var GeoIp []byte
+
+//go:embed GeoSite.dat
+var GeoSite []byte
 
 //go:embed Profile_0.yaml
 var DefProfile []byte
@@ -44,7 +47,8 @@ func init() {
 
 	path := C.Path.HomeDir() + "/uploads"
 	_ = os.MkdirAll(path, 0777)
-	_ = os.WriteFile(C.Path.HomeDir()+"/geoip.metadb", metadata, 0777)
+	_ = os.WriteFile(C.Path.HomeDir()+"/geoip.metadb", GeoIp, 0777)
+	_ = os.WriteFile(C.Path.HomeDir()+"/GeoSite.dat", GeoSite, 0777)
 }
 
 // Init

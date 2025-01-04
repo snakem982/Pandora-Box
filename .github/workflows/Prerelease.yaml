@@ -64,11 +64,13 @@ jobs:
         run: |
           choco install wget --no-progress
           wget -O backend/meta/geoip.metadb https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geoip.metadb
+          wget -O backend/meta/GeoSite.dat https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geosite.dat
 
       - name: get latest geo ip for others
         if: runner.os != 'Windows'
         run: |
           wget -O backend/meta/geoip.metadb https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geoip.metadb  
+          wget -O backend/meta/GeoSite.dat https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geosite.dat
 
       - name: Install dependencies
         run: |
