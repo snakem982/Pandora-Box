@@ -237,6 +237,7 @@ func Dump(dst string) error {
 
 	exclude := []string{
 		"geoip.metadb",
+		"GeoSite.dat",
 		"cache.db",
 		"log.log",
 		"Cloudflare.yaml",
