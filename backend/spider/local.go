@@ -8,6 +8,7 @@ import (
 
 func init() {
 	Register(constant.CollectLocal, NewLocalCollect)
+	Register(constant.CollectBatch, NewLocalCollect)
 }
 
 type Local struct {

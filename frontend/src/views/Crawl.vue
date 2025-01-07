@@ -175,7 +175,7 @@ async function addOrEdit() {
       return
     }
 
-    if (form.type != "local" && !isValidHttpUrl(form.url)) {
+    if (form.type != "batch" && form.type != "local" && !isValidHttpUrl(form.url)) {
       ElMessage.error("地址格式不正确 Url format is incorrect")
       return
     }
@@ -349,7 +349,7 @@ async function filter() {
           <el-option label="v2ray订阅(v2ray subscription)" value="v2ray"/>
           <el-option label="sing-box订阅(sing-box subscription)" value="sing"/>
           <el-option label="分享链接(share link)" value="share"/>
-          <el-option label="自定义输入(custom input)" value="local"/>
+          <el-option label="批量导入(batch import)" value="batch"/>
         </el-select>
       </el-form-item>
       <el-form-item label="爬取地址 Url" :label-width="formLabelWidth">
@@ -469,11 +469,11 @@ async function filter() {
         <el-text>&emsp;hy2://...</el-text>
         <br>
         <br>
-        <el-text>- 自定义输入(custom input)</el-text>
+        <el-text>- 批量导入(batch import)</el-text>
         <br>
-        <el-text>&emsp;用于爬取本地文件，可将本地文件的内容直接输入到url。</el-text>
+        <el-text>&emsp;批量导入内容，订阅地址、分享链接等。</el-text>
         <br>
-        <el-text>&emsp;Used to grab local files, the content of local files can be directly input into the URL.
+        <el-text>&emsp;Batch import content, subscription addresses, sharing links, etc.
         </el-text>
         <br>
         <br>

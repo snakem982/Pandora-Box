@@ -16,6 +16,7 @@ const (
 
 const (
 	CollectLocal     = "local"
+	CollectBatch     = "batch"
 	CollectClash     = "clash"
 	CollectV2ray     = "v2ray"
 	CollectSharelink = "share"
