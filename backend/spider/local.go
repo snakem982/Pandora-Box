@@ -29,7 +29,7 @@ func (c *Local) Get2ChanWG(pc chan []map[string]any, wg *sync.WaitGroup) {
 	if len(runes) > 128 {
 		str = string(runes[:128]) + "..."
 	}
-	log.Infoln("STATISTIC: Local count=%d content=%s", len(nodes), str)
+	log.Infoln("STATISTIC: Batch|Local count=%d content=%s", len(nodes), str)
 
 	if len(nodes) > 0 {
 		pc <- nodes
