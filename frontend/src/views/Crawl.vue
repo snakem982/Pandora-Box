@@ -326,7 +326,7 @@ async function filter() {
         <el-text truncated size="large" v-else> {{ scope.row.url }}</el-text>
       </template>
     </el-table-column>
-    <el-table-column label="爬取节点 Crawl" width="95em" align="center">
+    <el-table-column label="爬取节点 Crawl" width="100em" align="center">
       <template #default="scope">
         <el-text truncated size="large" type="danger" v-if="!scope.row.crawl_nodes">
           {{ scope.row.crawl_nodes == 0 ? 0 : "" }}
@@ -334,7 +334,7 @@ async function filter() {
         <el-text truncated size="large" v-else> {{ scope.row.crawl_nodes }}</el-text>
       </template>
     </el-table-column>
-    <el-table-column label="可用节点 Available" width="95em" align="center">
+    <el-table-column label="可用节点 Available" width="105em" align="center">
       <template #default="scope">
         <el-text truncated size="large" type="danger" v-if="!scope.row.available_nodes">
           {{ scope.row.crawl_nodes == 0 ? 0 : "" }}
@@ -342,7 +342,7 @@ async function filter() {
         <el-text truncated size="large" v-else> {{ scope.row.available_nodes }}</el-text>
       </template>
     </el-table-column>
-    <el-table-column label="操作 Option" width="95em" align="center">
+    <el-table-column label="操作 Option" width="100em" align="center">
       <template #default="scope">
         <svg-icon type="mdi"
                   @click="editShow(scope.row)"
