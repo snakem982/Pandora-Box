@@ -1,17 +1,21 @@
 package spider
 
 import (
+	"encoding/json"
 	"errors"
 	"golang.org/x/net/html"
+	"pandora-box/backend/cache"
 	"pandora-box/backend/tools"
 	"sync"
 )
 
 type Getter struct {
-	Id      string            `json:"id,omitempty" yaml:"id,omitempty"`
-	Type    string            `json:"type" yaml:"type"`
-	Url     string            `json:"url" yaml:"url"`
-	Headers map[string]string `json:"headers,omitempty" yaml:"headers,omitempty"`
+	Id             string            `json:"id,omitempty" yaml:"id,omitempty"`
+	Type           string            `json:"type" yaml:"type"`
+	Url            string            `json:"url" yaml:"url"`
+	Headers        map[string]string `json:"headers,omitempty" yaml:"headers,omitempty"`
+	CrawlNodes     int               `json:"crawl_nodes,omitempty" yaml:"crawl_nodes,omitempty"`
+	AvailableNodes int               `json:"available_nodes,omitempty" yaml:"available_nodes,omitempty"`
 }
 
 type Collect interface {
@@ -43,4 +47,46 @@ func GetBytes(url string, headers map[string]string) []byte {
 	}
 
 	return all
+}
+
+func AddIdAndUpdateGetter(pc chan []map[string]any, nodes []map[string]any, g Getter) {
+	i := len(nodes)
+	// 添加id
+	if i > 0 {
+		for _, node := range nodes {
+			node["gid"] = g.Id
+		}
+		pc <- nodes
+	}
+	// 更新getter
+	g.CrawlNodes = i
+	g.AvailableNodes = 0
+	bytes, _ := json.Marshal(g)
+	_ = cache.Put(g.Id, bytes)
+}
+
+func AvailableAndUpdateGetter(proxies []map[string]any) {
+	// 遍历
+	gs := make(map[string]int)
+	for _, proxy := range proxies {
+		if _, ok := proxy["gid"]; !ok {
+			continue
+		}
+		gid := proxy["gid"].(string)
+		if _, ok := gs[gid]; ok {
+			gs[gid] += 1
+		} else {
+			gs[gid] = 1
+		}
+	}
+
+	// 更新
+	for k, v := range gs {
+		value := cache.Get(k)
+		g := Getter{}
+		_ = json.Unmarshal(value, &g)
+		g.AvailableNodes = v
+		bytes, _ := json.Marshal(g)
+		_ = cache.Put(g.Id, bytes)
+	}
 }

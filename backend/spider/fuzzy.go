@@ -18,26 +18,23 @@ func init() {
 }
 
 type Fuzzy struct {
-	Url     string
-	Headers map[string]string
+	Getter
 }
 
-func (c *Fuzzy) Get() []map[string]any {
-	content := GetBytes(c.Url, c.Headers)
-	return ComputeFuzzy(content, c.Headers)
+func (f *Fuzzy) Get() []map[string]any {
+	content := GetBytes(f.Url, f.Headers)
+	return ComputeFuzzy(content, f.Headers)
 }
 
-func (c *Fuzzy) Get2ChanWG(pc chan []map[string]any, wg *sync.WaitGroup) {
+func (f *Fuzzy) Get2ChanWG(pc chan []map[string]any, wg *sync.WaitGroup) {
 	defer wg.Done()
-	nodes := c.Get()
-	log.Infoln("STATISTIC: Auto|Fuzzy count=%d url=%s", len(nodes), c.Url)
-	if len(nodes) > 0 {
-		pc <- nodes
-	}
+	nodes := f.Get()
+	log.Infoln("STATISTIC: Auto|Fuzzy count=%d url=%s", len(nodes), f.Url)
+	AddIdAndUpdateGetter(pc, nodes, f.Getter)
 }
 
 func NewFuzzyCollect(g Getter) Collect {
-	return &Fuzzy{Url: g.Url, Headers: g.Headers}
+	return &Fuzzy{g}
 }
 
 type void struct{}

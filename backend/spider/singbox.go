@@ -12,14 +12,13 @@ func init() {
 }
 
 type SingBox struct {
-	Url     string
-	Headers map[string]string
+	Getter
 }
 
-func (c *SingBox) Get() []map[string]any {
+func (s *SingBox) Get() []map[string]any {
 	proxies := make([]map[string]any, 0)
 
-	all := GetBytes(c.Url, c.Headers)
+	all := GetBytes(s.Url, s.Headers)
 	if all != nil {
 		sing, err := convert.ConvertsSingBox(all)
 		if err == nil && sing != nil {
@@ -30,15 +29,13 @@ func (c *SingBox) Get() []map[string]any {
 	return proxies
 }
 
-func (c *SingBox) Get2ChanWG(pc chan []map[string]any, wg *sync.WaitGroup) {
+func (s *SingBox) Get2ChanWG(pc chan []map[string]any, wg *sync.WaitGroup) {
 	defer wg.Done()
-	nodes := c.Get()
-	log.Infoln("STATISTIC: SingBox count=%d url=%s", len(nodes), c.Url)
-	if len(nodes) > 0 {
-		pc <- nodes
-	}
+	nodes := s.Get()
+	log.Infoln("STATISTIC: SingBox count=%d url=%s", len(nodes), s.Url)
+	AddIdAndUpdateGetter(pc, nodes, s.Getter)
 }
 
 func NewSingBoxCollect(g Getter) Collect {
-	return &SingBox{Url: g.Url, Headers: g.Headers}
+	return &SingBox{g}
 }

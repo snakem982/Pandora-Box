@@ -217,6 +217,8 @@ async function crawling() {
       await patch("/configs", {tun: {enable: true, "stack": tun}})
     }
 
+    await getGetter()
+
     ElMessage.success("爬取成功Crawling Success")
   } catch (error) {
     console.error(error);
@@ -314,7 +316,7 @@ async function filter() {
             max-height="85vh"
             empty-text="暂无数据 No Data"
             stripe>
-    <el-table-column fixed prop="type" label="爬取类型 Type" width="150em"/>
+    <el-table-column fixed prop="type" label="爬取类型 Type" width="95em" align="center"/>
     <el-table-column label="爬取地址 Url" show-overflow-tooltip>
       <template #default="scope">
         <el-text truncated size="large" v-if="scope.row.url.length > 128"> {{
@@ -324,7 +326,23 @@ async function filter() {
         <el-text truncated size="large" v-else> {{ scope.row.url }}</el-text>
       </template>
     </el-table-column>
-    <el-table-column label="操作 Option" width="150em" align="center">
+    <el-table-column label="爬取节点 Crawl" width="95em" align="center">
+      <template #default="scope">
+        <el-text truncated size="large" type="danger" v-if="scope.row.crawl_nodes == 0">
+          {{ scope.row.crawl_nodes }}
+        </el-text>
+        <el-text truncated size="large" v-else> {{ scope.row.crawl_nodes }}</el-text>
+      </template>
+    </el-table-column>
+    <el-table-column label="可用节点 Available" width="95em" align="center">
+      <template #default="scope">
+        <el-text truncated size="large" type="danger" v-if="scope.row.available_nodes == 0">
+          {{ scope.row.available_nodes }}
+        </el-text>
+        <el-text truncated size="large" v-else> {{ scope.row.available_nodes }}</el-text>
+      </template>
+    </el-table-column>
+    <el-table-column label="操作 Option" width="95em" align="center">
       <template #default="scope">
         <svg-icon type="mdi"
                   @click="editShow(scope.row)"
@@ -344,12 +362,12 @@ async function filter() {
     <el-form :model="form">
       <el-form-item label="爬取类型 Type" :label-width="formLabelWidth">
         <el-select v-model="form.type" placeholder="选择类型 Select type" style="width: 100%">
-          <el-option label="自动识别(auto identify)" value="auto"/>
-          <el-option label="clash订阅(clash subscription)" value="clash"/>
-          <el-option label="v2ray订阅(v2ray subscription)" value="v2ray"/>
-          <el-option label="sing-box订阅(sing-box subscription)" value="sing"/>
-          <el-option label="分享链接(share link)" value="share"/>
-          <el-option label="批量导入(batch import)" value="batch"/>
+          <el-option label="自动识别 | auto identify" value="auto"/>
+          <el-option label="clash订阅 | clash subscription" value="clash"/>
+          <el-option label="v2ray订阅 | v2ray subscription" value="v2ray"/>
+          <el-option label="sing-box订阅 | sing-box subscription" value="sing"/>
+          <el-option label="分享链接 | share link" value="share"/>
+          <el-option label="批量导入 | batch import" value="batch"/>
         </el-select>
       </el-form-item>
       <el-form-item label="爬取地址 Url" :label-width="formLabelWidth">
@@ -392,20 +410,12 @@ async function filter() {
         <br>
         <el-text>- 节点延迟在4s内</el-text>
         <br>
-        <el-text>- 检测节点server字段是否为Cloudflare Ip,
-          如果为Cloudflare Ip则根据本机网络环境自动优选Cloudflare Ip后，新增一个节点到列表中
-        </el-text>
-        <br>
         <el-text class="el-text--danger">- 爬取成功会更新默认配置</el-text>
         <br><br>
 
         <el-text>- Node available</el-text>
         <br>
         <el-text>- Node delay is within 4s</el-text>
-        <br>
-        <el-text>- Detect whether the node server field is Cloudflare IP. If it is Cloudflare IP, Cloudflare IP will be
-          automatically selected according to the local network environment and a new node will be added to the list.
-        </el-text>
         <br>
         <el-text class="el-text--danger">- If the crawl is successful, the default profile will be updated.</el-text>
         <br>
@@ -416,7 +426,7 @@ async function filter() {
     <div>
       <el-text class="el-text--primary title">2、爬取类型 Crawl Type</el-text>
       <div class="content">
-        <el-text>- 自动识别(auto identify)</el-text>
+        <el-text>- 自动识别 | auto identify</el-text>
         <br>
         <el-text>&emsp;自动识别url地址返回的内容。</el-text>
         <br>
@@ -430,21 +440,21 @@ async function filter() {
         <el-text>&emsp;Generally encoded in yaml</el-text>
         <br>
         <br>
-        <el-text>- v2ray订阅(v2ray subscription)</el-text>
+        <el-text>- v2ray订阅 | v2ray subscription</el-text>
         <br>
         <el-text>&emsp;一般用Base64编码</el-text>
         <br>
         <el-text>&emsp;Generally encoded in Base64</el-text>
         <br>
         <br>
-        <el-text>- sing-box订阅(sing-box subscription)</el-text>
+        <el-text>- sing-box订阅 | sing-box subscription</el-text>
         <br>
         <el-text>&emsp;一般用Json编码</el-text>
         <br>
         <el-text>&emsp;Generally encoded in Json</el-text>
         <br>
         <br>
-        <el-text>- 分享链接(share link)</el-text>
+        <el-text>- 分享链接 | share link</el-text>
         <br>
         <el-text>&emsp;以下开头的文字视为分享链接</el-text>
         <br>
@@ -469,7 +479,7 @@ async function filter() {
         <el-text>&emsp;hy2://...</el-text>
         <br>
         <br>
-        <el-text>- 批量导入(batch import)</el-text>
+        <el-text>- 批量导入 | batch import</el-text>
         <br>
         <el-text>&emsp;批量导入内容，订阅地址、分享链接等。</el-text>
         <br>
@@ -530,6 +540,5 @@ async function filter() {
   font-size: 16px;
   line-height: 1.6rem;
 }
-
 
 </style>

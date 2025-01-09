@@ -14,7 +14,6 @@ import (
 	"github.com/metacubex/mihomo/log"
 	"gopkg.in/yaml.v3"
 	"io"
-	"math/rand"
 	"net"
 	"net/http"
 	"os"
@@ -22,7 +21,6 @@ import (
 	"pandora-box/backend/constant"
 	"pandora-box/backend/meta"
 	"pandora-box/backend/mypool"
-	"pandora-box/backend/premium"
 	"pandora-box/backend/tools"
 	"path/filepath"
 	"runtime"
@@ -36,10 +34,6 @@ var emojiMap = make(map[string]string)
 
 //go:embed flags.json
 var fsEmoji []byte
-
-// 优选ip
-var _rand = rand.New(rand.NewSource(time.Now().Unix()))
-var CloudflareCIDR = premium.LoadCIDR(premium.CdnTypeCloudflare)
 
 func init() {
 	type countryEmoji struct {
@@ -59,16 +53,18 @@ func Crawl() bool {
 	proxies := make([]map[string]any, 0)
 	if defaultErr == nil && len(defaultBuf) > 0 {
 		rawCfg, err := config.UnmarshalRawConfig(defaultBuf)
-		if err == nil && len(rawCfg.Proxy) > 0 {
-			proxies = rawCfg.Proxy
-			log.Infoln("load default config proxies success %d", len(rawCfg.Proxy))
+		if err == nil {
+			for _, proxy := range rawCfg.Proxy {
+				if _, ok := proxy["gid"]; !ok {
+					continue
+				}
+				proxies = append(proxies, proxy)
+			}
+			log.Infoln("load default config proxies success %d", len(proxies))
 		}
 	}
 
-	// 低于节点阈值进行爬取
-	if len(proxies) < 1024 {
-		proxies = append(doCrawl(), proxies...)
-	}
+	proxies = append(doCrawl(), proxies...)
 
 	// 去重
 	maps := Unique(proxies, false)
@@ -93,6 +89,9 @@ func Crawl() bool {
 
 	// 排序添加emoji
 	SortAddEmoji(proxies)
+
+	// 统计每个getter可用节点数
+	AvailableAndUpdateGetter(proxies)
 
 	// 放入缓存
 	Save2Local(proxies, "0_cache.yaml")
@@ -149,41 +148,6 @@ func doCrawl() []map[string]any {
 		for p := range pc {
 			if p != nil {
 				proxies = append(proxies, p...)
-			}
-		}
-	}
-
-	// 优选ip
-	isNeedPremium := false
-	for _, proxy := range proxies {
-		if proxy["server"] == nil {
-			continue
-		}
-		server := proxy["server"].(string)
-		if premium.IsCdnIp(CloudflareCIDR, server) {
-			isNeedPremium = true
-			break
-		}
-	}
-	if isNeedPremium {
-		httpsIps := premium.GetExcellentIps(premium.CdnTypeCloudflare).HttpsIps
-		if len(httpsIps) > 0 {
-			_rand.Seed(time.Now().UnixNano())
-			httpsIpsLen := len(httpsIps) - 1
-			for _, proxy := range proxies {
-				if proxy["server"] == nil {
-					continue
-				}
-				proxyCopy := proxy
-				server := proxy["server"].(string)
-				if premium.IsCdnIp(CloudflareCIDR, server) {
-					c1 := make(map[string]any)
-					marshal, _ := json.Marshal(proxyCopy)
-					_ = json.Unmarshal(marshal, &c1)
-					x := _rand.Intn(httpsIpsLen)
-					c1["server"] = httpsIps[x]
-					proxies = append(proxies, c1)
-				}
 			}
 		}
 	}
@@ -332,7 +296,7 @@ func urlTest(proxies []C.Proxy) []string {
 	keys := make([]string, 0)
 	m := sync.Mutex{}
 
-	expectedStatus, _ := utils.NewUnsignedRanges[uint16]("200/204/301/302")
+	expectedStatus, _ := utils.NewUnsignedRanges[uint16]("200/204/301/302/304")
 	url := "https://www.google.com/blank.html"
 
 	pool.WaitCount(len(proxies))
