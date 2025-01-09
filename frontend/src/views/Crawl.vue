@@ -329,7 +329,7 @@ async function filter() {
     <el-table-column label="爬取节点 Crawl" width="95em" align="center">
       <template #default="scope">
         <el-text truncated size="large" type="danger" v-if="!scope.row.crawl_nodes">
-          0
+          {{ scope.row.crawl_nodes == 0 ? 0 : "" }}
         </el-text>
         <el-text truncated size="large" v-else> {{ scope.row.crawl_nodes }}</el-text>
       </template>
@@ -337,7 +337,7 @@ async function filter() {
     <el-table-column label="可用节点 Available" width="95em" align="center">
       <template #default="scope">
         <el-text truncated size="large" type="danger" v-if="!scope.row.available_nodes">
-          0
+          {{ scope.row.crawl_nodes == 0 ? 0 : "" }}
         </el-text>
         <el-text truncated size="large" v-else> {{ scope.row.available_nodes }}</el-text>
       </template>

@@ -10,7 +10,7 @@ import (
 )
 
 type Getter struct {
-	Id             string            `json:"id,omitempty" yaml:"id,omitempty"`
+	Id             string            `json:"id" yaml:"id"`
 	Type           string            `json:"type" yaml:"type"`
 	Url            string            `json:"url" yaml:"url"`
 	Headers        map[string]string `json:"headers,omitempty" yaml:"headers,omitempty"`
@@ -51,6 +51,13 @@ func GetBytes(url string, headers map[string]string) []byte {
 
 func AddIdAndUpdateGetter(pc chan []map[string]any, nodes []map[string]any, g Getter) {
 	i := len(nodes)
+
+	// 更新getter
+	g.CrawlNodes = i
+	g.AvailableNodes = 0
+	bytes, _ := json.Marshal(g)
+	_ = cache.Put(g.Id, bytes)
+
 	// 添加id
 	if i > 0 {
 		for _, node := range nodes {
@@ -58,11 +65,6 @@ func AddIdAndUpdateGetter(pc chan []map[string]any, nodes []map[string]any, g Ge
 		}
 		pc <- nodes
 	}
-	// 更新getter
-	g.CrawlNodes = i
-	g.AvailableNodes = 0
-	bytes, _ := json.Marshal(g)
-	_ = cache.Put(g.Id, bytes)
 }
 
 func AvailableAndUpdateGetter(proxies []map[string]any) {
