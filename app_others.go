@@ -176,7 +176,7 @@ func (a *App) ExportCrawl() string {
 	selection, err := runtime.SaveFileDialog(a.ctx, runtime.SaveDialogOptions{
 		Title:            "选择导出位置 Select Export Directory",
 		DefaultDirectory: homeDir,
-		DefaultFilename:  "Pandora-Box-Config.yaml",
+		DefaultFilename:  "Pandora-Box-Share.yaml",
 		Filters: []runtime.FileFilter{
 			{
 				DisplayName: "文件类型 Type (*.yaml)",

@@ -94,6 +94,7 @@ func Filter(r chi.Router) {
 					name = strings.Split(name, "_")[0]
 					name = fmt.Sprintf("%s_%+02v", name, i+1)
 					proxies[i]["name"] = name
+					delete(proxies[i], "gid")
 				}
 
 				// 1:筛选 2：覆盖默认 3：生成新配置 4：导出使用
