@@ -83,6 +83,9 @@ func AvailableAndUpdateGetter(proxies []map[string]any) {
 	// 更新
 	for k, v := range gs {
 		value := cache.Get(k)
+		if value == nil {
+			continue
+		}
 		g := Getter{}
 		_ = json.Unmarshal(value, &g)
 		g.AvailableNodes = v

@@ -433,7 +433,7 @@ async function filter() {
         <el-text>&emsp;Automatically identify the content returned by the URL address.</el-text>
         <br>
         <br>
-        <el-text>- clash订阅(clash subscription)</el-text>
+        <el-text>- clash订阅 | clash subscription</el-text>
         <br>
         <el-text>&emsp;一般用yaml编码</el-text>
         <br>
