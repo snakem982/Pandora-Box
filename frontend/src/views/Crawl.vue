@@ -22,6 +22,8 @@ interface Getter {
   id: string
   type: string
   url: string
+  crawl_nodes: any
+  available_nodes: any
   headers: Headers
 }
 
@@ -44,6 +46,8 @@ const form = reactive({
   auth: '',
   ua: '',
   cookie: '',
+  crawl_nodes: '',
+  available_nodes: '',
 })
 const dialogFormVisible = ref(false)
 const addFlag = ref(true)
@@ -61,7 +65,7 @@ async function getGetter() {
 
 async function postGetter(formData: any) {
   try {
-    const getter: Getter = {
+    const getter: any = {
       id: formData.id,
       type: formData.type,
       url: formData.url,
@@ -89,6 +93,8 @@ async function putGetter(formData: any) {
       id: formData.id,
       type: formData.type,
       url: formData.url,
+      crawl_nodes: formData.crawl_nodes,
+      available_nodes: formData.available_nodes,
       headers: {},
     }
     if (formData.auth) {
@@ -133,6 +139,8 @@ function editShow(getter: Getter) {
   form.id = getter.id
   form.type = getter.type
   form.url = getter.url
+  form.crawl_nodes = getter.crawl_nodes
+  form.available_nodes = getter.available_nodes
   let headers = getter.headers
   if (!headers) {
     return
@@ -169,7 +177,7 @@ async function addOrEdit() {
 
   if (addFlag.value) {
 
-    const filter = tableData.filter(data => data.type == form.type && data.url == form.url);
+    const filter = tableData.filter(data => data.url == form.url);
     if (filter.length != 0) {
       ElMessage.error("地址已存在 Url already exists")
       return
@@ -240,6 +248,12 @@ async function filter() {
   } else {
     ElMessage.warning("暂无节点缓存，请进行爬取 There is no node cache yet, please crawl")
   }
+}
+
+const NSort = (key: string) => (obj1: any, obj2: any) => {
+  let b1 = obj1[key] === undefined || obj1[key] === null ? 0 : parseFloat(obj1[key]) || 0;
+  let b2 = obj2[key] === undefined || obj2[key] === null ? 0 : parseFloat(obj2[key]) || 0;
+  return b1 - b2;
 }
 
 </script>
@@ -326,22 +340,20 @@ async function filter() {
         <el-text truncated size="large" v-else> {{ scope.row.url }}</el-text>
       </template>
     </el-table-column>
-    <el-table-column label="爬取节点 Crawl" width="100em" align="center">
-      <template #default="scope">
-        <el-text truncated size="large" type="danger" v-if="!scope.row.crawl_nodes">
-          {{ scope.row.crawl_nodes == 0 ? 0 : "" }}
-        </el-text>
-        <el-text truncated size="large" v-else> {{ scope.row.crawl_nodes }}</el-text>
-      </template>
-    </el-table-column>
-    <el-table-column label="可用节点 Available" width="105em" align="center">
-      <template #default="scope">
-        <el-text truncated size="large" type="danger" v-if="!scope.row.available_nodes">
-          {{ scope.row.crawl_nodes == 0 ? 0 : "" }}
-        </el-text>
-        <el-text truncated size="large" v-else> {{ scope.row.available_nodes }}</el-text>
-      </template>
-    </el-table-column>
+    <el-table-column
+        prop="crawl_nodes"
+        label="爬取节点 Crawl"
+        sortable
+        :sort-method="NSort('crawl_nodes')"
+        width="100em"
+        align="center"/>
+    <el-table-column
+        prop="available_nodes"
+        label="可用节点 Valid"
+        sortable
+        :sort-method="NSort('available_nodes')"
+        width="100em"
+        align="center"/>
     <el-table-column label="操作 Option" width="100em" align="center">
       <template #default="scope">
         <svg-icon type="mdi"
