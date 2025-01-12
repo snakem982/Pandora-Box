@@ -10,8 +10,8 @@ A Simple Mihomo GUI
 - Vmess, Vless, Shadowsocks, Trojan, Tuic, Hysteria, Hysteria2, Wireguard, [Mieru](./Mieru.md) protocol support
 - Sharing link, Subscription link, Base64, Yaml format support
 - Conversion of nodes and subscriptions into mihomo configurations
-- Node crawling support
-- Automatic rule grouping
+- Support node crawling, and filtering by country and node type after crawling
+- Automatically add minimalist rule grouping and DNS leak prevention configuration
 - Enable "Unified Rule Grouping" to unify the groups and rules of all subscriptions.
 - Enable Tun
 

@@ -10,8 +10,8 @@
 - 支持 Vmess, Vless, Shadowsocks, Trojan, Tuic, Hysteria, Hysteria2, Wireguard, [Mieru](./Mieru.md) 协议
 - 支持 分享链接, 订阅链接, Base64格式，Yaml格式 的数据输入解析 
 - 内置将节点和订阅转换为 Mihomo 配置
-- 支持 节点爬取
-- 自动添加极简规则分组
+- 支持 节点爬取，以及爬取后按国别和节点类型进行筛选
+- 自动添加极简规则分组以及防DNS泄露配置
 - 支持统一所有订阅的规则和分组
 - 支持Tun模式
 
