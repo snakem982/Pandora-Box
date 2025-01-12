@@ -18,19 +18,17 @@ const country = ref<CheckboxValueType[]>([])
 const countries = ref<any[]>([])
 
 const nodeCount = ref(0)
-const nodeFilterValue = ref(128)
+const nodeFilterValue = ref(1)
 
 onMounted(async () => {
   const msg = await get<any>("/nodeCache");
   protocols.value = msg.protocol
   countries.value = msg.country
   nodeCount.value = msg.count
-  if (msg.count > 128) {
-    nodeFilterValue.value = 128
-  } else if (msg.count > 64) {
-    nodeFilterValue.value = 64
-  } else if (msg.count > 32) {
-    nodeFilterValue.value = 32
+  if (msg.count > 16) {
+    nodeFilterValue.value = 16
+  } else {
+    nodeFilterValue.value = msg.count
   }
 })
 
@@ -77,29 +75,6 @@ const handleCountryCheckAll = (val: CheckboxValueType) => {
     country.value = []
   }
 }
-
-const options = [
-  {
-    value: 32,
-    label: 32,
-  },
-  {
-    value: 64,
-    label: 64,
-  },
-  {
-    value: 128,
-    label: 128,
-  },
-  {
-    value: 256,
-    label: 256,
-  },
-  {
-    value: 512,
-    label: 512,
-  },
-]
 
 const nodeFilterCount = ref(0)
 const nodeResultShow = ref(true)
@@ -253,14 +228,7 @@ async function Export() {
   <br>
   <div>
     <el-text>节点个数 Node Number</el-text>&emsp;
-    <el-select v-model="nodeFilterValue" placeholder="Select" style="width: 100px">
-      <el-option
-          v-for="item in options"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
-      />
-    </el-select>&emsp;
+    <el-input-number v-model="nodeFilterValue" :min="1" :max="512"/>&emsp;
     <el-text>总节点数不会超过 {{ nodeFilterValue }} 个</el-text>&emsp;
     <el-text>The total number of nodes will not exceed {{ nodeFilterValue }}</el-text>
   </div>
