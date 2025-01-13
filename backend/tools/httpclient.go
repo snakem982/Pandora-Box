@@ -17,6 +17,7 @@ import (
 )
 
 var UA = "clash-verge/v2.0.2"
+var DefaultTimeOut = 15 * time.Second
 
 var dialerBaidu = &net.Dialer{
 	Resolver: &net.Resolver{
@@ -67,7 +68,7 @@ func HttpGetByProxy(requestUrl string, headers map[string]string) ([]byte, strin
 			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 			Proxy:           http.ProxyURL(uri),
 		},
-		Timeout: 20 * time.Second,
+		Timeout: DefaultTimeOut,
 	}
 	priUrl := "https://github.com/snakem982/Pandora-Box/releases/download"
 	if strings.HasPrefix(requestUrl, priUrl) {
@@ -80,14 +81,7 @@ func HttpGetByProxy(requestUrl string, headers map[string]string) ([]byte, strin
 		log.Warnln("HttpGetByProxy http.NewRequest %s %v", requestUrl, err)
 		return nil, "", err
 	}
-	req.Header.Set("Accept-Encoding", "utf-8")
-	req.Header.Set("Accept", "*/*")
-	req.Header.Set("User-Agent", UA)
-	if headers != nil && len(headers) > 0 {
-		for k, v := range headers {
-			req.Header.Set(k, v)
-		}
-	}
+	setReqHeader(requestUrl, req.Header, headers)
 
 	// 发送请求并获取响应
 	resp, err := client.Do(req)
@@ -118,7 +112,7 @@ func HttpGetByProxy(requestUrl string, headers map[string]string) ([]byte, strin
 
 // HttpGet 使用HTTP GET方法请求指定的URL，并返回响应的数据和可能的错误。
 func HttpGet(requestUrl string, headers map[string]string) ([]byte, string, error) {
-	timeOut := 30 * time.Second
+	timeOut := DefaultTimeOut
 
 	priUrl := "https://github.com/snakem982/Pandora-Box/releases/download"
 	if strings.Contains(requestUrl, priUrl) {
@@ -146,14 +140,7 @@ func HttpGetWithTimeout(requestUrl string, outTime time.Duration, needDail bool,
 		log.Warnln("HttpGetWithTimeout http.NewRequest %s %v", requestUrl, err)
 		return nil, "", err
 	}
-	req.Header.Set("Accept-Encoding", "utf-8")
-	req.Header.Set("Accept", "*/*")
-	req.Header.Set("User-Agent", UA)
-	if headers != nil && len(headers) > 0 {
-		for k, v := range headers {
-			req.Header.Set(k, v)
-		}
-	}
+	setReqHeader(requestUrl, req.Header, headers)
 
 	resp, err := client.Do(req) // 发送请求并获取响应
 	if err != nil {
@@ -196,9 +183,9 @@ func ConcurrentHttpGet(url string, headers map[string]string) (all []byte, fileN
 			if all == nil && len(content) > 0 {
 				all = content
 				fileName = name
+				done <- true
 			}
 			cLock.Unlock()
-			done <- true
 		}
 	}()
 
@@ -211,9 +198,9 @@ func ConcurrentHttpGet(url string, headers map[string]string) (all []byte, fileN
 			if all == nil && len(content) > 0 {
 				all = content
 				fileName = name
+				done <- true
 			}
 			cLock.Unlock()
-			done <- true
 		}
 	}()
 
@@ -229,4 +216,19 @@ func ConcurrentHttpGet(url string, headers map[string]string) (all []byte, fileN
 	}
 
 	return
+}
+
+func setReqHeader(url string, header http.Header, headers map[string]string) {
+	header.Set("Accept-Encoding", "utf-8")
+	header.Set("Accept", "*/*")
+	if strings.HasPrefix(url, "https://raw.githubusercontent.com") {
+		header.Set("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36")
+	} else {
+		header.Set("User-Agent", UA)
+	}
+	if headers != nil && len(headers) > 0 {
+		for k, v := range headers {
+			header.Set(k, v)
+		}
+	}
 }
