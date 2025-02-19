@@ -16,7 +16,7 @@ import (
 	"time"
 )
 
-var UA = "clash-verge/v2.0.2"
+var UA = "clash-verge/v2.0.3"
 var DefaultTimeOut = 15 * time.Second
 
 var dialerBaidu = &net.Dialer{
