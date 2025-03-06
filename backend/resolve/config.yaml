@@ -19,6 +19,8 @@ profile:
   store-selected: true
   store-fake-ip: true
 
+# 以下配置可以防止DNS泄露，谨慎修改
+# The following configuration can prevent DNS leakage, modify with caution
 dns:
   enable: true
   ipv6: false
@@ -37,6 +39,8 @@ dns:
   proxy-server-nameserver:
     - tls://8.8.4.4
     - tls://1.1.1.1
+# 以上配置可以防止DNS泄露，谨慎修改
+# The above configuration can prevent DNS leakage, modify with caution
 
 proxies:
 
