@@ -101,7 +101,7 @@ onMounted(async () => {
   getProxies()
   activeNames.value = acName
 
-  interval = setInterval(flushDelay, 30000)
+  interval = setInterval(flushDelay, 18000)
 })
 
 watch(labelPosition, getProxies)
@@ -188,7 +188,7 @@ async function getDelay() {
   }
   activeNames.value = tempName
   loading.close()
-  interval = setInterval(flushDelay, 30000)
+  interval = setInterval(flushDelay, 18000)
 }
 
 function getLocal() {
