@@ -192,21 +192,6 @@ async function getDelay() {
   interval = setInterval(flushDelay, freshTime)
 }
 
-function getLocal() {
-  if (GROUP.proxies.length == 0) {
-    return
-  }
-
-  if (activeNames.value === "") {
-    activeNames.value = GROUP.proxies[0].name
-    setTimeout(function () {
-      location.href = "#" + activeNames.value + PROVIDER[activeNames.value]['now']
-    }, 500)
-  } else {
-    location.href = "#" + activeNames.value + PROVIDER[activeNames.value]['now']
-  }
-}
-
 function allDelay(cao: any): number {
   let history: any = cao.history
   let type: any = cao.type
@@ -282,7 +267,6 @@ function getIndex(prefix: string, index: number): any {
                  title="延迟测速Delay Test">
         <svg-icon type="mdi" :path="mdiFlash" :size="18"></svg-icon>
       </el-button>
-      <el-button @click="getLocal" type="danger" icon="Aim" circle title="当前节点Current Proxy"/>
       <el-button @click="changeSortFlag" type="warning" circle title="排序Sort">
         <svg-icon type="mdi" :path="mdiSortAlphabeticalAscending" :size="18"></svg-icon>
       </el-button>
