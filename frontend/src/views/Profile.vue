@@ -154,6 +154,12 @@ async function selectProfile(profile: Profile) {
     return
   }
 
+  const loading = ElLoading.service({
+    lock: true,
+    text: '切换中Switching...',
+    background: 'rgba(0, 0, 0, 0.7)',
+  })
+
   let needTun = false
   const isAdmin = await IsAdmin()
   const tun = localStorage.getItem("tun")
@@ -175,13 +181,16 @@ async function selectProfile(profile: Profile) {
   profile.selected = true
   await put("/profile/" + profile.id, profile)
   await patch<any>("/profile/" + profile.id, profile)
+  await get("/wait")
 
-  setTimeout(() => del("/connections"), 3000)
+  setTimeout(() => del("/connections"), 2000)
 
   if (needTun) {
     await patch("/configs", {tun: {enable: true, "stack": tun}})
   }
 
+  loading.close()
+  ElMessage.success("切换成功Switch successful")
 }
 
 async function pastTxt() {
@@ -444,7 +453,7 @@ function toCrawl() {
         :on-error="uploadError"
         :on-success="uploadSuccess"
         ref="drawerUpload"
-        :headers = uploadHeader
+        :headers=uploadHeader
     >
       <el-icon size="50" class="el-icon--upload">
         <UploadFilled/>

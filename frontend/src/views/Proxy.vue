@@ -12,6 +12,7 @@ const isHide = ref(true)
 const activeNames: any = ref("")
 const labelPosition = ref('')
 const groupCache = reactive(new Group([]))
+const freshTime = 12000
 
 const GROUP: any = reactive({
   proxies: []
@@ -101,7 +102,7 @@ onMounted(async () => {
   getProxies()
   activeNames.value = acName
 
-  interval = setInterval(flushDelay, 18000)
+  interval = setInterval(flushDelay, freshTime)
 })
 
 watch(labelPosition, getProxies)
@@ -188,7 +189,7 @@ async function getDelay() {
   }
   activeNames.value = tempName
   loading.close()
-  interval = setInterval(flushDelay, 18000)
+  interval = setInterval(flushDelay, freshTime)
 }
 
 function getLocal() {
