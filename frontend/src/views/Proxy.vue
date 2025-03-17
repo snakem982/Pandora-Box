@@ -260,8 +260,8 @@ function getIndex(prefix: string, index: number): any {
 <template>
   <el-affix :offset="20" id="goTop">
     <el-row>
-      <el-button @click="setGrid" type="info" icon="Grid" circle title="分栏Columns"/>
-      <el-button @click="setHide" type="primary" icon="Hide" circle
+      <el-button @click="setGrid" type="primary" icon="Grid" circle title="分栏Columns"/>
+      <el-button @click="setHide" type="danger" icon="Hide" circle
                  title="隐藏不可用节点Hide Unavailable Proxies"/>
       <el-button @click="getDelay" type="success" circle
                  title="延迟测速Delay Test">
