@@ -133,6 +133,8 @@ github.com/mdlayher/socket v0.5.1 h1:VZaqt6RkGkt2OE9l3GcC6nZkqD3xKeQLyfleW/uBcos
 github.com/mdlayher/socket v0.5.1/go.mod h1:TjPLHI1UgwEv5J1B5q0zTZq12A/6H7nKmtTanQE37IQ=
 github.com/metacubex/amneziawg-go v0.0.0-20240922133038-fdf3a4d5a4ab h1:Chbw+/31UC14YFNr78pESt5Vowlc62zziw05JCUqoL4=
 github.com/metacubex/amneziawg-go v0.0.0-20240922133038-fdf3a4d5a4ab/go.mod h1:xVKK8jC5Sd3hfh7WjmCq+HorehIbrBijaUWmcuKjPcI=
+github.com/metacubex/bart v0.19.0 h1:XQ9AJeI+WO+phRPkUOoflAFwlqDJnm5BPQpixciJQBY=
+github.com/metacubex/bart v0.19.0/go.mod h1:DCcyfP4MC+Zy7sLK7XeGuMw+P5K9mIRsYOBgiE8icsI=
 github.com/metacubex/bbolt v0.0.0-20240822011022-aed6d4850399 h1:oBowHVKZycNtAFbZ6avaCSZJYeme2Nrj+4RpV2cNJig=
 github.com/metacubex/bbolt v0.0.0-20240822011022-aed6d4850399/go.mod h1:4xcieuIK+M4bGQmQYZVqEaIYqjS1ahO4kXG7EmDgEro=
 github.com/metacubex/chacha v0.1.1 h1:OHIv11Nd9CISAIzegpjfupIoZp9DYm6uQw41RxvmU/c=
@@ -163,8 +165,8 @@ github.com/metacubex/sing-wireguard v0.0.0-20241126021510-0827d417b589 h1:Z6bNy0
 github.com/metacubex/sing-wireguard v0.0.0-20241126021510-0827d417b589/go.mod h1:4NclTLIZuk+QkHVCGrP87rHi/y8YjgPytxTgApJNMhc=
 github.com/metacubex/tfo-go v0.0.0-20241231083714-66613d49c422 h1:zGeQt3UyNydIVrMRB97AA5WsYEau/TyCnRtTf1yUmJY=
 github.com/metacubex/tfo-go v0.0.0-20241231083714-66613d49c422/go.mod h1:l9oLnLoEXyGZ5RVLsh7QCC5XsouTUyKk4F2nLm2DHLw=
-github.com/metacubex/utls v1.6.6 h1:3D12YKHTf2Z41UPhQU2dWerNWJ5TVQD9gKoQ+H+iLC8=
-github.com/metacubex/utls v1.6.6/go.mod h1:+WLFUnXjcpdxXCnyX25nggw8C6YonZ8zOK2Zm/oRvdo=
+github.com/metacubex/utls v1.6.8-alpha.4 h1:5EvsCHxDNneaOtAyc8CztoNSpmonLvkvuGs01lIeeEI=
+github.com/metacubex/utls v1.6.8-alpha.4/go.mod h1:MEZ5WO/VLKYs/s/dOzEK/mlXOQxc04ESeLzRgjmLYtk=
 github.com/metacubex/wireguard-go v0.0.0-20240922131502-c182e7471181 h1:hJLQviGySBuaynlCwf/oYgIxbVbGRUIKZCxdya9YrbQ=
 github.com/metacubex/wireguard-go v0.0.0-20240922131502-c182e7471181/go.mod h1:phewKljNYiTVT31Gcif8RiCKnTUOgVWFJjccqYM8s+Y=
 github.com/miekg/dns v1.1.63 h1:8M5aAw6OMZfFXTT7K5V0Eu5YiiL8l7nUAkyN6C9YwaY=
@@ -235,8 +237,8 @@ github.com/sina-ghaderi/rabbitio v0.0.0-20220730151941-9ce26f4f872e h1:ur8uMsPIF
 github.com/sina-ghaderi/rabbitio v0.0.0-20220730151941-9ce26f4f872e/go.mod h1:+e5fBW3bpPyo+3uLo513gIUblc03egGjMM0+5GKbzK8=
 github.com/sirupsen/logrus v1.9.3 h1:dueUQJ1C2q9oE3F7wvmSGAaVtTmUizReu6fjN8uqzbQ=
 github.com/sirupsen/logrus v1.9.3/go.mod h1:naHLuLoDiP4jHNo9R0sCBMtWGeIprob74mVsIT4qYEQ=
-github.com/snakem982/mihomo v1.0.30-moshen h1:BX1U4sGm1BYAZRL0zdd1mWzaaj95Ng/oVIX8p+4IEXQ=
-github.com/snakem982/mihomo v1.0.30-moshen/go.mod h1:quqwSxY6WVqRwKDeKKdEzm8kyXJmRbCI2nLnMQ+NTMw=
+github.com/snakem982/mihomo v1.0.31-moshen h1:NdCaouXFcBrVABlZL1W8solHXDRju1aH+LnGii6pmB0=
+github.com/snakem982/mihomo v1.0.31-moshen/go.mod h1:9Kx2WOfOVkzKWlEMYynlGyLOANWoHiccQUon+w7zpxI=
 github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=
 github.com/stretchr/objx v0.4.0/go.mod h1:YvHI0jy2hoMjB+UWwv71VJQ9isScKT/TqJzVSSt89Yw=
 github.com/stretchr/objx v0.5.0/go.mod h1:Yh+to48EsGEfYuaHDzXPcE3xhTkx73EhmCGUpEOglKo=
