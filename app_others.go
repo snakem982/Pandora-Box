@@ -48,6 +48,10 @@ func GetAcStatus() (string, string) {
 	return "1", ""
 }
 
+func (a *App) GetClipboard() string {
+	return ""
+}
+
 func (a *App) SetMacAc(pwd string) string {
 	return "1"
 }

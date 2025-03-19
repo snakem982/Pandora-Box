@@ -7,7 +7,7 @@ import {ClipboardGetText, ClipboardSetText} from "../../wailsjs/runtime";
 import {mdiDownload, mdiFileReplace, mdiFolderOpen} from "@mdi/js";
 import SvgIcon from "@jamescoyle/vue-icon";
 import {useRouter} from "vue-router";
-import {GetFreePort, GetSecret, IsAdmin} from "../../wailsjs/go/main/App";
+import {GetClipboard, GetFreePort, GetSecret, IsAdmin, IsMac} from "../../wailsjs/go/main/App";
 
 const subOrShare = ref('')
 const drawer = ref(false)
@@ -194,7 +194,12 @@ async function selectProfile(profile: Profile) {
 }
 
 async function pastTxt() {
-  const txt = await ClipboardGetText()
+  let txt = await ClipboardGetText()
+  const mac = await IsMac()
+  if (mac == "true") {
+    txt = await GetClipboard()
+  }
+
   if (txt) {
     subOrShare.value = txt
   }

@@ -3,6 +3,7 @@
 package main
 
 import (
+	"bytes"
 	"context"
 	"github.com/keybase/go-keychain"
 	C "github.com/metacubex/mihomo/constant"
@@ -83,6 +84,23 @@ func GetAcStatus() (string, string) {
 
 	// 3：授权校验通过
 	return "3", password
+}
+
+func (a *App) GetClipboard() string {
+	// 定义 osascript 命令
+	cmd := exec.Command("osascript", "-e", "return (the clipboard)")
+
+	// 捕获输出
+	var out bytes.Buffer
+	cmd.Stdout = &out
+
+	// 执行命令并检查错误
+	err := cmd.Run()
+	if err != nil {
+		return ""
+	}
+
+	return out.String()
 }
 
 func (a *App) SetMacAc(pwd string) string {
