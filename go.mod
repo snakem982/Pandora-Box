@@ -1,6 +1,6 @@
 module pandora-box
 
-go 1.23.4
+go 1.24.1
 
 require (
 	github.com/go-chi/chi/v5 v5.2.1
@@ -30,7 +30,7 @@ require (
 	github.com/coreos/go-iptables v0.8.0 // indirect
 	github.com/dlclark/regexp2 v1.11.5 // indirect
 	github.com/ebitengine/purego v0.8.2 // indirect
-	github.com/enfein/mieru/v3 v3.12.0 // indirect
+	github.com/enfein/mieru/v3 v3.13.0 // indirect
 	github.com/ericlagergren/aegis v0.0.0-20230312195928-b4ce538b56f9 // indirect
 	github.com/ericlagergren/polyval v0.0.0-20230805202542-18692a1b76f9 // indirect
 	github.com/ericlagergren/siv v0.0.0-20220507050439-0b757b3aa5f1 // indirect
@@ -142,6 +142,6 @@ require (
 )
 
 replace (
-	github.com/metacubex/mihomo => github.com/snakem982/mihomo v1.0.31-moshen
+	github.com/metacubex/mihomo => github.com/snakem982/mihomo v1.0.32-moshen
 	github.com/sagernet/sing => github.com/metacubex/sing v0.0.0-20250228041610-d94509dc612a
 )
