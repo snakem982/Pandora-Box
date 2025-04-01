@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>改进后的按钮导航</title>
+    <style>
+        #sortable {
+            list-style: none;
+            padding: 0;
+            width: 200px;
+        }
+
+        #sortable li {
+            margin: 5px 0;
+            padding: 10px;
+            background: #88c0d0;
+            color: white;
+            cursor: grab;
+            border-radius: 5px;
+        }
+
+        #sortable li.dragging {
+            opacity: 0.5;
+            cursor: grabbing;
+        }
+
+    </style>
+</head>
+<body>
+<ul id="sortable">
+    <li draggable="true">Item 1</li>
+    <li draggable="true">Item 2</li>
+    <li draggable="true">Item 3</li>
+    <li draggable="true">Item 4</li>
+</ul>
+
+
+<script>
+    const sortable = document.getElementById('sortable');
+    let draggingEl = null;
+
+    sortable.addEventListener('dragstart', (e) => {
+        draggingEl = e.target;
+        e.target.classList.add('dragging');
+    });
+
+    sortable.addEventListener('dragend', (e) => {
+        e.target.classList.remove('dragging');
+        draggingEl = null;
+    });
+
+    sortable.addEventListener('dragover', (e) => {
+        e.preventDefault(); // 允许放置
+        const afterElement = getDragAfterElement(sortable, e.clientY);
+        if (afterElement == null) {
+            sortable.appendChild(draggingEl);
+        } else {
+            sortable.insertBefore(draggingEl, afterElement);
+        }
+    });
+
+    function getDragAfterElement(container, y) {
+        const draggableElements = [...container.querySelectorAll('li:not(.dragging)')];
+
+        return draggableElements.reduce((closest, child) => {
+            const box = child.getBoundingClientRect();
+            const offset = y - box.top - box.height / 2;
+            if (offset < 0 && offset > closest.offset) {
+                return { offset: offset, element: child };
+            } else {
+                return closest;
+            }
+        }, { offset: Number.NEGATIVE_INFINITY }).element;
+    }
+
+</script>
+</body>
+</html>

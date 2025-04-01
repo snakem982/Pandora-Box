@@ -1,7 +1,13 @@
 body {
     margin: 0;
-    font-family: 'Twemoji', 'Microsoft YaHei', '微软雅黑', 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB',
-    Arial, "Nunito", -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
+    padding: 0;
+    background-color: transparent;
+    user-select: none;
+    -webkit-user-select: none; /* 针对WebKit浏览器 */
+    -moz-user-select: none; /* 针对Firefox */
+    -ms-user-select: none; /* 针对IE浏览器 */
+    font-family: 'Twemoji', "Nunito", 'Microsoft YaHei', '微软雅黑', 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB',
+    Arial, -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
     "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
 }
@@ -10,6 +16,11 @@ html {
     height: 100%;
     overflow: hidden;
 }
+
+input {
+    text-transform: none;
+}
+
 
 @font-face {
     font-family: "Nunito";

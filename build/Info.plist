@@ -1,0 +1,27 @@
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+    <dict>
+        <key>CFBundlePackageType</key>
+        <string>APPL</string>
+        <key>CFBundleName</key>
+        <string>Pandora-Box</string>
+        <key>CFBundleExecutable</key>
+        <string>Pandora-Box</string>
+        <key>CFBundleIdentifier</key>
+        <string>px.snakem982.us</string>
+        <key>CFBundleVersion</key>
+        <string>0.3.1</string>
+        <key>CFBundleGetInfoString</key>
+        <string>A Simple Mihomo GUI.</string>
+        <key>CFBundleShortVersionString</key>
+        <string>0.3.1</string>
+        <key>CFBundleIconFile</key>
+        <string>icons</string>
+        <key>LSMinimumSystemVersion</key>
+        <string>10.13.0</string>
+        <key>NSHighResolutionCapable</key>
+        <string>true</string>
+        <key>NSHumanReadableCopyright</key>
+        <string>© 2025, snakem982</string>
+    </dict>
+</plist>

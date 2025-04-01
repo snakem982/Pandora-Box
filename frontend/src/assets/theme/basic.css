@@ -1,0 +1,63 @@
+:root {
+    /*文字颜色*/
+    --text-color: white;
+    /*分割线颜色*/
+    --hr-color: #ddd;
+    /*自定义layout*/
+    --layout-top-height: 65px;
+    --layout-bottom-height: 95px;
+    /*背景图片*/
+    --body-background-image: '';
+
+    /*左边底色*/
+    --left-bg-color: rgba(0, 0, 0, 0.1);
+    /*左边菜单阴影*/
+    --left-nav-shadow: 0 2px 4px rgba(0, 0, 0, 0.2), 0 3px 10px rgba(0, 0, 0, 0.19);
+    --left-nav-hover-shadow: 0 4px 8px rgba(0, 0, 0, 0.3), 0 6px 15px rgba(0, 0, 0, 0.25);
+    /*左边一级菜单底色*/
+    --left-nav-btn-bg: rgba(255, 255, 255, 0.1);
+    --left-nav-btn-hover-bg: rgba(255, 255, 255, 0.15);
+    --left-nav-btn-active-bg: rgba(255, 255, 255, 0.3);
+    /*左边规则和代理选中底色*/
+    --left-item-selected-bg: rgba(50, 60, 120);
+    /*左边二级菜单底色*/
+    --left-sec-nav-hover-bg: rgba(255, 255, 255, 0.15);
+    --left-sec-nav-hover-shadow: 0 4px 8px rgba(0, 0, 0, 0.3), 0 6px 15px rgba(0, 0, 0, 0.25);
+
+    /*滚动条样式*/
+    --scrollbar-bg: rgba(255, 255, 255, 0.3);
+    --scrollbar-hover-bg: rgba(255, 255, 255, 0.6);
+    --scrollbar-hover-shadow: 0 0 10px rgba(255, 255, 255, 0.6);
+
+    /*右边底色*/
+    --right-bg-color: rgba(80, 80, 130, 0.4);
+    /*右边卡片阴影*/
+    --right-box-shadow: 2px 2px 15px rgba(0, 0, 0, 0.4);
+
+
+    --home-card-1: linear-gradient(135deg, rgba(80, 180, 140, 0.9), rgba(140, 240, 200, 0.8));
+    --home-card-2: linear-gradient(135deg, rgba(200, 120, 180, 0.9), rgba(250, 180, 150, 0.8));
+    --home-card-3: linear-gradient(135deg, rgba(255, 140, 80, 0.9), rgba(255, 200, 120, 0.9));
+    --home-card-4: linear-gradient(135deg, rgba(80, 80, 130, 0.9), rgba(50, 50, 100, 0.8));
+    --home-card-5: linear-gradient(135deg, rgba(100, 100, 150, 0.9), rgba(180, 180, 230, 0.8));
+    --home-card-6: linear-gradient(135deg, rgba(100, 100, 150, 0.9), rgba(180, 180, 230, 0.8));
+    --home-test-icon-bg: rgba(255, 255, 255, 0.9);
+
+
+
+}
+
+[data-theme="blue"] {
+    --text-color: white;
+    --right-bg-color: rgba(80, 80, 130, 0.4);
+    --home-card-1: linear-gradient(135deg, rgba(42, 250, 223, 0.6) 10%, rgba(76, 131, 255, 0.8) 100%);
+    --home-card-2: linear-gradient(135deg, rgba(255, 211, 165, 0.6) 10%, rgba(253, 101, 133, 0.8) 100%);
+    --home-card-3: linear-gradient(135deg, rgba(238, 154, 229, 0.6) 10%, rgba(89, 97, 249, 0.8) 100%);
+    --home-card-4: linear-gradient(135deg, rgba(50, 211, 255, 0.7) 25%, rgba(77, 77, 77, 0.8) 100%);
+    --home-card-5: linear-gradient(135deg, rgba(120, 160, 220, 0.7) 25%, rgba(200, 122, 150, 0.85) 100%);
+    --home-card-6: linear-gradient(135deg, rgba(105, 176, 220, 0.7) 25%, rgba(194, 126, 225, 0.85) 100%);
+}
+
+[data-theme="dark"] {
+    --text-color: black;
+}
