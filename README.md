@@ -1,7 +1,7 @@
 <div align="center">
-<img src="build/appicon.png"  style="width:260px" />
-<h1>Pandora-Box</h1>
-<p>正在开发中。。。</p>
+<img src="build/appicon.png"  style="width:160px" />
+<h1>Pandora-Box 新版开发中</h1>
+<p>一个简易的 Mihomo 界面</p>
 </div>
 
 
