@@ -1,4 +1,4 @@
-module changeme
+module Pandora-Box-V3
 
 go 1.24.1
 
