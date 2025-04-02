@@ -1,43 +1,65 @@
-<script setup lang="ts" xmlns="http://www.w3.org/1999/html">
-import {ArrowLeft, ArrowRight, Close, Search} from "@element-plus/icons-vue";
+<script lang="ts" setup>
+import { ref } from 'vue';
+
+// 控制下拉菜单的显示状态
+const isDropdownVisible = ref(false);
+
+// 切换下拉菜单显示状态
+const toggleDropdown = () => {
+  isDropdownVisible.value = !isDropdownVisible.value;
+};
+
+// 隐藏下拉菜单
+const hideDropdown = () => {
+  isDropdownVisible.value = false;
+};
 </script>
 
 <template>
   <div class="search-container">
     <span class="back">
-      <el-icon><ArrowLeft/></el-icon>
+      <el-icon>
+        <icon-ep-arrow-left />
+      </el-icon>
     </span>
     <span class="forward">
-      <el-icon><ArrowRight/></el-icon>
+      <el-icon>
+        <icon-ep-arrow-right />
+      </el-icon>
     </span>
-    <input type="text"
-           id="search-input"
-           autocapitalize="off"
-           autocomplete="off"
-           autocorrect="off"
-           spellcheck="false"
-           placeholder="搜索节点">
+    <input 
+      type="text" 
+      id="search-input" 
+      autocapitalize="off" 
+      autocomplete="off" 
+      autocorrect="off" 
+      spellcheck="false"
+      placeholder="搜索节点"
+      @focus="toggleDropdown"
+      @blur="hideDropdown">
+    </input>
 
     <span class="search">
       <el-icon>
-        <Search/>
+        <icon-ep-search />
       </el-icon>
     </span>
-    <span class="clear"
-          id="clear-button">
+    <span class="clear" id="clear-button">
       <el-icon>
-        <Close/>
+        <icon-ep-close />
       </el-icon>
     </span>
 
     <span class="minus">
       <el-icon>
-        <icon-mdi-card-minus-outline/>
+        <icon-mdi-card-minus-outline />
       </el-icon>
     </span>
 
-
-    <div class="dropdown" id="dropdown">
+    <div 
+      class="dropdown" 
+      id="dropdown" 
+      :style="{ display: isDropdownVisible ? 'block' : 'none' }">
       <ul>
         <li class="group">A</li>
         <li>Alice</li>
@@ -51,16 +73,12 @@ import {ArrowLeft, ArrowRight, Close, Search} from "@element-plus/icons-vue";
       </ul>
     </div>
   </div>
-
 </template>
 
 <style scoped>
 .search-container {
-  left: 230px;
   padding-top: 25px;
-  z-index: 100;
-  border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
+  position: relative;
 }
 
 .search-container input {
@@ -117,14 +135,16 @@ import {ArrowLeft, ArrowRight, Close, Search} from "@element-plus/icons-vue";
 }
 
 .dropdown {
-  top: 50px;
-  left: 0;
-  width: 100%;
+  position: absolute; /* 确保定位基于父容器 */
+  margin-top: 8px;
+  transform: translateX(102px); /* 调整偏移量，与输入框左边对齐 */
+  width: 250px; /* 与输入框宽度一致 */
   border-radius: 5px;
-  background-color: #fff;
-  display: none;
-  z-index: 1000;
+  background-color: rgba(0, 0, 0, 0.8); /* 背景透明 */
+  z-index: 9999; /* 确保下拉框显示在最上层 */
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  color: var(--text-color); /* 文字颜色为白色 */
+  font-size: 12px;
 }
 
 .dropdown ul {
@@ -136,9 +156,9 @@ import {ArrowLeft, ArrowRight, Close, Search} from "@element-plus/icons-vue";
 .dropdown ul .group {
   padding: 5px;
   font-weight: bold;
-  color: #333;
-  background-color: #f9f9f9;
-  border-bottom: 1px solid #eee;
+  color: #ccc; /* 分组标题颜色稍浅 */
+  background-color: transparent; /* 背景透明 */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2); /* 分割线透明 */
 }
 
 .dropdown ul li {
@@ -147,6 +167,6 @@ import {ArrowLeft, ArrowRight, Close, Search} from "@element-plus/icons-vue";
 }
 
 .dropdown ul li:hover {
-  background-color: #f0f0f0;
+  background-color: rgba(255, 255, 255, 0.1); /* 鼠标悬停时背景微亮 */
 }
 </style>
