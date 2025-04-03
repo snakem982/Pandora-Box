@@ -25,7 +25,8 @@
     </div>
 
     <div class="right">
-      <router-view></router-view>
+      <router-view />
+      <MyDrop></MyDrop>
     </div>
   </div>
 </template>
@@ -33,6 +34,7 @@
 <script setup lang="ts">
 import MyNav from "@/components/menu/MyNav.vue";
 import MySecNav from "@/components/menu/MySecNav.vue";
+import MyDrop from "@/components/MyDrop.vue";
 
 const backgroundImage = ref("url('/src/assets/images/sea.jpg')")
 // backgroundImage.value = "radial-gradient(circle, #2c3e50, #4a5568)"
@@ -97,4 +99,5 @@ const backgroundImage = ref("url('/src/assets/images/sea.jpg')")
   color: var(--text-color);
   font-size: 20px;
 }
+
 </style>

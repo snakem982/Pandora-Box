@@ -8,6 +8,7 @@
         </div>
         <apexchart
             id="spark1"
+            type="line"
             :options="spark1"
             :series="spark1.series"
             height="100%"
@@ -22,6 +23,7 @@
         </div>
         <apexchart
             id="spark2"
+            type="line"
             :options="spark2"
             :series="spark2.series"
             height="100%"
@@ -36,6 +38,7 @@
         </div>
         <apexchart
             id="spark3"
+            type="line"
             :options="spark3"
             :series="spark3.series"
             height="100%"
@@ -60,9 +63,6 @@
 
 const spark1 = reactive({
   chart: {
-    id: 'spark1',
-    group: 'sparks',
-    type: 'line',
     height: 90,
     sparkline: {
       enabled: true
@@ -109,9 +109,6 @@ const spark1 = reactive({
 
 const spark2 = reactive({
   chart: {
-    id: 'spark2',
-    group: 'sparks',
-    type: 'line',
     height: 90,
     sparkline: {
       enabled: true
@@ -158,9 +155,6 @@ const spark2 = reactive({
 
 const spark3 = {
   chart: {
-    id: 'spark3',
-    group: 'sparks',
-    type: 'line',
     height: 90,
     sparkline: {
       enabled: true
