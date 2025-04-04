@@ -1,2 +1,21 @@
-language: Language
-hello: hello, world!
+language: English
+
+nav:
+  home: Home
+  setting: Setting
+  proxies: Proxies
+  profiles: Profiles
+
+rules:
+  rule: Rule
+  global: Global
+  direct: Direct
+
+proxy-switch: Proxy
+tun-switch: Tun
+
+sec-nav:
+  rule: Rule
+  conn: Connections
+  log: Log
+  crawl: Crawl

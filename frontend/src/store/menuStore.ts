@@ -4,9 +4,10 @@ export const useMenuStore = defineStore('menu', {
     state: () => ({
         menu: '',
         path: '',
-        rule: 'rule',
+        rule: '规则',
         proxy: false,
         tun: false,
+        language: 'zh',
     }),
     actions: {
         setMenu(menu: string) {
@@ -23,6 +24,9 @@ export const useMenuStore = defineStore('menu', {
         },
         setTun(tun: string) {
             this.tun = tun;
+        },
+        setLanguage(language: string) {
+            this.language = language;
         }
     },
     persist: true,

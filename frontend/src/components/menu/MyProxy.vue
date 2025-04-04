@@ -15,13 +15,17 @@ function toggle2() {
 
   <div class="sub">
     <div class="switch-container" title="代理已关闭">
-      <span class="switch-label">代理</span>
+      <span class="switch-label">
+         {{ $t('proxy-switch') }}
+      </span>
       <div :class="['switch', { 'switch-on': isOn }]" @click="toggle">
         <div class="switch-circle"></div>
       </div>
     </div>
     <div class="switch-container" title="虚拟网卡已关闭">
-      <span class="switch-label">虚拟网卡</span>
+      <span class="switch-label">
+        {{ $t('tun-switch') }}
+      </span>
       <div :class="['switch', { 'switch-on': isOn2 }]" @click="toggle2">
         <div class="switch-circle"></div>
       </div>

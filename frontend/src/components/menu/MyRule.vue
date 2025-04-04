@@ -1,19 +1,51 @@
 <template>
   <div class="custom-style">
-    <el-segmented v-model="value" :options="options" />
+    <el-segmented v-model="menuStore.rule"
+                  :options="getOptions()"
+    >
+      <template #default="scope">
+        <div>{{ scope.item['label'] }}</div>
+      </template>
+    </el-segmented>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue'
+import {useMenuStore} from "@/store/menuStore";
+import {useI18n} from 'vue-i18n';
 
-const value = ref('规则')
+// 存储规则模式
+const menuStore = useMenuStore()
 
-const options = ['规则', '全局', '直连']
+// 国际化
+const {t} = useI18n()
+const getOptions = function (): any[] {
+  return [
+    {
+      label: t('rules.rule'),
+      value: 'rule',
+    },
+    {
+      label: t('rules.global'),
+      value: 'global',
+    },
+    {
+      label: t('rules.direct'),
+      value: 'direct',
+    },
+  ]
+}
+
+// 监听 store.rule 的变化
+watch(() => menuStore.rule, (newValue, oldValue) => {
+  console.log(`Rule changed from ${oldValue} to ${newValue}`);
+});
+
+
 </script>
 
 <style scoped>
-.custom-style .el-segmented{
+.custom-style .el-segmented {
   width: 184px;
   margin-top: 23px;
   margin-left: 22px;
@@ -27,7 +59,7 @@ const options = ['规则', '全局', '直连']
   font-size: 15px;
 }
 
-.custom-style .el-segmented:hover{
+.custom-style .el-segmented:hover {
   box-shadow: var(--left-nav-hover-shadow);
 }
 

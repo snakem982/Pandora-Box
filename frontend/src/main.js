@@ -15,8 +15,8 @@ import './assets/theme/basic.css'
 const i18n = createI18n({
     locale: 'zh',
     messages,
-    fallbackWarn: false,
-    missingWarn: false,
+    legacy: false,
+    globalInjection: true,
 })
 
 const pinia = createPinia()

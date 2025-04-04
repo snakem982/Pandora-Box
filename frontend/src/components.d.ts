@@ -55,6 +55,8 @@ declare module 'vue' {
     IconMdiTranslate: typeof import('~icons/mdi/translate')['default']
     IconMdiTrashCan: typeof import('~icons/mdi/trash-can')['default']
     IconMdiTshirtCrewOutline: typeof import('~icons/mdi/tshirt-crew-outline')['default']
+    Language: typeof import('./components/menu/Language.vue')['default']
+    MyBottom: typeof import('./components/menu/MyBottom.vue')['default']
     MyChart: typeof import('./components/home/MyChart.vue')['default']
     MyConfig: typeof import('./components/setting/MyConfig.vue')['default']
     MyDrop: typeof import('./components/MyDrop.vue')['default']

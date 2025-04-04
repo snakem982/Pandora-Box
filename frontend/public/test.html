@@ -3,77 +3,95 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>改进后的按钮导航</title>
+    <title>Dropdown with Delay</title>
     <style>
-        #sortable {
-            list-style: none;
+        body {
+            margin: 0;
             padding: 0;
-            width: 200px;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            height: 100vh;
         }
 
-        #sortable li {
-            margin: 5px 0;
-            padding: 10px;
-            background: #88c0d0;
+        .dropdown-container {
+            position: relative;
+            display: inline-block;
+            margin-top: 300px; /* 按钮距离顶部 300px */
+        }
+
+        .dropdown-button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #007BFF;
             color: white;
-            cursor: grab;
+            border: none;
             border-radius: 5px;
+            cursor: pointer;
         }
 
-        #sortable li.dragging {
-            opacity: 0.5;
-            cursor: grabbing;
+        .dropdown-content {
+            position: absolute;
+            bottom: 50px; /* 下拉框显示在按钮上方 */
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0, 0, 0, 0.8); /* 半透明背景 */
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            display: none;
+            z-index: 1;
+            transition: all 0.3s ease;
         }
 
+        .dropdown-item {
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: background-color 0.3s ease; /* 背景颜色变化动画 */
+        }
+
+        .dropdown-item:hover {
+            background-color: #555; /* 悬浮时的背景颜色 */
+        }
     </style>
 </head>
 <body>
-<ul id="sortable">
-    <li draggable="true">Item 1</li>
-    <li draggable="true">Item 2</li>
-    <li draggable="true">Item 3</li>
-    <li draggable="true">Item 4</li>
-</ul>
-
+<div class="dropdown-container" id="dropdown">
+    <button class="dropdown-button">鼠标悬停显示</button>
+    <div class="dropdown-content">
+        <div class="dropdown-item">中文内容 1</div>
+        <div class="dropdown-item">English Content 1</div>
+        <div class="dropdown-item">中文内容 2</div>
+        <div class="dropdown-item">English Content 2</div>
+    </div>
+</div>
 
 <script>
-    const sortable = document.getElementById('sortable');
-    let draggingEl = null;
+    const dropdown = document.getElementById('dropdown');
+    const dropdownContent = dropdown.querySelector('.dropdown-content');
+    let hideTimeout;
 
-    sortable.addEventListener('dragstart', (e) => {
-        draggingEl = e.target;
-        e.target.classList.add('dragging');
+    // 显示下拉框
+    dropdown.addEventListener('mouseenter', () => {
+        clearTimeout(hideTimeout);
+        dropdownContent.style.display = 'block';
     });
 
-    sortable.addEventListener('dragend', (e) => {
-        e.target.classList.remove('dragging');
-        draggingEl = null;
+    // 隐藏下拉框（带延迟）
+    dropdown.addEventListener('mouseleave', () => {
+        hideTimeout = setTimeout(() => {
+            dropdownContent.style.display = 'none';
+        }, 200); // 延迟200ms隐藏
     });
 
-    sortable.addEventListener('dragover', (e) => {
-        e.preventDefault(); // 允许放置
-        const afterElement = getDragAfterElement(sortable, e.clientY);
-        if (afterElement == null) {
-            sortable.appendChild(draggingEl);
-        } else {
-            sortable.insertBefore(draggingEl, afterElement);
-        }
+    // 鼠标进入下拉框内容时取消隐藏
+    dropdownContent.addEventListener('mouseenter', () => {
+        clearTimeout(hideTimeout);
     });
-
-    function getDragAfterElement(container, y) {
-        const draggableElements = [...container.querySelectorAll('li:not(.dragging)')];
-
-        return draggableElements.reduce((closest, child) => {
-            const box = child.getBoundingClientRect();
-            const offset = y - box.top - box.height / 2;
-            if (offset < 0 && offset > closest.offset) {
-                return { offset: offset, element: child };
-            } else {
-                return closest;
-            }
-        }, { offset: Number.NEGATIVE_INFINITY }).element;
-    }
-
 </script>
 </body>
 </html>

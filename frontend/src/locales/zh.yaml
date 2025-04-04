@@ -1,2 +1,22 @@
-language: 语言
-hello: 你好，世界！
+language: 简体中文
+
+nav:
+  home: 主页
+  setting: 设置
+  proxies: 代理
+  profiles: 订阅
+
+rules:
+  rule: 规则
+  global: 全局
+  direct: 直连
+
+proxy-switch: 代理
+tun-switch: 虚拟网卡
+
+sec-nav:
+  rule: 规则
+  conn: 连接
+  log: 日志
+  crawl: 爬取
+

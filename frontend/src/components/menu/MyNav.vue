@@ -20,7 +20,6 @@ function enter(btn: string) {
 function leave(btn: string) {
   menu[btn] = false
 }
-
 </script>
 
 <template>
@@ -32,7 +31,7 @@ function leave(btn: string) {
         :class="{ active: menuStore.menu=='Home' }"
     >
       <template v-if="menu.homeStatus">
-        主页
+        {{ $t('nav.home') }}
       </template>
       <template v-else>
         <template v-if="menuStore.menu=='Home'">
@@ -51,7 +50,7 @@ function leave(btn: string) {
         :class="{ active: menuStore.menu=='Setting' }"
     >
       <template v-if="menu.setStatus">
-        设置
+        {{ $t('nav.setting') }}
       </template>
       <template v-else>
         <template v-if="menuStore.menu=='Setting'">
@@ -70,7 +69,7 @@ function leave(btn: string) {
         :class="{ active: menuStore.menu=='Proxies' }"
     >
       <template v-if="menu.proxyStatus">
-        设置
+        {{ $t('nav.proxies') }}
       </template>
       <template v-else>
         <template v-if="menuStore.menu=='Proxies'">
@@ -88,7 +87,7 @@ function leave(btn: string) {
         :class="{ active: menuStore.menu=='Profiles' }"
     >
       <template v-if="menu.subStatus">
-        订阅
+        {{ $t('nav.profiles') }}
       </template>
       <template v-else>
         <template v-if="menuStore.menu=='Profiles'">

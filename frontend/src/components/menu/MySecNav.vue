@@ -17,7 +17,7 @@ const router = useRouter()
         <el-icon>
           <icon-mdi-source-branch/>
         </el-icon>
-        <span class="nav-info">规则 · 386</span>
+        <span class="nav-info">{{ $t('sec-nav.rule') }} · 386</span>
       </el-text>
     </div>
 
@@ -28,7 +28,7 @@ const router = useRouter()
         <el-icon>
           <icon-mdi-connection/>
         </el-icon>
-        <span class="nav-info">连接 · 257</span>
+        <span class="nav-info">{{ $t('sec-nav.conn') }} · 257</span>
       </el-text>
     </div>
 
@@ -39,7 +39,7 @@ const router = useRouter()
         <el-icon>
           <icon-mdi-text-box-outline/>
         </el-icon>
-        <span class="nav-info">日志</span>
+        <span class="nav-info">{{ $t('sec-nav.log') }}</span>
       </el-text>
     </div>
 
@@ -50,7 +50,7 @@ const router = useRouter()
         <el-icon>
           <icon-mdi-spider-outline/>
         </el-icon>
-        <span class="nav-info">爬取 · 530</span>
+        <span class="nav-info">{{ $t('sec-nav.crawl') }} · 530</span>
       </el-text>
     </div>
 
