@@ -26,7 +26,7 @@ const router = useRouter()
         @click="changeMenu('Connection',router)">
       <el-text class="nav-text">
         <el-icon>
-          <icon-mdi-connection/>
+          <icon-mdi-lan-connect/>
         </el-icon>
         <span class="nav-info">{{ $t('sec-nav.conn') }} · 257</span>
       </el-text>

@@ -1,65 +1,87 @@
 <script lang="ts" setup>
-import { ref } from 'vue';
+import {ref} from 'vue';
 
 // 控制下拉菜单的显示状态
 const isDropdownVisible = ref(false);
 
-// 切换下拉菜单显示状态
-const toggleDropdown = () => {
-  isDropdownVisible.value = !isDropdownVisible.value;
+// 切换下拉菜单
+const showDropdown = () => {
+  isDropdownVisible.value = true;
 };
 
-// 隐藏下拉菜单
+// 添加延时隐藏下拉菜单
 const hideDropdown = () => {
-  isDropdownVisible.value = false;
+  setTimeout(() => {
+    isDropdownVisible.value = false;
+  }, 200); // 延迟 200 毫秒
 };
+
+const searchInputRef = ref<HTMLInputElement | null>(null);
+
+onMounted(() => {
+  if (searchInputRef.value) {
+    searchInputRef.value.blur();
+  }
+});
+
+
+// 搜索值
+const searchValue = ref('');
+
+// 清空搜索
+const clearSearch = () => {
+  searchValue.value = ''
+};
+
+
 </script>
 
 <template>
-  <div class="search-container">
+  <div class="search-container" @click.stop>
     <span class="back">
       <el-icon>
-        <icon-ep-arrow-left />
+        <icon-ep-arrow-left/>
       </el-icon>
     </span>
     <span class="forward">
       <el-icon>
-        <icon-ep-arrow-right />
+        <icon-ep-arrow-right/>
       </el-icon>
     </span>
-    <input 
-      type="text" 
-      id="search-input" 
-      autocapitalize="off" 
-      autocomplete="off" 
-      autocorrect="off" 
-      spellcheck="false"
-      placeholder="搜索节点"
-      @focus="toggleDropdown"
-      @blur="hideDropdown">
-    </input>
+    <input
+        type="text"
+        ref="searchInputRef"
+        autocapitalize="off"
+        autocomplete="off"
+        spellcheck="false"
+        placeholder="搜索节点"
+        v-model="searchValue"
+        @focus="showDropdown"
+        @blur="hideDropdown"
+    />
 
     <span class="search">
       <el-icon>
-        <icon-ep-search />
+        <icon-ep-search/>
       </el-icon>
     </span>
-    <span class="clear" id="clear-button">
+    <span class="clear"
+          @click="clearSearch">
       <el-icon>
-        <icon-ep-close />
+        <icon-ep-close/>
       </el-icon>
     </span>
 
     <span class="minus">
       <el-icon>
-        <icon-mdi-card-minus-outline />
+        <icon-mdi-card-minus-outline/>
       </el-icon>
     </span>
 
-    <div 
-      class="dropdown" 
-      id="dropdown" 
-      :style="{ display: isDropdownVisible ? 'block' : 'none' }">
+    <div
+        class="dropdown"
+        id="dropdown"
+        :style="{ display: isDropdownVisible ? 'block' : 'none' }">
       <ul>
         <li class="group">A</li>
         <li>Alice</li>

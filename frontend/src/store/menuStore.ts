@@ -8,6 +8,7 @@ export const useMenuStore = defineStore('menu', {
         proxy: false,
         tun: false,
         language: 'zh',
+        ruleMenu: 'Now',
     }),
     actions: {
         setMenu(menu: string) {
@@ -27,6 +28,9 @@ export const useMenuStore = defineStore('menu', {
         },
         setLanguage(language: string) {
             this.language = language;
+        },
+        setRuleMenu(ruleMenu: string) {
+            this.ruleMenu = ruleMenu;
         }
     },
     persist: true,

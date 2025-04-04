@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from 'vue-router';
+import {createRouter, createWebHistory} from 'vue-router';
 
 import Home from '@/views/Home.vue';
 import Setting from '@/views/Setting.vue';
@@ -36,6 +36,23 @@ const routes = [
         path: '/Rule',
         name: 'Rule',
         component: Rule,
+        children: [
+            {
+                path: '/Now',
+                name: 'Now',
+                component: () => import('@/views/rule/Now.vue'),
+            },
+            {
+                path: '/Group',
+                name: 'Group',
+                component: () => import('@/views/rule/Group.vue'),
+            },
+            {
+                path: '/Ignore',
+                name: 'Ignore',
+                component: () => import('@/views/rule/Ignore.vue'),
+            }
+        ],
     },
 ];
 

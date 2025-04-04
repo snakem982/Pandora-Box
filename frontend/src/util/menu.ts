@@ -1,9 +1,13 @@
 import {useMenuStore} from "@/store/menuStore";
 
-export function changeMenu(value: string,router:any): void {
+export function changeMenu(value: string, router: any): void {
+    let path = ''
+    if (!value.startsWith("/")) {
+        path = "/" + value
+    }
+    const split = path.split("/");
     const menuStore = useMenuStore();
-    const split = value.split("/");
-    menuStore.setMenu(split[0]);
-    menuStore.setPath(value);
-    router.push(value);
+    menuStore.setMenu(split[1]);
+    menuStore.setPath(path);
+    router.push(path);
 }
