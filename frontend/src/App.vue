@@ -35,10 +35,24 @@
 import MyNav from "@/components/menu/MyNav.vue";
 import MySecNav from "@/components/menu/MySecNav.vue";
 import MyDrop from "@/components/MyDrop.vue";
+import {useMenuStore} from "@/store/menuStore";
+import {useRouter} from "vue-router";
 
 const backgroundImage = ref("url('/images/sea.jpg')")
 // backgroundImage.value = "radial-gradient(circle, #2c3e50, #4a5568)"
 // backgroundImage.value = "linear-gradient(to bottom, #1b2735, #3b4b69)"
+
+const menuStore = useMenuStore()
+const router = useRouter()
+
+onMounted(()=>{
+  // 上次打开页面
+  if (menuStore.path) {
+    router.push(menuStore.path)
+  }
+
+})
+
 
 
 </script>

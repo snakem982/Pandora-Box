@@ -1,65 +1,24 @@
 <script setup lang="ts">
-import {useRouter} from 'vue-router'
+import {useMenuStore} from "@/store/menuStore";
+import {changeMenu} from "@/util/menu";
+import {useRouter} from "vue-router";
+
+const menuStore = useMenuStore()
+const router = useRouter()
 
 const menu = reactive({
-  homeStatus: 1,
-  setStatus: 1,
-  proxyStatus: 1,
-  subStatus: 1,
+  homeStatus: false,
+  setStatus: false,
+  proxyStatus: false,
+  subStatus: false,
 })
 
-const router = useRouter();
-
-function active(btn: string) {
-  let temp = menu[btn]
-  if (temp == 3 || temp == 23) {
-    return
-  }
-
-  menu["homeStatus"] = 1
-  menu["setStatus"] = 1
-  menu["proxyStatus"] = 1
-  menu["subStatus"] = 1
-
-  if (temp == 22) {
-    menu[btn] = 23
-  } else {
-    menu[btn] = 3
-  }
-
-  switch (btn) {
-    case "homeStatus":
-      router.push('/Home')
-      break;
-    case "setStatus":
-      router.push('/Setting')
-      break;
-    case "proxyStatus":
-      router.push('/Proxies')
-      break;
-    case "subStatus":
-      router.push('/Profiles')
-      break;
-    default:
-  }
-
-
-}
-
 function enter(btn: string) {
-  if (menu[btn] === 1) {
-    menu[btn] = 22
-  } else {
-    menu[btn] = 23
-  }
+  menu[btn] = true
 }
 
 function leave(btn: string) {
-  if (menu[btn] === 22) {
-    menu[btn] = 1
-  } else if (menu[btn] === 23) {
-    menu[btn] = 3
-  }
+  menu[btn] = false
 }
 
 </script>
@@ -67,67 +26,77 @@ function leave(btn: string) {
 <template>
   <div class="button-container">
     <button
-        @click="active('homeStatus')"
         @mouseenter="enter('homeStatus')"
         @mouseleave="leave('homeStatus')"
-        :class="{ active: menu.homeStatus==3 || menu.homeStatus==23 }"
+        @click="changeMenu('Home',router)"
+        :class="{ active: menuStore.menu=='Home' }"
     >
-      <template v-if="menu.homeStatus==3">
-        <icon-mdi-home/>
-      </template>
-      <template v-else-if="menu.homeStatus==22 || menu.homeStatus==23">
+      <template v-if="menu.homeStatus">
         主页
       </template>
       <template v-else>
-        <icon-mdi-home-outline/>
+        <template v-if="menuStore.menu=='Home'">
+          <icon-mdi-home/>
+        </template>
+        <template v-else>
+          <icon-mdi-home-outline/>
+        </template>
       </template>
     </button>
+
     <button
-        @click="active('setStatus')"
         @mouseenter="enter('setStatus')"
         @mouseleave="leave('setStatus')"
-        :class="{ active: menu.setStatus==3 || menu.setStatus==23 }"
+        @click="changeMenu('Setting',router)"
+        :class="{ active: menuStore.menu=='Setting' }"
     >
-      <template v-if="menu.setStatus==3">
-        <icon-mdi-cog/>
-      </template>
-      <template v-else-if="menu.setStatus==22 || menu.setStatus==23">
+      <template v-if="menu.setStatus">
         设置
       </template>
       <template v-else>
-        <icon-mdi-cog-outline/>
+        <template v-if="menuStore.menu=='Setting'">
+          <icon-mdi-cog/>
+        </template>
+        <template v-else>
+          <icon-mdi-cog-outline/>
+        </template>
       </template>
     </button>
+
     <button
-        @click="active('proxyStatus')"
         @mouseenter="enter('proxyStatus')"
         @mouseleave="leave('proxyStatus')"
-        :class="{ active: menu.proxyStatus==3 || menu.proxyStatus==23 }"
+        @click="changeMenu('Proxies',router)"
+        :class="{ active: menuStore.menu=='Proxies' }"
     >
-      <template v-if="menu.proxyStatus==3">
-        <icon-mdi-rocket-launch/>
-      </template>
-      <template v-else-if="menu.proxyStatus==22 || menu.proxyStatus==23">
-        代理
+      <template v-if="menu.proxyStatus">
+        设置
       </template>
       <template v-else>
-        <icon-mdi-rocket-launch-outline/>
+        <template v-if="menuStore.menu=='Proxies'">
+          <icon-mdi-rocket-launch/>
+        </template>
+        <template v-else>
+          <icon-mdi-rocket-launch-outline/>
+        </template>
       </template>
     </button>
     <button
-        @click="active('subStatus')"
         @mouseenter="enter('subStatus')"
         @mouseleave="leave('subStatus')"
-        :class="{ active: menu.subStatus==3 || menu.subStatus==23 }"
+        @click="changeMenu('Profiles',router)"
+        :class="{ active: menuStore.menu=='Profiles' }"
     >
-      <template v-if="menu.subStatus==3">
-        <icon-mdi-arrange-bring-forward/>
-      </template>
-      <template v-else-if="menu.subStatus==22 || menu.subStatus==23">
+      <template v-if="menu.subStatus">
         订阅
       </template>
       <template v-else>
-        <icon-mdi-arrange-send-backward/>
+        <template v-if="menuStore.menu=='Profiles'">
+          <icon-mdi-arrange-bring-forward/>
+        </template>
+        <template v-else>
+          <icon-mdi-arrange-send-backward/>
+        </template>
       </template>
     </button>
   </div>
@@ -164,7 +133,7 @@ function leave(btn: string) {
 }
 
 .button-container button.active {
-  background-color:var(--left-nav-btn-active-bg);
+  background-color: var(--left-nav-btn-active-bg);
   color: var(--text-color);
 }
 </style>

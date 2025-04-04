@@ -1,10 +1,18 @@
 <script setup lang="ts">
+import {changeMenu} from "@/util/menu";
+import {useMenuStore} from "@/store/menuStore";
+import {useRouter} from "vue-router";
+
+const menuStore = useMenuStore()
+const router = useRouter()
 
 </script>
 
 <template>
   <div class="nav">
-    <div class="nav-btn">
+    <div
+        :class="menuStore.menu=='Rule'? 'nav-btn nav-btn-select':'nav-btn'"
+        @click="changeMenu('Rule',router)">
       <el-text class="nav-text">
         <el-icon>
           <icon-mdi-source-branch/>
@@ -13,7 +21,9 @@
       </el-text>
     </div>
 
-    <div class="nav-btn">
+    <div
+        :class="menuStore.menu=='Connection'? 'nav-btn nav-btn-select':'nav-btn'"
+        @click="changeMenu('Connection',router)">
       <el-text class="nav-text">
         <el-icon>
           <icon-mdi-connection/>
@@ -22,7 +32,9 @@
       </el-text>
     </div>
 
-    <div class="nav-btn">
+    <div
+        :class="menuStore.menu=='Log'? 'nav-btn nav-btn-select':'nav-btn'"
+        @click="changeMenu('Log',router)">
       <el-text class="nav-text">
         <el-icon>
           <icon-mdi-text-box-outline/>
@@ -31,7 +43,9 @@
       </el-text>
     </div>
 
-    <div class="nav-btn">
+    <div
+        :class="menuStore.menu=='Crawl'? 'nav-btn nav-btn-select':'nav-btn'"
+        @click="changeMenu('Crawl',router)">
       <el-text class="nav-text">
         <el-icon>
           <icon-mdi-spider-outline/>
@@ -53,7 +67,7 @@
   padding: 11px;
 }
 
-.nav-btn:hover {
+.nav-btn-select, .nav-btn:hover {
   background-color: var(--left-sec-nav-hover-bg);
   width: 164px;
   border-radius: 8px;

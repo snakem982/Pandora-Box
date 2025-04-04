@@ -2,6 +2,7 @@ import {createApp} from 'vue'
 import App from './App.vue'
 import router from './router';
 import {createPinia} from 'pinia'
+import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 import {createI18n} from 'vue-i18n'
 import messages from '@intlify/unplugin-vue-i18n/messages'
 import ElementPlus from 'element-plus'
@@ -18,8 +19,11 @@ const i18n = createI18n({
     missingWarn: false,
 })
 
+const pinia = createPinia()
+pinia.use(piniaPluginPersistedstate)
+
 const app = createApp(App)
-app.use(createPinia())
+app.use(pinia)
 app.use(ElementPlus)
 app.use(VueApexCharts);
 app.use(i18n)

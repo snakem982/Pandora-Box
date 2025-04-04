@@ -16,4 +16,5 @@ export const useWebStore = defineStore('useWebStore', {
             this.secret = '123456'
         },
     },
+    persist: true,
 })

@@ -4,13 +4,13 @@ import Home from '@/views/Home.vue';
 import Setting from '@/views/Setting.vue';
 import Proxies from '@/views/Proxies.vue';
 import Profiles from '@/views/Profiles.vue';
-import Crawl from "@/views/Crawl.vue";
+import Rule from "@/views/Rule.vue";
 
 const routes = [
     {
         path: '/',
         name: 'Start',
-        component: Crawl,
+        component: Rule,
     },
     {
         path: '/Home',
@@ -31,6 +31,11 @@ const routes = [
         path: '/Profiles',
         name: 'Profiles',
         component: Profiles,
+    },
+    {
+        path: '/Rule',
+        name: 'Rule',
+        component: Rule,
     },
 ];
 
