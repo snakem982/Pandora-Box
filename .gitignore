@@ -3,3 +3,4 @@ frontend/dist
 frontend/node_modules
 .idea/*
 .task/
+.DS_Store
