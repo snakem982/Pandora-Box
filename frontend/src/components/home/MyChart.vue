@@ -153,7 +153,7 @@ const spark2 = reactive({
   }
 })
 
-const spark3 = {
+const spark3 = reactive({
   chart: {
     height: 90,
     sparkline: {
@@ -202,7 +202,7 @@ const spark3 = {
       }
     }
   }
-}
+})
 
 </script>
 

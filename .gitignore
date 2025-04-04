@@ -2,4 +2,4 @@ bin
 frontend/dist
 frontend/node_modules
 .idea/*
-.task/*
+.task/
