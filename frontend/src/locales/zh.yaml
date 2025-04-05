@@ -20,3 +20,37 @@ sec-nav:
   log: 日志
   crawl: 爬取
 
+on: 开启
+off: 关闭
+refresh: 刷新
+edit: 编辑
+quit: 退出
+theme: 主题
+minus: 最小化到托盘
+
+home:
+  download: 下载
+  upload: 上传
+  memory: 内存
+  web: 网站测试
+  timeout: 超时
+  ip:
+    title: Ip信息
+    real: 落地Ip
+    city: 城市
+    country: 国家
+    isp: 服务商
+    asn: 自治域
+    time-zone: 时区
+  system:
+    title: 系统信息
+    os: 操作系统
+    runtime: 运行时间
+    startup: 开机自启
+    service: 运行模式
+    port: 代理端口
+    version: Pandora-Box
+
+
+
+

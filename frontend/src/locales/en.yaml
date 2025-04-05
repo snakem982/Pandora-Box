@@ -19,3 +19,34 @@ sec-nav:
   conn: Connections
   log: Log
   crawl: Crawl
+
+on: ON
+off: OFF
+refresh: Refresh
+edit: Edit
+quit: Quit
+theme: Theme
+minus: Minus to tray
+
+home:
+  download: Download
+  upload: Upload
+  memory: Memory
+  web: Website Testing
+  timeout: Timeout
+  ip:
+    title: IP Information
+    real: Real Ip
+    city: City
+    country: Country
+    isp: ISP
+    asn: ASN
+    time-zone: T-Zone
+  system:
+    title: System Information
+    os: OS
+    runtime: Runtime
+    startup: Boot Startup
+    service: Service Mode
+    port: Mixed-Port
+    version: Pandora-Box

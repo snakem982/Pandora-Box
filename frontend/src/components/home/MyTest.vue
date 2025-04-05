@@ -6,7 +6,7 @@
   <el-row class="t-card" :gutter="20" style="margin-left: 12px">
     <el-col :span="24">
       <el-row>
-        网站测试
+        {{ $t('home.web') }}
         <el-icon size="22" style="margin-left: 8px;">
           <icon-mdi-refresh/>
         </el-icon>
@@ -53,7 +53,7 @@
             Netflix
           </div>
           <el-tag type="danger" class="icon-delay">
-            超时
+            {{ $t('home.timeout') }}
           </el-tag>
         </div>
         <div class="icon-item">
@@ -79,7 +79,7 @@
             TikTok
           </div>
           <el-tag type="danger" class="icon-delay">
-            超时
+            {{ $t('home.timeout') }}
           </el-tag>
         </div>
         <div class="icon-item">

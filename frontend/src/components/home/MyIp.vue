@@ -8,19 +8,19 @@
     <el-col :span="12">
       <div class="box box1">
         <div class="title">
-          IP 信息
+          {{ $t('home.ip.title') }}
           <el-icon size="22" style="position: absolute;margin-left: 8px;">
             <icon-mdi-refresh/>
           </el-icon>
         </div>
         <hr/>
         <ul class="info-list">
-          <li><strong>落地ip:</strong> 1.2.3.4</li>
-          <li><strong>位置:</strong> 圣何塞</li>
-          <li><strong>服务商:</strong> 甲骨文</li>
-          <li><strong>组织:</strong> 甲骨文 BMC</li>
-          <li><strong>自治域:</strong> AS31898</li>
-          <li><strong>时区:</strong> 美国/落山鸡</li>
+          <li><strong>{{ $t('home.ip.real') }} : </strong> 1.2.3.4</li>
+          <li><strong>{{ $t('home.ip.city') }} : </strong> 圣何塞</li>
+          <li><strong>{{ $t('home.ip.country') }} : </strong> 甲骨文</li>
+          <li><strong>{{ $t('home.ip.isp') }} : </strong> 甲骨文 BMC</li>
+          <li><strong>{{ $t('home.ip.asn') }} : </strong> AS31898</li>
+          <li><strong>{{ $t('home.ip.time-zone') }} : </strong> 美国/落山鸡</li>
         </ul>
       </div>
     </el-col>
@@ -28,16 +28,16 @@
     <el-col :span="12">
       <div class="box box2">
         <div class="title">
-          系统信息
+          {{ $t('home.system.title') }}
         </div>
         <hr/>
         <ul class="info-list">
-          <li><strong>操作系统:</strong> Windows</li>
-          <li><strong>运行时间:</strong> 1:06:42</li>
-          <li><strong>开机自启:</strong> 已启用</li>
-          <li><strong>运行模式:</strong> 服务模式</li>
-          <li><strong>代理端口:</strong> 12345</li>
-          <li><strong>Pandora-Box 版本:</strong> v1.0.1</li>
+          <li><strong>{{ $t('home.system.os') }} : </strong> Windows</li>
+          <li><strong>{{ $t('home.system.runtime') }} : </strong> 1:06:42</li>
+          <li><strong>{{ $t('home.system.startup') }} : </strong> 已启用</li>
+          <li><strong>{{ $t('home.system.service') }} : </strong> 服务模式</li>
+          <li><strong>{{ $t('home.system.port') }} : </strong> 12345</li>
+          <li><strong>{{ $t('home.system.version') }} : </strong> v1.0.1</li>
         </ul>
       </div>
     </el-col>

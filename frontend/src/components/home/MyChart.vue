@@ -4,7 +4,7 @@
       <div class="box box1">
         <div class="details">
           <h3>120 Mb/s</h3>
-          <h4>下载</h4>
+          <h4>{{ $t('home.download') }}</h4>
         </div>
         <apexchart
             id="spark1"
@@ -19,7 +19,7 @@
       <div class="box box2">
         <div class="details">
           <h3>420 Kb/s</h3>
-          <h4>上传</h4>
+          <h4>{{ $t('home.upload') }}</h4>
         </div>
         <apexchart
             id="spark2"
@@ -34,7 +34,7 @@
       <div class="box box3">
         <div class="details">
           <h3>311 Mb</h3>
-          <h4>内存</h4>
+          <h4>{{ $t('home.memory') }}</h4>
         </div>
         <apexchart
             id="spark3"
