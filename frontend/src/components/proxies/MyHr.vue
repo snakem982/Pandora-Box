@@ -57,6 +57,6 @@ onUnmounted(() => {
 .proxy-hr {
   border: none;
   border-top: 1px dashed #FFD700;
-  margin: 9px 55px 0 35px;
+  margin: 9px 55px 0 10px;
 }
 </style>

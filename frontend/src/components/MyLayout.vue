@@ -24,6 +24,7 @@ defineProps({
 .top {
   height: var(--layout-top-height);
   flex-shrink: 0;
+  padding-left: 18px;
 }
 
 .bottom {
@@ -33,6 +34,7 @@ defineProps({
   padding-top: 10px;
   padding-bottom: 20px;
   overscroll-behavior: none;
+  padding-left: 18px;
 }
 
 .bottom::-webkit-scrollbar {

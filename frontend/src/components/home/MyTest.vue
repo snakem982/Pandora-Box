@@ -3,7 +3,7 @@
 </script>
 
 <template>
-  <el-row class="t-card" :gutter="20" style="margin-left: 40px;margin-right: 0;">
+  <el-row class="t-card" :gutter="20" style="margin-left: 12px">
     <el-col :span="24">
       <el-row>
         网站测试
@@ -181,7 +181,7 @@
 <style scoped>
 /* 整体卡片样式 */
 .t-card {
-  width: calc(92% - 20px);
+  width: calc(95% - 20px);
   margin-top: 30px;
   padding: 10px 0 10px 0;
   border-radius: 8px;

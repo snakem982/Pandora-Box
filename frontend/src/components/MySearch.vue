@@ -2,13 +2,23 @@
 import {ref} from 'vue';
 import {useRouter} from "vue-router";
 
+// 搜索值
+const searchValue = ref('');
+
+// 清空搜索
+const clearSearch = () => {
+  searchValue.value = ''
+};
+
 // 控制下拉菜单的显示状态
 const isDropdownVisible = ref(false);
 
-// 切换下拉菜单
-const showDropdown = () => {
-  isDropdownVisible.value = true;
-};
+// 搜索逻辑
+watch(searchValue, (newValue) => {
+  if (newValue) {
+    isDropdownVisible.value = true;
+  }
+})
 
 // 添加延时隐藏下拉菜单
 const hideDropdown = () => {
@@ -27,14 +37,6 @@ onMounted(() => {
   }
 });
 
-
-// 搜索值
-const searchValue = ref('');
-
-// 清空搜索
-const clearSearch = () => {
-  searchValue.value = ''
-};
 
 </script>
 
@@ -60,7 +62,6 @@ const clearSearch = () => {
         spellcheck="false"
         placeholder="搜索节点"
         v-model="searchValue"
-        @focus="showDropdown"
         @blur="hideDropdown"
     />
 
@@ -125,7 +126,7 @@ const clearSearch = () => {
 }
 
 .back {
-  margin-left: 35px;
+  margin-left: 8px;
   font-size: 18px;
   color: var(--text-color);
 }
@@ -135,7 +136,7 @@ const clearSearch = () => {
 }
 
 .forward {
-  margin-left: 25px;
+  margin-left: 20px;
   font-size: 18px;
   color: var(--text-color);
 }
@@ -152,7 +153,7 @@ const clearSearch = () => {
 }
 
 .search-container .clear {
-  margin-left: 308px;
+  margin-left: 275px;
   margin-top: -18px;
   font-size: 12px;
   color: var(--text-color);
@@ -171,7 +172,7 @@ const clearSearch = () => {
 .dropdown {
   position: absolute; /* 确保定位基于父容器 */
   margin-top: 8px;
-  transform: translateX(102px); /* 调整偏移量，与输入框左边对齐 */
+  transform: translateX(66px); /* 调整偏移量，与输入框左边对齐 */
   width: 250px; /* 与输入框宽度一致 */
   border-radius: 5px;
   background-color: rgba(0, 0, 0, 0.8); /* 背景透明 */

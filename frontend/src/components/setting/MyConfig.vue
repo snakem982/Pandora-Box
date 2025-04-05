@@ -12,7 +12,7 @@ const value3 = ref(true)
 
 <template>
   <el-row :gutter="20" class="spark"
-          style="margin-left: 30px;
+          style="margin-left: 0;
           margin-right: 0;">
     <el-col :span="12">
       <div class="box box1">
@@ -101,7 +101,7 @@ const value3 = ref(true)
 
 <style scoped>
 .spark {
-  max-width: 92%;
+  max-width: 95%;
   margin-top: 30px;
 }
 

@@ -18,11 +18,6 @@ const getActive = function (value: string): string {
 const setActive = function (value: string) {
   router.push("/Rule/" + value);
 }
-
-onMounted(() => {
-
-})
-
 </script>
 
 <template>
@@ -70,16 +65,16 @@ onMounted(() => {
   margin-top: 25px;
   font-size: 32px;
   font-weight: bold;
-  margin-left: 38px;
+  margin-left: 10px;
 }
 
 .proxy-group {
   display: flex;
   margin-top: 14px;
-  margin-left: 36px;
+  margin-left: 10px;
   flex-wrap: wrap;
   gap: 10px;
-  width: 92%;
+  width: 95%;
 }
 
 .pre {

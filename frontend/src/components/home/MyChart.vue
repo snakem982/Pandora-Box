@@ -1,5 +1,5 @@
 <template>
-  <el-row :gutter="20" class="spark" style="margin-left: 30px;margin-right: 0;">
+  <el-row :gutter="20" class="spark" style="margin-left: 2px;">
     <el-col :span="8">
       <div class="box box1">
         <div class="details">
@@ -208,7 +208,7 @@ const spark3 = reactive({
 
 <style scoped>
 .spark {
-  width: 92%;
+  width: 95%;
 }
 
 .spark .box {

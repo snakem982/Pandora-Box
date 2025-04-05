@@ -19,6 +19,6 @@ import MyConfig from "@/components/setting/MyConfig.vue";
 .title {
   font-size: 32px;
   font-weight: bold;
-  margin-left: 38px;
+  margin-left: 10px;
 }
 </style>

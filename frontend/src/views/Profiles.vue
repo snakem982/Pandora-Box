@@ -145,11 +145,11 @@ function handleEmit(value: any) {
   margin-top: 25px;
   font-size: 32px;
   font-weight: bold;
-  margin-left: 38px;
+  margin-left: 10px;
 }
 
 .sub-title {
-  margin-left: 38px;
+  margin-left: 10px;
   color: #FFD700;
   font-size: 14px;
 }
@@ -175,9 +175,9 @@ function handleEmit(value: any) {
   flex-wrap: wrap;
   padding: 0;
   color: var(--text-color);
-  margin-left: 38px;
+  margin-left: 10px;
   margin-top: 10px;
-  width: 92%;
+  width: 95%;
 }
 
 .sub-card {

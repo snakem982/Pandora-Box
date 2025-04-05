@@ -4,8 +4,7 @@
 
 <template>
   <el-row :gutter="20" class="spark"
-          style="margin-left: 30px;
-          margin-right: 0;">
+          style="margin-left: 2px;">
     <el-col :span="12">
       <div class="box box1">
         <div class="title">
@@ -47,7 +46,7 @@
 
 <style scoped>
 .spark {
-  max-width: 92%;
+  max-width: 95%;
   margin-top: 30px;
 }
 

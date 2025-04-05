@@ -121,7 +121,7 @@ const upFromTop = function (distance: number) {
   margin-top: 25px;
   font-size: 32px;
   font-weight: bold;
-  margin-left: 38px;
+  margin-left: 10px;
 }
 
 .proxy-option {
@@ -143,10 +143,10 @@ const upFromTop = function (distance: number) {
 .proxy-group {
   display: flex;
   margin-top: 14px;
-  margin-left: 36px;
+  margin-left: 10px;
   flex-wrap: wrap;
   gap: 10px;
-  width: 92%;
+  width: 95%;
 }
 
 .proxy-group-title {
@@ -173,9 +173,9 @@ const upFromTop = function (distance: number) {
   gap: 16px;
   padding: 0;
   color: var(--text-color);
-  margin-left: 38px;
+  margin-left: 12px;
   margin-top: 15px;
-  width: 92%;
+  width: 95%;
 }
 
 .proxy-nodes-card {
