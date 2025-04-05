@@ -29,7 +29,7 @@ const value3 = ref(true)
           </li>
           <li>
             <strong>
-              DNS覆写:
+              {{ $t('setting.mihomo.dns') }} :
             </strong>
             <el-icon class="btn">
               <EditPen/>
@@ -41,21 +41,21 @@ const value3 = ref(true)
             />
           </li>
           <li>
-            <strong>局域网:</strong>
+            <strong>{{ $t('setting.mihomo.lan') }} :</strong>
             <el-switch
                 v-model="value2"
                 class="set-switch"
             />
           </li>
           <li>
-            <strong>Ipv6:</strong>
+            <strong>IPV6 :</strong>
             <el-switch
                 v-model="value3"
                 class="set-switch"
             />
           </li>
           <li style="height: 30px">
-            <strong>Api:</strong>
+            <strong>API :</strong>
             http://127.0.0.1:7981
             <el-button>复制</el-button>
           </li>
@@ -76,21 +76,23 @@ const value3 = ref(true)
         <hr/>
         <ul class="info-list">
           <li>
-            <strong>开机启动:</strong>
+            <strong>{{ $t('setting.px.startup') }} :</strong>
             <el-switch
                 v-model="value2"
                 class="set-switch"
             />
           </li>
           <li style="height: 30px">
-            <strong>配置目录:</strong>
-            <el-button style="margin-left: 10px">打开</el-button>
-            <el-button>导出</el-button>
-            <el-button>导入</el-button>
+            <strong>{{ $t('setting.px.dir') }} :</strong>
+            <el-button style="margin-left: 10px">
+              {{ $t('setting.px.open') }}
+            </el-button>
+            <el-button>{{ $t('setting.px.export') }}</el-button>
+            <el-button>{{ $t('setting.px.import') }}</el-button>
           </li>
           <li style="height: 30px">
-            <strong>软件更新:</strong>
-            <el-button style="margin-left: 10px">检查</el-button>
+            <strong>{{ $t('setting.px.update') }} :</strong>
+            <el-button style="margin-left: 10px">{{ $t('setting.px.check') }}</el-button>
           </li>
         </ul>
       </div>

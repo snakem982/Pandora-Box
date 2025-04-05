@@ -51,6 +51,36 @@ home:
     port: 代理端口
     version: Pandora-Box
 
+setting:
+  title: 设置
+  mihomo:
+    port: 端口
+    dns: DNS重写
+    lan: 局域网
+  px:
+    startup: 开机启动
+    dir: 配置目录
+    open: 打开
+    import: 导入
+    export: 导出 
+    update: 软件更新
+    check: 检查
 
+proxies:
+  title: 代理
+  test: 测试延迟
+  hide-on: 显示不可用节点
+  hide-off: 隐藏不可用节点
+  sort-on: 默认排序
+  sort-off: 按延迟排序
 
+profiles:
+  title: 订阅
+  add: 添加订阅
+  paste: 从剪贴板导入
+  open: 从文件导入
+  available: 可用
+  use: 已使用
+  expire: 过期
+  update: 更新
 

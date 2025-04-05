@@ -21,7 +21,7 @@ const toggleEditing = () => {
 
 <template>
   <div class="input-container">
-    <span>端口:</span>
+    <span>{{ $t('setting.mihomo.port') }} :</span>
     <template v-if="isEditing">
       <input
           type="text"

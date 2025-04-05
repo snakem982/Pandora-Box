@@ -56,10 +56,12 @@ const upFromTop = function (distance: number) {
     <template #top>
       <MySearch></MySearch>
       <el-space class="space">
-        <div class="title">代理</div>
+        <div class="title">
+          {{ $t('proxies.title') }}
+        </div>
         <div class="proxy-option">
           <el-tooltip
-              content="测试延迟"
+              :content="$t('proxies.test')"
               placement="top">
             <el-icon class="proxy-option-btn">
               <icon-mdi-speedometer/>
@@ -67,7 +69,7 @@ const upFromTop = function (distance: number) {
           </el-tooltip>
 
           <el-tooltip
-              :content="eye?'隐藏不可用节点':'显示不可用节点'"
+              :content="eye?$t('proxies.hide-off'):$t('proxies.hide-on')"
               placement="top">
             <el-icon class="proxy-option-btn">
               <icon-mdi-eye v-if="eye"/>
@@ -76,7 +78,7 @@ const upFromTop = function (distance: number) {
           </el-tooltip>
 
           <el-tooltip
-              :content="sort?'按延迟排序':'默认排序'"
+              :content="sort?$t('proxies.sort-off'):$t('proxies.sort-on')"
               placement="top">
             <el-icon class="proxy-option-btn">
               <icon-mdi-sort v-if="sort"/>

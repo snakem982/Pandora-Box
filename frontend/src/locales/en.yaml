@@ -50,3 +50,36 @@ home:
     service: Service Mode
     port: Mixed-Port
     version: Pandora-Box
+
+setting:
+  title: Setting
+  mihomo:
+    port: Mixed-Port
+    dns: DNS Overwrite
+    lan: LAN
+  px:
+    startup: Boot Startup
+    dir: Config
+    open: Open
+    import: Import
+    export: Export
+    update: Update
+    check: Check
+
+proxies:
+  title: Proxies
+  test: Latency Test
+  hide-on: Display bad nodes 
+  hide-off: Hide bad nodes
+  sort-on: Sort by default
+  sort-off: Sort by latency
+
+profiles:
+  title: Profiles
+  add: Add
+  paste: Import from Clipboard
+  open: Import from file
+  available: Available
+  use: Used
+  expire: Expire
+  update: Updated

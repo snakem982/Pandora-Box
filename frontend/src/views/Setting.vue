@@ -9,7 +9,9 @@ import MyConfig from "@/components/setting/MyConfig.vue";
       <MySearch></MySearch>
     </template>
     <template #bottom>
-      <div class="title">设置</div>
+      <div class="title">
+        {{ $t('setting.title') }}
+      </div>
       <MyConfig></MyConfig>
     </template>
   </MyLayout>

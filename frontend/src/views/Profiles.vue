@@ -67,10 +67,12 @@ function handleEmit(value: any) {
     <template #top>
       <MySearch></MySearch>
       <el-space class="space">
-        <div class="title">订阅</div>
+        <div class="title">
+          {{ $t('profiles.title') }}
+        </div>
         <div class="profile-option">
           <el-tooltip
-              content="添加订阅"
+              :content="$t('profiles.add')"
               placement="top">
             <el-icon class="profile-option-btn">
               <icon-mdi-plus-thick/>
@@ -78,7 +80,7 @@ function handleEmit(value: any) {
           </el-tooltip>
 
           <el-tooltip
-              content="剪贴板导入"
+              :content="$t('profiles.paste')"
               placement="top">
             <el-icon class="profile-option-btn">
               <icon-mdi-content-paste/>
@@ -86,7 +88,7 @@ function handleEmit(value: any) {
           </el-tooltip>
 
           <el-tooltip
-              content="导入配置"
+              :content="$t('profiles.open')"
               placement="top">
             <el-icon class="profile-option-btn">
               <icon-mdi-folder-open/>
@@ -96,13 +98,13 @@ function handleEmit(value: any) {
       </el-space>
 
       <div class="sub-title">
-        <span>可用 50G</span>
+        <span>{{ $t('profiles.available') }} 50G</span>
         <el-divider direction="vertical" border-style="dashed"/>
-        <span>已用 100G</span>
+        <span>{{ $t('profiles.use') }} 100G</span>
         <el-divider direction="vertical" border-style="dashed"/>
-        <span>2025-05-06 23:59 过期</span>
+        <span>2025-05-06 23:59 {{ $t('profiles.expire') }}</span>
         <el-divider direction="vertical" border-style="dashed"/>
-        <span>2025-04-06 23:59 更新</span>
+        <span>2025-04-06 23:59 {{ $t('profiles.update') }}</span>
       </div>
     </template>
     <template #bottom>
