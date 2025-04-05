@@ -2,8 +2,8 @@ import {defineStore} from 'pinia';
 
 export const useMenuStore = defineStore('menu', {
     state: () => ({
-        menu: '',
-        path: '',
+        menu: 'Home',
+        path: '/Home',
         rule: '规则',
         proxy: false,
         tun: false,

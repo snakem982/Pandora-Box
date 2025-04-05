@@ -5,6 +5,9 @@ import Setting from '@/views/Setting.vue';
 import Proxies from '@/views/Proxies.vue';
 import Profiles from '@/views/Profiles.vue';
 import Rule from "@/views/Rule.vue";
+import Now from '@/views/rule/Now.vue';
+import Group from '@/views/rule/Group.vue';
+import Ignore from '@/views/rule/Ignore.vue';
 
 const routes = [
     {
@@ -40,17 +43,17 @@ const routes = [
             {
                 path: 'Now',
                 name: 'Now',
-                component: () => import('@/views/rule/Now.vue'),
+                component: Now,
             },
             {
                 path: 'Group',
                 name: 'Group',
-                component: () => import('@/views/rule/Group.vue'),
+                component: Group,
             },
             {
                 path: 'Ignore',
                 name: 'Ignore',
-                component: () => import('@/views/rule/Ignore.vue'),
+                component: Ignore,
             }
         ],
     },

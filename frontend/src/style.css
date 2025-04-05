@@ -1,6 +1,8 @@
-body {
+html,body {
     margin: 0;
     padding: 0;
+    letter-spacing: normal; /* 统一字母间距 */
+    line-height: 1; /* 统一行高 */
     background-color: transparent;
     user-select: none;
     -webkit-user-select: none; /* 针对WebKit浏览器 */
@@ -10,9 +12,6 @@ body {
     Arial, -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
     "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
-}
-
-html {
     height: 100%;
     overflow: hidden;
 }
