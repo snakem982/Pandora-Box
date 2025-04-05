@@ -11,21 +11,16 @@ const upFromTop = function (distance: number) {
   distanceFromTop.value = distance
 }
 
-function changeRuleMenu(active: string): void {
-  menuStore.setRuleMenu(active)
-  router.push(active);
-}
-
 const getActive = function (value: string): string {
   return menuStore.ruleMenu === value ? 'proxy-group-title proxy-group-title-select' : 'proxy-group-title';
 }
 
 const setActive = function (value: string) {
-  changeRuleMenu(value)
+  router.push("/Rule/" + value);
 }
 
 onMounted(() => {
-  changeRuleMenu(menuStore.ruleMenu)
+
 })
 
 </script>
@@ -86,4 +81,32 @@ onMounted(() => {
   gap: 10px;
   width: 92%;
 }
+
+.pre {
+  position: absolute;
+}
+
+.suf {
+  margin-left: 25px;
+}
+
+.proxy-group-title {
+  background-color: transparent;
+  color: var(--text-color);
+  border: 2px solid var(--hr-color);
+  border-radius: 8px;
+  padding: 6px 8px 6px 8px;
+  font-size: 16px;
+  text-align: center;
+  cursor: pointer;
+  box-shadow: var(--left-nav-shadow);
+}
+
+.proxy-group-title:hover, .proxy-group-title-select {
+  background-color: var(--left-item-selected-bg);
+  box-shadow: var(--left-nav-hover-shadow);
+  border-color: var(--text-color);
+}
+
+
 </style>

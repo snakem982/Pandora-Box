@@ -8,9 +8,5 @@ declare module 'pinia' {
 
 interface PersistOptions {
     enabled?: boolean;
-    strategies?: Array<{
-        key?: string;
-        storage?: Storage;
-        paths?: string[];
-    }>;
+    storage?: Storage;
 }

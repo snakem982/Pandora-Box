@@ -38,17 +38,17 @@ const routes = [
         component: Rule,
         children: [
             {
-                path: '/Now',
+                path: 'Now',
                 name: 'Now',
                 component: () => import('@/views/rule/Now.vue'),
             },
             {
-                path: '/Group',
+                path: 'Group',
                 name: 'Group',
                 component: () => import('@/views/rule/Group.vue'),
             },
             {
-                path: '/Ignore',
+                path: 'Ignore',
                 name: 'Ignore',
                 component: () => import('@/views/rule/Ignore.vue'),
             }

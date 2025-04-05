@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import {ref} from 'vue';
+import {useRouter} from "vue-router";
 
 // 控制下拉菜单的显示状态
 const isDropdownVisible = ref(false);
@@ -18,6 +19,8 @@ const hideDropdown = () => {
 
 const searchInputRef = ref<HTMLInputElement | null>(null);
 
+const router = useRouter()
+
 onMounted(() => {
   if (searchInputRef.value) {
     searchInputRef.value.blur();
@@ -33,17 +36,18 @@ const clearSearch = () => {
   searchValue.value = ''
 };
 
-
 </script>
 
 <template>
   <div class="search-container" @click.stop>
-    <span class="back">
+    <span class="back"
+          @click="router.back()">
       <el-icon>
         <icon-ep-arrow-left/>
       </el-icon>
     </span>
-    <span class="forward">
+    <span class="forward"
+          @click="router.forward()">
       <el-icon>
         <icon-ep-arrow-right/>
       </el-icon>
@@ -120,16 +124,24 @@ const clearSearch = () => {
   outline: none;
 }
 
-.search-container .back {
+.back {
   margin-left: 35px;
   font-size: 18px;
   color: var(--text-color);
 }
 
-.search-container .forward {
+.back:hover {
+  cursor: pointer;
+}
+
+.forward {
   margin-left: 25px;
   font-size: 18px;
   color: var(--text-color);
+}
+
+.forward:hover {
+  cursor: pointer;
 }
 
 .search-container .search {

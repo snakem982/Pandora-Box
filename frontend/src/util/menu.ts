@@ -5,9 +5,11 @@ export function changeMenu(value: string, router: any): void {
     if (!value.startsWith("/")) {
         path = "/" + value
     }
-    const split = path.split("/");
     const menuStore = useMenuStore();
-    menuStore.setMenu(split[1]);
+    // 对rule特殊处理
+    if (path === "/Rule") {
+        path += "/" + menuStore.ruleMenu;
+    }
     menuStore.setPath(path);
     router.push(path);
 }
