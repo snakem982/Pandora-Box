@@ -11,16 +11,26 @@ let sArray = [
   {title: "巴拉拉小魔仙", selected: false},
   {title: "榴莲", selected: true},
   {title: "百分百空手接白刃", selected: false},
+  {title: "百分百空手接白刃", selected: false},
+  {title: "百分百空手接白刃", selected: false},
+  {title: "百分百空手接白刃", selected: false},
+  {title: "百分百空手接白刃", selected: false},
+  {title: "百分百空手接白刃", selected: false},
+  {title: "百分百空手接白刃", selected: false},
+  {title: "百分百空手接白刃", selected: false},
   {title: "士力架", selected: false},
 ]
 let configs = reactive([])
 
 
 onBeforeMount(function (): void {
-  let ok = "0,4,3,1,2,5,6,7,8,9,10,11".split(",")
-  ok.forEach((item) => {
-    configs.push(sArray[item])
-  })
+  // let ok = "0,4,3,1,2,5,6,7,8,9,10,11".split(",")
+  // ok.forEach((item) => {
+  //   configs.push(sArray[item])
+  // })
+
+  configs = sArray
+
 })
 
 
@@ -53,10 +63,10 @@ function handleEmit(value: any) {
 </script>
 
 <template>
-  <MyLayout :top-height="145" :bottom-height="180">
+  <MyLayout :top-height="150" :bottom-height="180">
     <template #top>
       <MySearch></MySearch>
-      <el-space>
+      <el-space class="space">
         <div class="title">订阅</div>
         <div class="profile-option">
           <el-tooltip
@@ -141,8 +151,11 @@ function handleEmit(value: any) {
 </template>
 
 <style scoped>
+.space {
+  margin-top: 15px;
+}
+
 .title {
-  margin-top: 25px;
   font-size: 32px;
   font-weight: bold;
   margin-left: 10px;
@@ -152,12 +165,12 @@ function handleEmit(value: any) {
   margin-left: 10px;
   color: #FFD700;
   font-size: 14px;
+  margin-top: 5px;
 }
 
 .profile-option {
   margin-left: 10px;
   font-size: 30px;
-  margin-top: 25px;
   padding-top: 10px;
 }
 

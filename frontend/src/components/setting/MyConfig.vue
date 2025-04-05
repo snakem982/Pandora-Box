@@ -102,7 +102,7 @@ const value3 = ref(true)
 <style scoped>
 .spark {
   max-width: 95%;
-  margin-top: 30px;
+  margin-top: 15px;
 }
 
 .box {

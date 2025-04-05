@@ -55,7 +55,7 @@ const upFromTop = function (distance: number) {
   <MyLayout :top-height="distanceFromTop-15" :bottom-height="distanceFromTop+25">
     <template #top>
       <MySearch></MySearch>
-      <el-space>
+      <el-space class="space">
         <div class="title">代理</div>
         <div class="proxy-option">
           <el-tooltip
@@ -117,8 +117,11 @@ const upFromTop = function (distance: number) {
 </template>
 
 <style scoped>
+.space {
+  margin-top: 15px;
+}
+
 .title {
-  margin-top: 25px;
   font-size: 32px;
   font-weight: bold;
   margin-left: 10px;
@@ -127,7 +130,6 @@ const upFromTop = function (distance: number) {
 .proxy-option {
   margin-left: 10px;
   font-size: 30px;
-  margin-top: 25px;
   padding-top: 10px;
 }
 

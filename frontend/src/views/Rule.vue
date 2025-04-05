@@ -24,7 +24,7 @@ const setActive = function (value: string) {
   <MyLayout :top-height="distanceFromTop-15" :bottom-height="distanceFromTop+25">
     <template #top>
       <MySearch></MySearch>
-      <el-space>
+      <el-space class="space">
         <div class="title">规则</div>
       </el-space>
 
@@ -61,8 +61,11 @@ const setActive = function (value: string) {
 </template>
 
 <style scoped>
+.space {
+  margin-top: 15px;
+}
+
 .title {
-  margin-top: 25px;
   font-size: 32px;
   font-weight: bold;
   margin-left: 10px;
@@ -102,6 +105,4 @@ const setActive = function (value: string) {
   box-shadow: var(--left-nav-hover-shadow);
   border-color: var(--text-color);
 }
-
-
 </style>

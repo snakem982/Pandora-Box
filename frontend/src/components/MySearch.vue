@@ -41,47 +41,49 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="search-container" @click.stop>
+  <div class="search-container">
+    <el-space @click.stop>
     <span class="back"
           @click="router.back()">
       <el-icon>
         <icon-ep-arrow-left/>
       </el-icon>
     </span>
-    <span class="forward"
-          @click="router.forward()">
+      <span class="forward"
+            @click="router.forward()">
       <el-icon>
         <icon-ep-arrow-right/>
       </el-icon>
     </span>
-    <input
-        type="text"
-        ref="searchInputRef"
-        autocapitalize="off"
-        autocomplete="off"
-        spellcheck="false"
-        placeholder="搜索节点"
-        v-model="searchValue"
-        @blur="hideDropdown"
-    />
-
-    <span class="search">
+      <span class="search">
       <el-icon>
         <icon-ep-search/>
       </el-icon>
     </span>
-    <span class="clear"
-          @click="clearSearch">
+      <input
+          type="text"
+          ref="searchInputRef"
+          autocapitalize="off"
+          autocomplete="off"
+          spellcheck="false"
+          placeholder="搜索节点"
+          v-model="searchValue"
+          @blur="hideDropdown"
+      />
+
+      <span class="clear"
+            @click="clearSearch">
       <el-icon>
-        <icon-ep-close/>
+        <icon-mdi-close/>
       </el-icon>
     </span>
+    </el-space>
 
     <span class="minus">
       <el-icon>
         <icon-mdi-card-minus-outline/>
       </el-icon>
-    </span>
+  </span>
 
     <div
         class="dropdown"
@@ -116,9 +118,8 @@ onMounted(() => {
   background-color: rgba(255, 255, 255, 0.06);
   color: var(--text-color);
   font-size: 12px;
-  margin-left: 26px;
-  margin-top: -8px;
-  position: absolute;
+  margin-left: -38px;
+  margin-top: -3px;
 }
 
 .search-container input:focus {
@@ -136,7 +137,7 @@ onMounted(() => {
 }
 
 .forward {
-  margin-left: 20px;
+  margin-left: 10px;
   font-size: 18px;
   color: var(--text-color);
 }
@@ -146,24 +147,23 @@ onMounted(() => {
 }
 
 .search-container .search {
-  margin-left: 38px;
-  margin-top: 28px;
+  margin-left: 20px;
   font-size: 18px;
   color: var(--text-color);
 }
 
 .search-container .clear {
-  margin-left: 275px;
-  margin-top: -18px;
-  font-size: 12px;
+  margin-left: -28px;
+  margin-top: -5px;
+  font-size: 14px;
   color: var(--text-color);
   cursor: pointer;
   display: block;
-  position: absolute;
+
 }
 
-.search-container .minus {
-  margin-right: 26px;
+.minus {
+  margin-right: 28px;
   float: right;
   font-size: 16px;
   color: var(--text-color);
