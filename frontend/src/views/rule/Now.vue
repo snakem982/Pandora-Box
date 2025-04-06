@@ -1,90 +1,124 @@
 <script setup lang="ts">
 
-const searchValue = ref('')
+import MySimpleInput from "@/components/MySimpleInput.vue";
 
-const tableData = [
-  {
-    date: '2016-05-03',
-    name: 'Tom',
-    address: 'No. 189, Grove St, Los Angeles',
-  },
-  {
-    date: '2016-05-02',
-    name: 'Tom',
-    address: 'No. 189, Grove St, Los Angeles',
-  },
-  {
-    date: '2016-05-04',
-    name: 'Tom',
-    address: 'No. 189, Grove St, Los Angeles',
-  },
-  {
-    date: '2016-05-01',
-    name: 'Tom',
-    address: 'No. 189, Grove St, Los Angeles',
-  },
-]
+function handleInputChange(value: any) {
+  console.log("输入框的值发生了变化：", value);
+}
+
+// 原始大数据集合
+const allData = Array.from({ length: 20000 }, (_, i) => ({
+  name: `User ${i + 1}`,
+  age: Math.floor(Math.random() * 50) + 20,
+  city: `City ${i % 10}`,
+}));
+
+// 分页数据状态
+const itemsPerPage = 50; // 每页加载50条数据
+const currentPage = ref(1); // 当前页数
+const paginatedData = ref(allData.slice(0, itemsPerPage));
+
+// 加载下一页数据
+function loadMore() {
+  if (currentPage.value * itemsPerPage >= allData.length) return; // 没有更多数据时停止加载
+  currentPage.value++;
+  const nextPageData = allData.slice(
+      (currentPage.value - 1) * itemsPerPage,
+      currentPage.value * itemsPerPage
+  );
+  paginatedData.value = [...paginatedData.value, ...nextPageData];
+}
+
+// 监听滚动事件
+function handleScroll(event: Event) {
+  const target = event.target as HTMLElement;
+  if (
+      target.scrollTop + target.clientHeight >= target.scrollHeight - 10
+  ) {
+    loadMore(); // 滚动到底部时加载更多
+  }
+}
+
 
 </script>
 
 <template>
-<div class="now">
-    <el-input 
-    v-model="searchValue"
-    clearable
-    placeholder="搜索内容" 
-    autocomplete="off"/>
-    <el-table :data="tableData" class="table">
-      <el-table-column prop="date" label="Date" width="180" />
-      <el-table-column prop="name" label="Name" width="180" />
-      <el-table-column prop="address" label="Address" />
-    </el-table>
-</div>
+  <div class="now">
+    <MySimpleInput
+        :onInputChange="handleInputChange"
+        placeholder="搜索规则"
+    ></MySimpleInput>
+    <el-row class="title">
+      <el-col :span="5">
+        类型
+      </el-col>
+      <el-col :span="14">
+        内容
+      </el-col>
+      <el-col :span="5">
+        代理
+      </el-col>
+    </el-row>
+    <div class="info-list" @scroll="handleScroll">
+      <el-row
+          class="info"
+          v-for="(item, i) in paginatedData"
+          :key="i"
+      >
+        <el-col :span="5">{{ item.name }}</el-col>
+        <el-col :span="14">{{ item.age }}</el-col>
+        <el-col :span="5">{{ item.city }}</el-col>
+      </el-row>
+    </div>
+  </div>
 </template>
 
 <style scoped>
 .now {
-    width: 95%;
-    margin-left: 10px;
-    margin-top: 5px;
+  width: 95%;
+  margin-left: 10px;
+  margin-top: 5px;
 }
 
-:deep(.el-input) {
-  --el-input-border-radius: 5px;
-  background-color: rgba(255, 255, 255, 0.2);
-  --el-input-text-color: var(--el-text-color-regular);
-  --el-input-border: var(--el-border);
-  --el-input-hover-border: var(--el-border-color-hover);
-  --el-input-focus-border: var(--el-color-primary);
-  --el-input-transparent-border: 0 0 0 1px transparent inset;
-  --el-input-border-color: var(--el-border-color);
-  --el-input-bg-color: transparent;
-  --el-input-icon-color: var(--el-text-color-placeholder);
-  --el-input-placeholder-color: var(--el-text-color-placeholder);
-  --el-input-hover-border-color: var(--el-border-color-hover);
-  --el-input-clear-hover-color: var(--el-text-color-secondary);
-  --el-input-focus-border-color: var(--el-color-primary);
-  --el-input-width: 100%;
-  --el-input-height: var(--el-component-size);
-  box-sizing: border-box;
-  display: inline-flex;
-  font-size: var(--el-font-size-base);
-  line-height: var(--el-input-height);
-  position: relative;
-  vertical-align: middle;
-  width: var(--el-input-width);
+.title {
+  border-bottom: 2px solid #f4f4f4;
+  padding: 18px 5px 5px 5px;
+  font-weight: bold;
 }
 
-:deep(.el-input__inner) {
-  color: var(--text-color);
+.info-list {
+  max-height: calc(100vh - 330px);
+  overflow-y: auto;
 }
 
+.info {
+  border-bottom: 1px solid #ccc;
+  padding: 15px 5px 5px 5px;
+}
 
+.info:hover {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+}
 
-.table {
-    width: 100%;
-    margin-top: 15px;
-    border-radius: 8px;
-  }
+.info-list::-webkit-scrollbar {
+  width: 5px;
+  padding-bottom: 20px;
+}
+
+.info-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.info-list::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-bg);
+  border-radius: 2px;
+  transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+
+.info-list::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-hover-bg);
+  box-shadow: var(--scrollbar-hover-shadow);
+}
 
 </style>
