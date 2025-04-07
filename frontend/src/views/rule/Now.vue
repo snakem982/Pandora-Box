@@ -82,7 +82,7 @@ function handleScroll(event: Event) {
 
 .title {
   border-bottom: 2px solid #f4f4f4;
-  padding: 18px 5px 5px 5px;
+  padding: 18px 5px 8px 5px;
   font-weight: bold;
 }
 
@@ -93,7 +93,7 @@ function handleScroll(event: Event) {
 
 .info {
   border-bottom: 1px solid #ccc;
-  padding: 15px 5px 5px 5px;
+  padding: 15px 5px 8px 5px;
 }
 
 .info:hover {

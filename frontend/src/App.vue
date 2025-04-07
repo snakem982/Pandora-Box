@@ -1,5 +1,8 @@
 <template>
-  <div class="cBody" :style="{'--body-background-image': backgroundImage}">
+  <div class="cBody"
+       :style="{'--body-background-image': backgroundImage}"
+       key="pandora-box-body"
+  >
     <div class="left">
       <div class="top-title">
         <div class="top-icon"></div>
