@@ -64,7 +64,7 @@ function handleScroll(event: Event) {
       </el-row>
       <div class="info-list" @scroll="handleScroll">
         <el-row
-            class="info"
+            :class="i%2 == 1? 'info info-s' : 'info'"
             v-for="(item, i) in paginatedData"
             :key="i"
         >
@@ -108,7 +108,13 @@ function handleScroll(event: Event) {
 
 .info {
   border-bottom: 1px solid #ccc;
-  padding: 15px 5px 8px 5px;
+  padding: 8px 5px;
+}
+
+.info-s {
+  border-bottom: 1px solid #ccc;
+  padding: 8px 5px;
+  background-color: rgba(128, 128, 128, 0.2); /* 深灰色，透明度为50% */
 }
 
 .info:hover {
