@@ -8,8 +8,8 @@ import messages from '@intlify/unplugin-vue-i18n/messages'
 import ElementPlus from 'element-plus'
 import VueApexCharts from "vue3-apexcharts";
 import 'element-plus/dist/index.css'
-import './style.css'
-import './assets/theme/basic.css'
+import './styles/global.css'
+import './styles/basic.css'
 import {useMenuStore} from "@/store/menuStore.js";
 
 // 国际化设置

@@ -26,7 +26,7 @@
 }
 
 .op {
-  margin-top: 10px;
+  margin-top: 15px;
 }
 
 :deep(.el-button) {
@@ -42,9 +42,8 @@
 }
 
 .content {
-  margin-top: 20px;
+  margin-top: 25px;
 }
-
 
 .custom-textarea {
   background-color: transparent; /* 背景透明 */

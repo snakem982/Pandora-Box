@@ -47,29 +47,34 @@ function handleScroll(event: Event) {
     <MySimpleInput
         :onInputChange="handleInputChange"
         placeholder="搜索规则"
+        class="search"
     ></MySimpleInput>
-    <el-row class="title">
-      <el-col :span="5">
-        类型
-      </el-col>
-      <el-col :span="14">
-        内容
-      </el-col>
-      <el-col :span="5">
-        代理
-      </el-col>
-    </el-row>
-    <div class="info-list" @scroll="handleScroll">
-      <el-row
-          class="info"
-          v-for="(item, i) in paginatedData"
-          :key="i"
-      >
-        <el-col :span="5">{{ item.name }}</el-col>
-        <el-col :span="14">{{ item.age }}</el-col>
-        <el-col :span="5">{{ item.city }}</el-col>
+
+    <div class="content">
+      <el-row class="title">
+        <el-col :span="5">
+          类型
+        </el-col>
+        <el-col :span="14">
+          内容
+        </el-col>
+        <el-col :span="5">
+          代理
+        </el-col>
       </el-row>
+      <div class="info-list" @scroll="handleScroll">
+        <el-row
+            class="info"
+            v-for="(item, i) in paginatedData"
+            :key="i"
+        >
+          <el-col :span="5">{{ item.name }}</el-col>
+          <el-col :span="14">{{ item.age }}</el-col>
+          <el-col :span="5">{{ item.city }}</el-col>
+        </el-row>
+      </div>
     </div>
+
   </div>
 </template>
 
@@ -80,14 +85,24 @@ function handleScroll(event: Event) {
   margin-top: 5px;
 }
 
+.search {
+  margin-top: 15px;
+}
+
+.content {
+  border: 2px solid var(--text-color);
+  border-radius: 10px;
+  margin-top: 25px;
+}
+
 .title {
   border-bottom: 2px solid #f4f4f4;
-  padding: 18px 5px 8px 5px;
+  padding: 8px 5px 8px 5px;
   font-weight: bold;
 }
 
 .info-list {
-  max-height: calc(100vh - 330px);
+  max-height: calc(100vh - 360px);
   overflow-y: auto;
 }
 
@@ -98,7 +113,6 @@ function handleScroll(event: Event) {
 
 .info:hover {
   background-color: rgba(0, 0, 0, 0.2);
-  border-radius: 8px;
 }
 
 .info-list::-webkit-scrollbar {
