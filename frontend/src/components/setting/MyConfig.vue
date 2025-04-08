@@ -14,7 +14,7 @@ const value3 = ref(true)
   <el-row :gutter="20" class="spark"
           style="margin-left: 0;
           margin-right: 0;">
-    <el-col :span="12">
+    <el-col :span="24">
       <div class="box box1">
         <div class="title">
           Mihomo
@@ -67,8 +67,13 @@ const value3 = ref(true)
         </ul>
       </div>
     </el-col>
+  </el-row>
 
-    <el-col :span="12">
+  <el-row :gutter="20" class="spark"
+          style="margin-left: 0;
+          margin-top: 20px;
+          margin-right: 0;">
+    <el-col :span="24">
       <div class="box box2">
         <div class="title">
           Pandora-Box
@@ -97,14 +102,15 @@ const value3 = ref(true)
         </ul>
       </div>
     </el-col>
-
   </el-row>
+
+
+
 </template>
 
 <style scoped>
 .spark {
   max-width: 95%;
-  margin-top: 15px;
 }
 
 .box {
