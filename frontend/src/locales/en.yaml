@@ -27,6 +27,7 @@ edit: Edit
 quit: Quit
 theme: Theme
 minus: Minus to tray
+save: Save
 
 home:
   download: Download
@@ -83,3 +84,24 @@ profiles:
   use: Used
   expire: Expire
   update: Updated
+
+rule:
+  title: Rule
+  now:
+    title: View current rules
+    search: Search payload
+    type: Type
+    payload: Payload
+    proxy: Proxy
+  group:
+    title: Unified rule grouping
+    model: Choose a template
+    m1: Default
+    m2: Multi-national
+    m3: Streaming
+    reset: Reset
+    test: Test
+  ignore:
+    title: Ignore these domains
+    tip: Split by row
+    place: Type Here

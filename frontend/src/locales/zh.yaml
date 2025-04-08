@@ -27,6 +27,7 @@ edit: 编辑
 quit: 退出
 theme: 主题
 minus: 最小化到托盘
+save: 保存
 
 home:
   download: 下载
@@ -83,4 +84,25 @@ profiles:
   use: 已使用
   expire: 过期
   update: 更新
+
+rule:
+  title: 规则
+  now:
+    title: 查看目前规则
+    search: 搜索规则
+    type: 类型
+    payload: 内容
+    proxy: 代理
+  group:
+    title: 统一规则分组
+    model: 选择一个模版
+    m1: 默认分组
+    m2: 多国别
+    m3: 流媒体
+    reset: 重置
+    test: 测试
+  ignore:
+    title: 忽略这些域名
+    tip: 按行分割
+    place: 在这里输入
 

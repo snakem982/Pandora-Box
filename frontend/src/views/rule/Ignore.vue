@@ -5,14 +5,14 @@
 <template>
   <div class="ignore">
     <el-space class="op">
-      <el-button>保存</el-button>
+      <el-button>{{ $t('save') }}</el-button>
       <el-divider direction="vertical" border-style="dashed"/>
-      <el-text class="st">按行分割</el-text>
+      <el-text class="st">{{ $t('rule.ignore.tip') }}</el-text>
     </el-space>
     <div class="content">
       <textarea
           class="custom-textarea"
-          placeholder="在这里输入"
+          :placeholder="$t('rule.ignore.place')"
       ></textarea>
     </div>
   </div>

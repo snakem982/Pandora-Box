@@ -46,20 +46,20 @@ function handleScroll(event: Event) {
   <div class="now">
     <MySimpleInput
         :onInputChange="handleInputChange"
-        placeholder="搜索规则"
+        :placeholder="$t('rule.now.search')"
         class="search"
     ></MySimpleInput>
 
     <div class="content">
       <el-row class="title">
         <el-col :span="5">
-          类型
+          {{ $t('rule.now.type') }}
         </el-col>
         <el-col :span="14">
-          内容
+          {{ $t('rule.now.payload') }}
         </el-col>
         <el-col :span="5">
-          代理
+          {{ $t('rule.now.proxy') }}
         </el-col>
       </el-row>
       <div class="info-list" @scroll="handleScroll">

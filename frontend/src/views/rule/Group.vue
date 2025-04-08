@@ -19,7 +19,6 @@ const editorOptions = {
 
 const isDropdownOpen = ref(false);
 const selectedOption = ref(null);
-const options = ["默认分组", "多国别", "流媒体"];
 
 const selectOption = (option) => {
   selectedOption.value = option;
@@ -36,30 +35,49 @@ const isOpen = ref(false)
     <el-space class="op">
       <div class="dropdown">
         <button class="dropdown-btn" @click="isDropdownOpen = !isDropdownOpen">
-          {{ selectedOption || "选择一个模版" }}
+          {{ selectedOption || $t('rule.group.model') }}
         </button>
         <ul v-if="isDropdownOpen" class="dropdown-list">
           <li
-              v-for="option in options"
-              :key="option"
-              @click="selectOption(option)"
+              :key="$t('rule.group.m1')"
+              @click="selectOption($t('rule.group.m1'))"
               class="dropdown-item"
           >
-            {{ option }}
+            {{ $t('rule.group.m1') }}
+          </li>
+          <li
+              :key="$t('rule.group.m2')"
+              @click="selectOption($t('rule.group.m2'))"
+              class="dropdown-item"
+          >
+            {{ $t('rule.group.m2') }}
+          </li>
+          <li
+              :key="$t('rule.group.m3')"
+              @click="selectOption($t('rule.group.m3'))"
+              class="dropdown-item"
+          >
+            {{ $t('rule.group.m3') }}
           </li>
         </ul>
       </div>
       <el-divider direction="vertical" border-style="dashed"/>
-      <el-button>重置</el-button>
-      <el-button>测试</el-button>
-      <el-button>保存</el-button>
+      <el-button>
+        {{ $t('rule.group.reset') }}
+      </el-button>
+      <el-button>
+        {{ $t('rule.group.test') }}
+      </el-button>
+      <el-button>
+        {{ $t('save') }}
+      </el-button>
       <el-divider direction="vertical" border-style="dashed"/>
-      <el-text :class="isOpen?'':'st'">关闭</el-text>
+      <el-text :class="isOpen?'':'st'">{{ $t('off') }}</el-text>
       <el-switch
           v-model="isOpen"
           class="set-switch"
       />
-      <el-text :class="isOpen?'st':''">开启</el-text>
+      <el-text :class="isOpen?'st':''">{{ $t('on') }}</el-text>
     </el-space>
 
     <VAceEditor

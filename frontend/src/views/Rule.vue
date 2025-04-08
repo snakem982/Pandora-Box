@@ -25,7 +25,9 @@ const setActive = function (value: string) {
     <template #top>
       <MySearch></MySearch>
       <el-space class="space">
-        <div class="title">规则</div>
+        <div class="title">
+          {{ $t('rule.title') }}
+        </div>
       </el-space>
 
       <div class="proxy-group">
@@ -34,21 +36,27 @@ const setActive = function (value: string) {
             @click="setActive('Now')"
         >
           <icon-mdi-eye-arrow-right class="pre"/>
-          <span class="suf">查看目前规则</span>
+          <span class="suf">
+            {{ $t('rule.now.title') }}
+          </span>
         </button>
         <button
             :class="getActive('Group')"
             @click="setActive('Group')"
         >
           <icon-mdi-view-dashboard class="pre"/>
-          <span class="suf">统一规则分组</span>
+          <span class="suf">
+            {{ $t('rule.group.title') }}
+          </span>
         </button>
         <button
             :class="getActive('Ignore')"
             @click="setActive('Ignore')"
         >
           <icon-mdi-cancel class="pre"/>
-          <span class="suf">忽略这些域名</span>
+          <span class="suf">
+            {{ $t('rule.ignore.title') }}
+          </span>
         </button>
       </div>
 
