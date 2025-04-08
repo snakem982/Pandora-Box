@@ -106,3 +106,17 @@ rule:
     tip: 按行分割
     place: 在这里输入
 
+connections:
+  title: 连接
+  search: 搜索主机
+  close: 一键关闭
+  host: 主机
+  download: 下载
+  upload: 上传
+  rule: 规则
+  chains: 节点链
+
+log:
+  title: 日志
+  search: 搜索
+

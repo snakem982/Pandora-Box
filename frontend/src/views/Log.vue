@@ -52,7 +52,9 @@ function handleScroll(event: Event) {
     <template #top>
       <MySearch></MySearch>
       <el-space class="space">
-        <div class="title">日志</div>
+        <div class="title">
+          {{ $t('log.title') }}
+        </div>
       </el-space>
       <MyHr :update="upFromTop" v-show="false"></MyHr>
     </template>
@@ -61,7 +63,7 @@ function handleScroll(event: Event) {
           <div class="search">
             <MySimpleInput
                 :onInputChange="handleInputChange"
-                placeholder="搜索内容"
+                :placeholder="$t('log.search')"
                 class="search"
             ></MySimpleInput>
           </div>

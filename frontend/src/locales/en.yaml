@@ -105,3 +105,17 @@ rule:
     title: Ignore these domains
     tip: Split by row
     place: Type Here
+
+connections:
+  title: Connections
+  search: Search host
+  close: Close all
+  host: Host
+  download: Download
+  upload: Upload
+  rule: Rule
+  chains: Chains
+
+log:
+  title: Log
+  search: Search

@@ -52,7 +52,9 @@ function handleScroll(event: Event) {
     <template #top>
       <MySearch></MySearch>
       <el-space class="space">
-        <div class="title">连接</div>
+        <div class="title">
+          {{ $t('connections.title') }}
+        </div>
       </el-space>
       <MyHr :update="upFromTop" v-show="false"></MyHr>
     </template>
@@ -62,11 +64,13 @@ function handleScroll(event: Event) {
           <div class="search">
             <MySimpleInput
                 :onInputChange="handleInputChange"
-                placeholder="搜索主机"
+                :placeholder="$t('connections.search')"
                 class="search"
             ></MySimpleInput>
           </div>
-          <el-button>一键关闭</el-button>
+          <el-button>
+            {{ $t('connections.close') }}
+          </el-button>
         </el-space>
       </div>
 
@@ -84,24 +88,24 @@ function handleScroll(event: Event) {
               &emsp;
               <el-tag type="danger" size="small">less than a minute</el-tag>
               <div class="od">
-                <span class="ot">Host : </span>otheve.beacon.qq.com:443
+                <span class="ot">{{ $t('connections.host') }} : </span>otheve.beacon.qq.com:443
               </div>
               <div class="od">
-                <span class="ot">Download : </span>118 KB
+                <span class="ot">{{ $t('connections.download') }} : </span>118 KB
                 &emsp;
                 &#8595;
                 20 MB/s
                 &emsp;
-                <span class="ot">Upload : </span>26.7 KB
+                <span class="ot">{{ $t('connections.upload') }} : </span>26.7 KB
                 &emsp;
                 &#8593;
                 120 KB/s
               </div>
               <div class="od">
-                <span class="ot">Rule : </span>DomainKeyword &#8594; google
+                <span class="ot">{{ $t('connections.rule') }} : </span>DomainKeyword &#8594; google
               </div>
               <div class="od">
-                <span class="ot">Chains : </span>🐟 漏网之鱼 / 🚀 节点选择 / 🇯🇵 日本IEPL 专线 02
+                <span class="ot">{{ $t('connections.chains') }} : </span>🐟 漏网之鱼 / 🚀 节点选择 / 🇯🇵 日本IEPL 专线 02
               </div>
             </el-col>
           </el-row>
