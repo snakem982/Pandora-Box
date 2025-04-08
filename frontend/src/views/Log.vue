@@ -70,7 +70,7 @@ function handleScroll(event: Event) {
       <div class="content">
         <div class="info-list" @scroll="handleScroll">
           <el-row
-              :class="i%2 == 1? 'info info-s' : 'info'"
+              class="info"
               v-for="(item, i) in paginatedData"
               :key="i"
           >
@@ -127,18 +127,7 @@ function handleScroll(event: Event) {
   line-height: 1.5;
   -webkit-user-select: text;
   user-select: text;
-}
-
-.info-s {
-  border-bottom: 1px solid #ccc;
-  padding: 5px 10px;
-  font-size: 14px;
-  line-height: 1.5;
-  background-color: rgba(128, 128, 128, 0.2); /* 深灰色，透明度为50% */
-}
-
-.info:hover {
-  background-color: rgba(0, 0, 0, 0.2);
+  background-color: rgba(0, 0, 0, 0.1);
 }
 
 .info-list::-webkit-scrollbar {
