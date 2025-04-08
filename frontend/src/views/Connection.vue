@@ -99,8 +99,6 @@ function handleScroll(event: Event) {
               </div>
               <div class="od">
                 <span class="ot">Rule : </span>DomainKeyword &#8594; google
-                &emsp;
-                <span class="ot">Destination : </span>69.192.139.236
               </div>
               <div class="od">
                 <span class="ot">Chains : </span>🐟 漏网之鱼 / 🚀 节点选择 / 🇯🇵 日本IEPL 专线 02
@@ -145,15 +143,16 @@ function handleScroll(event: Event) {
 
 .content {
   border: 2px solid var(--text-color);
-  border-radius: 10px;
   margin-top: 20px;
-  width: 95%;
+  width: calc(95% - 10px);
   margin-left: 10px;
+  border-radius: 10px;
 }
 
 .info-list {
   max-height: calc(100vh - 250px);
   overflow-y: auto;
+  border-radius: 10px;
 }
 
 .info {
@@ -161,14 +160,11 @@ function handleScroll(event: Event) {
   padding: 5px 10px;
   font-size: 15px;
   line-height: 1.6;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.1);
   border-radius: 10px;
 }
 
 .od {
-  white-space: nowrap; /* 禁止换行 */
-  overflow: hidden; /* 隐藏溢出的内容 */
-  text-overflow: ellipsis; /* 使用省略号缩写超出部分内容 */
   -webkit-user-select: text;
   user-select: text;
 }
