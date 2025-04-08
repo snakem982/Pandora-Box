@@ -8,6 +8,8 @@ import Rule from "@/views/Rule.vue";
 import Now from '@/views/rule/Now.vue';
 import Group from '@/views/rule/Group.vue';
 import Ignore from '@/views/rule/Ignore.vue';
+import Connection from "@/views/Connection.vue";
+import Log from "@/views/Log.vue";
 
 const routes = [
     {
@@ -56,6 +58,16 @@ const routes = [
                 component: Ignore,
             }
         ],
+    },
+    {
+        path: '/Connection',
+        name: 'Connection',
+        component: Connection,
+    },
+    {
+        path: '/Log',
+        name: 'Log',
+        component: Log,
     },
 ];
 

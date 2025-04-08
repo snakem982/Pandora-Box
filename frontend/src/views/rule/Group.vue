@@ -67,7 +67,7 @@ const isOpen = ref(false)
         lang="yaml"
         theme="monokai"
         :options="editorOptions"
-        style="width: 100%;height: calc(100vh - 320px);"
+        style="width: 100%;height: calc(100vh - 325px);"
         class="editor"
     />
   </div>
@@ -81,7 +81,7 @@ const isOpen = ref(false)
 }
 
 .op {
-  margin-top: 10px;
+  margin-top: 8px;
 }
 
 .dropdown {

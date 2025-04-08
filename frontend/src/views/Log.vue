@@ -1,13 +1,18 @@
 <script setup lang="ts">
-
+import MyHr from "@/components/proxies/MyHr.vue";
 import MySimpleInput from "@/components/MySimpleInput.vue";
+
+const distanceFromTop = ref(195)
+const upFromTop = function (distance: number) {
+  distanceFromTop.value = distance
+}
 
 function handleInputChange(value: any) {
   console.log("输入框的值发生了变化：", value);
 }
 
 // 原始大数据集合
-const allData = Array.from({ length: 20000 }, (_, i) => ({
+const allData = Array.from({length: 1000}, (_, i) => ({
   name: `User ${i + 1}`,
   age: Math.floor(Math.random() * 50) + 20,
   city: `City ${i % 10}`,
@@ -43,77 +48,92 @@ function handleScroll(event: Event) {
 </script>
 
 <template>
-  <div class="now">
-    <MySimpleInput
-        :onInputChange="handleInputChange"
-        placeholder="搜索规则"
-        class="search"
-    ></MySimpleInput>
-
-    <div class="content">
-      <el-row class="title">
-        <el-col :span="5">
-          类型
-        </el-col>
-        <el-col :span="14">
-          内容
-        </el-col>
-        <el-col :span="5">
-          代理
-        </el-col>
-      </el-row>
-      <div class="info-list" @scroll="handleScroll">
-        <el-row
-            :class="i%2 == 1? 'info info-s' : 'info'"
-            v-for="(item, i) in paginatedData"
-            :key="i"
-        >
-          <el-col :span="5">{{ item.name }}</el-col>
-          <el-col :span="14">{{ item.age }}</el-col>
-          <el-col :span="5">{{ item.city }}</el-col>
-        </el-row>
+  <MyLayout :top-height="distanceFromTop-15" :bottom-height="distanceFromTop+25">
+    <template #top>
+      <MySearch></MySearch>
+      <el-space class="space">
+        <div class="title">日志</div>
+      </el-space>
+      <MyHr :update="upFromTop" v-show="false"></MyHr>
+    </template>
+    <template #bottom>
+      <div class="conn">
+          <div class="search">
+            <MySimpleInput
+                :onInputChange="handleInputChange"
+                placeholder="搜索内容"
+                class="search"
+            ></MySimpleInput>
+          </div>
       </div>
-    </div>
 
-  </div>
+      <div class="content">
+        <div class="info-list" @scroll="handleScroll">
+          <el-row
+              :class="i%2 == 1? 'info info-s' : 'info'"
+              v-for="(item, i) in paginatedData"
+              :key="i"
+          >
+            <el-col :span="24">
+              <div>2025/04/08 16:57:25 INFO</div>
+              [TCP] 127.0.0.1:50611(夸克网盘 Helper) --> track.lc.quark.cn:80 match DomainSuffix(cn) using 🎯 全球直连[DIRECT]
+            </el-col>
+          </el-row>
+        </div>
+      </div>
+
+    </template>
+  </MyLayout>
 </template>
 
 <style scoped>
-.now {
+.space {
+  margin-top: 20px;
+}
+
+.conn {
   width: 95%;
   margin-left: 10px;
   margin-top: 5px;
 }
 
+.title {
+  font-size: 32px;
+  font-weight: bold;
+  margin-left: 10px;
+}
+
 .search {
-  margin-top: 12px;
+  width: 400px;
 }
 
 .content {
   border: 2px solid var(--text-color);
   border-radius: 10px;
-  margin-top: 25px;
-}
-
-.title {
-  border-bottom: 2px solid #f4f4f4;
-  padding: 8px 10px;
-  font-weight: bold;
+  margin-top: 20px;
+  width: 95%;
+  margin-left: 10px;
 }
 
 .info-list {
-  max-height: calc(100vh - 365px);
+  max-height: calc(100vh - 250px);
   overflow-y: auto;
 }
 
 .info {
   border-bottom: 1px solid #ccc;
-  padding: 8px 10px;
+  padding: 5px 10px;
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-user-select: text;
+  user-select: text;
 }
 
 .info-s {
   border-bottom: 1px solid #ccc;
-  padding: 8px 10px;
+  padding: 5px 10px;
+  font-size: 14px;
+  line-height: 1.5;
   background-color: rgba(128, 128, 128, 0.2); /* 深灰色，透明度为50% */
 }
 
@@ -140,5 +160,6 @@ function handleScroll(event: Event) {
   background: var(--scrollbar-hover-bg);
   box-shadow: var(--scrollbar-hover-shadow);
 }
+
 
 </style>

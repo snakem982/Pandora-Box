@@ -62,7 +62,7 @@ const setActive = function (value: string) {
 
 <style scoped>
 .space {
-  margin-top: 15px;
+  margin-top: 20px;
 }
 
 .title {

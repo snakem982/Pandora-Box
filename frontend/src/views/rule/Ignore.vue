@@ -26,7 +26,7 @@
 }
 
 .op {
-  margin-top: 15px;
+  margin-top: 12px;
 }
 
 :deep(.el-button) {
@@ -55,7 +55,7 @@
   resize: none;                  /* 禁止调整大小（可选） */
   outline: none;                 /* 去掉点击时的默认高亮框 */
   width: 96%;
-  height: calc(100vh - 350px);
+  height: calc(100vh - 340px);
 }
 
 .custom-textarea::placeholder {
