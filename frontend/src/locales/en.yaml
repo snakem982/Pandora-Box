@@ -77,6 +77,7 @@ proxies:
   vertical-on: Switch grouping to left-right style
   vertical-off: Switch grouping to drop-down style
   direct: Currently in direct mode
+  loading: Testing...
 
 profiles:
   title: Profiles

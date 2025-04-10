@@ -3,6 +3,11 @@ import createApi from '@/api';
 import MyHr from "@/components/proxies/MyHr.vue";
 import {useProxiesStore} from "@/store/proxiesStore";
 import {useMenuStore} from "@/store/menuStore";
+import {useSettingStore} from "@/store/settingStore";
+import {useI18n} from 'vue-i18n'
+import {load} from "@/util/load";
+
+const {t} = useI18n()
 
 // 计算顶部遮挡
 const distanceFromTop = ref(195)
@@ -21,6 +26,7 @@ const nodeList = ref<any[]>([]);
 // 当前页面使用store
 const proxiesStore = useProxiesStore();
 const menuStore = useMenuStore();
+const settingStore = useSettingStore();
 
 // 获取分组
 async function groups() {
@@ -82,9 +88,9 @@ function setVertical() {
   proxiesStore.setVertical(!proxiesStore.isVertical);
   atStart.value = true;
   atEnd.value = true;
-  setTimeout(()=>{
+  setTimeout(() => {
     updateButtonVisibility();
-  },200)
+  }, 200)
 }
 
 // 设置代理
@@ -98,6 +104,14 @@ async function setProxy(now: any, name: string) {
   } catch (error) {
     console.error(error);
   }
+}
+
+// 测试延迟
+function testDelay() {
+  load(t('proxies.loading'), async () => {
+    await api.getDelay(proxiesStore.active, settingStore.testUrl, 3000);
+    await nodes();
+  })
 }
 
 const proxyGroup = ref(null);
@@ -183,7 +197,9 @@ watch(
           <el-tooltip
               :content="$t('proxies.test')"
               placement="top">
-            <el-icon class="proxy-option-btn">
+            <el-icon
+                @click="testDelay"
+                class="proxy-option-btn">
               <icon-mdi-speedometer/>
             </el-icon>
           </el-tooltip>
@@ -510,5 +526,4 @@ watch(
 .dropdown-item:hover {
   background: rgba(255, 255, 255, 0.2);
 }
-
 </style>

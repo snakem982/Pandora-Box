@@ -50,6 +50,10 @@ const getDelay = (proxy: any) => {
 
 export default function createProxiesApi(proxy: any) {
     return {
+        // 获取分组延迟
+        async getDelay(group: any, url: any, timeout: any) {
+            await proxy.$http.get('/group/' + group + '/delay?timeout=' + timeout + "&url=" + url);
+        },
         // 获取分组列表
         async getGroups() {
             // 获取所有节点分组列表
