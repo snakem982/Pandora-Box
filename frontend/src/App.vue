@@ -31,9 +31,9 @@ import MyDrop from "@/components/MyDrop.vue";
 import MyBottom from "@/components/menu/MyBottom.vue";
 import {useWebStore} from "@/store/webStore";
 
-const backgroundImage = ref("url('/images/sea.jpg')")
-// backgroundImage.value = "radial-gradient(circle, #2c3e50, #4a5568)"
-// backgroundImage.value = "linear-gradient(to bottom, #1b2735, #3b4b69)"
+const backgroundImage = ref("url('/images/merfeli.jpg')")
+//backgroundImage.value = "radial-gradient(circle, #2c3e50, #4a5568)"
+//backgroundImage.value = "linear-gradient(to bottom, #1b2735, #3b4b69)"
 
 const webStore = useWebStore()
 

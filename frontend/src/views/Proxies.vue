@@ -80,7 +80,11 @@ async function setSort() {
 // 设置分组
 function setVertical() {
   proxiesStore.setVertical(!proxiesStore.isVertical);
-  updateButtonVisibility();
+  atStart.value = true;
+  atEnd.value = true;
+  setTimeout(()=>{
+    updateButtonVisibility();
+  },200)
 }
 
 // 设置代理
@@ -107,19 +111,19 @@ const updateButtonVisibility = () => {
     const clientWidth = proxyGroup.value.clientWidth;
 
     atStart.value = scrollLeft === 0;
-    atEnd.value = scrollLeft + clientWidth >= scrollWidth - 18;
+    atEnd.value = scrollLeft + clientWidth >= scrollWidth;
   }
 };
 
 const scrollLeft = () => {
   if (proxyGroup.value) {
-    proxyGroup.value.scrollLeft -= proxyGroup.value.clientWidth + 18;
+    proxyGroup.value.scrollLeft -= proxyGroup.value.clientWidth + 15;
   }
 };
 
 const scrollRight = () => {
   if (proxyGroup.value) {
-    proxyGroup.value.scrollLeft += proxyGroup.value.clientWidth - 18;
+    proxyGroup.value.scrollLeft += proxyGroup.value.clientWidth - 15;
   }
 };
 
@@ -342,13 +346,13 @@ watch(
 .scroll-left {
   cursor: pointer;
   border: none;
-  margin-right: 15px;
+  margin-right: 10px;
 }
 
 .scroll-right {
   cursor: pointer;
   border: none;
-  margin-left: 15px;
+  margin-left: 10px;
 }
 
 .scroll-left[hidden],
@@ -362,7 +366,7 @@ watch(
   border: 2px solid var(--hr-color);
   border-radius: 8px;
   padding: 6px 10px;
-  font-size: 16px;
+  font-size: 15px;
   text-align: center;
   cursor: pointer;
   box-shadow: var(--left-nav-shadow);
@@ -460,9 +464,10 @@ watch(
 }
 
 .dropdown-btn {
-  background: transparent;
-  color: white;
-  border: 2px solid white;
+  background-color: var(--left-item-selected-bg);
+  box-shadow: var(--left-nav-hover-shadow);
+  border: 2px solid var(--text-color);
+  color: var(--text-color);
   padding: 5px 10px;
   cursor: pointer;
   font-size: 15px;
