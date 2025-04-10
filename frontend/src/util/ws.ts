@@ -1,24 +1,18 @@
-class WS {
-    ip: string;
-    port: string;
+export class WS {
     url: string;
     ws: WebSocket;
     closure: Function;
     send: Function;
 
     constructor(
-        ip: string,
-        port: string,
         url: string,
-        onopen: ((ws: WS, ev: Event) => any) | null = null,
-        onmessage: ((ws: WS, ev: MessageEvent) => any) | null = null,
-        onerror: ((ws: WS, ev: Event) => any) | null = null,
-        onclose: ((ws: WS, ev: CloseEvent) => any) | null = null
+        onopen: ((ev: Event) => any) | null = null,
+        onmessage: ((ev: MessageEvent) => any) | null = null,
+        onerror: ((ev: Event) => any) | null = null,
+        onclose: ((ev: CloseEvent) => any) | null = null
     ) {
-        this.ip = ip;
-        this.port = port;
         this.url = url;
-        this.ws = new WebSocket("ws://" + ip + ":" + port + url);
+        this.ws = new WebSocket(url);
         this.closure = (): void => {
             this.ws.close();
         };
@@ -26,40 +20,39 @@ class WS {
             this.ws.send(msg);
         };
 
-        const onopen_ = (ev: Event): any => {
-            if (onopen !== null) {
-                onopen(this, ev);
-            }
-            console.log(`websocket ${this.ip}:${this.port}${this.url} 连接开启！`);
+        // 绑定事件
+        this.ws.onopen = (ev: Event) => {
+            onopen?.(ev);
+            console.log(`websocket ${this.url} 连接开启！`);
         };
 
-        const onmessage_ = (ev: MessageEvent): any => {
-            if (onmessage !== null) {
-                onmessage(this, ev);
-            } else {
-                console.log(`websocket ${this.ip}:${this.port}${this.url} 收到信息：${ev}！`);
-            }
+        this.ws.onmessage = (ev: MessageEvent) => {
+            onmessage?.(ev);
         };
 
-        const onerror_ = (ev: Event): any => {
-            if (onerror !== null) {
-                onerror(this, ev);
-            }
-            console.log(`websocket ${this.ip}:${this.port}${this.url} 连接error：${ev}！`);
+        this.ws.onerror = (ev: Event) => {
+            onerror?.(ev);
+            console.log(`websocket ${this.url} 连接发生错误：`, ev);
         };
 
-        const onclose_ = (ev: CloseEvent): any => {
-            if (onclose !== null) {
-                onclose(this, ev);
-            }
-            console.log(`websocket ${this.ip}:${this.port}${this.url} 连接关闭！`);
+        this.ws.onclose = (ev: CloseEvent) => {
+            onclose?.(ev);
+            console.log(`websocket ${this.url} 连接关闭！`);
+            this.ws.onmessage = null; // 清除监听
         };
+    }
 
-        this.ws.onopen = onopen_;
-        this.ws.onmessage = onmessage_;
-        this.ws.onerror = onerror_;
-        this.ws.onclose = onclose_;
+    // 强制清理
+    close() {
+        if (
+            this.ws.readyState === WebSocket.OPEN ||
+            this.ws.readyState === WebSocket.CONNECTING
+        ) {
+            this.ws.close();
+        }
+        this.ws.onmessage = null; // 移除监听
+        this.ws.onerror = null;
+        this.ws.onclose = null;
+        console.log("WebSocket 已完全清理");
     }
 }
-
-export {WS};

@@ -3,7 +3,7 @@
     <el-col :span="8">
       <div class="box box1">
         <div class="details">
-          <h3>120 Mb/s</h3>
+          <h3>{{ downSpeed }} / s</h3>
           <h4>{{ $t('home.download') }}</h4>
         </div>
         <apexchart
@@ -18,7 +18,7 @@
     <el-col :span="8">
       <div class="box box2">
         <div class="details">
-          <h3>420 Kb/s</h3>
+          <h3>{{ upSpeed }} / s</h3>
           <h4>{{ $t('home.upload') }}</h4>
         </div>
         <apexchart
@@ -33,7 +33,7 @@
     <el-col :span="8">
       <div class="box box3">
         <div class="details">
-          <h3>311 Mb</h3>
+          <h3>{{ memory }}</h3>
           <h4>{{ $t('home.memory') }}</h4>
         </div>
         <apexchart
@@ -60,6 +60,48 @@
 //   series[0].data.push(random1)
 //   series[1].data.push(random2)
 // }, 2000)
+
+import {WS} from "@/util/ws";
+import {useWebStore} from "@/store/webStore";
+import {onBeforeRouteLeave} from "vue-router";
+import {prettyBytes} from "@/util/format";
+
+const webStore = useWebStore()
+
+const upSpeed = ref('')
+const downSpeed = ref('')
+const memory = ref('')
+
+function onTraffic(ev: MessageEvent) {
+  const parsedData = JSON.parse(ev.data);
+  const up = parsedData['up']
+  const down = parsedData['down']
+  upSpeed.value = prettyBytes(up)
+  downSpeed.value = prettyBytes(down)
+}
+
+function onMemory(ev: MessageEvent) {
+  const parsedData = JSON.parse(ev.data);
+  const inuse = parsedData['inuse']
+  memory.value = prettyBytes(inuse)
+}
+
+
+let wsTraffic: WS
+let wsMemory: WS
+onMounted(() => {
+  const urlTraffic = webStore.wsUrl + "/traffic?token=" + webStore.secret;
+  wsTraffic = new WS(urlTraffic, null, onTraffic);
+  const urlMemory = webStore.wsUrl + "/memory?token=" + webStore.secret;
+  wsMemory = new WS(urlMemory, null, onMemory);
+})
+
+// 路由切换前关闭 WebSocket
+onBeforeRouteLeave(() => {
+  wsTraffic.close();
+  wsMemory.close();
+});
+
 
 const spark1 = reactive({
   chart: {

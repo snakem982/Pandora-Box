@@ -9,6 +9,7 @@ export const useWebStore = defineStore('useWebStore', {
     getters: {
         // 确保使用 state 参数引用正确
         baseUrl: (state) => `http://${state.host}:${state.port}`,
+        wsUrl: (state) => `ws://${state.host}:${state.port}`,
     },
     actions: {
         setHost(host: string) {
