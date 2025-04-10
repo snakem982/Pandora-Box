@@ -36,7 +36,6 @@ const getClass = (delay: any) => {
 
 // 获取节点延迟
 const getDelay = (proxy: any) => {
-    const type = proxy['type'];
     if (!proxy['alive']) {
         return 99999;
     }
