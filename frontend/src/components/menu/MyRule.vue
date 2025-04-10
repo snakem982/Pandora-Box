@@ -45,10 +45,14 @@ watch(() => menuStore.rule, (newValue, oldValue) => {
 </script>
 
 <style scoped>
-.custom-style .el-segmented {
-  width: 184px;
-  margin-top: 23px;
+
+.custom-style {
   margin-left: 22px;
+  margin-top: 23px;
+}
+
+.custom-style .el-segmented {
+  min-width: 184px;
   border: 1px solid #ccc;
   background: rgba(255, 255, 255, 0.1);
   box-shadow: var(--left-nav-shadow);

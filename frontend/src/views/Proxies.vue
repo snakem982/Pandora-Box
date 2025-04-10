@@ -24,28 +24,35 @@ const menuStore = useMenuStore();
 
 // 获取分组
 async function groups() {
+  // 活跃分组
+  const active = proxiesStore.active;
+
   const temp = await api.getGroups();
   switch (menuStore.rule) {
     case "rule":
       groupList.value = temp;
+      if (!active || active == "GLOBAL") {
+        proxiesStore.setActive(temp[0]);
+      }
       break
     case "global":
-      groupList.value = ['GLOBAL'].concat(temp)
+      groupList.value = temp.concat(['GLOBAL'])
+      if (!active) {
+        proxiesStore.setActive(temp[0]);
+      }
       break
     case "direct":
       groupList.value = []
       break
   }
-
-  // 设置活跃分组
-  const active = proxiesStore.active;
-  if (!active) {
-    proxiesStore.setActive(temp[0]);
-  }
 }
 
 // 获取节点列表
 async function nodes() {
+  if (menuStore.rule == 'direct') {
+    nodeList.value = []
+    return
+  }
   nodeList.value = await api.getProxies(proxiesStore.active, proxiesStore.isHide, proxiesStore.isSort); // 更新响应式数据
 }
 
@@ -73,6 +80,7 @@ async function setSort() {
 // 设置分组
 function setVertical() {
   proxiesStore.setVertical(!proxiesStore.isVertical);
+  updateButtonVisibility();
 }
 
 // 设置代理
@@ -87,14 +95,6 @@ async function setProxy(now: any, name: string) {
     console.error(error);
   }
 }
-
-onMounted(async () => {
-  await groups();
-  await nodes();
-  updateButtonVisibility();
-  // 监听 resize 事件
-  window.addEventListener('resize', updateButtonVisibility);
-});
 
 const proxyGroup = ref(null);
 const atStart = ref(true); // 标记是否在最左边
@@ -147,6 +147,23 @@ const enterDropDown = () => {
   isDropdownOpen.value = true;
 }
 
+onMounted(async () => {
+  await groups();
+  await nodes();
+  updateButtonVisibility();
+  // 监听 resize 事件
+  window.addEventListener('resize', updateButtonVisibility);
+});
+
+// 监听具体状态
+watch(
+    () => menuStore.rule, // 监听 store 中的某个状态
+    async (newValue, oldValue) => {
+      await groups();
+      await nodes();
+      updateButtonVisibility();
+    }
+);
 
 </script>
 
@@ -204,7 +221,7 @@ const enterDropDown = () => {
       </el-space>
 
       <div class="dropdown"
-           v-if="proxiesStore.isVertical">
+           v-if="proxiesStore.isVertical && menuStore.rule != 'direct' ">
         <button class="dropdown-btn"
                 @mouseenter="enterDropDown"
                 @mouseleave="hideDropdown"
@@ -226,7 +243,7 @@ const enterDropDown = () => {
         </ul>
       </div>
 
-      <div class="button-container" v-else>
+      <div class="button-container" v-if="!proxiesStore.isVertical && menuStore.rule != 'direct' ">
         <el-icon
             v-if="!atStart"
             @click="scrollLeft"
@@ -254,7 +271,7 @@ const enterDropDown = () => {
         </el-icon>
       </div>
 
-      <MyHr :update="upFromTop"></MyHr>
+      <MyHr :update="upFromTop" style="margin-top: 10px"></MyHr>
     </template>
     <template #bottom>
       <div class="proxy-nodes">
@@ -317,7 +334,7 @@ const enterDropDown = () => {
 .proxy-group {
   display: flex;
   gap: 10px;
-  margin: 10px 0;
+  margin: 10px 0 3px 0;
   overflow-x: hidden;
   scroll-behavior: smooth;
 }
@@ -439,7 +456,7 @@ const enterDropDown = () => {
   position: relative;
   display: inline-block;
   width: 95%;
-  margin: 10px;
+  margin: 10px 10px 5px 10px;
 }
 
 .dropdown-btn {
