@@ -60,7 +60,7 @@ const setActive = function (value: string) {
         </button>
       </div>
 
-      <MyHr :update="upFromTop"></MyHr>
+      <MyHr :update="upFromTop" style="margin-top: 10px"></MyHr>
     </template>
     <template #bottom>
       <router-view/>

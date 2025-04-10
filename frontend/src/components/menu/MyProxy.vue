@@ -64,8 +64,8 @@ function toggle2() {
 }
 
 .switch {
-  width: 60px;
-  height: 30px;
+  width: 54px;
+  height: 26px;
   border: 2px solid var(--text-color);
   border-radius: 15px;
   position: relative;
@@ -79,17 +79,17 @@ function toggle2() {
 }
 
 .switch-circle {
-  width: 26px;
-  height: 26px;
+  width: 20px;
+  height: 20px;
   background-color: var(--text-color);
   border-radius: 50%;
   position: absolute;
-  top: 2px;
-  left: 2px;
+  top: 3px;
+  left: 3px;
   transition: left 0.3s ease;
 }
 
 .switch-on .switch-circle {
-  left: 32px;
+  left: 31px;
 }
 </style>

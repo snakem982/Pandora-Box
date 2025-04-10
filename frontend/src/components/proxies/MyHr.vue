@@ -58,6 +58,6 @@ onUnmounted(() => {
   border: none;
   border-top: 1px dashed #FFD700;
   width: 95%;
-  margin: 10px 10px 0 10px;
+  margin: 0 10px;
 }
 </style>

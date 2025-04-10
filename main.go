@@ -37,7 +37,7 @@ func main() {
 			Backdrop:                application.MacBackdropTranslucent,
 			TitleBar:                application.MacTitleBarHiddenInset,
 		},
-		URL:       "/",
+		URL:       "/?host=127.0.0.1&port=9966&secret=Y8IUaPeFLTRvsrdf2mUJkLMBuphVZRE5",
 		Width:     1100,
 		Height:    760,
 		MinWidth:  960,

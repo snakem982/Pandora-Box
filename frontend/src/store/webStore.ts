@@ -1,20 +1,28 @@
-import {defineStore} from 'pinia'
+import { defineStore } from 'pinia';
 
 export const useWebStore = defineStore('useWebStore', {
-    state: () => {
-        return {
-            port: 0,
-            secret: '',
-        }
-    },
+    state: () => ({
+        host: '127.0.0.1', // 默认值
+        port: '9966',       // 默认端口
+        secret: '',         // 默认密钥
+    }),
     getters: {
-        baseUrl: (state) => "http://127.0.0.1:" + state.port,
+        // 确保使用 state 参数引用正确
+        baseUrl: (state) => `http://${state.host}:${state.port}`,
     },
     actions: {
-        getPortAndSecret() {
-            this.port = 9898
-            this.secret = '123456'
+        setHost(host: string) {
+            if (host) this.host = host;
+        },
+        setPort(port: string) {
+            if (port) this.port = port;
+        },
+        setSecret(secret: string) {
+            if (secret) this.secret = secret;
         },
     },
-    persist: true,
-})
+    persist: {
+        enabled: true,
+        storage: sessionStorage,
+    },
+});

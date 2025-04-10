@@ -4,7 +4,7 @@
       "vue",
       "vue-router"
     ],
-    "baseUrl": ".",
+    "baseUrl": "./",
     "paths": {
       "@/*": [
         "src/*"

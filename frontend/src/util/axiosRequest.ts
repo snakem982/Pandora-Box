@@ -6,7 +6,7 @@ export class AxiosRequest {
     private instance: AxiosInstance;
 
     // 默认配置baseURL等
-    constructor(baseURL: string, secret: string = "", timeout = 30000) {
+    constructor(baseURL: string, secret: string = "", timeout = 20000) {
         this.instance = axios.create({
             baseURL,
             timeout,
@@ -33,7 +33,7 @@ export class AxiosRequest {
         this.instance.interceptors.response.use(
             (response: AxiosResponse) => {
                 // 对响应数据做点什么
-                return response;
+                return response.data;
             },
             (error: any) => {
                 // 处理响应错误
@@ -44,22 +44,22 @@ export class AxiosRequest {
     }
 
     get<T>(url: string, params?: any): Promise<AxiosResponse<T, any>> {
-        return this.instance.get<T>(url, {params});
+        return this.instance.get<T>(url, params);
     }
 
     post<T>(url: string, params?: any): Promise<AxiosResponse<T, any>> {
-        return this.instance.post<T>(url, {params});
+        return this.instance.post<T>(url, params);
     }
 
     put<T>(url: string, params?: any): Promise<AxiosResponse<T, any>> {
-        return this.instance.put<T>(url, {params});
+        return this.instance.put<T>(url, params);
     }
 
     patch<T>(url: string, params?: any): Promise<AxiosResponse<T, any>> {
-        return this.instance.patch<T>(url, {params});
+        return this.instance.patch<T>(url, params);
     }
 
     delete<T>(url: string, params?: any): Promise<AxiosResponse<T, any>> {
-        return this.instance.delete<T>(url, {params});
+        return this.instance.delete<T>(url, params);
     }
 }

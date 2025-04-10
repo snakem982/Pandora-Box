@@ -71,7 +71,7 @@ const value3 = ref(true)
 
   <el-row :gutter="20" class="spark"
           style="margin-left: 0;
-          margin-top: 20px;
+          margin-top: 30px;
           margin-right: 0;">
     <el-col :span="24">
       <div class="box box2">

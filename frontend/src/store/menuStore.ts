@@ -4,7 +4,7 @@ export const useMenuStore = defineStore('menu', {
     state: () => ({
         menu: 'Home',
         path: '/Home',
-        rule: '规则',
+        rule: 'rule',
         proxy: false,
         tun: false,
         language: 'zh',

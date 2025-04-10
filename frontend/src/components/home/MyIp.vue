@@ -1,5 +1,9 @@
 <script setup lang="ts">
 
+// 获取操作系统信息
+const os = ref('Intel Mac OS X 10_15_7')
+
+
 </script>
 
 <template>
@@ -32,7 +36,7 @@
         </div>
         <hr/>
         <ul class="info-list">
-          <li><strong>{{ $t('home.system.os') }} : </strong> Windows</li>
+          <li><strong>{{ $t('home.system.os') }} : </strong> {{ os }}</li>
           <li><strong>{{ $t('home.system.runtime') }} : </strong> 1:06:42</li>
           <li><strong>{{ $t('home.system.startup') }} : </strong> 已启用</li>
           <li><strong>{{ $t('home.system.service') }} : </strong> 服务模式</li>
