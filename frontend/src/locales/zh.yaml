@@ -74,6 +74,8 @@ proxies:
   hide-off: 隐藏不可用节点
   sort-on: 默认排序
   sort-off: 按延迟排序
+  vertical-on: 切换分组为左右样式
+  vertical-off: 切换分组为下拉样式
 
 profiles:
   title: 订阅

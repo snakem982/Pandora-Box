@@ -30,7 +30,7 @@ async function groups() {
       groupList.value = temp;
       break
     case "global":
-      groupList.value = temp.concat(['GLOBAL'])
+      groupList.value = ['GLOBAL'].concat(temp)
       break
     case "direct":
       groupList.value = []
@@ -51,6 +51,9 @@ async function nodes() {
 
 // 设置活跃分组
 async function setActive(value: any) {
+  if (proxiesStore.active == value) {
+    return
+  }
   proxiesStore.setActive(value)
   await nodes();
 }
@@ -65,6 +68,11 @@ async function setHide() {
 async function setSort() {
   proxiesStore.setSort(!proxiesStore.isSort);
   await nodes();
+}
+
+// 设置分组
+function setVertical() {
+  proxiesStore.setVertical(!proxiesStore.isVertical);
 }
 
 // 设置代理
@@ -83,7 +91,61 @@ async function setProxy(now: any, name: string) {
 onMounted(async () => {
   await groups();
   await nodes();
+  updateButtonVisibility();
+  // 监听 resize 事件
+  window.addEventListener('resize', updateButtonVisibility);
 });
+
+const proxyGroup = ref(null);
+const atStart = ref(true); // 标记是否在最左边
+const atEnd = ref(false); // 标记是否在最右边
+
+const updateButtonVisibility = () => {
+  if (proxyGroup.value) {
+    const scrollLeft = proxyGroup.value.scrollLeft;
+    const scrollWidth = proxyGroup.value.scrollWidth;
+    const clientWidth = proxyGroup.value.clientWidth;
+
+    atStart.value = scrollLeft === 0;
+    atEnd.value = scrollLeft + clientWidth >= scrollWidth - 18;
+  }
+};
+
+const scrollLeft = () => {
+  if (proxyGroup.value) {
+    proxyGroup.value.scrollLeft -= proxyGroup.value.clientWidth + 18;
+  }
+};
+
+const scrollRight = () => {
+  if (proxyGroup.value) {
+    proxyGroup.value.scrollLeft += proxyGroup.value.clientWidth - 18;
+  }
+};
+
+let isScrolling: any;
+const handleScroll = () => {
+  clearTimeout(isScrolling);
+  isScrolling = setTimeout(() => {
+    updateButtonVisibility();
+  }, 200); // 200ms 延迟
+};
+
+const isDropdownOpen = ref(false);
+
+// 添加延时隐藏下拉菜单
+let isOvering: any;
+const hideDropdown = () => {
+  console.log("sdfsfsfsdfdfsdfdsfds")
+  isOvering = setTimeout(() => {
+    isDropdownOpen.value = false;
+  }, 200); // 延迟 200 毫秒
+};
+
+const enterDropDown = () => {
+  clearTimeout(isOvering);
+  isDropdownOpen.value = true;
+}
 
 
 </script>
@@ -126,18 +188,70 @@ onMounted(async () => {
               <icon-mdi-sort v-else/>
             </el-icon>
           </el-tooltip>
+
+          <el-tooltip
+              :content="proxiesStore.isVertical?$t('proxies.vertical-on'):$t('proxies.vertical-off')"
+              placement="top">
+            <el-icon
+                @click="setVertical"
+                class="proxy-option-btn">
+              <icon-mdi-arrow-expand-vertical v-if="proxiesStore.isVertical"/>
+              <icon-mdi-arrow-expand-horizontal v-else/>
+            </el-icon>
+          </el-tooltip>
+
         </div>
       </el-space>
 
-      <div class="proxy-group">
-        <button
-            :class="proxiesStore.active==item?'proxy-group-title proxy-group-title-select' : 'proxy-group-title'"
-            @click="setActive(item)"
-            v-for="item in groupList"
-            :key="item + '-g'"
+      <div class="dropdown"
+           v-if="proxiesStore.isVertical">
+        <button class="dropdown-btn"
+                @mouseenter="enterDropDown"
+                @mouseleave="hideDropdown"
         >
-          {{ item }}
+          {{ proxiesStore.active }}
         </button>
+        <ul v-if="isDropdownOpen"
+            @mouseenter="enterDropDown"
+            @mouseleave="hideDropdown"
+            class="dropdown-list">
+          <li
+              v-for="item in groupList"
+              :key="item + '-gv'"
+              @click="setActive(item)"
+              class="dropdown-item"
+          >
+            {{ item }}
+          </li>
+        </ul>
+      </div>
+
+      <div class="button-container" v-else>
+        <el-icon
+            v-if="!atStart"
+            @click="scrollLeft"
+            class="scroll-left">
+          <icon-mdi-arrow-expand-left/>
+        </el-icon>
+        <div
+            @scroll="handleScroll"
+            ref="proxyGroup"
+            class="proxy-group">
+          <button
+              :class="proxiesStore.active==item?'proxy-group-title proxy-group-title-select' : 'proxy-group-title'"
+              @click="setActive(item)"
+              v-for="item in groupList"
+              :key="item + '-g'"
+          >
+            {{ item }}
+          </button>
+        </div>
+        <el-icon
+            v-if="!atEnd"
+            class="scroll-right"
+            @click="scrollRight">
+          <icon-mdi-arrow-expand-right/>
+        </el-icon>
       </div>
 
       <MyHr :update="upFromTop"></MyHr>
@@ -193,14 +307,36 @@ onMounted(async () => {
   color: var(--hr-color);
 }
 
+.button-container {
+  display: flex;
+  align-items: center;
+  width: 95%;
+  margin-left: 10px;
+}
+
 .proxy-group {
   display: flex;
-  margin-left: 10px;
-  margin-top: 10px;
-  margin-bottom: 10px;
   gap: 10px;
-  width: 95%;
+  margin: 10px 0;
   overflow-x: hidden;
+  scroll-behavior: smooth;
+}
+
+.scroll-left {
+  cursor: pointer;
+  border: none;
+  margin-right: 15px;
+}
+
+.scroll-right {
+  cursor: pointer;
+  border: none;
+  margin-left: 15px;
+}
+
+.scroll-left[hidden],
+.scroll-right[hidden] {
+  display: none;
 }
 
 .proxy-group-title {
@@ -298,4 +434,54 @@ onMounted(async () => {
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5),
   0 0 2px rgba(255, 69, 0, 0.8);
 }
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+  width: 95%;
+  margin: 10px;
+}
+
+.dropdown-btn {
+  background: transparent;
+  color: white;
+  border: 2px solid white;
+  padding: 5px 10px;
+  cursor: pointer;
+  font-size: 15px;
+  outline: none;
+  border-radius: 8px;
+  min-width: 206px;
+}
+
+.dropdown-btn:hover {
+  opacity: 0.8;
+}
+
+.dropdown-list {
+  position: absolute;
+  background: rgba(0, 0, 0, 0.8);
+  border: 2px solid white;
+  margin-top: 4px;
+  padding: 0;
+  list-style: none;
+  min-width: 204px;
+  z-index: 20;
+  border-radius: 8px;
+  font-size: 15px;
+  text-align: center;
+  max-height: calc(100vh - 230px);
+  overflow-y: auto;
+}
+
+.dropdown-item {
+  color: white;
+  padding: 8px;
+  cursor: pointer;
+}
+
+.dropdown-item:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
 </style>

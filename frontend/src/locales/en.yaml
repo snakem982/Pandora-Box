@@ -74,6 +74,8 @@ proxies:
   hide-off: Hide bad nodes
   sort-on: Sort by default
   sort-off: Sort by latency
+  vertical-on: Switch grouping to left-right style
+  vertical-off: Switch grouping to drop-down style
 
 profiles:
   title: Profiles
