@@ -76,6 +76,7 @@ proxies:
   sort-off: 按延迟排序
   vertical-on: 切换分组为左右样式
   vertical-off: 切换分组为下拉样式
+  direct: 当前处于直连模式
 
 profiles:
   title: 订阅

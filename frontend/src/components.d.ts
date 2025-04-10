@@ -52,6 +52,7 @@ declare module 'vue' {
     IconMdiRefresh: typeof import('~icons/mdi/refresh')['default']
     IconMdiRocketLaunch: typeof import('~icons/mdi/rocket-launch')['default']
     IconMdiRocketLaunchOutline: typeof import('~icons/mdi/rocket-launch-outline')['default']
+    IconMdiShuffleDisabled: typeof import('~icons/mdi/shuffle-disabled')['default']
     IconMdiSort: typeof import('~icons/mdi/sort')['default']
     IconMdiSortAscending: typeof import('~icons/mdi/sort-ascending')['default']
     IconMdiSourceBranch: typeof import('~icons/mdi/source-branch')['default']

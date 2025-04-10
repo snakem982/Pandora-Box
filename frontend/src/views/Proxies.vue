@@ -298,6 +298,11 @@ watch(
           </div>
         </div>
       </div>
+
+      <div class="proxy-nodes" v-if="menuStore.rule == 'direct'">
+        {{ $t('proxies.direct') }}
+      </div>
+
     </template>
   </MyLayout>
 </template>
