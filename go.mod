@@ -8,7 +8,7 @@ require (
 	github.com/keybase/go-keychain v0.0.1
 	github.com/klauspost/compress v1.18.0
 	github.com/metacubex/bbolt v0.0.0-20240822011022-aed6d4850399
-	github.com/metacubex/mihomo v1.19.3
+	github.com/metacubex/mihomo v1.19.4
 	github.com/panjf2000/ants/v2 v2.11.1
 	github.com/sirupsen/logrus v1.9.3
 	github.com/wailsapp/wails/v2 v2.10.1
@@ -71,14 +71,14 @@ require (
 	github.com/metacubex/bart v0.19.0 // indirect
 	github.com/metacubex/chacha v0.1.1 // indirect
 	github.com/metacubex/gopacket v1.1.20-0.20230608035415-7e2f98a3e759 // indirect
-	github.com/metacubex/gvisor v0.0.0-20241126021258-5b028898cc5a // indirect
+	github.com/metacubex/gvisor v0.0.0-20250324165734-5857f47bd43b // indirect
 	github.com/metacubex/quic-go v0.49.1-0.20250212162123-c135a4412996 // indirect
 	github.com/metacubex/randv2 v0.2.0 // indirect
 	github.com/metacubex/reality v0.0.0-20250219003814-74e8d7850629 // indirect
-	github.com/metacubex/sing-quic v0.0.0-20250119013740-2a19cce83925 // indirect
+	github.com/metacubex/sing-quic v0.0.0-20250404030904-b2cc8aab562c // indirect
 	github.com/metacubex/sing-shadowsocks v0.2.8 // indirect
 	github.com/metacubex/sing-shadowsocks2 v0.2.2 // indirect
-	github.com/metacubex/sing-tun v0.4.6-0.20250312042506-6d3b4dc05c04 // indirect
+	github.com/metacubex/sing-tun v0.4.6-0.20250408111348-d1d90a8d694b // indirect
 	github.com/metacubex/sing-vmess v0.1.14-0.20250228002636-abc39e113b82 // indirect
 	github.com/metacubex/sing-wireguard v0.0.0-20241126021510-0827d417b589 // indirect
 	github.com/metacubex/tfo-go v0.0.0-20241231083714-66613d49c422 // indirect
@@ -142,6 +142,6 @@ require (
 )
 
 replace (
-	github.com/metacubex/mihomo => github.com/snakem982/mihomo v1.0.32-moshen
+	github.com/metacubex/mihomo => github.com/snakem982/mihomo v1.0.33-moshen
 	github.com/sagernet/sing => github.com/metacubex/sing v0.0.0-20250228041610-d94509dc612a
 )
