@@ -5,6 +5,7 @@ export const useMenuStore = defineStore('menu', {
         menu: 'Home',
         path: '/Home',
         rule: 'rule',
+        ruleNum: 0,
         proxy: false,
         tun: false,
         language: 'zh',
@@ -31,7 +32,10 @@ export const useMenuStore = defineStore('menu', {
         },
         setRuleMenu(ruleMenu: string) {
             this.ruleMenu = ruleMenu;
-        }
+        },
+        setRuleNum(ruleNum: number) {
+            this.ruleNum = ruleNum;
+        },
     },
     persist: true,
 });

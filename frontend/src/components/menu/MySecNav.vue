@@ -4,10 +4,19 @@ import {useMenuStore} from "@/store/menuStore";
 import {useRouter} from "vue-router";
 import {WS} from "@/util/ws";
 import {useWebStore} from "@/store/webStore";
+import createApi from "@/api";
 
+
+// 获取当前 Vue 实例的 proxy 对象 和 api
+const {proxy} = getCurrentInstance()!;
+const api = createApi(proxy);
+
+// 获取Store
 const menuStore = useMenuStore()
-const router = useRouter()
 const webStore = useWebStore()
+
+// 获取路由
+const router = useRouter()
 
 const conn = ref(0)
 
@@ -20,12 +29,16 @@ let wsConn: WS
 onMounted(()=>{
   const urlTraffic = webStore.wsUrl + "/connections?token=" + webStore.secret;
   wsConn = new WS(urlTraffic, null, onConn);
+
+
+  api.getRules().then((res) => {
+    menuStore.setRuleNum(res.length) 
+  })
 })
 
 onUnmounted(()=>{
   wsConn.close()
 })
-
 
 
 </script>
@@ -39,7 +52,7 @@ onUnmounted(()=>{
         <el-icon>
           <icon-mdi-source-branch/>
         </el-icon>
-        <span class="nav-info">{{ $t('sec-nav.rule') }} · 386</span>
+        <span class="nav-info">{{ $t('sec-nav.rule') }} · {{ menuStore.ruleNum }}</span>
       </el-text>
     </div>
 

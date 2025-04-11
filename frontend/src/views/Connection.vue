@@ -42,10 +42,14 @@ function fHost(metadata: any): string {
 }
 
 function filterData(cacheData: any): any {
-  const cache = cacheData.filter(
-      (data: any) =>
-          !search.value ||
-          fHost(data.metadata).toLowerCase().includes(search.value.toLowerCase()));
+  const cache = cacheData.filter((data: any) => {
+    const searchLower = search.value.toLowerCase();
+    return (
+      (!search.value || fHost(data.metadata).toLowerCase().includes(searchLower)) || // 主机过滤
+      data.rule.toLowerCase().includes(searchLower) || // 规则过滤
+      (data.metadata.process && data.metadata.process.toLowerCase().includes(searchLower)) // 程序过滤
+    );
+  });
 
   cache.sort((obj1: any, obj2: any) => obj2.start.localeCompare(obj1.start));
 

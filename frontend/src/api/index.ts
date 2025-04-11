@@ -1,6 +1,7 @@
 import createProxiesApi from './proxies';
 import createHomeApi from "@/api/home";
 import createConnApi from "@/api/connections";
+import createRuleApi from './rule';
 
 export default function createApi(proxy: any) {
     return {
@@ -13,5 +14,6 @@ export default function createApi(proxy: any) {
         getGroupMd5: createHomeApi(proxy).getGroupMd5,
         closeConnection: createConnApi(proxy).closeConnection,
         closeAllConnection: createConnApi(proxy).closeAllConnection,
+        getRules: createRuleApi(proxy).getRules,
     };
 }

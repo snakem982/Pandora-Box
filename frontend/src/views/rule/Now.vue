@@ -1,28 +1,28 @@
 <script setup lang="ts">
 
 import MySimpleInput from "@/components/MySimpleInput.vue";
+import createApi from "@/api";
 
-function handleInputChange(value: any) {
-  console.log("输入框的值发生了变化：", value);
-}
+
+// 获取当前 Vue 实例的 proxy 对象 和 api
+const {proxy} = getCurrentInstance()!;
+const api = createApi(proxy);
+
 
 // 原始大数据集合
-const allData = Array.from({ length: 20000 }, (_, i) => ({
-  name: `User ${i + 1}`,
-  age: Math.floor(Math.random() * 50) + 20,
-  city: `City ${i % 10}`,
-}));
+const allData = ref([]);
+const filterData = ref([]);
 
 // 分页数据状态
 const itemsPerPage = 50; // 每页加载50条数据
 const currentPage = ref(1); // 当前页数
-const paginatedData = ref(allData.slice(0, itemsPerPage));
+const paginatedData = ref([]);
 
 // 加载下一页数据
 function loadMore() {
-  if (currentPage.value * itemsPerPage >= allData.length) return; // 没有更多数据时停止加载
+  if (currentPage.value * itemsPerPage >= filterData.value.length) return; // 没有更多数据时停止加载
   currentPage.value++;
-  const nextPageData = allData.slice(
+  const nextPageData = filterData.value.slice(
       (currentPage.value - 1) * itemsPerPage,
       currentPage.value * itemsPerPage
   );
@@ -37,6 +37,34 @@ function handleScroll(event: Event) {
   ) {
     loadMore(); // 滚动到底部时加载更多
   }
+}
+
+
+onMounted(() => {
+  api.getRules().then((res) => {
+    allData.value = res;
+    filterData.value = res;
+    // 初始化分页数据
+    paginatedData.value = allData.value.slice(0, itemsPerPage);
+  });
+});
+
+// 过滤数据
+function handleInputChange(value: any) {
+  if (value) {
+    filterData.value = allData.value.filter((item: any) => {
+      return (
+          item.type.toLowerCase().includes(value.toLowerCase()) ||
+          item.payload.toLowerCase().includes(value.toLowerCase()) ||
+          item.proxy.toLowerCase().includes(value.toLowerCase())
+      );
+    });
+  } else {
+    filterData.value = allData.value;
+  }
+  // 重置分页数据
+  currentPage.value = 1;
+  paginatedData.value = filterData.value.slice(0, itemsPerPage);
 }
 
 
@@ -68,9 +96,9 @@ function handleScroll(event: Event) {
             v-for="(item, i) in paginatedData"
             :key="i"
         >
-          <el-col :span="5">{{ item.name }}</el-col>
-          <el-col :span="14">{{ item.age }}</el-col>
-          <el-col :span="5">{{ item.city }}</el-col>
+          <el-col :span="5">{{ item.type }}</el-col>
+          <el-col :span="14">{{ item.payload }}</el-col>
+          <el-col :span="5">{{ item.proxy }}</el-col>
         </el-row>
       </div>
     </div>
