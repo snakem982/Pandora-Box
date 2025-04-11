@@ -72,6 +72,7 @@ declare module 'vue' {
     MyIp: typeof import('./components/home/MyIp.vue')['default']
     MyLayout: typeof import('./components/MyLayout.vue')['default']
     MyNav: typeof import('./components/menu/MyNav.vue')['default']
+    MyPort: typeof import('./components/setting/MyPort.vue')['default']
     MyProxy: typeof import('./components/menu/MyProxy.vue')['default']
     MyRule: typeof import('./components/menu/MyRule.vue')['default']
     MySearch: typeof import('./components/MySearch.vue')['default']

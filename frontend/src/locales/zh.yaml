@@ -28,6 +28,9 @@ quit: 退出
 theme: 主题
 minus: 最小化到托盘
 save: 保存
+copy:
+  success: 复制成功
+  fail: 复制失败
 
 home:
   download: 下载

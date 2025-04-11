@@ -10,7 +10,7 @@ import { ref } from 'vue'
 
 const value = ref('Mixed')
 
-const options = ['Mixed', 'Gvisor', 'System']
+const options = ['Mixed', 'gVisor', 'System']
 </script>
 
 <style scoped>

@@ -28,6 +28,9 @@ quit: Quit
 theme: Theme
 minus: Minus to tray
 save: Save
+copy:
+  success: Copy success
+  fail: Copy failed
 
 home:
   download: Download

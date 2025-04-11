@@ -1,22 +1,55 @@
 <script setup>
 import {ref} from "vue";
 import {EditPen} from "@element-plus/icons-vue";
+import { useSettingStore } from "@/store/settingStore";
+
+const settingStore = useSettingStore()
 
 // 定义数据
 const isEditing = ref(false);
-const port = ref(3456);
+const port = ref(0);
 
 // 切换编辑模式
 const toggleEditing = () => {
-  if (isEditing.value) {
-    // 保存为数字
-    const numericPort = parseInt(port.value, 10);
-    if (!isNaN(numericPort)) {
-      port.value = numericPort;
-    }
-  }
   isEditing.value = !isEditing.value;
 };
+
+// 保存端口值
+const savePort = () => {
+  // 检查端口值是否在有效范围内
+  if (port.value < 1 || port.value > 65535) {
+    alert("端口号必须在1到65535之间");
+    return;
+  }
+  // 端口号没有变化
+  if (port.value === settingStore.port) {
+    isEditing.value = false;
+    return;
+  }
+  // 检测端口号是否被占用 
+  // todo
+  settingStore.setPort(port.value);
+  isEditing.value = false; // 退出编辑模式
+};
+
+// 取消编辑
+const cancelEdit = () => {
+  isEditing.value = false;
+  port.value = settingStore.port; // 恢复原始值
+};
+
+
+onMounted(() => {
+  // 初始化端口值
+  port.value = settingStore.port;
+});
+
+// 更新端口值
+watch(()=> settingStore.port, (newValue) => {
+  port.value = newValue; 
+});
+
+
 </script>
 
 <template>
@@ -34,7 +67,7 @@ const toggleEditing = () => {
       />
     </template>
     <template v-else>
-      <span class="content">{{ port }}</span>
+      <span class="content">{{ settingStore.port }}</span>
     </template>
     <el-icon
         class="btn"
@@ -44,13 +77,13 @@ const toggleEditing = () => {
     </el-icon>
     <el-icon
         class="btn"
-        @click="toggleEditing"
+        @click="savePort"
         v-if="isEditing">
       <icon-ep-select/>
     </el-icon>
     <el-icon
         class="btn"
-        @click="toggleEditing"
+        @click="cancelEdit"
         v-if="isEditing">
       <icon-ep-close-bold/>
     </el-icon>

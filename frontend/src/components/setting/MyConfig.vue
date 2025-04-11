@@ -1,12 +1,37 @@
 <script setup lang="ts">
 
-import MyInput from "@/components/setting/MyInput.vue";
+import MyPort from "@/components/setting/MyPort.vue";
 import MyTun from "@/components/setting/MyTun.vue";
 import {EditPen} from "@element-plus/icons-vue";
+import {useWebStore} from "@/store/webStore";
+import { copy } from "@/util/load";
+import {useI18n} from "vue-i18n";
+import { useSettingStore } from "@/store/settingStore";
+import createApi from "@/api";
 
-const value1 = ref(true)
-const value2 = ref(false)
-const value3 = ref(true)
+// 获取当前 Vue 实例的 proxy 对象 和 api
+const {proxy} = getCurrentInstance()!;
+const api = createApi(proxy);
+
+// 使用 store
+const webStore = useWebStore()
+const settingStore = useSettingStore()
+const {t} = useI18n()
+
+
+const dns = ref(false)
+const lan = ref(false)
+const ipv6 = ref(false)
+const startup = ref(false)
+
+
+onMounted(() => {
+  dns.value = settingStore.dns
+  lan.value = settingStore.lan
+  ipv6.value = settingStore.ipv6
+  startup.value = settingStore.startup
+})
+
 
 </script>
 
@@ -22,7 +47,7 @@ const value3 = ref(true)
         <hr/>
         <ul class="info-list">
           <li>
-            <MyInput></MyInput>
+            <MyPort></MyPort>
           </li>
           <li>
             <MyTun></MyTun>
@@ -35,7 +60,7 @@ const value3 = ref(true)
               <EditPen/>
             </el-icon>
             <el-switch
-                v-model="value1"
+                v-model="dns"
                 class="set-switch"
                 style="margin-left: 28px"
             />
@@ -43,26 +68,30 @@ const value3 = ref(true)
           <li>
             <strong>{{ $t('setting.mihomo.lan') }} :</strong>
             <el-switch
-                v-model="value2"
+                v-model="lan"
                 class="set-switch"
             />
           </li>
           <li>
             <strong>IPV6 :</strong>
             <el-switch
-                v-model="value3"
+                v-model="ipv6"
                 class="set-switch"
             />
           </li>
           <li style="height: 30px">
             <strong>API :</strong>
-            http://127.0.0.1:7981
-            <el-button>复制</el-button>
+            {{ webStore.baseUrl }}
+            <el-button 
+            @click="copy(webStore.baseUrl,t)"
+            >复制</el-button>
           </li>
           <li style="height: 30px">
             <strong>Secret:</strong>
-            syeSsdeddu
-            <el-button>复制</el-button>
+            {{ webStore.secret }}
+            <el-button
+            @click="copy(webStore.secret,t)"
+            >复制</el-button>
           </li>
         </ul>
       </div>
@@ -83,7 +112,7 @@ const value3 = ref(true)
           <li>
             <strong>{{ $t('setting.px.startup') }} :</strong>
             <el-switch
-                v-model="value2"
+                v-model="startup"
                 class="set-switch"
             />
           </li>
