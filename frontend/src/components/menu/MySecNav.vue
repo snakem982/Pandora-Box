@@ -2,9 +2,31 @@
 import {changeMenu} from "@/util/menu";
 import {useMenuStore} from "@/store/menuStore";
 import {useRouter} from "vue-router";
+import {WS} from "@/util/ws";
+import {useWebStore} from "@/store/webStore";
 
 const menuStore = useMenuStore()
 const router = useRouter()
+const webStore = useWebStore()
+
+const conn = ref(0)
+
+function onConn(ev: MessageEvent) {
+  const parsedData = JSON.parse(ev.data);
+  conn.value = parsedData['connections'].length
+}
+
+let wsConn: WS
+onMounted(()=>{
+  const urlTraffic = webStore.wsUrl + "/connections?token=" + webStore.secret;
+  wsConn = new WS(urlTraffic, null, onConn);
+})
+
+onUnmounted(()=>{
+  wsConn.close()
+})
+
+
 
 </script>
 
@@ -28,7 +50,7 @@ const router = useRouter()
         <el-icon>
           <icon-mdi-lan-connect/>
         </el-icon>
-        <span class="nav-info">{{ $t('sec-nav.conn') }} · 257</span>
+        <span class="nav-info">{{ $t('sec-nav.conn') }} · {{ conn }}</span>
       </el-text>
     </div>
 

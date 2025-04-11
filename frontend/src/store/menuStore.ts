@@ -8,7 +8,7 @@ export const useMenuStore = defineStore('menu', {
         proxy: false,
         tun: false,
         language: 'zh',
-        ruleMenu: 'Now',
+        ruleMenu: 'Now'
     }),
     actions: {
         setMenu(menu: string) {
