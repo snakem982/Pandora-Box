@@ -9,3 +9,25 @@ export function prettyBytes(n: number) {
     const unit = UNITS[exponent];
     return n + ' ' + unit;
 }
+
+export function cJoin(arr: any, separator = ',') {
+    let result = '';
+    for (let i = 0; i < arr.length; i++) {
+        result += arr[i];
+        if (i < arr.length - 1) {
+            result += separator;
+        }
+    }
+    return result;
+}
+
+export function rJoin(arr: any, separator = ',') {
+    let result = '';
+    for (let i = arr.length - 1; i >= 0; i--) {
+        result += arr[i];
+        if (i > 0) {
+            result += separator;
+        }
+    }
+    return result;
+}

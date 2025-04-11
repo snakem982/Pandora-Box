@@ -3,94 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dropdown with Delay</title>
+    <title>Ripple Effect on Click</title>
     <style>
+        /* 页面全局样式 */
         body {
             margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
+            height: 100vh;
+            background: #f9f9f9;
+            overflow: hidden;
+            position: relative;
             display: flex;
             justify-content: center;
-            align-items: flex-start;
-            height: 100vh;
+            align-items: center;
+            font-family: Arial, sans-serif;
         }
 
-        .dropdown-container {
-            position: relative;
-            display: inline-block;
-            margin-top: 300px; /* 按钮距离顶部 300px */
-        }
-
-        .dropdown-button {
-            padding: 10px 20px;
-            font-size: 16px;
-            background-color: #007BFF;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        .dropdown-content {
+        /* 水波纹的样式 */
+        .ripple {
             position: absolute;
-            bottom: 50px; /* 下拉框显示在按钮上方 */
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: rgba(0, 0, 0, 0.8); /* 半透明背景 */
-            color: white;
-            padding: 10px;
-            border-radius: 5px;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
-            text-align: center;
-            display: none;
-            z-index: 1;
-            transition: all 0.3s ease;
+            width: 100px;
+            height: 100px;
+            background: rgba(0, 0, 0, 0.3); /* 半透明效果 */
+            border-radius: 50%;
+            transform: scale(0); /* 初始缩放为0 */
+            animation: ripple-animation 0.6s ease-out;
+            pointer-events: none; /* 不影响鼠标事件 */
         }
 
-        .dropdown-item {
-            padding: 5px 10px;
-            border-radius: 3px;
-            cursor: pointer;
-            transition: background-color 0.3s ease; /* 背景颜色变化动画 */
-        }
-
-        .dropdown-item:hover {
-            background-color: #555; /* 悬浮时的背景颜色 */
+        /* 动画关键帧 */
+        @keyframes ripple-animation {
+            to {
+                transform: scale(4); /* 最终放大 */
+                opacity: 0; /* 渐隐 */
+            }
         }
     </style>
 </head>
 <body>
-<div class="dropdown-container" id="dropdown">
-    <button class="dropdown-button">鼠标悬停显示</button>
-    <div class="dropdown-content">
-        <div class="dropdown-item">中文内容 1</div>
-        <div class="dropdown-item">English Content 1</div>
-        <div class="dropdown-item">中文内容 2</div>
-        <div class="dropdown-item">English Content 2</div>
-    </div>
-</div>
-
 <script>
-    const dropdown = document.getElementById('dropdown');
-    const dropdownContent = dropdown.querySelector('.dropdown-content');
-    let hideTimeout;
+    // 监听点击事件
+    document.addEventListener('click', (event) => {
+        // 创建水波纹元素
+        const ripple = document.createElement('div');
+        ripple.className = 'ripple';
 
-    // 显示下拉框
-    dropdown.addEventListener('mouseenter', () => {
-        clearTimeout(hideTimeout);
-        dropdownContent.style.display = 'block';
-    });
+        // 设置水波纹的位置
+        const rect = document.documentElement.getBoundingClientRect();
+        ripple.style.left = `${event.clientX - rect.left - 50}px`; // 减去半径
+        ripple.style.top = `${event.clientY - rect.top - 50}px`; // 减去半径
 
-    // 隐藏下拉框（带延迟）
-    dropdown.addEventListener('mouseleave', () => {
-        hideTimeout = setTimeout(() => {
-            dropdownContent.style.display = 'none';
-        }, 200); // 延迟200ms隐藏
-    });
+        // 添加到页面
+        document.body.appendChild(ripple);
 
-    // 鼠标进入下拉框内容时取消隐藏
-    dropdownContent.addEventListener('mouseenter', () => {
-        clearTimeout(hideTimeout);
+        // 动画结束后移除水波纹
+        ripple.addEventListener('animationend', () => {
+            ripple.remove();
+        });
     });
 </script>
 </body>

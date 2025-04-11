@@ -43,6 +43,7 @@ home:
     isp: ISP
     asn: ASN
     time-zone: T-Zone
+    lang: en
   system:
     title: System Information
     os: OS
@@ -51,6 +52,7 @@ home:
     service: Service Mode
     port: Mixed-Port
     version: Pandora-Box
+    day: Day
 
 setting:
   title: Setting

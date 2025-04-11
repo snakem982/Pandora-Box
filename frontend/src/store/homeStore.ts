@@ -1,0 +1,33 @@
+import {defineStore} from 'pinia';
+
+export const useHomeStore = defineStore('home', {
+    state: () => ({
+        startTime: 0,
+        os: '',
+        md5: '',
+        ip: {
+            query: '',
+            regionName: '',
+            country: '',
+            city: '',
+            isp: '',
+            timezone: '',
+            as: '',
+        },
+    }),
+    actions: {
+        setStartTime(startTime: number) {
+            this.startTime = startTime;
+        },
+        setOS(os: string) {
+            this.os = os;
+        },
+        setMd5(md5: string) {
+            this.md5 = md5;
+        },
+        setIp(ip: any) {
+            this.ip = ip;
+        },
+    },
+    persist: true,
+});

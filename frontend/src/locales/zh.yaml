@@ -43,6 +43,7 @@ home:
     isp: 服务商
     asn: 自治域
     time-zone: 时区
+    lang: zh-CN
   system:
     title: 系统信息
     os: 操作系统
@@ -51,6 +52,7 @@ home:
     service: 运行模式
     port: 代理端口
     version: Pandora-Box
+    day: 天
 
 setting:
   title: 设置

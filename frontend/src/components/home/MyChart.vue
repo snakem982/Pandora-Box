@@ -102,6 +102,11 @@ onBeforeRouteLeave(() => {
   wsMemory.close();
 });
 
+onBeforeUnmount(() => {
+  wsTraffic.close();
+  wsMemory.close();
+})
+
 
 const spark1 = reactive({
   chart: {

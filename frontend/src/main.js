@@ -13,6 +13,7 @@ import './styles/basic.css'
 import {useMenuStore} from "@/store/menuStore";
 import {useWebStore} from "@/store/webStore";
 import {AxiosRequest} from "./util/axiosRequest";
+import {useHomeStore} from "@/store/homeStore.js";
 
 // 国际化设置
 const i18n = createI18n({
@@ -63,6 +64,24 @@ router.afterEach((to) => {
         menuStore.setRuleMenu(split[2]);
     }
 });
+
+// 设置起始时间 和 操作系统类型
+const homeStore = useHomeStore();
+function getOSFromUserAgent() {
+    const userAgent = navigator.userAgent.toLowerCase();
+
+    if (userAgent.includes("win")) {
+        return "Windows";
+    } else if (userAgent.includes("mac")) {
+        return "MacOS";
+    } else if (userAgent.includes("linux")) {
+        return "Linux";
+    } else {
+        return "Unknown OS";
+    }
+}
+homeStore.setOS(getOSFromUserAgent())
+homeStore.setStartTime(Date.now())
 
 // 将vue挂载到页面app元素
 app.mount('#app')

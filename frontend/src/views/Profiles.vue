@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import {cJoin} from "@/util/format";
+
 let sArray = [
   {title: "亚马逊机房", selected: false},
   {title: "CloudFlare 转发", selected: false},
@@ -44,17 +46,6 @@ function mouseLeave() {
   canDrag.value = false
 }
 
-
-function cJoin(arr: any, separator = ',') {
-  let result = '';
-  for (let i = 0; i < arr.length; i++) {
-    result += arr[i]; // 添加当前元素
-    if (i < arr.length - 1) {
-      result += separator; // 添加分隔符（如果不是最后一个元素）
-    }
-  }
-  return result;
-}
 
 function handleEmit(value: any) {
   console.log(cJoin(value, ","))

@@ -1,46 +1,92 @@
 <script setup lang="ts">
 import MyHr from "@/components/proxies/MyHr.vue";
 import MySimpleInput from "@/components/MySimpleInput.vue";
+import {WS} from "@/util/ws";
+import {useWebStore} from "@/store/webStore";
+import {prettyBytes, rJoin} from "@/util/format";
+import {onBeforeRouteLeave} from "vue-router";
+import {formatDistance} from 'date-fns';
+import {enUS, zhCN} from 'date-fns/locale'
+import {useI18n} from "vue-i18n";
+import createApi from "@/api";
+
+// 获取当前 Vue 实例的 proxy 对象 和 api
+const {proxy} = getCurrentInstance()!;
+const api = createApi(proxy);
+
+// 获取 i18n
+const {t} = useI18n()
+const localeMap = {
+  '简体中文': zhCN,
+  'English': enUS,
+};
+
+function fDate(start: any): string {
+  const startTime = new Date(start);
+  return formatDistance(new Date(), startTime, {locale: localeMap[t('language')]})
+}
 
 const distanceFromTop = ref(195)
 const upFromTop = function (distance: number) {
   distanceFromTop.value = distance
 }
 
+const search = ref('')
+
 function handleInputChange(value: any) {
-  console.log("输入框的值发生了变化：", value);
+  search.value = value
 }
 
-// 原始大数据集合
-const allData = Array.from({length: 1000}, (_, i) => ({
-  name: `User ${i + 1}`,
-  age: Math.floor(Math.random() * 50) + 20,
-  city: `City ${i % 10}`,
-}));
+function fHost(metadata: any): string {
+  return (metadata.host || metadata.destinationIP) + ':' + metadata.destinationPort
+}
+
+function filterData(cacheData: any): any {
+  const cache = cacheData.filter(
+      (data: any) =>
+          !search.value ||
+          fHost(data.metadata).toLowerCase().includes(search.value.toLowerCase()));
+
+  cache.sort((obj1: any, obj2: any) => obj2.start.localeCompare(obj1.start));
+
+  return cache;
+}
 
 // 分页数据状态
-const itemsPerPage = 50; // 每页加载50条数据
-const currentPage = ref(1); // 当前页数
-const paginatedData = ref(allData.slice(0, itemsPerPage));
+const paginatedData = ref([]);
 
-// 加载下一页数据
-function loadMore() {
-  if (currentPage.value * itemsPerPage >= allData.length) return; // 没有更多数据时停止加载
-  currentPage.value++;
-  const nextPageData = allData.slice(
-      (currentPage.value - 1) * itemsPerPage,
-      currentPage.value * itemsPerPage
-  );
-  paginatedData.value = [...paginatedData.value, ...nextPageData];
+function onConn(ev: MessageEvent) {
+  const parsedData = JSON.parse(ev.data);
+  paginatedData.value = parsedData['connections']
 }
 
-// 监听滚动事件
-function handleScroll(event: Event) {
-  const target = event.target as HTMLElement;
-  if (
-      target.scrollTop + target.clientHeight >= target.scrollHeight - 10
-  ) {
-    loadMore(); // 滚动到底部时加载更多
+const webStore = useWebStore()
+let wsConn: WS
+onMounted(() => {
+  const urlTraffic = webStore.wsUrl + "/connections?token=" + webStore.secret;
+  wsConn = new WS(urlTraffic, null, onConn);
+})
+
+// 路由切换前关闭 WebSocket
+onBeforeRouteLeave(() => {
+  wsConn.close();
+});
+
+onBeforeUnmount(() => {
+  wsConn.close();
+})
+
+
+function closeAll() {
+  const data = filterData(paginatedData.value)
+  if (data.length > 0) {
+    if (search.value) {
+      for (let connection of data) {
+        api.closeConnection(connection.id)
+      }
+    } else {
+      api.closeAllConnection()
+    }
   }
 }
 
@@ -68,44 +114,48 @@ function handleScroll(event: Event) {
                 class="search"
             ></MySimpleInput>
           </div>
-          <el-button>
+          <el-button @click="closeAll">
             {{ $t('connections.close') }}
           </el-button>
         </el-space>
       </div>
 
       <div class="content">
-        <div class="info-list" @scroll="handleScroll">
+        <div class="info-list">
           <el-row
               class="info"
-              v-for="(item, i) in paginatedData"
+              v-for="(item, i) in filterData(paginatedData)"
               :key="i"
           >
             <el-col :span="24">
-              <el-tag type="success" size="small">HTTPS</el-tag>
+              <el-tag type="success" size="small">{{ item.metadata.type }}</el-tag>
               &emsp;
-              <el-tag type="primary" size="small">Google Chrome Helper</el-tag>
-              &emsp;
-              <el-tag type="danger" size="small">less than a minute</el-tag>
+              <el-tag type="danger" size="small">
+                {{ fDate(item.start) }}
+              </el-tag>
+              <template v-if="item.metadata.process">
+                &emsp;
+                <el-tag type="primary" size="small">{{ item.metadata.process }}</el-tag>
+              </template>
               <div class="od">
-                <span class="ot">{{ $t('connections.host') }} : </span>otheve.beacon.qq.com:443
+                <span class="ot">{{ $t('connections.host') }} : </span>
+                {{ item.metadata.host }}:{{ item.metadata.destinationPort }}
               </div>
               <div class="od">
-                <span class="ot">{{ $t('connections.download') }} : </span>118 KB
+                <span class="ot">{{ $t('connections.download') }} : </span>
+                {{ prettyBytes(item.download) }}
                 &emsp;
-                &#8595;
-                20 MB/s
-                &emsp;
-                <span class="ot">{{ $t('connections.upload') }} : </span>26.7 KB
-                &emsp;
-                &#8593;
-                120 KB/s
+                <span class="ot">{{ $t('connections.upload') }} : </span>
+                {{ prettyBytes(item.upload) }}
               </div>
               <div class="od">
-                <span class="ot">{{ $t('connections.rule') }} : </span>DomainKeyword &#8594; google
+                <span class="ot">{{ $t('connections.rule') }} : </span>
+                {{ item.rule }}
+                {{ item.rulePayload ? ' / ' + item.rulePayload : '' }}
               </div>
               <div class="od">
-                <span class="ot">{{ $t('connections.chains') }} : </span>🐟 漏网之鱼 / 🚀 节点选择 / 🇯🇵 日本IEPL 专线 02
+                <span class="ot">{{ $t('connections.chains') }} : </span>
+                {{ rJoin(item.chains, '&nbsp;/&nbsp;') }}
               </div>
             </el-col>
           </el-row>
