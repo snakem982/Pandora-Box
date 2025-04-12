@@ -5,6 +5,7 @@ export const useWebStore = defineStore('useWebStore', {
         host: '127.0.0.1', // 默认值
         port: '9966',       // 默认端口
         secret: '',         // 默认密钥
+        logs: [],         // 日志
     }),
     getters: {
         // 确保使用 state 参数引用正确
@@ -20,6 +21,14 @@ export const useWebStore = defineStore('useWebStore', {
         },
         setSecret(secret: string) {
             if (secret) this.secret = secret;
+        },
+        addLog(log: any) {
+            // 只保留最近的100条日志
+            if (this.logs.length >= 100) {
+                this.logs.pop();
+            }
+            // 在头部添加新日志
+            this.logs.unshift(log);
         },
     },
     persist: {
