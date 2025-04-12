@@ -31,7 +31,8 @@ function onLog(ev: MessageEvent) {
   const parsedData = JSON.parse(ev.data);
   webStore.addLog({
     time: formatDate(new Date()),
-    ...parsedData,
+    type: parsedData["type"].toUpperCase(),
+    payload: parsedData["payload"]
   });
 }
 

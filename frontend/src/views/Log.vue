@@ -61,21 +61,8 @@ function filterData() {
           <el-row class="info" v-for="(item, i) in filterData()" :key="i">
             <el-col :span="24">
               <div>
-                <el-tag v-if="item.type=='info'" type="success" size="small">
-                  {{ item.type }}
-                </el-tag>
-                <el-tag v-else-if="item.type=='warning'" type="warning" size="small">
-                  {{ item.type }}
-                </el-tag>
-                <el-tag v-else type="danger" size="small">
-                  {{ item.type }}
-                </el-tag>
-                &nbsp;
-                <el-tag size="small">
-                  {{ item.time }}
-                </el-tag>
-              </div>
-              <div style="margin-top: 5px">
+                {{ item.time }}&emsp;[{{ item.type }}]
+                <br>
                 {{ item.payload }}
               </div>
             </el-col>
