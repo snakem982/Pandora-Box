@@ -42,7 +42,7 @@ home:
     title: Ip信息
     real: 落地Ip
     city: 城市
-    country: 国家
+    country: 国家/地区
     isp: 服务商
     asn: 自治域
     time-zone: 时区
