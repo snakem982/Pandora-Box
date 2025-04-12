@@ -10,6 +10,7 @@ import Group from '@/views/rule/Group.vue';
 import Ignore from '@/views/rule/Ignore.vue';
 import Connection from "@/views/Connection.vue";
 import Log from "@/views/Log.vue";
+import Crawl from "@/views/Crawl.vue";
 
 const routes = [
     {
@@ -68,6 +69,11 @@ const routes = [
         path: '/Log',
         name: 'Log',
         component: Log,
+    },
+    {
+        path: '/Crawl',
+        name: 'Crawl',
+        component: Crawl,
     },
 ];
 

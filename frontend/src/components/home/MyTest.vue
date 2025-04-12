@@ -10,6 +10,10 @@ function handleEmit(value: any) {
   console.log(cJoin(value, ","))
 }
 
+function handleDelete(index: number) {
+  configs.splice(index, 1);
+}
+
 </script>
 
 <template>
@@ -44,6 +48,8 @@ function handleEmit(value: any) {
                   style="height: 48px;width: 48px;"
                   alt="C">
               <div class="overlay"></div>
+              <!-- 添加删除按钮 -->
+              <div class="delete-btn" @click="handleDelete(index)">×</div>
             </div>
             <div class="icon-title">
               {{ item }}
@@ -130,6 +136,25 @@ function handleEmit(value: any) {
 
 .icon:hover .overlay {
   display: block;
+}
+
+/* 删除按钮样式 */
+.delete-btn {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  width: 20px;
+  height: 20px;
+  background-color: red;
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 200;
 }
 
 </style>
