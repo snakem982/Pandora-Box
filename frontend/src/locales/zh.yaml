@@ -23,6 +23,7 @@ sec-nav:
 on: 开启
 off: 关闭
 refresh: 刷新
+add: 添加
 edit: 编辑
 quit: 退出
 theme: 主题

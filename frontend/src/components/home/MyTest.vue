@@ -2,7 +2,9 @@
 
 import {cJoin} from "@/util/format";
 
-let configs = reactive([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+const editShow = ref(false)
+
+let configs = reactive([]);
 
 
 function getData() {
@@ -11,7 +13,6 @@ function getData() {
 
 function handleDelete(index: number) {
   configs.splice(index, 1);
-  configs.push(index + 10);
 }
 
 </script>
@@ -21,12 +22,30 @@ function handleDelete(index: number) {
     <el-col :span="24">
       <el-row>
         {{ $t('home.web') }}
-        <el-icon size="22" style="margin-left: 8px;margin-top: -4px">
-          <icon-mdi-refresh/>
-        </el-icon>
-        <el-icon size="22" style="margin-left: 8px;margin-top: -4px">
-          <icon-mdi-link-edit/>
-        </el-icon>
+        <el-tooltip
+            :content="$t('refresh')"
+            placement="top">
+          <el-icon size="22" class="tip">
+            <icon-mdi-refresh/>
+          </el-icon>
+        </el-tooltip>
+        <el-tooltip
+            :content="$t('add')"
+            placement="top">
+          <el-icon size="22" class="tip">
+            <icon-mdi-plus-thick/>
+          </el-icon>
+        </el-tooltip>
+        <el-tooltip
+            :content="$t('edit')"
+            placement="top">
+          <el-icon
+              @click="editShow=!editShow"
+              size="22"
+              class="tip">
+            <icon-mdi-link-edit/>
+          </el-icon>
+        </el-tooltip>
       </el-row>
       <hr>
 
@@ -46,7 +65,14 @@ function handleDelete(index: number) {
                   src="https://studiostaticassetsprod.azureedge.net/bundle-cmc/favicon.svg"
                   style="height: 48px;width: 48px;"
                   alt="C">
-              <div class="delete-btn" @click="handleDelete(index)">×</div>
+              <template v-if="editShow">
+                <div class="delete-btn" @click="handleDelete(index)">
+                  <icon-mdi-close/>
+                </div>
+                <div class="edit-btn" @click="handleDelete(index)">
+                  <icon-mdi-pencil/>
+                </div>
+              </template>
             </div>
             <div class="icon-title">
               {{ data }}
@@ -78,6 +104,16 @@ function handleDelete(index: number) {
   height: 1px;
   background-color: var(--hr-color);
   margin: 10px 0;
+}
+
+.tip {
+  margin-left: 8px;
+  margin-top: -4px
+}
+
+.tip:hover {
+  color: #cccccc;
+  cursor: pointer;
 }
 
 /* 单个图标和标题样式 */
@@ -113,17 +149,34 @@ function handleDelete(index: number) {
 .delete-btn {
   position: absolute;
   margin-top: -50px;
-  margin-left: 50px;
-  width: 20px;
-  height: 20px;
+  margin-left: 60px;
+  width: 17px;
+  height: 17px;
   background-color: red;
-  color: white;
-  font-size: 14px;
-  font-weight: bold;
+  color: var(--text-color);
+  font-size: 15px;
   border-radius: 50%;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  justify-content: center; /* 水平居中 */
+  align-items: center; /* 垂直居中 */
+  cursor: pointer;
+  z-index: 200;
+}
+
+/* 编辑按钮样式 */
+.edit-btn {
+  position: absolute;
+  margin-top: -10px;
+  margin-left: 60px;
+  width: 17px;
+  height: 17px;
+  background-color: blue;
+  color: var(--text-color);
+  font-size: 9px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center; /* 水平居中 */
+  align-items: center; /* 垂直居中 */
   cursor: pointer;
   z-index: 200;
 }

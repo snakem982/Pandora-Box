@@ -23,6 +23,7 @@ sec-nav:
 on: ON
 off: OFF
 refresh: Refresh
+add: Add
 edit: Edit
 quit: Quit
 theme: Theme

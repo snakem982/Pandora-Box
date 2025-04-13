@@ -44,6 +44,7 @@ declare module 'vue' {
     IconMdiHomeOutline: typeof import('~icons/mdi/home-outline')['default']
     IconMdiLanConnect: typeof import('~icons/mdi/lan-connect')['default']
     IconMdiLinkEdit: typeof import('~icons/mdi/link-edit')['default']
+    IconMdiPencil: typeof import('~icons/mdi/pencil')['default']
     IconMdiPlusThick: typeof import('~icons/mdi/plus-thick')['default']
     IconMdiPower: typeof import('~icons/mdi/power')['default']
     IconMdiRefresh: typeof import('~icons/mdi/refresh')['default']
