@@ -12,6 +12,7 @@ export default function createApi(proxy: any) {
         getVersion: createHomeApi(proxy).getVersion,
         getConfigs: createHomeApi(proxy).getConfigs,
         getGroupMd5: createHomeApi(proxy).getGroupMd5,
+        updateConfigs: createHomeApi(proxy).updateConfigs,
         closeConnection: createConnApi(proxy).closeConnection,
         closeAllConnection: createConnApi(proxy).closeAllConnection,
         getRules: createRuleApi(proxy).getRules,

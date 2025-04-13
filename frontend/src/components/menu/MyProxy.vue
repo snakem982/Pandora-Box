@@ -1,32 +1,77 @@
 <script setup lang="ts">
-const isOn = ref(false)
-const isOn2 = ref(false)
+import { useMenuStore } from "@/store/menuStore";
+import { useI18n } from "vue-i18n";
+import createApi from "@/api";
+import { success, warning } from "@/util/load";
 
+// 存储规则模式
+const menuStore = useMenuStore();
+
+// 获取当前 Vue 实例的 proxy 对象
+const { proxy } = getCurrentInstance()!;
+const api = createApi(proxy);
+
+// 国际化
+const { t } = useI18n();
+
+// 代理开关
 function toggle() {
-  isOn.value = !isOn.value
+  // 检测端口是否被占用
+
+  // 检测通过执行后续操作
+  menuStore.setProxy(!menuStore.proxy);
+  if (menuStore.proxy) {
+    success(t("proxy-switch-on"));
+  } else {
+    warning(t("proxy-switch-off"));
+  }
 }
 
+// 虚拟网卡开关
 function toggle2() {
-  isOn2.value = !isOn2.value
+  // 检测是否运行在管理员模式下
+
+
+  // 检测通过执行后续操作
+  menuStore.setTun(!menuStore.tun);
+  if (menuStore.tun) {
+    api.updateConfigs({
+      tun: {
+        enable: true,
+      },
+    }).then((res: any) => {
+      success(t("tun-switch-on"));
+    });
+  } else {
+    api.updateConfigs({
+      tun: {
+        enable: false,
+      },
+    }).then((res: any) => {
+      warning(t("tun-switch-off"));
+    });
+  }
 }
 </script>
 
 <template>
-
   <div class="sub">
-    <div class="switch-container" title="代理已关闭">
+    <div class="switch-container">
       <span class="switch-label">
-         {{ $t('proxy-switch') }}
+        {{ $t("proxy-switch") }}
       </span>
-      <div :class="['switch', { 'switch-on': isOn }]" @click="toggle">
+      <div
+        :class="['switch', { 'switch-on': menuStore.proxy }]"
+        @click="toggle"
+      >
         <div class="switch-circle"></div>
       </div>
     </div>
-    <div class="switch-container" title="虚拟网卡已关闭">
+    <div class="switch-container">
       <span class="switch-label">
-        {{ $t('tun-switch') }}
+        {{ $t("tun-switch") }}
       </span>
-      <div :class="['switch', { 'switch-on': isOn2 }]" @click="toggle2">
+      <div :class="['switch', { 'switch-on': menuStore.tun }]" @click="toggle2">
         <div class="switch-circle"></div>
       </div>
     </div>

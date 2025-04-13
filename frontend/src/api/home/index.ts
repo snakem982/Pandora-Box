@@ -11,6 +11,11 @@ const getConfigs = (proxy: any) => async function () {
     return await proxy.$http.get('/configs');
 }
 
+// 更新 Mihomo 基本配置
+const updateConfigs = (proxy: any) => async function (configs: any) {
+    return await proxy.$http.patch('/configs', configs);
+}
+
 // 获取 分组 md5
 const getGroupMd5 = (proxy: any) => async function () {
     const data = await proxy.$http.get('/group');
@@ -35,5 +40,6 @@ export default function createHomeApi(proxy: any) {
         getVersion: getVersion(proxy),
         getConfigs: getConfigs(proxy),
         getGroupMd5: getGroupMd5(proxy),
+        updateConfigs: updateConfigs(proxy),
     }
 }

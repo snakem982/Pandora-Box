@@ -1,4 +1,4 @@
-import { ElLoading , ElMessage } from "element-plus";
+import { ElLoading, ElMessage } from "element-plus";
 
 export async function load(tip: any, callback: any) {
   const loading = ElLoading.service({
@@ -10,18 +10,33 @@ export async function load(tip: any, callback: any) {
   loading.close();
 }
 
-export async function copy(textToCopy: any,t: any) {
+
+export async function copy(textToCopy: any, t: any) {
   try {
     await navigator.clipboard.writeText(textToCopy);
-    ElMessage({
-        message: t('copy.success'),
-        type: 'success',
-      })
+    success(t("copy.success"));
   } catch (error) {
-    ElMessage({
-        message: t('copy.fail'),
-        type: 'error',
-      })
+    error(t("copy.fail"));
   }
 }
 
+export function success(msg: any) {
+  ElMessage({
+    message: msg,
+    type: "success",
+  });
+}
+
+export function error(msg: any) {
+  ElMessage({
+    message: msg,
+    type: "error",
+  });
+}
+
+export function warning(msg: any) {
+  ElMessage({
+    message: msg,
+    type: "warning",
+  });
+}

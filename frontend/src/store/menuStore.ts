@@ -21,10 +21,10 @@ export const useMenuStore = defineStore('menu', {
         setRule(rule: string) {
             this.rule = rule;
         },
-        setProxy(proxy: string) {
+        setProxy(proxy: boolean) {
             this.proxy = proxy;
         },
-        setTun(tun: string) {
+        setTun(tun: boolean) {
             this.tun = tun;
         },
         setLanguage(language: string) {

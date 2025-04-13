@@ -30,8 +30,8 @@ const props = withDefaults(defineProps<{
   width?: any,
   data: any[],
   row?: number,
-  gap: number,
-  top: number,
+  gap?: number,
+  top?: number,
   type?: string,
   draggable?: boolean,
 }>(), {

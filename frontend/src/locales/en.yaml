@@ -10,9 +10,16 @@ rules:
   rule: Rule
   global: Global
   direct: Direct
+  rule-switch: Switched to Rule mode
+  global-switch: Switched to Global mode
+  direct-switch: Switched to Direct mode
 
 proxy-switch: Proxy
+proxy-switch-on: Proxy is ON
+proxy-switch-off: Proxy is OFF
 tun-switch: Tun
+tun-switch-on: Tun is ON
+tun-switch-off: Tun is OFF
 
 sec-nav:
   rule: Rule

@@ -1,6 +1,6 @@
 <template>
   <div class="custom-style">
-    <span class="liable">Tun:</span>
+    <span class="liable">Tun Stack:</span>
     <el-segmented v-model="value" :options="options" />
   </div>
 </template>

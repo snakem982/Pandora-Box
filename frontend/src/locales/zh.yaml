@@ -10,9 +10,16 @@ rules:
   rule: 规则
   global: 全局
   direct: 直连
+  rule-switch: 已经切换为 规则 模式
+  global-switch: 已经切换为 全局 模式
+  direct-switch: 已经切换为 直连 模式
 
 proxy-switch: 代理
+proxy-switch-on: 代理已开启
+proxy-switch-off: 代理已关闭
 tun-switch: 虚拟网卡
+tun-switch-on: 虚拟网卡已开启
+tun-switch-off: 虚拟网卡已关闭
 
 sec-nav:
   rule: 规则
