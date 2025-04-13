@@ -2,16 +2,16 @@
 
 import {cJoin} from "@/util/format";
 
-let configs = reactive([1, 2, 3, 4, 5, 6])
+let configs = reactive([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
 
 
-
-function handleEmit(value: any) {
-  console.log(cJoin(value, ","))
+function getData() {
+  console.log(cJoin(configs, ","))
 }
 
 function handleDelete(index: number) {
   configs.splice(index, 1);
+  configs.push(index + 10);
 }
 
 </script>
@@ -30,38 +30,33 @@ function handleDelete(index: number) {
       </el-row>
       <hr>
 
-      <FlatSortable>
-        <FlatSortableContent
-            class="icon-container"
-            :gap="16"
-            :vl="configs.length"
-            @update:model-value="handleEmit"
-            direction="row">
-          <FlatSortableItem
-              draggable
-              class="icon-item"
-              v-for="(item,index) in configs"
-              :key="'ph-'+index">
+
+      <VDContainer
+          :data="configs"
+          @getData="getData"
+          :gap="10"
+          :top="8"
+          draggable
+      >
+        <template v-slot:VDC="{data,index}">
+          <div class="icon-item">
             <div class="icon">
               <img
+                  draggable="false"
                   src="https://studiostaticassetsprod.azureedge.net/bundle-cmc/favicon.svg"
                   style="height: 48px;width: 48px;"
                   alt="C">
-              <div class="overlay"></div>
-              <!-- 添加删除按钮 -->
               <div class="delete-btn" @click="handleDelete(index)">×</div>
             </div>
             <div class="icon-title">
-              {{ item }}
+              {{ data }}
             </div>
             <el-tag type="success" class="icon-delay">
               200 ms
             </el-tag>
-          </FlatSortableItem>
-        </FlatSortableContent>
-      </FlatSortable>
-
-
+          </div>
+        </template>
+      </VDContainer>
     </el-col>
   </el-row>
 </template>
@@ -83,15 +78,6 @@ function handleDelete(index: number) {
   height: 1px;
   background-color: var(--hr-color);
   margin: 10px 0;
-}
-
-/* 图标容器样式 */
-.icon-container {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-start;
-  gap: 10px;
-  margin-top: 10px;
 }
 
 /* 单个图标和标题样式 */
@@ -123,26 +109,11 @@ function handleDelete(index: number) {
   border-radius: 5px;
 }
 
-.overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: transparent;
-  display: none;
-  z-index: 100;
-}
-
-.icon:hover .overlay {
-  display: block;
-}
-
 /* 删除按钮样式 */
 .delete-btn {
   position: absolute;
-  top: -5px;
-  right: -5px;
+  margin-top: -50px;
+  margin-left: 50px;
   width: 20px;
   height: 20px;
   background-color: red;

@@ -3,9 +3,11 @@
     --text-color: white;
     /*分割线颜色*/
     --hr-color: #ddd;
-    /*自定义layout*/
+    /*自定义*/
     --layout-top-height: 65px;
     --layout-bottom-height: 95px;
+    --vdc-gap: 10px;
+    --vdc-top: 8px;
     /*背景图片*/
     --body-background-image: '';
 

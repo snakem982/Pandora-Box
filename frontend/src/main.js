@@ -15,6 +15,7 @@ import {useWebStore} from "@/store/webStore";
 import {AxiosRequest} from "./util/axiosRequest";
 import {useHomeStore} from "@/store/homeStore.js";
 
+
 // 国际化设置
 const i18n = createI18n({
     locale: 'zh',

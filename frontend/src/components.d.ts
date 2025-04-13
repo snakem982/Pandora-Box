@@ -81,5 +81,6 @@ declare module 'vue' {
     MyTun: typeof import('./components/setting/MyTun.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    VDContainer: typeof import('./components/dnd/VDContainer/src/VDContainer.vue')['default']
   }
 }
