@@ -92,7 +92,6 @@ function handleEmit(value: any) {
           :data="configs"
           @getData="handleEmit"
           :gap="15"
-          :top="10"
           :draggable="canDrag"
           style="margin-left: 10px;width: 95%;"
       >
@@ -165,19 +164,9 @@ function handleEmit(value: any) {
   color: var(--hr-color);
 }
 
-.sub-cards {
-  display: flex;
-  flex-wrap: wrap;
-  padding: 0;
-  color: var(--text-color);
-  margin-left: 10px;
-  margin-top: 10px;
-  width: 95%;
-}
-
 :deep(.vdc-item-container) {
   width: calc(33% - 30px);
-  max-width: 250px;
+  max-width: 245px;
 }
 
 .sub-card {
@@ -227,7 +216,7 @@ function handleEmit(value: any) {
   justify-content: flex-end;
   gap: 8px;
   margin-top: 5px;
-  margin-bottom: 5px;
+  margin-bottom: 2px;
 }
 
 </style>
