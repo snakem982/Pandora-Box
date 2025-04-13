@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import {cJoin} from "@/util/format";
-
 let sArray = [
   {title: "亚马逊机房", selected: false},
   {title: "CloudFlare 转发", selected: false},
@@ -12,27 +10,17 @@ let sArray = [
   {title: "天马流星拳", selected: false},
   {title: "巴拉拉小魔仙", selected: false},
   {title: "榴莲", selected: true},
-  {title: "百分百空手接白刃", selected: false},
-  {title: "百分百空手接白刃", selected: false},
-  {title: "百分百空手接白刃", selected: false},
-  {title: "百分百空手接白刃", selected: false},
-  {title: "百分百空手接白刃", selected: false},
-  {title: "百分百空手接白刃", selected: false},
-  {title: "百分百空手接白刃", selected: false},
-  {title: "百分百空手接白刃", selected: false},
+  {
+    title: "百分百空百分百空手接白刃百分百空手接白刃百分百空手接白刃百分百空手接白刃百分百空手接白刃手接白刃",
+    selected: false
+  },
   {title: "士力架", selected: false},
 ]
 let configs = reactive([])
 
 
 onBeforeMount(function (): void {
-  // let ok = "0,4,3,1,2,5,6,7,8,9,10,11".split(",")
-  // ok.forEach((item) => {
-  //   configs.push(sArray[item])
-  // })
-
   configs = sArray
-
 })
 
 
@@ -48,7 +36,7 @@ function mouseLeave() {
 
 
 function handleEmit(value: any) {
-  console.log(cJoin(value, ","))
+  console.log(configs)
 }
 
 </script>
@@ -99,18 +87,17 @@ function handleEmit(value: any) {
       </div>
     </template>
     <template #bottom>
-      <FlatSortable>
-        <FlatSortableContent
-            class="sub-cards"
-            :gap="16"
-            :vl="configs.length"
-            @update:model-value="handleEmit"
-            direction="row">
-          <FlatSortableItem
-              :draggable="canDrag"
-              :class="item.selected?'sub-card sub-card-select':'sub-card'"
-              v-for="(item,index) in configs"
-              :key="'pb-'+index">
+
+      <VDContainer
+          :data="configs"
+          @getData="handleEmit"
+          :gap="15"
+          :top="10"
+          :draggable="canDrag"
+          style="margin-left: 10px;width: 95%;"
+      >
+        <template v-slot:VDC="{data,index}">
+          <div :class="data.selected?'sub-card sub-card-select':'sub-card'">
             <div class="row">
               <el-icon
                   @mouseenter="mouseEnter"
@@ -124,7 +111,9 @@ function handleEmit(value: any) {
               </el-icon>
             </div>
             <div class="system-info">
-              {{ item.title }}
+              <span :title="data.title">
+                {{ data.title }}
+              </span>
             </div>
             <div class="bottom-row">
               <el-icon size="20">
@@ -134,9 +123,9 @@ function handleEmit(value: any) {
                 <icon-mdi-trash-can/>
               </el-icon>
             </div>
-          </FlatSortableItem>
-        </FlatSortableContent>
-      </FlatSortable>
+          </div>
+        </template>
+      </VDContainer>
 
     </template>
   </MyLayout>
@@ -186,9 +175,12 @@ function handleEmit(value: any) {
   width: 95%;
 }
 
-.sub-card {
+:deep(.vdc-item-container) {
   width: calc(33% - 30px);
   max-width: 250px;
+}
+
+.sub-card {
   padding: 5px 8px 5px 5px;
   border: 2px solid rgba(255, 255, 255, 0.3);
   border-radius: 8px;
@@ -221,20 +213,21 @@ function handleEmit(value: any) {
   cursor: grab;
 }
 
-.sub-card .system-info {
+.system-info {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
   text-align: left;
   font-size: 14px;
-  padding: 5px 10px 5px 15px;
+  padding: 5px 10px 2px 15px;
 }
 
-.sub-card .bottom-row {
+.bottom-row {
   display: flex;
   justify-content: flex-end;
   gap: 8px;
   margin-top: 5px;
+  margin-bottom: 5px;
 }
 
 </style>
