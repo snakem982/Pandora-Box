@@ -47,8 +47,8 @@ home:
   web: Website Testing
   timeout: Timeout
   ip:
-    title: IP Information
-    real: Real Ip
+    title: IP [FYI]
+    real: Real IP
     city: City
     country: Country
     isp: ISP
@@ -56,7 +56,7 @@ home:
     time-zone: T-Zone
     lang: en
   system:
-    title: System Information
+    title: System
     os: OS
     runtime: Runtime
     startup: Boot Startup

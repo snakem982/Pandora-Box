@@ -18,9 +18,6 @@ func main() {
 	app := application.New(application.Options{
 		Name:        "Pandora-Box",
 		Description: "A Simple Mihomo Gui",
-		Services: []application.Service{
-			application.NewService(&GreetService{}),
-		},
 		Assets: application.AssetOptions{
 			Handler: application.AssetFileServerFS(assets),
 		},

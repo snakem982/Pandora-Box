@@ -113,7 +113,7 @@ onMounted(async () => {
             {{ ipInfo['query'] }}
           </li>
           <li><strong>{{ $t('home.ip.city') }} : </strong>
-            {{ ipInfo['regionName'] + '-' + ipInfo['city'] }}
+            {{ ipInfo['city'] }}
           </li>
           <li><strong>{{ $t('home.ip.country') }} : </strong>
             {{ ipInfo['country'] }}

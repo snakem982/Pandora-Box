@@ -47,7 +47,7 @@ home:
   web: 网站测试
   timeout: 超时
   ip:
-    title: Ip信息
+    title: IP [仅供参考]
     real: 落地Ip
     city: 城市
     country: 国家/地区
