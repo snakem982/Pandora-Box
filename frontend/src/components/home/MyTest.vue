@@ -4,7 +4,7 @@ import {cJoin} from "@/util/format";
 
 const editShow = ref(false)
 
-let configs = reactive(["google","youtube","chatgpt"]);
+let configs = reactive(["google", "youtube", "chatgptsdfsdfsfsfd"]);
 
 
 function getData() {
@@ -74,7 +74,10 @@ function handleDelete(index: number) {
                 </div>
               </template>
             </div>
-            <div class="icon-title">
+            <div
+                class="icon-title"
+                :title="data"
+            >
               {{ data }}
             </div>
             <el-tag type="success" class="icon-delay">
@@ -139,6 +142,9 @@ function handleDelete(index: number) {
   font-size: 13px;
   color: var(--text-color);
   margin-top: 5px;
+  width: 60px;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 
 .icon-delay {
