@@ -4,7 +4,7 @@ import {cJoin} from "@/util/format";
 
 const editShow = ref(false)
 
-let configs = reactive([]);
+let configs = reactive(["google","youtube","chatgpt"]);
 
 
 function getData() {
@@ -143,6 +143,7 @@ function handleDelete(index: number) {
 
 .icon-delay {
   border-radius: 5px;
+  margin-top: 5px;
 }
 
 /* 删除按钮样式 */

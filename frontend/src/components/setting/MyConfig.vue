@@ -112,6 +112,7 @@ onMounted(() => {
           <li>
             <strong>{{ $t('setting.px.startup') }} :</strong>
             <el-switch
+                disabled
                 v-model="startup"
                 class="set-switch"
             />

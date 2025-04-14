@@ -142,8 +142,8 @@ onMounted(async () => {
           <li><strong>{{ $t('home.system.runtime') }} : </strong>
             {{ time }}
           </li>
-          <li><strong>{{ $t('home.system.startup') }} : </strong> 已启用</li>
-          <li><strong>{{ $t('home.system.service') }} : </strong> 服务模式</li>
+          <li><strong>{{ $t('home.system.startup') }} : </strong> 关闭</li>
+          <li><strong>{{ $t('home.system.service') }} : </strong> 普通模式</li>
           <li><strong>{{ $t('home.system.port') }} : </strong>
             {{ port }}
           </li>
@@ -183,6 +183,7 @@ onMounted(async () => {
 .info-list li {
   font-size: 18px;
   margin: 8px 0;
+  line-height: 20px;
 }
 
 .box1 {
