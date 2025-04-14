@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"os/user"
 	"path/filepath"
 )
 
@@ -63,4 +64,41 @@ func DeletePath(path string) error {
 	}
 
 	return nil
+}
+
+// CreateFile 根据路径创建文件，如果文件存在直接返回
+func CreateFile(path string) (*os.File, error) {
+	// 确保目录存在
+	dir := filepath.Dir(path)
+	err := os.MkdirAll(dir, os.ModePerm)
+	if err != nil {
+		return nil, err
+	}
+
+	// 检查文件是否存在
+	if _, err := os.Stat(path); err == nil {
+		// 文件已存在，直接打开
+		return os.OpenFile(path, os.O_RDWR, os.ModePerm)
+	} else if os.IsNotExist(err) {
+		// 文件不存在，创建新文件
+		return os.Create(path)
+	} else {
+		// 其他错误
+		return nil, err
+	}
+}
+
+// GetUserHomeDir 获取当前用户的根目录
+func GetUserHomeDir() (string, error) {
+	// 尝试使用 os.UserHomeDir（Go 1.12+ 提供的函数）
+	if home, err := os.UserHomeDir(); err == nil {
+		return home + "/Pandora-Box-V3", nil
+	}
+
+	// 如果 os.UserHomeDir 不适用，使用 os/user 包获取
+	currentUser, err := user.Current()
+	if err != nil {
+		return "", fmt.Errorf("获取当前用户失败: %v", err)
+	}
+	return currentUser.HomeDir + "/Pandora-Box-V3", nil
 }
