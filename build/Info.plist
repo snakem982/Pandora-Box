@@ -8,13 +8,13 @@
         <key>CFBundleExecutable</key>
         <string>Pandora-Box</string>
         <key>CFBundleIdentifier</key>
-        <string>px.snakem982.us</string>
+        <string>us.snakem982.px</string>
         <key>CFBundleVersion</key>
-        <string>0.3.1</string>
+        <string>1.0.1</string>
         <key>CFBundleGetInfoString</key>
         <string>A Simple Mihomo GUI.</string>
         <key>CFBundleShortVersionString</key>
-        <string>0.3.1</string>
+        <string>1.0.1</string>
         <key>CFBundleIconFile</key>
         <string>icons</string>
         <key>LSMinimumSystemVersion</key>

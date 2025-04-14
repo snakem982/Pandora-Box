@@ -6,13 +6,13 @@
 name: "Pandora-Box"
 arch: ${GOARCH}
 platform: "linux"
-version: "0.1.0"
+version: "1.0.1"
 section: "default"
 priority: "extra"
 maintainer: ${GIT_COMMITTER_NAME} <${GIT_COMMITTER_EMAIL}>
-description: "My Product Description"
-vendor: "My Company"
-homepage: "https://wails.io"
+description: "A Simple Mihomo GUI"
+vendor: "us.snakem982.px"
+homepage: "https://github.com/snakem982/Pandora-Box"
 license: "MIT"
 release: "1"
 

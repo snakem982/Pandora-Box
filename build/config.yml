@@ -7,11 +7,11 @@ version: '3'
 info:
   companyName: "snakem982@gmail.com"
   productName: "Pandora-Box" # The name of the application
-  productIdentifier: "blog.snakem982.us"
+  productIdentifier: "us.snakem982.px"
   description: "A Simple Mihomo GUI."
   copyright: "(c) 2025, snakem982"
   comments: ""
-  version: "v0.3.1"
+  version: "v1.0.1"
 
 # Dev mode configuration
 dev_mode:

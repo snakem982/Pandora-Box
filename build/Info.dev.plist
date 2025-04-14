@@ -4,17 +4,17 @@
         <key>CFBundlePackageType</key>
         <string>APPL</string>
         <key>CFBundleName</key>
-        <string>My Product</string>
+        <string>Pandora-Box</string>
         <key>CFBundleExecutable</key>
         <string>Pandora-Box</string>
         <key>CFBundleIdentifier</key>
-        <string>com.wails.Pandora-Box</string>
+        <string>us.snakem982.px</string>
         <key>CFBundleVersion</key>
-        <string>0.1.0</string>
+        <string>1.0.1</string>
         <key>CFBundleGetInfoString</key>
-        <string>This is a comment</string>
+        <string>A Simple Mihomo GUI.</string>
         <key>CFBundleShortVersionString</key>
-        <string>0.1.0</string>
+        <string>1.0.1</string>
         <key>CFBundleIconFile</key>
         <string>icons</string>
         <key>LSMinimumSystemVersion</key>
@@ -22,7 +22,7 @@
         <key>NSHighResolutionCapable</key>
         <string>true</string>
         <key>NSHumanReadableCopyright</key>
-        <string>© now, My Company</string>
+        <string>© 2025, snakem982</string>
         <key>NSAppTransportSecurity</key>
         <dict>
             <key>NSAllowsLocalNetworking</key>
