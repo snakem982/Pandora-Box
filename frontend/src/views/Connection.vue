@@ -152,7 +152,7 @@ function closeAll() {
                 <span class="ot">{{ $t('connections.upload') }} : </span>
                 {{ prettyBytes(item.upload) }}
               </div>
-              <div class="od">
+              <div class="od" v-if="item.rule">
                 <span class="ot">{{ $t('connections.rule') }} : </span>
                 {{ item.rule }}
                 {{ item.rulePayload ? ' / ' + item.rulePayload : '' }}

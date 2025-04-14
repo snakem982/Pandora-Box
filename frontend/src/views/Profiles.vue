@@ -165,7 +165,7 @@ function handleEmit(value: any) {
 }
 
 :deep(.vdc-item-container) {
-  width: calc(33% - 30px);
+  width: calc(33% - 10px);
   max-width: 245px;
 }
 

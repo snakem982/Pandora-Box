@@ -68,9 +68,9 @@ import {prettyBytes} from "@/util/format";
 
 const webStore = useWebStore()
 
-const upSpeed = ref('')
-const downSpeed = ref('')
-const memory = ref('')
+const upSpeed = ref('0 B')
+const downSpeed = ref('0 B')
+const memory = ref('0 B')
 
 function onTraffic(ev: MessageEvent) {
   const parsedData = JSON.parse(ev.data);
@@ -140,16 +140,18 @@ const spark1 = reactive({
   },
   colors: ['#fff'],
   tooltip: {
+    enabled: false,
     theme: 'dark',
     x: {
       show: false
     },
     y: {
       title: {
-        formatter: function formatter(val) {
+        formatter: function formatter(val:any) {
           return '';
         }
-      }
+      },
+
     }
   }
 })
@@ -186,13 +188,14 @@ const spark2 = reactive({
   },
   colors: ['#fff'],
   tooltip: {
+    enabled: false,
     theme: 'dark',
     x: {
       show: false
     },
     y: {
       title: {
-        formatter: function formatter(val) {
+        formatter: function formatter(val:any) {
           return '';
         }
       }
@@ -231,19 +234,15 @@ const spark3 = reactive({
     }
   },
   colors: ['#fff'],
-  xaxis: {
-    crosshairs: {
-      width: 1
-    },
-  },
   tooltip: {
+    enabled: false,
     theme: 'dark',
     x: {
       show: false
     },
     y: {
       title: {
-        formatter: function formatter(val) {
+        formatter: function formatter(val:any) {
           return '';
         }
       }
