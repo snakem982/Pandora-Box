@@ -25,9 +25,9 @@ const getClass = (delay: any) => {
         return 'toHidden'
     }
 
-    if (delay <= 400) {
+    if (delay <= 300) {
         return 'toLow'
-    } else if (delay <= 800) {
+    } else if (delay <= 600) {
         return 'toMiddle'
     } else {
         return 'toHigh'
