@@ -246,8 +246,8 @@ func ScanProxies(content string, headers map[string]string, deep int) (proxies [
 	for url := range urls {
 		pool.Submit(func(done chan struct{}) {
 			defer func() {
-				if e := recover(); e != nil {
-					log.Errorln("====爬取错误====%s", e)
+				if err := recover(); err != nil {
+					log.Errorln("爬取URL= %s, 错误: %v", url, err)
 				}
 				done <- struct{}{}
 			}()
