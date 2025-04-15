@@ -247,7 +247,7 @@ func ScanProxies(content string, headers map[string]string, deep int) (proxies [
 		pool.Submit(func(done chan struct{}) {
 			defer func() {
 				if err := recover(); err != nil {
-					log.Errorln("爬取URL= %s, 错误: %v", url, err)
+					log.Errorln("爬取失败 URL= %s, 错误: %v", url, err)
 				}
 				done <- struct{}{}
 			}()
@@ -263,12 +263,12 @@ func ScanProxies(content string, headers map[string]string, deep int) (proxies [
 func Worker(url string, proxies *[]map[string]any, headers map[string]string, deep int) {
 	res, err := utils.FastGet(url, headers, GetProxyUrl())
 	if err != nil {
-		log.Infoln("请求失败 URL= %s, 错误: %v", url, err)
+		log.Warnln("请求失败 URL= %s, 错误: %v", url, err)
 		return
 	}
 
 	if res == nil {
-		log.Infoln("响应为空 URL= %s", url)
+		log.Warnln("响应为空 URL= %s", url)
 		return
 	}
 
