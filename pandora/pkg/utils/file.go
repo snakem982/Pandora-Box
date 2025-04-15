@@ -3,6 +3,7 @@ package utils
 import (
 	"errors"
 	"fmt"
+	"github.com/snakem982/pandora-box/pandora/pkg/constant"
 	"os"
 	"os/user"
 	"path/filepath"
@@ -89,10 +90,10 @@ func CreateFile(path string) (*os.File, error) {
 }
 
 // GetUserHomeDir 获取当前用户的根目录
-func GetUserHomeDir() (string, error) {
+func GetUserHomeDir(paths ...string) (string, error) {
 	// 尝试使用 os.UserHomeDir（Go 1.12+ 提供的函数）
 	if home, err := os.UserHomeDir(); err == nil {
-		return home + "/Pandora-Box-V3", nil
+		return filepath.Join(append([]string{home, constant.DefaultWorkDir}, paths...)...), nil
 	}
 
 	// 如果 os.UserHomeDir 不适用，使用 os/user 包获取
@@ -100,5 +101,6 @@ func GetUserHomeDir() (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("获取当前用户失败: %v", err)
 	}
-	return currentUser.HomeDir + "/Pandora-Box-V3", nil
+
+	return filepath.Join(append([]string{currentUser.HomeDir, constant.DefaultWorkDir}, paths...)...), nil
 }

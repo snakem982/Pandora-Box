@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"crypto/tls"
 	"fmt"
 	"io"
 	"net/http"
@@ -14,17 +15,22 @@ func SendGet(requestURL string, headers map[string]string, proxyURL string) (str
 	// 创建 HTTP 客户端
 	client := &http.Client{}
 
+	// 允许不安全链接
+	transport := &http.Transport{
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+	}
+
 	// 如果提供了代理路径，则设置代理
 	if proxyURL != "" {
 		proxy, err := url.Parse(proxyURL)
 		if err != nil {
 			return "", nil, fmt.Errorf("解析代理路径失败: %v", err)
 		}
-		transport := &http.Transport{
-			Proxy: http.ProxyURL(proxy),
-		}
-		client.Transport = transport
+		transport.Proxy = http.ProxyURL(proxy)
 	}
+
+	// 设置 Transport
+	client.Transport = transport
 
 	// 创建 HTTP 请求
 	req, err := http.NewRequest("GET", requestURL, nil)

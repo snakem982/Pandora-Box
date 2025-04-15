@@ -3,6 +3,8 @@ package constant
 import _ "embed"
 
 const (
+	DefaultWorkDir  = "Pandora-Box-V3"
+	DefaultCrawlDir = "crawl"
 	DefaultProfile  = "Profile_0"
 	DefaultTemplate = "Template_0.yaml"
 	DefaultDownload = "Download_0.yaml"

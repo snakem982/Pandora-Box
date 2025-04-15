@@ -22,4 +22,5 @@ type Profile struct {
 	Expire   string `json:"expire,omitempty"`
 	Interval string `json:"interval,omitempty"`
 	Home     string `json:"home,omitempty"`
+	Update   string `json:"update,omitempty"`
 }
