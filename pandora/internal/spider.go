@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/metacubex/mihomo/common/convert"
 	"github.com/metacubex/mihomo/config"
+	"github.com/metacubex/mihomo/log"
 	"github.com/sagernet/sing/common/json"
 	"github.com/snakem982/pandora-box/pandora/api/models"
 	"github.com/snakem982/pandora-box/pandora/pkg/constant"
@@ -12,7 +13,6 @@ import (
 	"gopkg.in/yaml.v3"
 	"regexp"
 	"strings"
-	"sync"
 )
 
 //go:embed flags.json
@@ -146,67 +146,63 @@ func CrawlProxy(getter models.Getter) (proxies []map[string]any) {
 	return
 }
 
-var wg sync.WaitGroup
-var mutex sync.Mutex
+var nullValue models.Void
 
 // ScanProxies 获取节点
 func ScanProxies(content string, headers map[string]string, deep int) (proxies []map[string]any) {
 	proxies = make([]map[string]any, 0)
-	if deep > 1 {
+	if deep > 2 {
 		return
 	}
 
-	// 清除首尾空格
 	tempStr := strings.TrimSpace(content)
 
-	// 进行 sing 解析
+	// Sing解析
 	if utils.IsJSON(tempStr) {
 		sing, err := convert.ConvertsSingBox([]byte(tempStr))
 		if err == nil && sing != nil {
-			proxies = sing
-			return
+			return sing
 		}
 	}
 
-	// Json base64 解码成功返回
+	// Base64解析
 	if utils.IsBase64(tempStr) {
 		v2ray, err := convert.ConvertsV2Ray([]byte(tempStr))
 		if err == nil && v2ray != nil {
-			proxies = v2ray
-			return
+			return v2ray
 		}
 	}
 
-	// 要发送请求的地址
+	// 初始化urls
 	var urls = make(map[string]models.Void)
-
-	// 尝试clash解析
-	var nullValue models.Void
+	// 处理 ruleProvider
+	var ruleProviderUrl = make(map[string]bool)
 	rawCfg, err := config.UnmarshalRawConfig([]byte(tempStr))
 	if err == nil {
 		for _, m := range rawCfg.ProxyProvider {
+			if url, find := m["url"].(string); find && strings.HasPrefix(url, "http") {
+				urls[url] = nullValue
+			}
+		}
+
+		for _, m := range rawCfg.RuleProvider {
 			if _, find := m["url"]; !find {
 				continue
 			}
 			s := m["url"].(string)
-			// 为了去重
 			if strings.HasPrefix(s, "http") {
-				urls[s] = nullValue
+				ruleProviderUrl[s] = true
 			}
 		}
 
-		if len(urls) == 0 {
-			i := len(rawCfg.Proxy)
-			if i > 0 {
-				proxies = append(proxies, rawCfg.Proxy...)
-				return
-			}
+		if len(urls) == 0 && len(rawCfg.Proxy) > 0 {
+			return rawCfg.Proxy
 		}
 	}
 
-	// 对内容进行 分享链接 扫描
+	// 扫描分享链接
 	shareLinks := ScanShareLinks(tempStr)
-	builder := strings.Builder{}
+	var builder strings.Builder
 	for _, link := range shareLinks {
 		builder.WriteString(link + "\n")
 	}
@@ -217,29 +213,43 @@ func ScanProxies(content string, headers map[string]string, deep int) (proxies [
 		}
 	}
 
-	// 对内容进行 url 扫描
-	subs := ScanSubs(tempStr)
-	for _, s := range subs {
-		urls[s] = nullValue
+	// 扫描URL
+	if len(urls) == 0 {
+		subs := ScanSubs(tempStr)
+		for _, sub := range subs {
+			if ruleProviderUrl[sub] {
+				continue
+			}
+			urls[sub] = nullValue
+		}
 	}
 
-	// 无需 url 请求，直接返回
+	// 无订阅内容
 	if len(urls) == 0 {
 		return
 	}
 
-	// 为每个 URL 启动一个 Goroutine 发起请求
-	for url, _ := range urls {
-		wg.Add(1)
-		go Worker(url, &proxies, headers, deep+1)
+	// 进行订阅请求
+	for url := range urls {
+		Worker(url, &proxies, headers, deep+1)
 	}
-	wg.Wait()
 
 	return
 }
 
-// Worker 发起请求 获取内容
+// Worker 发起请求
 func Worker(url string, proxies *[]map[string]any, headers map[string]string, deep int) {
-	defer wg.Done() // 标记任务完成
+	res, err := utils.FastGet(url, headers, GetProxyUrl())
+	if err != nil {
+		log.Infoln("请求失败 URL= %s, 错误: %v\n", url, err)
+		return
+	}
 
+	if res == nil {
+		log.Infoln("响应为空 URL= %s", url)
+		return
+	}
+
+	scanProxies := ScanProxies(res.Body, headers, deep)
+	*proxies = append(*proxies, scanProxies...)
 }

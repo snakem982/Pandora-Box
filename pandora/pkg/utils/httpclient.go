@@ -39,6 +39,9 @@ func SendGet(requestURL string, headers map[string]string, proxyURL string) (str
 	}
 
 	// 设置请求头
+	if _, ok := headers["User-Agent"]; !ok {
+		headers["User-Agent"] = "clash-verge/v2.2.3"
+	}
 	for key, value := range headers {
 		req.Header.Set(key, value)
 	}
