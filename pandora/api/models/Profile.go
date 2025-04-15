@@ -9,13 +9,17 @@ var PandoraDefaultConfig []byte
 var PandoraDefaultDownloadConfig []byte
 
 type Profile struct {
-	Id         string `json:"id,omitempty"`
-	Type       int    `json:"type"` // 1: 默认yaml 2:分享txt 31:订阅yaml 32:订阅txt 41:导入yaml 42:导入txt
-	Title      string `json:"title,omitempty"`
-	Path       string `json:"path"`
-	Url        string `json:"url,omitempty"`
-	HomePage   string `json:"homePage,omitempty"`
-	Selected   bool   `json:"selected,omitempty"`
-	Order      int64  `json:"order"`
-	IsWarpPlus bool   `json:"isWarpPlus,omitempty"`
+	Id       string `json:"id,omitempty"`
+	Type     int    `json:"type"` // 1: 远程订阅 2：本地配置 3：爬取合并
+	Title    string `json:"title,omitempty"`
+	Order    int64  `json:"order"`
+	Selected bool   `json:"selected,omitempty"`
+	Path     string `json:"path"`
+	Url      string `json:"url,omitempty"`
+	Upload   string `json:"upload,omitempty"`
+	Download string `json:"download,omitempty"`
+	Total    string `json:"total,omitempty"`
+	Expire   string `json:"expire,omitempty"`
+	Interval string `json:"interval,omitempty"`
+	Home     string `json:"home,omitempty"`
 }
