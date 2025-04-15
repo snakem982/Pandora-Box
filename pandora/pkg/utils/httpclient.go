@@ -3,6 +3,7 @@ package utils
 import (
 	"crypto/tls"
 	"fmt"
+	"golang.org/x/net/html"
 	"io"
 	"net"
 	"net/http"
@@ -44,7 +45,7 @@ func SendGet(requestURL string, headers map[string]string, proxyURL string) (str
 
 	// 设置请求头
 	if _, ok := headers["User-Agent"]; !ok {
-		headers["User-Agent"] = "clash-verge/v2.2.3"
+		req.Header.Set("User-Agent", "clash-verge/v2.2.3")
 	}
 	for key, value := range headers {
 		req.Header.Set(key, value)
@@ -67,7 +68,7 @@ func SendGet(requestURL string, headers map[string]string, proxyURL string) (str
 		return "", nil, fmt.Errorf("读取响应内容失败: %v", err)
 	}
 
-	return string(body), resp.Header, nil
+	return html.UnescapeString(string(body)), resp.Header, nil
 }
 
 type ResponseResult struct {

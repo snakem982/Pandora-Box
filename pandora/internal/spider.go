@@ -10,7 +10,7 @@ import (
 	"github.com/snakem982/pandora-box/pandora/api/models"
 	"github.com/snakem982/pandora-box/pandora/pkg/constant"
 	"github.com/snakem982/pandora-box/pandora/pkg/utils"
-	"gopkg.in/yaml.v3"
+	"gopkg.in/yaml.v2"
 	"regexp"
 	"strings"
 	"sync"
@@ -178,7 +178,11 @@ func ScanProxies(content string, headers map[string]string, deep int) (proxies [
 	// 初始化urls
 	var urls = make(map[string]models.Void)
 	// 处理 ruleProvider
-	var ruleProviderUrl = make(map[string]bool)
+	var ruleProviderUrl = map[string]bool{
+		"http://www.gstatic.com/generate_204":  true,
+		"https://www.gstatic.com/generate_204": true,
+		"https://www.google.com/blank.html":    true,
+	}
 	rawCfg, err := config.UnmarshalRawConfig([]byte(tempStr))
 	if err == nil {
 		for _, m := range rawCfg.ProxyProvider {
