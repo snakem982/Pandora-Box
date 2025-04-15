@@ -7,7 +7,7 @@ import (
 )
 
 const (
-	defaultJobQueueLength = 256 // 默认任务队列长度
+	defaultJobQueueLength = 32 // 默认任务队列长度
 )
 
 type Job func(chan struct{})
@@ -17,7 +17,7 @@ type TimeoutPool struct {
 	wg      sync.WaitGroup
 }
 
-// NewTimeoutPoolWithDefaults 初始化一个任务队列长度256
+// NewTimeoutPoolWithDefaults 初始化一个任务队列长度32
 func NewTimeoutPoolWithDefaults() *TimeoutPool {
 	p, _ := ants.NewPool(defaultJobQueueLength, func(opts *ants.Options) {
 		opts.PreAlloc = true
@@ -41,6 +41,18 @@ func (p *TimeoutPool) SubmitWithTimeout(job Job, timeout time.Duration) {
 		select {
 		case <-done:
 		case <-time.After(timeout):
+		}
+		p.wg.Done()
+	})
+}
+
+// Submit 提交一个任务到协程池
+func (p *TimeoutPool) Submit(job Job) {
+	_ = p.antPool.Submit(func() {
+		done := make(chan struct{}, 1)
+		go job(done)
+		select {
+		case <-done:
 		}
 		p.wg.Done()
 	})

@@ -4,6 +4,7 @@ import (
 	"crypto/tls"
 	"fmt"
 	"io"
+	"net"
 	"net/http"
 	"net/url"
 	"sync"
@@ -15,9 +16,12 @@ func SendGet(requestURL string, headers map[string]string, proxyURL string) (str
 	// 创建 HTTP 客户端
 	client := &http.Client{}
 
-	// 允许不安全链接
+	// 创建 Transport 并允许不安全链接
 	transport := &http.Transport{
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+		DialContext: (&net.Dialer{
+			Timeout: 5 * time.Second, // 仅拨号阶段超时设置
+		}).DialContext,
 	}
 
 	// 如果提供了代理路径，则设置代理
@@ -51,12 +55,11 @@ func SendGet(requestURL string, headers map[string]string, proxyURL string) (str
 	if err != nil {
 		return "", nil, fmt.Errorf("发送请求失败: %v", err)
 	}
-	defer func(Body io.ReadCloser) {
-		err := Body.Close()
-		if err != nil {
-
+	defer func() {
+		if resp.Body != nil {
+			_ = resp.Body.Close()
 		}
-	}(resp.Body)
+	}()
 
 	// 读取响应内容
 	body, err := io.ReadAll(resp.Body)
@@ -103,10 +106,10 @@ func FastGet(requestURL string, headers map[string]string, proxyURL string) (*Re
 		}
 	}()
 
-	// 等待 Goroutine 完成
+	// 等待 Goroutines 完成
 	go func() {
 		wg.Wait()
-		close(results)
+		close(results) // 确保只在所有 Goroutines 完成后关闭通道
 		close(errors)
 	}()
 
@@ -116,7 +119,6 @@ func FastGet(requestURL string, headers map[string]string, proxyURL string) (*Re
 		return result, nil
 	case <-time.After(15 * time.Second): // 设置超时时间
 		// 如果所有请求都失败，从错误通道中获取错误信息
-		close(errors)
 		var proxyErr, directErr error
 		for err := range errors {
 			if err.Error()[:4] == "使用代理" {

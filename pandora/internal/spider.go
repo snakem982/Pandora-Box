@@ -13,6 +13,7 @@ import (
 	"gopkg.in/yaml.v3"
 	"regexp"
 	"strings"
+	"sync"
 )
 
 //go:embed flags.json
@@ -146,6 +147,7 @@ func CrawlProxy(getter models.Getter) (proxies []map[string]any) {
 	return
 }
 
+var lock sync.Mutex
 var nullValue models.Void
 
 // ScanProxies 获取节点
@@ -225,14 +227,34 @@ func ScanProxies(content string, headers map[string]string, deep int) (proxies [
 	}
 
 	// 无订阅内容
-	if len(urls) == 0 {
+	i := len(urls)
+	if i == 0 {
+		return
+	}
+
+	// 只有一个 url 直接请求
+	if i == 1 {
+		for url := range urls {
+			Worker(url, &proxies, headers, deep+1)
+		}
 		return
 	}
 
 	// 进行订阅请求
+	pool := utils.NewTimeoutPoolWithDefaults()
+	pool.WaitCount(i)
 	for url := range urls {
-		Worker(url, &proxies, headers, deep+1)
+		pool.Submit(func(done chan struct{}) {
+			defer func() {
+				if e := recover(); e != nil {
+					log.Errorln("====爬取错误====%s", e)
+				}
+				done <- struct{}{}
+			}()
+			Worker(url, &proxies, headers, deep+1)
+		})
 	}
+	pool.StartAndWait()
 
 	return
 }
@@ -241,7 +263,7 @@ func ScanProxies(content string, headers map[string]string, deep int) (proxies [
 func Worker(url string, proxies *[]map[string]any, headers map[string]string, deep int) {
 	res, err := utils.FastGet(url, headers, GetProxyUrl())
 	if err != nil {
-		log.Infoln("请求失败 URL= %s, 错误: %v\n", url, err)
+		log.Infoln("请求失败 URL= %s, 错误: %v", url, err)
 		return
 	}
 
@@ -251,5 +273,9 @@ func Worker(url string, proxies *[]map[string]any, headers map[string]string, de
 	}
 
 	scanProxies := ScanProxies(res.Body, headers, deep)
-	*proxies = append(*proxies, scanProxies...)
+	if len(scanProxies) > 0 {
+		lock.Lock()
+		*proxies = append(*proxies, scanProxies...)
+		lock.Unlock()
+	}
 }
