@@ -4,11 +4,15 @@ import (
 	_ "embed"
 	"fmt"
 	"github.com/metacubex/mihomo/common/convert"
+	"github.com/metacubex/mihomo/config"
 	"github.com/sagernet/sing/common/json"
 	"github.com/snakem982/pandora-box/pandora/api/models"
+	"github.com/snakem982/pandora-box/pandora/pkg/constant"
+	"github.com/snakem982/pandora-box/pandora/pkg/utils"
 	"gopkg.in/yaml.v3"
 	"regexp"
 	"strings"
+	"sync"
 )
 
 //go:embed flags.json
@@ -35,60 +39,14 @@ var shareLinkReg = regexp.MustCompile("(vless|vmess|trojan|ss|ssr|tuic|hysteria|
 // 订阅地址
 var subReg = regexp.MustCompile("(https|http)://[-A-Za-z0-9\u4e00-\u9ea5+&@#/%?=~_!:,.;]+[-A-Za-z0-9\u4e00-\u9ea5+&@#/%=~_]")
 
-// ScanShareLink 扫描分享链接
-func ScanShareLink(content string) []string {
+// ScanShareLinks 扫描分享链接
+func ScanShareLinks(content string) []string {
 	return shareLinkReg.FindAllString(content, -1)
 }
 
-// ScanSub 扫描订阅地址
-func ScanSub(content string) []string {
+// ScanSubs 扫描订阅地址
+func ScanSubs(content string) []string {
 	return subReg.FindAllString(content, -1)
-}
-
-// IsYAML 判断是否为 yaml
-func IsYAML(data string) bool {
-	var yml map[string]interface{}
-	return yaml.Unmarshal([]byte(data), &yml) == nil
-}
-
-// Parse 解析节点
-func Parse(data string) (proxies []map[string]any) {
-	// 返回节点
-	proxies = make([]map[string]any, 0)
-
-	// 清除首尾空格
-	tempStr := strings.TrimSpace(data)
-
-	// 进行 sing 解析
-	if strings.HasPrefix(tempStr, "{") {
-		sing, err := convert.ConvertsSingBox([]byte(tempStr))
-		if err == nil && sing != nil {
-			proxies = sing
-			return
-		}
-	}
-
-	// 进行 yaml 解析
-	if IsYAML(data) {
-		yml := struct {
-			proxies []map[string]any
-		}{
-			proxies: proxies,
-		}
-		err := yaml.Unmarshal([]byte(data), &yml)
-		if err == nil {
-			proxies = yml.proxies
-			return
-		}
-	}
-
-	// 进行 base64 解析
-	v2ray, err := convert.ConvertsV2Ray([]byte(tempStr))
-	if err == nil && v2ray != nil {
-		proxies = v2ray
-	}
-
-	return proxies
 }
 
 // Deduplicate 节点去重
@@ -170,7 +128,118 @@ func Deduplicate(proxies []map[string]any) []map[string]any {
 }
 
 // CrawlProxy 进行节点爬取
-func CrawlProxy(getter models.Getter) []map[string]any {
+func CrawlProxy(getter models.Getter) (proxies []map[string]any) {
+	proxies = make([]map[string]any, 0)
 
-	return nil
+	// 加载缓存的节点
+	cachePath, _ := utils.GetUserHomeDir(constant.DefaultCrawlDir, getter.Id+".yaml")
+	content, err := utils.ReadFile(cachePath)
+	if err != nil {
+		yml := models.Yml{
+			Proxies: proxies,
+		}
+		_ = yaml.Unmarshal([]byte(content), &yml)
+		proxies = yml.Proxies
+		getter.Cache = getter.Available
+	}
+
+	return
+}
+
+var wg sync.WaitGroup
+var mutex sync.Mutex
+
+// ScanProxies 获取节点
+func ScanProxies(content string, headers map[string]string, deep int) (proxies []map[string]any) {
+	proxies = make([]map[string]any, 0)
+	if deep > 1 {
+		return
+	}
+
+	// 清除首尾空格
+	tempStr := strings.TrimSpace(content)
+
+	// 进行 sing 解析
+	if utils.IsJSON(tempStr) {
+		sing, err := convert.ConvertsSingBox([]byte(tempStr))
+		if err == nil && sing != nil {
+			proxies = sing
+			return
+		}
+	}
+
+	// Json base64 解码成功返回
+	if utils.IsBase64(tempStr) {
+		v2ray, err := convert.ConvertsV2Ray([]byte(tempStr))
+		if err == nil && v2ray != nil {
+			proxies = v2ray
+			return
+		}
+	}
+
+	// 要发送请求的地址
+	var urls = make(map[string]models.Void)
+
+	// 尝试clash解析
+	var nullValue models.Void
+	rawCfg, err := config.UnmarshalRawConfig([]byte(tempStr))
+	if err == nil {
+		for _, m := range rawCfg.ProxyProvider {
+			if _, find := m["url"]; !find {
+				continue
+			}
+			s := m["url"].(string)
+			// 为了去重
+			if strings.HasPrefix(s, "http") {
+				urls[s] = nullValue
+			}
+		}
+
+		if len(urls) == 0 {
+			i := len(rawCfg.Proxy)
+			if i > 0 {
+				proxies = append(proxies, rawCfg.Proxy...)
+				return
+			}
+		}
+	}
+
+	// 对内容进行 分享链接 扫描
+	shareLinks := ScanShareLinks(tempStr)
+	builder := strings.Builder{}
+	for _, link := range shareLinks {
+		builder.WriteString(link + "\n")
+	}
+	if builder.Len() > 0 {
+		v2ray, err := convert.ConvertsV2Ray([]byte(builder.String()))
+		if err == nil && v2ray != nil {
+			proxies = append(proxies, v2ray...)
+		}
+	}
+
+	// 对内容进行 url 扫描
+	subs := ScanSubs(tempStr)
+	for _, s := range subs {
+		urls[s] = nullValue
+	}
+
+	// 无需 url 请求，直接返回
+	if len(urls) == 0 {
+		return
+	}
+
+	// 为每个 URL 启动一个 Goroutine 发起请求
+	for url, _ := range urls {
+		wg.Add(1)
+		go Worker(url, &proxies, headers, deep+1)
+	}
+	wg.Wait()
+
+	return
+}
+
+// Worker 发起请求 获取内容
+func Worker(url string, proxies *[]map[string]any, headers map[string]string, deep int) {
+	defer wg.Done() // 标记任务完成
+
 }

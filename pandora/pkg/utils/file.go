@@ -89,6 +89,23 @@ func CreateFile(path string) (*os.File, error) {
 	}
 }
 
+// ReadFile 根据传入的文件路径获取文件中的内容
+func ReadFile(filePath string) (string, error) {
+	// 检查文件是否存在
+	if _, err := os.Stat(filePath); os.IsNotExist(err) {
+		return "", fmt.Errorf("文件不存在: %s", filePath)
+	}
+
+	// 读取文件内容
+	content, err := os.ReadFile(filePath)
+	if err != nil {
+		return "", fmt.Errorf("读取文件时出错: %v", err)
+	}
+
+	// 返回文件内容作为字符串
+	return string(content), nil
+}
+
 // GetUserHomeDir 获取当前用户的根目录
 func GetUserHomeDir(paths ...string) (string, error) {
 	// 尝试使用 os.UserHomeDir（Go 1.12+ 提供的函数）

@@ -17,7 +17,7 @@ type TimeoutPool struct {
 	wg      sync.WaitGroup
 }
 
-// NewTimeoutPoolWithDefaults 初始化一个任务队列长度512
+// NewTimeoutPoolWithDefaults 初始化一个任务队列长度256
 func NewTimeoutPoolWithDefaults() *TimeoutPool {
 	p, _ := ants.NewPool(defaultJobQueueLength, func(opts *ants.Options) {
 		opts.PreAlloc = true
