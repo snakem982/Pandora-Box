@@ -2,6 +2,9 @@ package internal
 
 import _ "embed"
 
+//go:embed embed/version.txt
+var PandoraVersion string
+
 //go:embed embed/config.yaml
 var PandoraDefaultConfig []byte
 
