@@ -1,7 +1,6 @@
 package internal
 
 import (
-	_ "embed"
 	"github.com/metacubex/mihomo/config"
 	C "github.com/metacubex/mihomo/constant"
 	"github.com/metacubex/mihomo/hub/executor"
@@ -17,15 +16,6 @@ import (
 	"runtime"
 	"sync"
 )
-
-//go:embed embed/geoip.metadb
-var GeoIp []byte
-
-//go:embed embed/GeoSite.dat
-var GeoSite []byte
-
-//go:embed embed/GeoLite2-ASN.mmdb
-var ASN []byte
 
 // Init meta 启动前的初始化
 func Init() {
@@ -70,7 +60,7 @@ func StartCore(profile models.Profile, reload bool) {
 	StartLock.Lock()
 	defer StartLock.Unlock()
 
-	templateBuf := models.PandoraDefaultConfig
+	templateBuf := PandoraDefaultConfig
 	useTemplate := false
 	path := profile.Path
 

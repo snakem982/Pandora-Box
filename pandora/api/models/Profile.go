@@ -1,13 +1,5 @@
 package models
 
-import _ "embed"
-
-//go:embed config.yaml
-var PandoraDefaultConfig []byte
-
-//go:embed config_download.yaml
-var PandoraDefaultDownloadConfig []byte
-
 type Profile struct {
 	Id       string `json:"id,omitempty"`
 	Type     int    `json:"type"` // 1: 远程订阅 2：本地配置 3：爬取合并
