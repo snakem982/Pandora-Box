@@ -358,6 +358,7 @@ func CrawlProxy(getter models.Getter) (proxies []map[string]any) {
 
 	// 更新db
 	getter.Available = len(proxies)
+	getter.SetUpdateTime()
 	_ = cache.Put(getter.Id, getter)
 
 	// 清理realIp缓存

@@ -1,5 +1,10 @@
 package models
 
+import (
+	"github.com/snakem982/pandora-box/pandora/pkg/utils"
+	"time"
+)
+
 type Getter struct {
 	Id        string            `json:"id" yaml:"id"`
 	Order     int64             `json:"order" yaml:"order"`
@@ -11,6 +16,15 @@ type Getter struct {
 	Available int               `json:"available,omitempty" yaml:"available,omitempty"`
 	Interval  string            `json:"interval,omitempty" yaml:"interval,omitempty"`
 	Update    string            `json:"update,omitempty" yaml:"update,omitempty"`
+}
+
+func (g *Getter) GetUpdateTime() time.Time {
+	dateTime, _ := utils.ParseDateTime(g.Update)
+	return dateTime
+}
+
+func (g *Getter) SetUpdateTime() {
+	g.Update = utils.GetDateTime()
 }
 
 type Yml struct {
