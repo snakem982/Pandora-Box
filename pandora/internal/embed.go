@@ -2,20 +2,20 @@ package internal
 
 import _ "embed"
 
-//go:embed embed/version.txt
-var PandoraVersion string
-
-//go:embed embed/config.yaml
+//go:embed em/config.yaml
 var PandoraDefaultConfig []byte
 
-//go:embed embed/config_download.yaml
+//go:embed em/config_download.yaml
 var PandoraDefaultDownloadConfig []byte
 
-//go:embed embed/geoip.metadb
+//go:embed em/geoip.metadb
 var GeoIp []byte
 
-//go:embed embed/GeoSite.dat
+//go:embed em/GeoSite.dat
 var GeoSite []byte
 
-//go:embed embed/GeoLite2-ASN.mmdb
+//go:embed em/GeoLite2-ASN.mmdb
 var ASN []byte
+
+//go:embed em/version.txt
+var PandoraVersion string

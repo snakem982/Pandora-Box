@@ -23,7 +23,7 @@ import (
 	"time"
 )
 
-//go:embed embed/flags.json
+//go:embed em/flags.json
 var fsEmoji []byte
 
 var emojiMap = make(map[string]string)
