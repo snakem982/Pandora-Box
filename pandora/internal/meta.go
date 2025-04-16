@@ -27,6 +27,9 @@ var GeoIp []byte
 //go:embed embed/GeoSite.dat
 var GeoSite []byte
 
+//go:embed embed/GeoLite2-ASN.mmdb
+var ASN []byte
+
 // Init meta 启动前的初始化
 func Init() {
 	// 设置工作目录
@@ -67,6 +70,7 @@ func Init() {
 	// 释放资源文件
 	_, _ = utils.SaveFile(utils.GetUserHomeDir("geoip.metadb"), GeoIp)
 	_, _ = utils.SaveFile(utils.GetUserHomeDir("GeoSite.dat"), GeoSite)
+	_, _ = utils.SaveFile(utils.GetUserHomeDir("ASN.mmdb"), ASN)
 }
 
 var NowConfig *config.Config
