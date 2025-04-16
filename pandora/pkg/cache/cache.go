@@ -6,13 +6,28 @@ import (
 	"github.com/metacubex/bbolt"
 	"github.com/metacubex/mihomo/log"
 	"github.com/snakem982/pandora-box/pandora/pkg/constant"
+	"github.com/snakem982/pandora-box/pandora/pkg/utils"
 	"os"
 	"reflect"
 	"strings"
+	"sync"
 )
 
 var BName = []byte("Pandora-Box")
 var BDb *bbolt.DB
+var once sync.Once
+
+func GetDBInstance() *bbolt.DB {
+	once.Do(func() {
+		var err error
+		BDb, err = bbolt.Open(utils.GetUserHomeDir(constant.DefaultDB), 0600, nil)
+		if err != nil {
+			log.Errorln("error opening db:", err)
+		}
+	})
+
+	return BDb
+}
 
 // Put 将任意类型的键值对存储到数据库中
 func Put(key string, value interface{}) error {

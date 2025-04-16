@@ -4,7 +4,6 @@ import (
 	_ "embed"
 	"fmt"
 	"github.com/metacubex/bbolt"
-	"github.com/metacubex/mihomo/component/profile/cachefile"
 	"github.com/metacubex/mihomo/config"
 	C "github.com/metacubex/mihomo/constant"
 	"github.com/metacubex/mihomo/hub/executor"
@@ -50,11 +49,11 @@ func Init() {
 	}
 
 	// 设置cache db
-	cache.BDb = cachefile.Cache().DB
-	if cache.BDb == nil {
+	db := cache.GetDBInstance()
+	if db == nil {
 		os.Exit(1)
 	}
-	_ = cache.BDb.Batch(func(tx *bbolt.Tx) error {
+	_ = db.Batch(func(tx *bbolt.Tx) error {
 		_, err := tx.CreateBucketIfNotExists(cache.BName)
 		if err != nil {
 			log.Warnln("[CacheFile] can't create bucket: %s", err.Error())
