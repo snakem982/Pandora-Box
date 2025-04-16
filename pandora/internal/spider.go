@@ -1,38 +1,24 @@
 package internal
 
 import (
+	"context"
 	_ "embed"
 	"fmt"
+	"github.com/metacubex/mihomo/adapter"
 	"github.com/metacubex/mihomo/common/convert"
+	mu "github.com/metacubex/mihomo/common/utils"
 	"github.com/metacubex/mihomo/config"
 	"github.com/metacubex/mihomo/log"
-	"github.com/sagernet/sing/common/json"
 	"github.com/snakem982/pandora-box/pandora/api/models"
+	"github.com/snakem982/pandora-box/pandora/pkg/cache"
 	"github.com/snakem982/pandora-box/pandora/pkg/constant"
 	"github.com/snakem982/pandora-box/pandora/pkg/utils"
-	"gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v3"
 	"regexp"
 	"strings"
 	"sync"
+	"time"
 )
-
-//go:embed flags.json
-var fsEmoji []byte
-
-var emojiMap = make(map[string]string)
-
-// 初始化国旗
-func init() {
-	type countryEmoji struct {
-		Code  string `json:"code"`
-		Emoji string `json:"emoji"`
-	}
-	var countryEmojiList = make([]countryEmoji, 0)
-	_ = json.Unmarshal(fsEmoji, &countryEmojiList)
-	for _, i := range countryEmojiList {
-		emojiMap[i.Code] = i.Emoji
-	}
-}
 
 // 分享链接
 var shareLinkReg = regexp.MustCompile("(vless|vmess|trojan|ss|ssr|tuic|hysteria|hysteria2|hy2)://([A-Za-z0-9+/_&?=@:%.-])+")
@@ -126,25 +112,6 @@ func Deduplicate(proxies []map[string]any) []map[string]any {
 	}
 
 	return result
-}
-
-// CrawlProxy 进行节点爬取
-func CrawlProxy(getter models.Getter) (proxies []map[string]any) {
-	proxies = make([]map[string]any, 0)
-
-	// 加载缓存的节点
-	cachePath, _ := utils.GetUserHomeDir(constant.DefaultCrawlDir, getter.Id+".yaml")
-	content, err := utils.ReadFile(cachePath)
-	if err != nil {
-		yml := models.Yml{
-			Proxies: proxies,
-		}
-		_ = yaml.Unmarshal([]byte(content), &yml)
-		proxies = yml.Proxies
-		getter.Cache = getter.Available
-	}
-
-	return
 }
 
 var lock sync.Mutex
@@ -265,21 +232,133 @@ func ScanProxies(content string, headers map[string]string, deep int) (proxies [
 
 // Worker 发起请求
 func Worker(url string, proxies *[]map[string]any, headers map[string]string, deep int) {
-	res, err := utils.FastGet(url, headers, GetProxyUrl())
+	// 函数执行计时
+	start := time.Now()
+	var err error
+	var resp *utils.ResponseResult
+	defer func() {
+		elapsed := time.Since(start)
+		if err != nil {
+			log.Errorln("请求失败 URL= %s, 耗时: %v，错误: %v", url, elapsed, err)
+		}
+	}()
+
+	// 并发Get请求
+	resp, err = utils.FastGet(url, headers, GetProxyUrl())
 	if err != nil {
-		log.Warnln("请求失败 URL= %s, 错误: %v", url, err)
+		return
+	}
+	if resp == nil {
+		err = fmt.Errorf("响应为空")
 		return
 	}
 
-	if res == nil {
-		log.Warnln("响应为空 URL= %s", url)
-		return
-	}
-
-	scanProxies := ScanProxies(res.Body, headers, deep)
+	// 对返回内容扫描
+	scanProxies := ScanProxies(resp.Body, headers, deep)
 	if len(scanProxies) > 0 {
 		lock.Lock()
 		*proxies = append(*proxies, scanProxies...)
 		lock.Unlock()
 	}
+}
+
+// UrlTest 延迟测试
+func UrlTest(proxies []map[string]any, testUrl string) []map[string]any {
+	pool := utils.NewTimeoutPoolWithDefaults()
+	result := make([]map[string]any, 0)
+	m := sync.Mutex{}
+
+	expectedStatus, _ := mu.NewUnsignedRanges[uint16]("200/204/301/302/304")
+	url := testUrl
+	if url == "" {
+		url = "https://www.google.com/blank.html"
+	}
+
+	pool.WaitCount(len(proxies))
+	for _, p := range proxies {
+		proxy := p
+		pool.SubmitWithTimeout(func(done chan struct{}) {
+			defer func() {
+				if e := recover(); e != nil {
+					log.Errorln("延迟测试失败, 错误: %v", e)
+				}
+				done <- struct{}{}
+			}()
+
+			switch proxy["type"] {
+			case "wireguard":
+				return
+			case "ss":
+				delete(proxy, "dialer-proxy")
+			default:
+				delete(proxy, "dialer-proxy")
+				proxy["skip-cert-verify"] = true
+			}
+
+			proxyAdapter, err := adapter.ParseProxy(proxy)
+			if err != nil {
+				return
+			}
+
+			ctx, cancel := context.WithTimeout(context.Background(), time.Millisecond*4500)
+			defer cancel()
+			pass := proxyAdapter.URLTestByPandora(ctx, url, expectedStatus)
+			if pass {
+				m.Lock()
+				result = append(result, proxy)
+				m.Unlock()
+			}
+		}, 5*time.Second)
+	}
+	pool.StartAndWait()
+
+	return result
+}
+
+// CrawlProxy 进行节点爬取
+func CrawlProxy(getter models.Getter) (proxies []map[string]any) {
+	proxies = make([]map[string]any, 0)
+
+	// 加载缓存的节点
+	cachePath := utils.GetUserHomeDir(constant.DefaultCrawlDir, getter.Id+".yaml")
+	content, err := utils.ReadFile(cachePath)
+	if err != nil {
+		yml := models.Yml{
+			Proxies: proxies,
+		}
+		_ = yaml.Unmarshal([]byte(content), &yml)
+		proxies = yml.Proxies
+		getter.Cache = getter.Available
+	}
+
+	// 爬取新节点
+	scanProxies := ScanProxies(getter.Content, getter.Headers, 0)
+	getter.Crawl = len(scanProxies)
+	proxies = append(proxies, scanProxies...)
+
+	// 节点去重
+	proxies = Deduplicate(proxies)
+
+	// 连通性测试
+	proxies = UrlTest(proxies, getter.TestUrl)
+
+	// 国家代码查询
+	proxies = GetCountryName(proxies, true)
+
+	// 排序添加Emoji
+	SortAddEmoji(proxies)
+
+	// 存盘
+	yml := models.Yml{
+		Proxies: proxies,
+	}
+	out, _ := yaml.Marshal(yml)
+	savePath := utils.GetUserHomeDir(constant.DefaultCrawlDir, getter.Id+".yaml")
+	_, _ = utils.SaveFile(savePath, out)
+
+	// 更新db
+	getter.Available = len(proxies)
+	_ = cache.Put(getter.Id, getter)
+
+	return
 }

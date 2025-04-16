@@ -107,17 +107,13 @@ func ReadFile(filePath string) (string, error) {
 }
 
 // GetUserHomeDir 获取当前用户的根目录
-func GetUserHomeDir(paths ...string) (string, error) {
+func GetUserHomeDir(paths ...string) string {
 	// 尝试使用 os.UserHomeDir（Go 1.12+ 提供的函数）
 	if home, err := os.UserHomeDir(); err == nil {
-		return filepath.Join(append([]string{home, constant.DefaultWorkDir}, paths...)...), nil
+		return filepath.Join(append([]string{home, constant.DefaultWorkDir}, paths...)...)
 	}
 
 	// 如果 os.UserHomeDir 不适用，使用 os/user 包获取
-	currentUser, err := user.Current()
-	if err != nil {
-		return "", fmt.Errorf("获取当前用户失败: %v", err)
-	}
-
-	return filepath.Join(append([]string{currentUser.HomeDir, constant.DefaultWorkDir}, paths...)...), nil
+	currentUser, _ := user.Current()
+	return filepath.Join(append([]string{currentUser.HomeDir, constant.DefaultWorkDir}, paths...)...)
 }

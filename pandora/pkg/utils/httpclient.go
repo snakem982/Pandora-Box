@@ -12,16 +12,27 @@ import (
 	"time"
 )
 
+// ConnTimeOut 请求时间
+var ConnTimeOut = time.Second * 15
+
+// DialTimeOut 拨号时间
+var DialTimeOut = time.Second * 5
+
+// FastTimeOut 并发请求时间
+var FastTimeOut = time.Second * 16
+
 // SendGet 发送 GET 请求
 func SendGet(requestURL string, headers map[string]string, proxyURL string) (string, http.Header, error) {
 	// 创建 HTTP 客户端
-	client := &http.Client{}
+	client := &http.Client{
+		Timeout: ConnTimeOut,
+	}
 
 	// 创建 Transport 并允许不安全链接
 	transport := &http.Transport{
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 		DialContext: (&net.Dialer{
-			Timeout: 5 * time.Second, // 仅拨号阶段超时设置
+			Timeout: DialTimeOut, // 仅拨号阶段超时设置
 		}).DialContext,
 	}
 
@@ -118,7 +129,7 @@ func FastGet(requestURL string, headers map[string]string, proxyURL string) (*Re
 	select {
 	case result := <-results:
 		return result, nil
-	case <-time.After(15 * time.Second): // 设置超时时间
+	case <-time.After(FastTimeOut): // 设置超时时间
 		// 如果所有请求都失败，从错误通道中获取错误信息
 		var proxyErr, directErr error
 		for err := range errors {

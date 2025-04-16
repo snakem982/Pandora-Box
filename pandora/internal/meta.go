@@ -1,6 +1,7 @@
 package internal
 
 import (
+	_ "embed"
 	"fmt"
 	"github.com/metacubex/bbolt"
 	"github.com/metacubex/mihomo/component/profile/cachefile"
@@ -20,13 +21,19 @@ import (
 	"sync"
 )
 
+//go:embed embed/geoip.metadb
+var GeoIp []byte
+
+//go:embed embed/GeoSite.dat
+var GeoSite []byte
+
 // Init meta 启动前的初始化
-func Init(homeDir string) {
+func Init() {
 	// 设置工作目录
-	C.SetHomeDir(homeDir)
+	C.SetHomeDir(utils.GetUserHomeDir())
 
 	// 设置日志输出目录
-	logFilePath := filepath.Join(homeDir, "/logs/px.log")
+	logFilePath := utils.GetUserHomeDir("logs", "px.log")
 	f, err := utils.CreateFile(logFilePath)
 	if err != nil {
 		return
@@ -52,6 +59,14 @@ func Init(homeDir string) {
 		}
 		return nil
 	})
+
+	// 输出日志
+	log.Infoln("[CacheDB] initialized")
+	log.Infoln("[HomePath] is %s", utils.GetUserHomeDir())
+
+	// 释放资源文件
+	_, _ = utils.SaveFile(utils.GetUserHomeDir("geoip.metadb"), GeoIp)
+	_, _ = utils.SaveFile(utils.GetUserHomeDir("GeoSite.dat"), GeoSite)
 }
 
 var NowConfig *config.Config
@@ -69,8 +84,9 @@ func StartCore(profile models.Profile, reload bool) {
 	template, err := os.ReadFile(filepath.Join(C.Path.HomeDir(), constant.DefaultTemplate))
 	if err == nil && len(template) > 0 {
 		templateBuf = template
-		on := cache.Get(constant.DefaultTemplate)
-		if string(on) == "on" {
+		var on string
+		_ = cache.Get(constant.DefaultTemplate, &on)
+		if on == "on" {
 			useTemplate = true
 		}
 	}

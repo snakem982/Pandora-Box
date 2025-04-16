@@ -1,50 +1,82 @@
 package cache
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/metacubex/bbolt"
 	"github.com/metacubex/mihomo/log"
 	"github.com/snakem982/pandora-box/pandora/pkg/constant"
 	"os"
+	"reflect"
 	"strings"
 )
 
 var BName = []byte("Pandora-Box")
 var BDb *bbolt.DB
 
-// Put 将给定的键值对存储到数据库中
-func Put(key string, value []byte) error {
+// Put 将任意类型的键值对存储到数据库中
+func Put(key string, value interface{}) error {
 	return BDb.Update(func(tx *bbolt.Tx) error {
-		b := tx.Bucket(BName)            // 获取数据库中的指定桶
-		err := b.Put([]byte(key), value) // 将键值对存储到桶中
-		return err                       // 返回可能发生的错误
+		// 将任意类型的值编码为 JSON 格式的 []byte
+		encodedValue, err := json.Marshal(value)
+		if err != nil {
+			return err // 如果编码失败，则返回错误
+		}
+		b := tx.Bucket(BName)                  // 获取数据库中指定的桶
+		err = b.Put([]byte(key), encodedValue) // 将键值对存储到桶中
+		return err                             // 返回可能的错误
 	})
 }
 
-// Get 函数接受一个字符串类型的键值(key)作为参数，并返回一个字节数组
-func Get(key string) (value []byte) {
-	_ = BDb.View(func(tx *bbolt.Tx) error {
-		b := tx.Bucket(BName)      // 获取数据库对应的桶
-		value = b.Get([]byte(key)) // 根据提供的键获取与之对应的值
-		return nil
+// Get 从数据库中获取键对应的值并解码为指定类型
+func Get(key string, value interface{}) error {
+	return BDb.View(func(tx *bbolt.Tx) error {
+		b := tx.Bucket(BName)              // 获取指定的桶
+		encodedValue := b.Get([]byte(key)) // 根据键获取值
+		if encodedValue == nil {
+			return fmt.Errorf("key not found") // 若键不存在，返回错误
+		}
+		// 将 JSON 格式的 []byte 解码为原始类型
+		err := json.Unmarshal(encodedValue, value)
+		return err // 返回可能的解码错误
 	})
-
-	return value // 返回获取到的值
 }
 
-func GetList(key string) (values [][]byte) {
-	values = make([][]byte, 0)
-	_ = BDb.View(func(tx *bbolt.Tx) error {
-		b := tx.Bucket(BName)
+// GetList 获取与指定前缀键相关的所有值，并解码为指定类型的切片
+func GetList(key string, values interface{}) error {
+	// 检查传入的 values 是否为切片的指针
+	v := reflect.ValueOf(values)
+	if v.Kind() != reflect.Ptr || v.Elem().Kind() != reflect.Slice {
+		return fmt.Errorf("values must be a pointer to a slice")
+	}
+
+	// 临时存储 JSON 格式的字节切片
+	tempValues := make([][]byte, 0)
+
+	err := BDb.View(func(tx *bbolt.Tx) error {
+		b := tx.Bucket(BName) // 获取桶
 		return b.ForEach(func(k, v []byte) error {
 			if strings.HasPrefix(string(k), key) {
-				values = append(values, v)
+				tempValues = append(tempValues, v)
 			}
 			return nil
 		})
 	})
+	if err != nil {
+		return err // 返回可能的错误
+	}
 
-	return values
+	// 解码 JSON 数据到目标切片
+	sliceValue := v.Elem()
+	for _, encodedValue := range tempValues {
+		elem := reflect.New(sliceValue.Type().Elem()).Interface()
+		if err := json.Unmarshal(encodedValue, elem); err != nil {
+			return err // 解码错误
+		}
+		sliceValue.Set(reflect.Append(sliceValue, reflect.ValueOf(elem).Elem()))
+	}
+
+	return nil
 }
 
 func Delete(key string) error {
@@ -135,10 +167,18 @@ func Recovery(srcDBPath string) error {
 		}
 	}(srcDB)
 
-	return srcDB.View(func(tx *bbolt.Tx) error {
-		b := tx.Bucket(BName)
-		return b.ForEach(func(k, v []byte) error {
-			return Put(string(k), v)
+	return BDb.Batch(func(tx *bbolt.Tx) error {
+		newBucket, err := tx.CreateBucketIfNotExists(BName)
+		if err != nil {
+			log.Warnln("[DumpFile] can't create bucket: %s", err.Error())
+			return fmt.Errorf("create bucket: %v", err)
+		}
+
+		return srcDB.View(func(tx *bbolt.Tx) error {
+			b := tx.Bucket(BName)
+			return b.ForEach(func(k, v []byte) error {
+				return newBucket.Put(k, v)
+			})
 		})
 	})
 }
