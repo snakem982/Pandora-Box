@@ -18,15 +18,6 @@ type Getter struct {
 	Update    string            `json:"update,omitempty" yaml:"update,omitempty"`
 }
 
-func (g *Getter) GetUpdateTime() time.Time {
-	dateTime, _ := utils.ParseDateTime(g.Update)
-	return dateTime
-}
-
-func (g *Getter) SetUpdateTime() {
-	g.Update = utils.GetDateTime()
-}
-
 type Yml struct {
 	Proxies []map[string]any `json:"proxies,omitempty" yaml:"proxies,omitempty"`
 }
@@ -36,4 +27,13 @@ type Void struct{}
 type RealIp struct {
 	Key         string `json:"key" yaml:"key"`
 	CountryCode string `json:"country_code" yaml:"country_code"`
+}
+
+func (g *Getter) GetUpdateTime() time.Time {
+	dateTime, _ := utils.ParseDateTime(g.Update)
+	return dateTime
+}
+
+func (g *Getter) SetUpdateTime() {
+	g.Update = utils.GetDateTime()
 }

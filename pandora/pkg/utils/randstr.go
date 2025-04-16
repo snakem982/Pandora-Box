@@ -2,8 +2,10 @@ package utils
 
 import (
 	"bytes"
+	"crypto/md5"
 	"crypto/rand"
 	"encoding/binary"
+	"encoding/hex"
 )
 
 // RandBytes generates n random bytes
@@ -64,4 +66,12 @@ func RandString(n int, letters ...string) string {
 		bb.WriteRune(letterRunes[binary.BigEndian.Uint32(RandBytes(4))%l])
 	}
 	return bb.String()
+}
+
+// MD5 计算md5
+func MD5(v string) string {
+	d := []byte(v)
+	m := md5.New()
+	m.Write(d)
+	return hex.EncodeToString(m.Sum(nil))
 }

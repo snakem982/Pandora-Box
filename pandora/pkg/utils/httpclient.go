@@ -84,7 +84,7 @@ func SendGet(requestURL string, headers map[string]string, proxyURL string) (str
 
 type ResponseResult struct {
 	Body    string
-	Headers map[string][]string
+	Headers http.Header
 }
 
 // FastGet 并发 GET 请求
