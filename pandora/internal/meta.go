@@ -2,8 +2,6 @@ package internal
 
 import (
 	_ "embed"
-	"fmt"
-	"github.com/metacubex/bbolt"
 	"github.com/metacubex/mihomo/config"
 	C "github.com/metacubex/mihomo/constant"
 	"github.com/metacubex/mihomo/hub/executor"
@@ -53,14 +51,6 @@ func Init() {
 	if db == nil {
 		os.Exit(1)
 	}
-	_ = db.Batch(func(tx *bbolt.Tx) error {
-		_, err := tx.CreateBucketIfNotExists(cache.BName)
-		if err != nil {
-			log.Warnln("[CacheFile] can't create bucket: %s", err.Error())
-			return fmt.Errorf("create bucket: %v", err)
-		}
-		return nil
-	})
 
 	// 输出日志
 	log.Infoln("[CacheDB] initialized")

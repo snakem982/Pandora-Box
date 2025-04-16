@@ -23,7 +23,16 @@ func GetDBInstance() *bbolt.DB {
 		BDb, err = bbolt.Open(utils.GetUserHomeDir(constant.DefaultDB), 0600, nil)
 		if err != nil {
 			log.Errorln("error opening db:", err)
+			return
 		}
+		_ = BDb.Batch(func(tx *bbolt.Tx) error {
+			_, err := tx.CreateBucketIfNotExists(BName)
+			if err != nil {
+				log.Warnln("[CacheFile] can't create bucket: %s", err.Error())
+				return fmt.Errorf("create bucket: %v", err)
+			}
+			return nil
+		})
 	})
 
 	return BDb
