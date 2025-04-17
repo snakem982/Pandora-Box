@@ -21,10 +21,10 @@ import (
 )
 
 // 保存文件
-func saveProfile(proxies []map[string]any, profile models.Profile) {
+func saveProfile(proxies []map[string]any, profile *models.Profile) {
 	yml := models.Yml{Proxies: proxies}
 	out, _ := yaml.Marshal(yml)
-	savePath := utils.GetUserHomeDir("profiles", profile.Id+".yaml")
+	savePath := utils.GetUserHomeDir(profile.Path)
 	_, _ = utils.SaveFile(savePath, out)
 }
 
@@ -65,9 +65,9 @@ func MapsToProxies(ray []map[string]any) []map[string]any {
 }
 
 // Resolve 解析内容，保存成 profile
-func Resolve(input models.Profile, refresh bool) (models.Profile, error) {
-	profile := input
-	tempStr := strings.TrimSpace(profile.Content)
+func Resolve(content string, profile *models.Profile, refresh bool) error {
+	// 解析内容预处理
+	tempStr := strings.TrimSpace(content)
 	tempBytes := []byte(tempStr)
 
 	// 如果不是刷新则创建 id
@@ -75,18 +75,18 @@ func Resolve(input models.Profile, refresh bool) (models.Profile, error) {
 		snowflakeId := utils.SnowflakeId()
 		profile.Id = fmt.Sprintf("%s%d", constant.PrefixProfile, snowflakeId)
 		profile.Order = snowflakeId
+		profile.Path = "./profiles/" + profile.Id + ".yaml"
 	}
-	profile.SetUpdateTime()
 
 	// Sing解析
 	if utils.IsJSON(tempStr) {
 		sing, err := convert.ConvertsSingBox(tempBytes)
 		if err == nil {
 			saveProfile(sing, profile)
-			return profile, nil
+			return nil
 		}
 
-		return profile, err
+		return err
 	}
 
 	// Base64解析
@@ -94,10 +94,10 @@ func Resolve(input models.Profile, refresh bool) (models.Profile, error) {
 		v2ray, err := convert.ConvertsV2Ray(tempBytes)
 		if err == nil {
 			saveProfile(v2ray, profile)
-			return profile, nil
+			return nil
 		}
 
-		return profile, err
+		return err
 	}
 
 	// 分享链接解析
@@ -110,10 +110,10 @@ func Resolve(input models.Profile, refresh bool) (models.Profile, error) {
 		share, err := convert.ConvertsV2Ray([]byte(builder.String()))
 		if err == nil {
 			saveProfile(share, profile)
-			return profile, nil
+			return nil
 		}
 
-		return profile, err
+		return err
 	}
 
 	// Yaml解析
@@ -124,10 +124,10 @@ func Resolve(input models.Profile, refresh bool) (models.Profile, error) {
 			// 配置校验失败，尝试提取可用节点
 			rails := MapsToProxies(rawCfg.Proxy)
 			if len(rails) == 0 {
-				return profile, yamlError
+				return yamlError
 			} else {
 				saveProfile(rails, profile)
-				return profile, nil
+				return nil
 			}
 		}
 
@@ -136,25 +136,25 @@ func Resolve(input models.Profile, refresh bool) (models.Profile, error) {
 
 			// 对 provider 进行路径替换
 			findProvider := changeProvidersPath(profile.Order, rawCfg)
-			var content []byte
+			var yml []byte
 			if findProvider {
-				content, _ = yaml.Marshal(rawCfg)
-				profile.Path = fmt.Sprintf("profiles/%d/%s.yaml", profile.Order, profile.Id)
+				yml, _ = yaml.Marshal(rawCfg)
+				profile.Path = fmt.Sprintf("./profiles/%d/%s.yaml", profile.Order, profile.Id)
 			} else {
-				content = tempBytes
-				profile.Path = "profiles/" + profile.Id + ".yaml"
+				yml = tempBytes
 			}
 
 			// 保存操作
 			savePath := utils.GetUserHomeDir(profile.Path)
-			_, _ = utils.SaveFile(savePath, content)
-			return profile, nil
+			_, _ = utils.SaveFile(savePath, yml)
+			return nil
+		} else {
+			return fmt.Errorf("proxy or provider is 0")
 		}
 
-		return profile, fmt.Errorf("proxy or provider is 0")
 	}
 
-	return profile, err
+	return err
 }
 
 func changeProvidersPath(snowflakeId int64, config *config.RawConfig) (findProvider bool) {
@@ -167,8 +167,8 @@ func changeProvidersPath(snowflakeId int64, config *config.RawConfig) (findProvi
 		if path, findPath := provider["path"]; findPath {
 			provider["path"] = dir + ReplaceTwoPoint(path.(string))
 		} else {
-			if url, findUrl := provider["url"]; findUrl {
-				provider["path"] = dir + utils.MD5(url.(string))
+			if u, findUrl := provider["url"]; findUrl {
+				provider["path"] = dir + utils.MD5(u.(string))
 			}
 		}
 
@@ -181,8 +181,8 @@ func changeProvidersPath(snowflakeId int64, config *config.RawConfig) (findProvi
 		if path, findPath := ruleProvider["path"]; findPath {
 			ruleProvider["path"] = dir + ReplaceTwoPoint(path.(string))
 		} else {
-			if url, findUrl := ruleProvider["url"]; findUrl {
-				ruleProvider["path"] = dir + utils.MD5(url.(string))
+			if u, findUrl := ruleProvider["url"]; findUrl {
+				ruleProvider["path"] = dir + utils.MD5(u.(string))
 			}
 		}
 

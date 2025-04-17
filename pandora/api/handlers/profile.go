@@ -24,7 +24,7 @@ func profileRouter() http.Handler {
 	r.Get("/", getProfile)
 	r.Post("/file", postFile)
 	r.Post("/", postProfile)
-	//r.Put("/refresh", refreshProfile)
+	r.Put("/refresh", refreshProfile)
 
 	//r.Route("/{id}", func(r chi.Router) {
 	//	r.Put("/", putProfile)
@@ -42,8 +42,9 @@ func ErrorResponse(w http.ResponseWriter, r *http.Request, err error) {
 }
 
 // UpdateDb 更新数据库
-func UpdateDb(profile models.Profile, kind int) {
+func UpdateDb(profile *models.Profile, kind int) {
 	profile.Type = kind
+	profile.SetUpdateTime()
 	if kind == 2 {
 		profile.Content = ""
 	}
@@ -68,12 +69,10 @@ func postFile(w http.ResponseWriter, r *http.Request) {
 		}
 	}(open)
 	content, _ := io.ReadAll(open)
-	temp := models.Profile{
-		Content: string(content),
-	}
 
 	// 解析存盘
-	profile, err := internal.Resolve(temp, false)
+	profile := &models.Profile{}
+	err := internal.Resolve(string(content), profile, false)
 	if err != nil {
 		log.Errorln("[postFile] Resolve Error:%v", err)
 		ErrorResponse(w, r, err)
@@ -97,12 +96,9 @@ func postProfile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// 进行基本解析
-	temp := models.Profile{
-		Content: body.Data,
-	}
 	// 解析存盘
-	profile, err := internal.Resolve(temp, false)
+	profile := &models.Profile{}
+	err := internal.Resolve(body.Data, profile, false)
 	if err == nil {
 		profile.Title = "Local-" + utils.RandString(5)
 		UpdateDb(profile, 2)
@@ -126,14 +122,12 @@ func postProfile(w http.ResponseWriter, r *http.Request) {
 		}
 
 		// 解析存盘
-		temp = models.Profile{
-			Content: res.Body,
-		}
-		subProfile, err := internal.Resolve(temp, false)
+		subProfile := &models.Profile{}
+		err = internal.Resolve(res.Body, subProfile, false)
 		if err == nil {
 			// 进行请求头解析
-			internal.ParseHeaders(res.Headers, sub, &subProfile)
-			UpdateDb(profile, 1)
+			internal.ParseHeaders(res.Headers, sub, subProfile)
+			UpdateDb(subProfile, 1)
 			ok = true
 		} else {
 			tempErr = err
@@ -143,6 +137,38 @@ func postProfile(w http.ResponseWriter, r *http.Request) {
 	if !ok {
 		ErrorResponse(w, r, tempErr)
 		return
+	}
+
+	render.NoContent(w, r)
+}
+
+func refreshProfile(w http.ResponseWriter, r *http.Request) {
+	profile := models.Profile{}
+	if err := render.DecodeJSON(r.Body, &profile); err != nil {
+		ErrorResponse(w, r, err)
+		return
+	}
+
+	// 发送请求
+	sub := profile.Content
+	headers := map[string]string{}
+	res, err := utils.FastGet(sub, headers, internal.GetProxyUrl())
+	if err != nil {
+		ErrorResponse(w, r, err)
+		log.Errorln("[refreshProfile] URL = %s, Request Error:%v", sub, err)
+		return
+	}
+
+	// 解析存盘
+	subProfile := &models.Profile{}
+	err = internal.Resolve(res.Body, subProfile, true)
+	if err == nil {
+		// 进行请求头解析
+		internal.ParseHeaders(res.Headers, sub, subProfile)
+		UpdateDb(subProfile, 1)
+	} else {
+		ErrorResponse(w, r, err)
+		log.Errorln("[refreshProfile] URL = %s, Resolve Error:%v", sub, err)
 	}
 
 	render.NoContent(w, r)
