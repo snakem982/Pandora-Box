@@ -13,6 +13,8 @@ import (
 	"io"
 	"mime/multipart"
 	"net/http"
+	"path/filepath"
+	"strings"
 )
 
 func Profile(r chi.Router) {
@@ -21,16 +23,19 @@ func Profile(r chi.Router) {
 
 func profileRouter() http.Handler {
 	r := chi.NewRouter()
+	// 增加
+	r.Post("/", addFromWeb)
+	r.Post("/file", addFromFile)
+	// 删除
+	r.Delete("/", deleteProfile)
+	// 修改
+	r.Put("/", putProfile)
+	// 查找
 	r.Get("/", getProfile)
-	r.Post("/file", postFile)
-	r.Post("/", postProfile)
+	// 更新订阅
 	r.Put("/refresh", refreshProfile)
-
-	//r.Route("/{id}", func(r chi.Router) {
-	//	r.Put("/", putProfile)
-	//	r.Delete("/", deleteProfile)
-	//	r.Patch("/", patchProfile)
-	//})
+	// 切换订阅
+	r.Patch("/", switchProfile)
 
 	return r
 }
@@ -58,7 +63,7 @@ func getProfile(w http.ResponseWriter, r *http.Request) {
 	render.JSON(w, r, res)
 }
 
-func postFile(w http.ResponseWriter, r *http.Request) {
+func addFromFile(w http.ResponseWriter, r *http.Request) {
 	// 获取数据
 	_, header, _ := r.FormFile("file")
 	open, _ := header.Open()
@@ -74,7 +79,7 @@ func postFile(w http.ResponseWriter, r *http.Request) {
 	profile := &models.Profile{}
 	err := internal.Resolve(string(content), profile, false)
 	if err != nil {
-		log.Errorln("[postFile] Resolve Error:%v", err)
+		log.Errorln("[addFromFile] Resolve Error:%v", err)
 		ErrorResponse(w, r, err)
 		return
 	}
@@ -86,7 +91,7 @@ func postFile(w http.ResponseWriter, r *http.Request) {
 	render.NoContent(w, r)
 }
 
-func postProfile(w http.ResponseWriter, r *http.Request) {
+func addFromWeb(w http.ResponseWriter, r *http.Request) {
 	// 数据解析
 	body := struct {
 		Data string `json:"data"`
@@ -105,7 +110,7 @@ func postProfile(w http.ResponseWriter, r *http.Request) {
 		render.NoContent(w, r)
 		return
 	} else {
-		log.Errorln("[postProfile] Resolve Error:%v", err)
+		log.Errorln("[addFromWeb] Resolve Error:%v", err)
 	}
 
 	// 扫描订阅
@@ -117,7 +122,7 @@ func postProfile(w http.ResponseWriter, r *http.Request) {
 		res, err := utils.FastGet(sub, headers, internal.GetProxyUrl())
 		if err != nil {
 			tempErr = err
-			log.Errorln("[postProfile] URL = %s, Request Error:%v", sub, err)
+			log.Errorln("[addFromWeb] URL = %s, Request Error:%v", sub, err)
 			continue
 		}
 
@@ -131,7 +136,7 @@ func postProfile(w http.ResponseWriter, r *http.Request) {
 			ok = true
 		} else {
 			tempErr = err
-			log.Errorln("[postProfile] URL = %s, Resolve Error:%v", sub, err)
+			log.Errorln("[addFromWeb] URL = %s, Resolve Error:%v", sub, err)
 		}
 	}
 	if !ok {
@@ -170,6 +175,65 @@ func refreshProfile(w http.ResponseWriter, r *http.Request) {
 		ErrorResponse(w, r, err)
 		log.Errorln("[refreshProfile] URL = %s, Resolve Error:%v", sub, err)
 	}
+
+	render.NoContent(w, r)
+}
+
+func putProfile(w http.ResponseWriter, r *http.Request) {
+	profile := models.Profile{}
+	if err := render.DecodeJSON(r.Body, &profile); err != nil {
+		ErrorResponse(w, r, err)
+		return
+	}
+
+	_ = cache.Put(profile.Id, profile)
+
+	render.NoContent(w, r)
+}
+
+// 删除配置
+func deleteProfile(w http.ResponseWriter, r *http.Request) {
+	profile := models.Profile{}
+	if err := render.DecodeJSON(r.Body, &profile); err != nil {
+		ErrorResponse(w, r, err)
+		return
+	}
+
+	path := utils.GetUserHomeDir(profile.Path)
+	dir := filepath.Dir(path)
+	if strings.HasSuffix(dir, "profiles") {
+		_ = utils.DeletePath(path)
+	} else {
+		_ = utils.DeletePath(dir)
+	}
+	_ = cache.Delete(profile.Id)
+
+	render.NoContent(w, r)
+}
+
+// 切换配置
+func switchProfile(w http.ResponseWriter, r *http.Request) {
+	var profile models.Profile
+	if err := render.DecodeJSON(r.Body, &profile); err != nil {
+		ErrorResponse(w, r, err)
+		return
+	}
+
+	var profiles []models.Profile
+	_ = cache.GetList(constant.PrefixProfile, &profiles)
+	for _, p := range profiles {
+		if p.Selected {
+			p.Selected = false
+			_ = cache.Put(p.Id, p)
+			break
+		} else {
+			continue
+		}
+	}
+	profile.Selected = true
+	_ = cache.Put(profile.Id, profile)
+
+	internal.StartCore(profile, true)
 
 	render.NoContent(w, r)
 }
