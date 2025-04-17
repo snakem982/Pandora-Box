@@ -1,28 +1,33 @@
 <script setup lang="ts">
-let sArray = [
-  {title: "亚马逊机房", selected: false},
-  {title: "CloudFlare 转发", selected: false},
-  {title: "大威天龙", selected: false},
-  {title: "降龙十八掌", selected: false},
-  {title: "打狗棒法", selected: false},
-  {title: "一阳指", selected: false},
-  {title: "庐山升龙霸", selected: false},
-  {title: "天马流星拳", selected: false},
-  {title: "巴拉拉小魔仙", selected: false},
-  {title: "榴莲", selected: true},
-  {
-    title: "百分百空百分百空手接白刃百分百空手接白刃百分百空手接白刃百分百空手接白刃百分百空手接白刃手接白刃",
-    selected: false
-  },
-  {title: "士力架", selected: false},
-]
-let configs = reactive([])
+import {Profile} from "@/types/profile";
+import createApi from "@/api";
+import {error, success} from "@/util/load";
+import {useProxiesStore} from "@/store/proxiesStore";
+import {useMenuStore} from "@/store/menuStore";
 
+// 获取当前 Vue 实例的 proxy 对象
+const {proxy} = getCurrentInstance()!;
+const api = createApi(proxy);
 
-onBeforeMount(function (): void {
-  configs = sArray
+// 当前页面使用store
+const menuStore = useMenuStore();
+const proxiesStore = useProxiesStore();
+
+let profiles = reactive<any[]>([])
+
+async function getProfileList() {
+  if (profiles.length != 0) {
+    profiles.splice(0, profiles.length)
+  }
+  const list = await api.getProfileList()
+  list.forEach(item => {
+    profiles.push(item)
+  })
+}
+
+onMounted(async () => {
+  await getProfileList()
 })
-
 
 const canDrag = ref(false)
 
@@ -36,7 +41,75 @@ function mouseLeave() {
 
 
 function handleEmit(value: any) {
-  console.log(configs)
+  console.log(profiles)
+}
+
+const dialogFormVisible = ref(false)
+const profile = reactive({
+  content: '',
+})
+
+const isNowAdd = ref(false)
+
+async function add() {
+  if (!profile.content) {
+    return
+  }
+
+  isNowAdd.value = true
+  const p = new Profile()
+  p.content = profile.content
+  try {
+    await api.addProfileFromInput(p)
+    await getProfileList()
+    profile.content = ""
+    dialogFormVisible.value = false
+  } catch (e) {
+    isNowAdd.value = false
+    if (e['message']) {
+      error(e['message'])
+    }
+  }
+}
+
+async function switchProfile(data: any) {
+  if (data['selected']) {
+    return
+  }
+
+  try {
+    await api.switchProfile(data)
+    proxiesStore.active = ""
+
+    for (let profile of profiles) {
+      if (profile['selected']) {
+        profile['selected'] = false
+        break
+      }
+    }
+    data['selected'] = true
+
+    api.getRules().then((res) => {
+      menuStore.setRuleNum(res.length);
+    });
+
+  } catch (e) {
+    if (e['message']) {
+      error(e['message'])
+    }
+  }
+
+}
+
+async function refresh(data: any) {
+  try {
+    await api.refreshProfile(data)
+    success("刷新成功")
+  } catch (e) {
+    if (e['message']) {
+      error(e['message'])
+    }
+  }
 }
 
 </script>
@@ -53,7 +126,9 @@ function handleEmit(value: any) {
           <el-tooltip
               :content="$t('profiles.add')"
               placement="top">
-            <el-icon class="profile-option-btn">
+            <el-icon
+                @click="dialogFormVisible = true"
+                class="profile-option-btn">
               <icon-mdi-plus-thick/>
             </el-icon>
           </el-tooltip>
@@ -89,27 +164,34 @@ function handleEmit(value: any) {
     <template #bottom>
 
       <VDContainer
-          :data="configs"
+          :data="profiles"
           @getData="handleEmit"
           :gap="15"
           :draggable="canDrag"
           style="margin-left: 10px;width: 95%;"
       >
         <template v-slot:VDC="{data,index}">
-          <div :class="data.selected?'sub-card sub-card-select':'sub-card'">
+          <div
+              :class="data.selected?'sub-card sub-card-select':'sub-card'"
+              @click="switchProfile(data)"
+          >
             <div class="row">
               <el-icon
-                  @mouseenter="mouseEnter"
-                  @mouseleave="mouseLeave"
+                  @mouseenter.stop="mouseEnter"
+                  @mouseleave.stop="mouseLeave"
                   size="22"
                   class="drag">
                 <icon-mdi-drag/>
               </el-icon>
-              <el-icon size="22">
+              <el-icon size="22"
+                       v-if="data.type == 1"
+                       @click.stop="refresh(data)">
                 <icon-mdi-refresh/>
               </el-icon>
             </div>
-            <div class="system-info">
+            <div
+                class="system-info"
+            >
               <span :title="data.title">
                 {{ data.title }}
               </span>
@@ -128,6 +210,36 @@ function handleEmit(value: any) {
 
     </template>
   </MyLayout>
+
+  <el-dialog v-model="dialogFormVisible"
+             title="添加订阅"
+             width="500"
+             class="ok"
+  >
+    <el-form :model="profile">
+      <el-form-item>
+        <el-input
+            type="textarea"
+            placeholder="订阅地址、分享链接、Yaml、Base64、Json"
+            v-model="profile.content"
+            autocomplete="off"/>
+      </el-form-item>
+    </el-form>
+    <template #footer>
+      <div class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">
+          取消
+        </el-button>
+        <el-button
+            :loading="isNowAdd"
+            type="primary"
+            @click="add">
+          确定
+        </el-button>
+      </div>
+    </template>
+  </el-dialog>
+
 
 </template>
 

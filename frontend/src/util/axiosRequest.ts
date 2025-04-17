@@ -32,13 +32,18 @@ export class AxiosRequest {
         // 添加响应拦截器
         this.instance.interceptors.response.use(
             (response: AxiosResponse) => {
-                // 对响应数据做点什么
-                return response.data;
+                // 对响应数据做处理，只有状态码为 200 或 204 时返回数据
+                if (response.status === 200) {
+                    return response.data;
+                }
             },
-            (error: any) => {
+            (e: any) => {
+                if (e['response'] && e['response']['data']) {
+                    return Promise.reject(e['response']['data']);
+                }
                 // 处理响应错误
                 // @ts-ignore
-                return Promise.reject(error);
+                return Promise.reject(e);
             },
         );
     }

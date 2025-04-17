@@ -10,8 +10,6 @@ import (
 	"github.com/snakem982/pandora-box/pandora/pkg/cache"
 	"github.com/snakem982/pandora-box/pandora/pkg/constant"
 	"github.com/snakem982/pandora-box/pandora/pkg/utils"
-	"io"
-	"mime/multipart"
 	"net/http"
 	"path/filepath"
 	"strings"
@@ -65,19 +63,14 @@ func getProfile(w http.ResponseWriter, r *http.Request) {
 
 func addFromFile(w http.ResponseWriter, r *http.Request) {
 	// 获取数据
-	_, header, _ := r.FormFile("file")
-	open, _ := header.Open()
-	defer func(open multipart.File) {
-		err := open.Close()
-		if err != nil {
-
-		}
-	}(open)
-	content, _ := io.ReadAll(open)
+	profile := &models.Profile{}
+	if err := render.DecodeJSON(r.Body, profile); err != nil {
+		ErrorResponse(w, r, err)
+		return
+	}
 
 	// 解析存盘
-	profile := &models.Profile{}
-	err := internal.Resolve(string(content), profile, false)
+	err := internal.Resolve(profile.Content, profile, false)
 	if err != nil {
 		log.Errorln("[addFromFile] Resolve Error:%v", err)
 		ErrorResponse(w, r, err)
@@ -85,38 +78,37 @@ func addFromFile(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// 更新数据库
-	profile.Title = header.Filename
 	UpdateDb(profile, 2)
 
 	render.NoContent(w, r)
 }
 
 func addFromWeb(w http.ResponseWriter, r *http.Request) {
-	// 数据解析
-	body := struct {
-		Data string `json:"data"`
-	}{}
-	if err := render.DecodeJSON(r.Body, &body); err != nil {
-		ErrorResponse(w, r, route.ErrBadRequest)
+	// 获取数据
+	profile := &models.Profile{}
+	if err := render.DecodeJSON(r.Body, profile); err != nil {
+		ErrorResponse(w, r, err)
 		return
 	}
 
+	// 返回页面错误
+	var tempErr error
+
 	// 解析存盘
-	profile := &models.Profile{}
-	err := internal.Resolve(body.Data, profile, false)
+	err := internal.Resolve(profile.Content, profile, false)
 	if err == nil {
 		profile.Title = "Local-" + utils.RandString(5)
 		UpdateDb(profile, 2)
 		render.NoContent(w, r)
 		return
 	} else {
+		tempErr = err
 		log.Errorln("[addFromWeb] Resolve Error:%v", err)
 	}
 
 	// 扫描订阅
-	subs := internal.ScanSubs(body.Data)
+	subs := internal.ScanSubs(profile.Content)
 	ok := false
-	var tempErr error
 	for _, sub := range subs {
 		headers := map[string]string{}
 		res, err := utils.FastGet(sub, headers, internal.GetProxyUrl())
@@ -127,7 +119,9 @@ func addFromWeb(w http.ResponseWriter, r *http.Request) {
 		}
 
 		// 解析存盘
-		subProfile := &models.Profile{}
+		subProfile := &models.Profile{
+			Content: sub,
+		}
 		err = internal.Resolve(res.Body, subProfile, false)
 		if err == nil {
 			// 进行请求头解析
@@ -148,8 +142,9 @@ func addFromWeb(w http.ResponseWriter, r *http.Request) {
 }
 
 func refreshProfile(w http.ResponseWriter, r *http.Request) {
-	profile := models.Profile{}
-	if err := render.DecodeJSON(r.Body, &profile); err != nil {
+	// 获取数据
+	profile := &models.Profile{}
+	if err := render.DecodeJSON(r.Body, profile); err != nil {
 		ErrorResponse(w, r, err)
 		return
 	}
@@ -165,15 +160,15 @@ func refreshProfile(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// 解析存盘
-	subProfile := &models.Profile{}
-	err = internal.Resolve(res.Body, subProfile, true)
+	err = internal.Resolve(res.Body, profile, true)
 	if err == nil {
 		// 进行请求头解析
-		internal.ParseHeaders(res.Headers, sub, subProfile)
-		UpdateDb(subProfile, 1)
+		internal.ParseHeaders(res.Headers, sub, profile)
+		UpdateDb(profile, 1)
 	} else {
 		ErrorResponse(w, r, err)
 		log.Errorln("[refreshProfile] URL = %s, Resolve Error:%v", sub, err)
+		return
 	}
 
 	render.NoContent(w, r)

@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import { changeMenu } from "@/util/menu";
-import { useMenuStore } from "@/store/menuStore";
-import { useRouter } from "vue-router";
-import { WS } from "@/util/ws";
-import { useWebStore } from "@/store/webStore";
+import {changeMenu} from "@/util/menu";
+import {useMenuStore} from "@/store/menuStore";
+import {useRouter} from "vue-router";
+import {WS} from "@/util/ws";
+import {useWebStore} from "@/store/webStore";
 import createApi from "@/api";
-import { formatDate } from "@/util/format";
+import {formatDate} from "@/util/format";
 
 // 获取当前 Vue 实例的 proxy 对象 和 api
-const { proxy } = getCurrentInstance()!;
+const {proxy} = getCurrentInstance()!;
 const api = createApi(proxy);
 
 // 获取Store
@@ -23,7 +23,9 @@ const conn = ref(0);
 // 连接数
 function onConn(ev: MessageEvent) {
   const parsedData = JSON.parse(ev.data);
-  conn.value = parsedData["connections"].length;
+  if (parsedData["connections"]) {
+    conn.value = parsedData["connections"].length;
+  }
 }
 
 // 日志
@@ -59,52 +61,52 @@ onUnmounted(() => {
 <template>
   <div class="nav">
     <div
-      :class="menuStore.menu == 'Rule' ? 'nav-btn nav-btn-select' : 'nav-btn'"
-      @click="changeMenu('Rule', router)"
+        :class="menuStore.menu == 'Rule' ? 'nav-btn nav-btn-select' : 'nav-btn'"
+        @click="changeMenu('Rule', router)"
     >
       <el-text class="nav-text">
         <el-icon>
-          <icon-mdi-source-branch />
+          <icon-mdi-source-branch/>
         </el-icon>
         <span class="nav-info"
-          >{{ $t("sec-nav.rule") }} · {{ menuStore.ruleNum }}</span
+        >{{ $t("sec-nav.rule") }} · {{ menuStore.ruleNum }}</span
         >
       </el-text>
     </div>
 
     <div
-      :class="
+        :class="
         menuStore.menu == 'Connection' ? 'nav-btn nav-btn-select' : 'nav-btn'
       "
-      @click="changeMenu('Connection', router)"
+        @click="changeMenu('Connection', router)"
     >
       <el-text class="nav-text">
         <el-icon>
-          <icon-mdi-lan-connect />
+          <icon-mdi-lan-connect/>
         </el-icon>
         <span class="nav-info">{{ $t("sec-nav.conn") }} · {{ conn }}</span>
       </el-text>
     </div>
 
     <div
-      :class="menuStore.menu == 'Log' ? 'nav-btn nav-btn-select' : 'nav-btn'"
-      @click="changeMenu('Log', router)"
+        :class="menuStore.menu == 'Log' ? 'nav-btn nav-btn-select' : 'nav-btn'"
+        @click="changeMenu('Log', router)"
     >
       <el-text class="nav-text">
         <el-icon>
-          <icon-mdi-text-box-outline />
+          <icon-mdi-text-box-outline/>
         </el-icon>
         <span class="nav-info">{{ $t("sec-nav.log") }}</span>
       </el-text>
     </div>
 
     <div
-      :class="menuStore.menu == 'Crawl' ? 'nav-btn nav-btn-select' : 'nav-btn'"
-      @click="changeMenu('Crawl', router)"
+        :class="menuStore.menu == 'Crawl' ? 'nav-btn nav-btn-select' : 'nav-btn'"
+        @click="changeMenu('Crawl', router)"
     >
       <el-text class="nav-text">
         <el-icon>
-          <icon-mdi-spider-outline />
+          <icon-mdi-spider-outline/>
         </el-icon>
         <span class="nav-info">{{ $t("sec-nav.crawl") }} · 530</span>
       </el-text>

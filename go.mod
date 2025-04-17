@@ -6,7 +6,6 @@ require (
 	github.com/go-chi/chi/v5 v5.2.1
 	github.com/go-chi/render v1.0.3
 	github.com/go-co-op/gocron v1.37.0
-	github.com/gorilla/schema v1.4.1
 	github.com/metacubex/bbolt v0.0.0-20240822011022-aed6d4850399
 	github.com/metacubex/mihomo v1.19.4
 	github.com/panjf2000/ants/v2 v2.11.3

@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import createApi from "@/api";
 import MyHr from "@/components/proxies/MyHr.vue";
-import { useProxiesStore } from "@/store/proxiesStore";
-import { useMenuStore } from "@/store/menuStore";
-import { useSettingStore } from "@/store/settingStore";
-import { useI18n } from "vue-i18n";
-import { load } from "@/util/load";
+import {useProxiesStore} from "@/store/proxiesStore";
+import {useMenuStore} from "@/store/menuStore";
+import {useSettingStore} from "@/store/settingStore";
+import {useI18n} from "vue-i18n";
+import {error, load} from "@/util/load";
 
-const { t } = useI18n();
+const {t} = useI18n();
 
 // 计算顶部遮挡
 const distanceFromTop = ref(195);
@@ -16,7 +16,7 @@ const upFromTop = function (distance: number) {
 };
 
 // 获取当前 Vue 实例的 proxy 对象
-const { proxy } = getCurrentInstance()!;
+const {proxy} = getCurrentInstance()!;
 const api = createApi(proxy);
 
 // 当前页面双向绑定对象
@@ -60,9 +60,9 @@ async function nodes() {
     return;
   }
   nodeList.value = await api.getProxies(
-    proxiesStore.active,
-    proxiesStore.isHide,
-    proxiesStore.isSort
+      proxiesStore.active,
+      proxiesStore.isHide,
+      proxiesStore.isSort
   ); // 更新响应式数据
 }
 
@@ -103,7 +103,7 @@ async function setProxy(now: any, name: string) {
     return;
   }
   try {
-    await api.setProxy(proxiesStore.active, { name });
+    await api.setProxy(proxiesStore.active, {name});
     await nodes();
   } catch (error) {
     console.error(error);
@@ -113,14 +113,20 @@ async function setProxy(now: any, name: string) {
 // 测试延迟
 function testDelay() {
   load(t("proxies.loading"), async () => {
-    await api.getDelay(proxiesStore.active, settingStore.testUrl, 3000);
-    await nodes();
+    try {
+      await api.getDelay(proxiesStore.active, settingStore.testUrl, 3000);
+      await nodes();
+    } catch (e) {
+      if (e['message']) {
+        error(e['message'])
+      }
+    }
   });
 }
 
 const proxyGroup = ref(null);
 const atStart = ref(true); // 标记是否在最左边
-const atEnd = ref(false); // 标记是否在最右边
+const atEnd = ref(true); // 标记是否在最右边
 
 const updateButtonVisibility = () => {
   if (proxyGroup.value) {
@@ -158,7 +164,6 @@ const isDropdownOpen = ref(false);
 // 添加延时隐藏下拉菜单
 let isOvering: any;
 const hideDropdown = () => {
-  console.log("sdfsfsfsdfdfsdfdsfds");
   isOvering = setTimeout(() => {
     isDropdownOpen.value = false;
   }, 200); // 延迟 200 毫秒
@@ -170,7 +175,7 @@ const enterDropDown = () => {
   isDropdownOpen.value = true;
 };
 
-let fresh:any = null;
+let fresh: any = null;
 onMounted(async () => {
   await groups();
   await nodes();
@@ -192,19 +197,19 @@ onBeforeUnmount(() => {
 
 // 监听具体状态
 watch(
-  () => menuStore.rule, // 监听 store 中的某个状态
-  async (newValue, oldValue) => {
-    await groups();
-    await nodes();
-    updateButtonVisibility();
-  }
+    () => menuStore.rule, // 监听 store 中的某个状态
+    async (newValue, oldValue) => {
+      await groups();
+      await nodes();
+      updateButtonVisibility();
+    }
 );
 </script>
 
 <template>
   <MyLayout
-    :top-height="distanceFromTop - 15"
-    :bottom-height="distanceFromTop + 25"
+      :top-height="distanceFromTop - 15"
+      :bottom-height="distanceFromTop + 25"
   >
     <template #top>
       <MySearch></MySearch>
@@ -215,76 +220,76 @@ watch(
         <div class="proxy-option">
           <el-tooltip :content="$t('proxies.test')" placement="top">
             <el-icon @click="testDelay" class="proxy-option-btn">
-              <icon-mdi-speedometer />
+              <icon-mdi-speedometer/>
             </el-icon>
           </el-tooltip>
 
           <el-tooltip
-            :content="
+              :content="
               proxiesStore.isHide
                 ? $t('proxies.hide-on')
                 : $t('proxies.hide-off')
             "
-            placement="top"
+              placement="top"
           >
             <el-icon @click="setHide" class="proxy-option-btn">
-              <icon-mdi-eye-off v-if="proxiesStore.isHide" />
-              <icon-mdi-eye v-else />
+              <icon-mdi-eye-off v-if="proxiesStore.isHide"/>
+              <icon-mdi-eye v-else/>
             </el-icon>
           </el-tooltip>
 
           <el-tooltip
-            :content="
+              :content="
               proxiesStore.isSort
                 ? $t('proxies.sort-on')
                 : $t('proxies.sort-off')
             "
-            placement="top"
+              placement="top"
           >
             <el-icon @click="setSort" class="proxy-option-btn">
-              <icon-mdi-sort-ascending v-if="proxiesStore.isSort" />
-              <icon-mdi-sort v-else />
+              <icon-mdi-sort-ascending v-if="proxiesStore.isSort"/>
+              <icon-mdi-sort v-else/>
             </el-icon>
           </el-tooltip>
 
           <el-tooltip
-            :content="
+              :content="
               proxiesStore.isVertical
                 ? $t('proxies.vertical-on')
                 : $t('proxies.vertical-off')
             "
-            placement="top"
+              placement="top"
           >
             <el-icon @click="setVertical" class="proxy-option-btn">
-              <icon-mdi-arrow-expand-vertical v-if="proxiesStore.isVertical" />
-              <icon-mdi-arrow-expand-horizontal v-else />
+              <icon-mdi-arrow-expand-vertical v-if="proxiesStore.isVertical"/>
+              <icon-mdi-arrow-expand-horizontal v-else/>
             </el-icon>
           </el-tooltip>
         </div>
       </el-space>
 
       <div
-        class="dropdown"
-        v-if="proxiesStore.isVertical && menuStore.rule != 'direct'"
+          class="dropdown"
+          v-if="proxiesStore.isVertical && menuStore.rule != 'direct' && groupList.length > 0"
       >
         <button
-          class="dropdown-btn"
-          @mouseenter="enterDropDown"
-          @mouseleave="hideDropdown"
+            class="dropdown-btn"
+            @mouseenter="enterDropDown"
+            @mouseleave="hideDropdown"
         >
           {{ proxiesStore.active }}
         </button>
         <ul
-          v-if="isDropdownOpen"
-          @mouseenter="enterDropDown"
-          @mouseleave="hideDropdown"
-          class="dropdown-list"
+            v-if="isDropdownOpen"
+            @mouseenter="enterDropDown"
+            @mouseleave="hideDropdown"
+            class="dropdown-list"
         >
           <li
-            v-for="item in groupList"
-            :key="item + '-gv'"
-            @click="setActive(item)"
-            class="dropdown-item"
+              v-for="item in groupList"
+              :key="item + '-gv'"
+              @click="setActive(item)"
+              class="dropdown-item"
           >
             {{ item }}
           </li>
@@ -292,28 +297,28 @@ watch(
       </div>
 
       <div
-        class="button-container"
-        v-if="!proxiesStore.isVertical && menuStore.rule != 'direct'"
+          class="button-container"
+          v-if="!proxiesStore.isVertical && menuStore.rule != 'direct' && groupList.length > 0"
       >
         <el-icon v-if="!atStart" @click="scrollLeft" class="scroll-left">
-          <icon-mdi-arrow-expand-left />
+          <icon-mdi-arrow-expand-left/>
         </el-icon>
         <div @scroll="handleScroll" ref="proxyGroup" class="proxy-group">
           <button
-            :class="
+              :class="
               proxiesStore.active == item
                 ? 'proxy-group-title proxy-group-title-select'
                 : 'proxy-group-title'
             "
-            @click="setActive(item)"
-            v-for="item in groupList"
-            :key="item + '-g'"
+              @click="setActive(item)"
+              v-for="item in groupList"
+              :key="item + '-g'"
           >
             {{ item }}
           </button>
         </div>
         <el-icon v-if="!atEnd" class="scroll-right" @click="scrollRight">
-          <icon-mdi-arrow-expand-right />
+          <icon-mdi-arrow-expand-right/>
         </el-icon>
       </div>
 
@@ -322,20 +327,20 @@ watch(
     <template #bottom>
       <div class="proxy-nodes">
         <div
-          :class="
+            :class="
             node['now']
               ? 'proxy-nodes-card proxy-node-select'
               : 'proxy-nodes-card'
           "
-          v-for="node in nodeList"
-          @click="setProxy(node['now'], node['name'])"
-          :key="node['name']"
+            v-for="node in nodeList"
+            @click="setProxy(node['now'], node['name'])"
+            :key="node['name']"
         >
           <div class="proxy-nodes-title">
             <span :title="node['name']">  
               {{ node["name"] }}
             </span>
-          
+
           </div>
           <div class="proxy-nodes-tags">
             <span class="proxy-nodes-tags-left">
@@ -524,7 +529,7 @@ watch(
   font-size: 15px;
   outline: none;
   border-radius: 8px;
-  min-width: 206px;
+  min-width: 204px;
 }
 
 .dropdown-btn:hover {
@@ -538,7 +543,7 @@ watch(
   margin-top: 4px;
   padding: 0;
   list-style: none;
-  min-width: 204px;
+  min-width: 200px;
   z-index: 20;
   border-radius: 8px;
   font-size: 15px;

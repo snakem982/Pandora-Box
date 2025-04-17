@@ -98,7 +98,7 @@ func StartCore(profile models.Profile, reload bool) {
 	rawCfg.SocksPort = 0
 	rawCfg.TProxyPort = 0
 	rawCfg.RedirPort = 0
-	if reload {
+	if reload && NowConfig != nil {
 		general := NowConfig.General
 		rawCfg.MixedPort = general.MixedPort
 		rawCfg.AllowLan = general.AllowLan

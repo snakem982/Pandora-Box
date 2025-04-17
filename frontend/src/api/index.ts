@@ -2,6 +2,7 @@ import createProxiesApi from './proxies';
 import createHomeApi from "@/api/home";
 import createConnApi from "@/api/connections";
 import createRuleApi from './rule';
+import createProfilesApi from "@/api/profiles";
 
 export default function createApi(proxy: any) {
     return {
@@ -16,5 +17,12 @@ export default function createApi(proxy: any) {
         closeConnection: createConnApi(proxy).closeConnection,
         closeAllConnection: createConnApi(proxy).closeAllConnection,
         getRules: createRuleApi(proxy).getRules,
+        addProfileFromInput: createProfilesApi(proxy).addProfileFromInput,
+        addProfileFromFile: createProfilesApi(proxy).addProfileFromFile,
+        deleteProfile: createProfilesApi(proxy).deleteProfile,
+        updateProfile: createProfilesApi(proxy).updateProfile,
+        getProfileList: createProfilesApi(proxy).getProfileList,
+        refreshProfile: createProfilesApi(proxy).refreshProfile,
+        switchProfile: createProfilesApi(proxy).switchProfile,
     };
 }

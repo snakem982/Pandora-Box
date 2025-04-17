@@ -17,6 +17,7 @@ const include = {
     Selector: true,
     Pass: true,
     Relay: true,
+    Fallback: true,
 }
 
 // 计算类名
@@ -60,6 +61,11 @@ export default function createProxiesApi(proxy: any) {
             const data = await proxy.$http.get('/proxies');
             const proxies = data['proxies']
 
+            // 判空
+            if (!proxies['GLOBAL']) {
+                return []
+            }
+
             // 获取分组
             const group = []
             for (const name of proxies['GLOBAL']['all']) {
@@ -79,6 +85,11 @@ export default function createProxiesApi(proxy: any) {
             // 获取所有节点分组列表
             const data = await proxy.$http.get('/proxies')
             const proxies = data['proxies']
+
+            // 判空
+            if (!proxies[active]) {
+                return []
+            }
 
             // 获取分组节点列表
             const proxiesNames = proxies[active]['all']

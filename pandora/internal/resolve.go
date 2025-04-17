@@ -3,7 +3,6 @@ package internal
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/gorilla/schema"
 	"github.com/metacubex/mihomo/adapter"
 	"github.com/metacubex/mihomo/common/convert"
 	"github.com/metacubex/mihomo/config"
@@ -15,6 +14,7 @@ import (
 	"net/http"
 	"net/url"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -197,10 +197,10 @@ func ReplaceTwoPoint(path string) string {
 	return strings.Replace(path, "../", "", 1)
 }
 
-func parseFields(input string) map[string]string {
+func parseFields(input string) map[string]int64 {
 	// 分割字段
 	pairs := strings.Split(input, ";")
-	result := make(map[string]string)
+	result := make(map[string]int64)
 
 	// 处理每个键值对
 	for _, pair := range pairs {
@@ -210,34 +210,27 @@ func parseFields(input string) map[string]string {
 		if len(parts) == 2 {
 			key := strings.TrimSpace(parts[0])
 			value := strings.TrimSpace(parts[1])
-			result[key] = value
+			number, err := strconv.ParseInt(value, 10, 64)
+			if err == nil {
+				result[key] = number
+			}
 		}
 	}
 
 	return result
 }
 
-func parseFilename(contentDisposition, key string) string {
-	if strings.Contains(contentDisposition, key) {
-		values := make(map[string][]string)
-		if err := schema.NewDecoder().Decode(&values, url.Values{key: {contentDisposition}}); err == nil {
-			if filenames, ok := values[key]; ok && len(filenames) > 0 {
-				return filenames[0]
-			}
-		}
-	}
-	return ""
-}
-
 func parseContentDisposition(header http.Header, urlStr string) string {
-	contentDisposition := header.Get("Content-Disposition")
-	if contentDisposition != "" {
-		contentDisposition = strings.Trim(contentDisposition, "\"")
-		if filename := parseFilename(contentDisposition, "filename*"); filename != "" {
-			return filename
+	disposition := header.Get("Content-Disposition")
+	if disposition != "" {
+		disposition, _ = url.QueryUnescape(disposition)
+		split := strings.Split(disposition, "=")
+		fileName := split[len(split)-1]
+		if strings.Contains(fileName, "''") {
+			fileName = strings.Split(fileName, "''")[1]
 		}
-		if filename := parseFilename(contentDisposition, "filename"); filename != "" {
-			return filename
+		if fileName != "" {
+			return fileName
 		}
 	}
 
@@ -255,14 +248,23 @@ func ParseHeaders(header http.Header, url string, profile *models.Profile) {
 	// 流量
 	if value := header.Get("Subscription-Userinfo"); value != "" {
 		subInfo := parseFields(value)
-		profile.Upload = subInfo["upload"]
-		profile.Download = subInfo["download"]
 		profile.Total = subInfo["total"]
-		profile.Expire = subInfo["expire"]
+		profile.Used = subInfo["upload"] + subInfo["download"]
+		profile.Available = profile.Total - profile.Used
+		if profile.Available < 0 {
+			profile.Available = 0
+		}
+		if subInfo["expire"] != 0 {
+			// 转换为时间
+			t := time.Unix(subInfo["expire"], 0)
+			profile.Expire = t.Local().Format("2006-01-02 15:04:05")
+		}
 	}
 
 	// 文件名
-	profile.Title = parseContentDisposition(header, url)
+	if profile.Title == "" {
+		profile.Title = parseContentDisposition(header, url)
+	}
 
 	// 更新间隔
 	if val := header.Get("Profile-Update-Interval"); val != "" {

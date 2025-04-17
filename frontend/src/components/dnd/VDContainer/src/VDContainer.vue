@@ -87,6 +87,7 @@ const drop = (event: DragEvent, index: number) => {
   gap: var(--vdc-gap);
   margin-top: var(--vdc-top);
   margin-bottom: var(--vdc-top);
+  width: 100%;
 }
 
 .vdc-out-container {
@@ -107,7 +108,7 @@ const drop = (event: DragEvent, index: number) => {
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
-  transform: translateY(30px); /* 替换 translate(30px, 0) 为更简洁的形式 */
+  transform: translateY(30px);
 }
 
 
