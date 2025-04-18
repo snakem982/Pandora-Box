@@ -27,6 +27,7 @@ sec-nav:
   log: Log
   crawl: Crawl
 
+delete: Delete
 confirm: Confirm
 cancel: Cancel
 on: ON
@@ -113,6 +114,8 @@ profiles:
   expire: Expiration
   update: Update
   placeholder: Subscription, ShareLink, Yaml, Base64, Json
+  home: Visit the Subscription Home Page
+  del-tip: In use, cannot be deleted
 
 rule:
   title: Rule

@@ -25,7 +25,7 @@ func profileRouter() http.Handler {
 	r.Post("/", addFromWeb)
 	r.Post("/file", addFromFile)
 	// 删除
-	r.Delete("/", deleteProfile)
+	r.Post("/delete", deleteProfile)
 	// 修改
 	r.Put("/", putProfile)
 	// 查找
@@ -186,8 +186,8 @@ func refreshProfile(w http.ResponseWriter, r *http.Request) {
 }
 
 func putProfile(w http.ResponseWriter, r *http.Request) {
-	profile := models.Profile{}
-	if err := render.DecodeJSON(r.Body, &profile); err != nil {
+	profile := &models.Profile{}
+	if err := render.DecodeJSON(r.Body, profile); err != nil {
 		ErrorResponse(w, r, err)
 		return
 	}
@@ -199,8 +199,8 @@ func putProfile(w http.ResponseWriter, r *http.Request) {
 
 // 删除配置
 func deleteProfile(w http.ResponseWriter, r *http.Request) {
-	profile := models.Profile{}
-	if err := render.DecodeJSON(r.Body, &profile); err != nil {
+	profile := &models.Profile{}
+	if err := render.DecodeJSON(r.Body, profile); err != nil {
 		ErrorResponse(w, r, err)
 		return
 	}

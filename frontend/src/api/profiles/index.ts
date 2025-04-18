@@ -12,7 +12,7 @@ const addProfileFromFile = (proxy: any) => async function (profile: Profile) {
 
 // 删除配置
 const deleteProfile = (proxy: any) => async function (profile: Profile) {
-    return await proxy.$http.delete('/profile', profile);
+    return await proxy.$http.post('/profile/delete', profile);
 }
 
 // 修改配置

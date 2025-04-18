@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import {Profile} from "@/types/profile";
 import createApi from "@/api";
-import {error, pLoad, success} from "@/util/pLoad";
+import {error, pLoad, success, warning} from "@/util/pLoad";
 import {useProxiesStore} from "@/store/proxiesStore";
 import {useMenuStore} from "@/store/menuStore";
 import {prettyBytes} from "@/util/format";
 import {useI18n} from "vue-i18n";
-import {Clipboard} from "@wailsio/runtime"
+import {Browser, Clipboard} from "@wailsio/runtime"
 import {useWebStore} from "@/store/webStore";
 
 const {t} = useI18n();
@@ -73,6 +73,7 @@ const canDrag = ref(false)
 function mouseEnter() {
   canDrag.value = true
 }
+
 function mouseLeave() {
   canDrag.value = false
 }
@@ -151,8 +152,10 @@ async function switchProfile(data: any) {
 async function refresh(data: any) {
   await pLoad(t('proxies.refresh.ing'), async () => {
     try {
-      await api.refreshProfile(data)
-      setProfile(data)
+      const re = await api.refreshProfile(data)
+      if (data['selected']) {
+        setProfile(re)
+      }
       success(t('proxies.refresh.success'))
     } catch (e) {
       if (e['message']) {
@@ -173,8 +176,29 @@ function openFile() {
   webStore.dnd = true
 }
 
-function deleteProfile(data: any) {
+function goHome(data: any) {
+  Browser.OpenURL(data.home)
+}
 
+function updateProfile(data: any) {
+
+}
+
+
+async function deleteProfile(data: any, index: any) {
+  if (data['selected']) {
+    warning(t('profiles.del-tip'))
+    return
+  }
+
+  try {
+    await api.deleteProfile(data)
+    profiles.splice(index, 1)
+  } catch (e) {
+    if (e['message']) {
+      error(e['message'])
+    }
+  }
 }
 
 
@@ -262,12 +286,14 @@ function deleteProfile(data: any) {
                   class="drag">
                 <icon-mdi-drag/>
               </el-icon>
+
               <el-icon size="22"
                        v-if="data.type == 1"
-                       class="refresh"
+                       class="ops"
                        @click.stop="refresh(data)">
                 <icon-mdi-refresh/>
               </el-icon>
+
             </div>
             <div
                 class="system-info"
@@ -277,12 +303,37 @@ function deleteProfile(data: any) {
               </span>
             </div>
             <div class="bottom-row">
-              <el-icon size="20">
-                <icon-mdi-cog/>
-              </el-icon>
-              <el-icon size="20">
-                <icon-mdi-trash-can/>
-              </el-icon>
+              <el-tooltip
+                  v-if="data.home"
+                  :content="$t('profiles.home')"
+                  placement="top">
+                <el-icon
+                    class="ops"
+                    @click.stop="goHome(data)"
+                    size="20">
+                  <icon-mdi-home-import-outline/>
+                </el-icon>
+              </el-tooltip>
+              <el-tooltip
+                  :content="$t('edit')"
+                  placement="top">
+                <el-icon
+                    class="ops"
+                    @click.stop="updateProfile(data)"
+                    size="20">
+                  <icon-mdi-square-edit-outline/>
+                </el-icon>
+              </el-tooltip>
+              <el-tooltip
+                  :content="$t('delete')"
+                  placement="top">
+                <el-icon
+                    class="ops"
+                    @click.stop="deleteProfile(data,index)"
+                    size="20">
+                  <icon-mdi-trash-can/>
+                </el-icon>
+              </el-tooltip>
             </div>
           </div>
         </template>
@@ -293,7 +344,7 @@ function deleteProfile(data: any) {
 
   <el-dialog v-model="dialogFormVisible"
              :title="t('profiles.add')"
-             width="600"
+             width="520"
              draggable
   >
     <el-form :model="profile">
@@ -394,7 +445,7 @@ function deleteProfile(data: any) {
   cursor: grab;
 }
 
-.sub-card .row .refresh:hover {
+.ops:hover {
   cursor: pointer;
 }
 
@@ -414,5 +465,6 @@ function deleteProfile(data: any) {
   margin-top: 5px;
   margin-bottom: 2px;
 }
+
 
 </style>

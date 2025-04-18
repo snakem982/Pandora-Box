@@ -27,6 +27,7 @@ sec-nav:
   log: 日志
   crawl: 爬取
 
+delete: 删除
 confirm: 确定
 cancel: 取消
 on: 开启
@@ -113,6 +114,8 @@ profiles:
   expire: 到期时间
   update: 更新时间
   placeholder: 订阅地址、分享链接、Yaml、Base64、Json
+  home: 访问订阅主页
+  del-tip: 正在使用中，不可删除
 
 rule:
   title: 规则
