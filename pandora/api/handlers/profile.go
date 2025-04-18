@@ -97,7 +97,9 @@ func addFromWeb(w http.ResponseWriter, r *http.Request) {
 	// 解析存盘
 	err := internal.Resolve(profile.Content, profile, false)
 	if err == nil {
-		profile.Title = "Local-" + utils.RandString(5)
+		if profile.Title == "" {
+			profile.Title = "Local-" + utils.GetDateTime()
+		}
 		UpdateDb(profile, 2)
 		render.NoContent(w, r)
 		return
@@ -171,7 +173,7 @@ func refreshProfile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	render.NoContent(w, r)
+	render.JSON(w, r, profile)
 }
 
 func putProfile(w http.ResponseWriter, r *http.Request) {

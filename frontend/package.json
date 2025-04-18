@@ -30,7 +30,7 @@
     "@iconify-json/ep": "^1.1.14",
     "@iconify-json/mdi": "^1.1.64",
     "@vitejs/plugin-vue": "^5.0.3",
-    "@wailsio/runtime": "latest",
+    "@wailsio/runtime": "^3.0.0-alpha.66",
     "typescript": "^5.8.2",
     "unplugin-auto-import": "^0.17.5",
     "unplugin-icons": "^0.18.3",

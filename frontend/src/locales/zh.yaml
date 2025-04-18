@@ -40,6 +40,12 @@ copy:
   success: 复制成功
   fail: 复制失败
 
+drag:
+  hear: 拖拽配置文件到这里导入
+  size: 只允许单文件导入
+  add: 导入中。。。
+  success: 导入成功
+
 home:
   download: 下载
   upload: 上传
@@ -91,6 +97,9 @@ proxies:
   vertical-off: 切换分组为下拉样式
   direct: 当前处于直连模式
   loading: 测试中。。。
+  refresh:
+    ing: 更新中。。。
+    success: 更新成功
 
 profiles:
   title: 订阅

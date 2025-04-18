@@ -4,7 +4,7 @@ import MyPort from "@/components/setting/MyPort.vue";
 import MyTun from "@/components/setting/MyTun.vue";
 import {EditPen} from "@element-plus/icons-vue";
 import {useWebStore} from "@/store/webStore";
-import { copy } from "@/util/load";
+import { copy } from "@/util/pLoad";
 import {useI18n} from "vue-i18n";
 import { useSettingStore } from "@/store/settingStore";
 import createApi from "@/api";

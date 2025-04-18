@@ -12,7 +12,7 @@
 import { useMenuStore } from "@/store/menuStore";
 import { useI18n } from "vue-i18n";
 import createApi from "@/api";
-import { success } from "@/util/load";
+import { success } from "@/util/pLoad";
 
 // 存储规则模式
 const menuStore = useMenuStore();

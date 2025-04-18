@@ -1,6 +1,6 @@
 import {ElLoading, ElMessage} from "element-plus";
 
-export async function load(tip: any, callback: any) {
+export async function pLoad(tip: any, callback: any) {
     const loading = ElLoading.service({
         lock: true,
         text: tip,
@@ -40,5 +40,7 @@ export function warning(msg: any) {
     ElMessage({
         message: msg,
         type: "warning",
+        duration: 5000,
+        showClose: true,
     });
 }

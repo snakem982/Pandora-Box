@@ -5,7 +5,7 @@ export class Profile {
     order!: bigint;
     selected?: boolean; // 可选
     path!: string;
-    content?: string; // 可选
+    content?: string | ArrayBuffer; // 可选
     used?: bigint; // 可选
     available?: bigint; // 可选
     total?: bigint; // 可选

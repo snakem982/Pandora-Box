@@ -240,7 +240,7 @@ func parseContentDisposition(header http.Header, urlStr string) string {
 		return segments[len(segments)-1]
 	}
 
-	return "Remote File"
+	return "Remote-" + utils.GetDateTime()
 }
 
 // ParseHeaders 对请求头进行解析
@@ -257,7 +257,7 @@ func ParseHeaders(header http.Header, url string, profile *models.Profile) {
 		if subInfo["expire"] != 0 {
 			// 转换为时间
 			t := time.Unix(subInfo["expire"], 0)
-			profile.Expire = t.Local().Format("2006-01-02 15:04:05")
+			profile.Expire = t.Local().Format("2006-01-02 15:04")
 		}
 	}
 

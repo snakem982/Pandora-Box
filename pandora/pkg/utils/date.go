@@ -2,9 +2,9 @@ package utils
 
 import "time"
 
-var layout = "2006-01-02 15:04:05"
+var layout = "2006-01-02 15:04"
 
-// GetDateTime 获取当前时间并格式化为 "2006-01-02 15:04:05"
+// GetDateTime 获取当前时间并格式化为 "2006-01-02 15:04"
 func GetDateTime() string {
 	return time.Now().Format(layout)
 }

@@ -5,7 +5,7 @@ import {useProxiesStore} from "@/store/proxiesStore";
 import {useMenuStore} from "@/store/menuStore";
 import {useSettingStore} from "@/store/settingStore";
 import {useI18n} from "vue-i18n";
-import {error, load} from "@/util/load";
+import {error, pLoad} from "@/util/pLoad";
 
 const {t} = useI18n();
 
@@ -112,7 +112,7 @@ async function setProxy(now: any, name: string) {
 
 // 测试延迟
 function testDelay() {
-  load(t("proxies.loading"), async () => {
+  pLoad(t("proxies.loading"), async () => {
     try {
       await api.getDelay(proxiesStore.active, settingStore.testUrl, 3000);
       await nodes();

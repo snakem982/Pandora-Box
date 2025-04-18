@@ -1,9 +1,15 @@
 <script setup lang="ts">
 import {Profile} from "@/types/profile";
 import createApi from "@/api";
-import {error, success} from "@/util/load";
+import {error, pLoad, success} from "@/util/pLoad";
 import {useProxiesStore} from "@/store/proxiesStore";
 import {useMenuStore} from "@/store/menuStore";
+import {prettyBytes} from "@/util/format";
+import {useI18n} from "vue-i18n";
+import {Clipboard} from "@wailsio/runtime"
+import {useWebStore} from "@/store/webStore";
+
+const {t} = useI18n();
 
 // 获取当前 Vue 实例的 proxy 对象
 const {proxy} = getCurrentInstance()!;
@@ -12,8 +18,38 @@ const api = createApi(proxy);
 // 当前页面使用store
 const menuStore = useMenuStore();
 const proxiesStore = useProxiesStore();
+const webStore = useWebStore();
 
 let profiles = reactive<any[]>([])
+const profileInfo = reactive({
+  available: '',
+  used: '',
+  expire: '',
+  update: '',
+})
+
+function setProfile(item: any) {
+  if (item['available']) {
+    profileInfo.available = prettyBytes(item['available'])
+  } else {
+    profileInfo.available = ''
+  }
+  if (item['used']) {
+    profileInfo.used = prettyBytes(item['used'])
+  } else {
+    profileInfo.used = ''
+  }
+  if (item['expire']) {
+    profileInfo.expire = item['expire']
+  } else {
+    profileInfo.expire = ''
+  }
+  if (item['update']) {
+    profileInfo.update = item['update']
+  } else {
+    profileInfo.update = ''
+  }
+}
 
 async function getProfileList() {
   if (profiles.length != 0) {
@@ -22,6 +58,9 @@ async function getProfileList() {
   const list = await api.getProfileList()
   list.forEach(item => {
     profiles.push(item)
+    if (item['selected']) {
+      setProfile(item)
+    }
   })
 }
 
@@ -72,6 +111,10 @@ async function add() {
   }
 }
 
+watch(() => webStore.dNum, async (newValue, oldValue) => {
+  await getProfileList()
+})
+
 async function switchProfile(data: any) {
   if (data['selected']) {
     return
@@ -88,6 +131,7 @@ async function switchProfile(data: any) {
       }
     }
     data['selected'] = true
+    setProfile(data)
 
     api.getRules().then((res) => {
       menuStore.setRuleNum(res.length);
@@ -102,15 +146,30 @@ async function switchProfile(data: any) {
 }
 
 async function refresh(data: any) {
-  try {
-    await api.refreshProfile(data)
-    success("刷新成功")
-  } catch (e) {
-    if (e['message']) {
-      error(e['message'])
+  await pLoad(t('proxies.refresh.ing'), async () => {
+    try {
+      await api.refreshProfile(data)
+      setProfile(data)
+      success(t('proxies.refresh.success'))
+    } catch (e) {
+      if (e['message']) {
+        error(e['message'])
+      }
     }
-  }
+  })
 }
+
+function handlePaste() {
+  Clipboard.Text().then(text => {
+    profile.content = text
+    dialogFormVisible.value = true
+  })
+}
+
+function openFile() {
+  webStore.dnd = true
+}
+
 
 </script>
 
@@ -136,7 +195,9 @@ async function refresh(data: any) {
           <el-tooltip
               :content="$t('profiles.paste')"
               placement="top">
-            <el-icon class="profile-option-btn">
+            <el-icon
+                @click="handlePaste"
+                class="profile-option-btn">
               <icon-mdi-content-paste/>
             </el-icon>
           </el-tooltip>
@@ -144,21 +205,32 @@ async function refresh(data: any) {
           <el-tooltip
               :content="$t('profiles.open')"
               placement="top">
-            <el-icon class="profile-option-btn">
+            <el-icon
+                @click="openFile"
+                class="profile-option-btn">
               <icon-mdi-folder-open/>
             </el-icon>
           </el-tooltip>
+
         </div>
       </el-space>
 
       <div class="sub-title">
-        <span>{{ $t('profiles.available') }} 50G</span>
-        <el-divider direction="vertical" border-style="dashed"/>
-        <span>{{ $t('profiles.use') }} 100G</span>
-        <el-divider direction="vertical" border-style="dashed"/>
-        <span>2025-05-06 23:59 {{ $t('profiles.expire') }}</span>
-        <el-divider direction="vertical" border-style="dashed"/>
-        <span>2025-04-06 23:59 {{ $t('profiles.update') }}</span>
+        <template v-if="profileInfo.available">
+          <span>{{ $t('profiles.available') }} {{ profileInfo.available }}</span>
+          <el-divider direction="vertical" border-style="dashed"/>
+        </template>
+        <template v-if="profileInfo.used">
+          <span>{{ $t('profiles.use') }} {{ profileInfo.used }}</span>
+          <el-divider direction="vertical" border-style="dashed"/>
+        </template>
+        <template v-if="profileInfo.expire">
+          <span>{{ profileInfo.expire }} {{ $t('profiles.expire') }}</span>
+          <el-divider direction="vertical" border-style="dashed"/>
+        </template>
+        <template v-if="profileInfo.update">
+          <span>{{ profileInfo.update }} {{ $t('profiles.update') }}</span>
+        </template>
       </div>
     </template>
     <template #bottom>
@@ -185,6 +257,7 @@ async function refresh(data: any) {
               </el-icon>
               <el-icon size="22"
                        v-if="data.type == 1"
+                       class="refresh"
                        @click.stop="refresh(data)">
                 <icon-mdi-refresh/>
               </el-icon>
@@ -312,6 +385,10 @@ async function refresh(data: any) {
 
 .sub-card .row .drag:hover {
   cursor: grab;
+}
+
+.sub-card .row .refresh:hover {
+  cursor: pointer;
 }
 
 .system-info {
