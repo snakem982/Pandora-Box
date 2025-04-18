@@ -110,5 +110,6 @@ h3 {
   border: 2px dashed var(--text-color);
   text-align: center;
   padding-top: 70px;
+  border-radius: 10px;
 }
 </style>
