@@ -1,6 +1,10 @@
 package handlers
 
 import (
+	"net/http"
+	"path/filepath"
+	"strings"
+
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/render"
 	"github.com/metacubex/mihomo/hub/route"
@@ -10,9 +14,6 @@ import (
 	"github.com/snakem982/pandora-box/pandora/pkg/cache"
 	"github.com/snakem982/pandora-box/pandora/pkg/constant"
 	"github.com/snakem982/pandora-box/pandora/pkg/utils"
-	"net/http"
-	"path/filepath"
-	"strings"
 )
 
 func Profile(r chi.Router) {
@@ -34,6 +35,8 @@ func profileRouter() http.Handler {
 	r.Put("/refresh", refreshProfile)
 	// 切换订阅
 	r.Patch("/", switchProfile)
+	// 存储排序
+	r.Get("/order", saveProfilesOrder)
 
 	return r
 }
