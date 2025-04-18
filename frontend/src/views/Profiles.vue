@@ -73,7 +73,6 @@ const canDrag = ref(false)
 function mouseEnter() {
   canDrag.value = true
 }
-
 function mouseLeave() {
   canDrag.value = false
 }
@@ -174,6 +173,10 @@ function openFile() {
   webStore.dnd = true
 }
 
+function deleteProfile(data: any) {
+
+}
+
 
 </script>
 
@@ -229,11 +232,11 @@ function openFile() {
           <el-divider direction="vertical" border-style="dashed"/>
         </template>
         <template v-if="profileInfo.expire">
-          <span>{{ profileInfo.expire }} {{ $t('profiles.expire') }}</span>
+          <span>{{ $t('profiles.expire') }} {{ profileInfo.expire }}</span>
           <el-divider direction="vertical" border-style="dashed"/>
         </template>
         <template v-if="profileInfo.update">
-          <span>{{ profileInfo.update }} {{ $t('profiles.update') }}</span>
+          <span>{{ $t('profiles.update') }} {{ profileInfo.update }}</span>
         </template>
       </div>
     </template>
@@ -289,15 +292,15 @@ function openFile() {
   </MyLayout>
 
   <el-dialog v-model="dialogFormVisible"
-             title="添加订阅"
-             width="500"
-             class="ok"
+             :title="t('profiles.add')"
+             width="600"
+             draggable
   >
     <el-form :model="profile">
       <el-form-item>
         <el-input
             type="textarea"
-            placeholder="订阅地址、分享链接、Yaml、Base64、Json"
+            :placeholder="t('profiles.placeholder')"
             v-model="profile.content"
             autocomplete="off"/>
       </el-form-item>
@@ -305,13 +308,13 @@ function openFile() {
     <template #footer>
       <div class="dialog-footer">
         <el-button @click="dialogFormVisible = false">
-          取消
+          {{ t('cancel') }}
         </el-button>
         <el-button
             :loading="isNowAdd"
             type="primary"
             @click="add">
-          确定
+          {{ t('confirm') }}
         </el-button>
       </div>
     </template>

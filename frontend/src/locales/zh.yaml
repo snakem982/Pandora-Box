@@ -27,6 +27,8 @@ sec-nav:
   log: 日志
   crawl: 爬取
 
+confirm: 确定
+cancel: 取消
 on: 开启
 off: 关闭
 refresh: 刷新
@@ -107,9 +109,10 @@ profiles:
   paste: 从剪贴板导入
   open: 从文件导入
   available: 可用
-  use: 已使用
-  expire: 过期
-  update: 更新
+  use: 已用
+  expire: 到期时间
+  update: 更新时间
+  placeholder: 订阅地址、分享链接、Yaml、Base64、Json
 
 rule:
   title: 规则

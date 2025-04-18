@@ -27,6 +27,8 @@ sec-nav:
   log: Log
   crawl: Crawl
 
+confirm: Confirm
+cancel: Cancel
 on: ON
 off: OFF
 refresh: Refresh
@@ -108,8 +110,9 @@ profiles:
   open: Import from file
   available: Available
   use: Used
-  expire: Expire
-  update: Updated
+  expire: Expiration
+  update: Update
+  placeholder: Subscription, ShareLink, Yaml, Base64, Json
 
 rule:
   title: Rule
