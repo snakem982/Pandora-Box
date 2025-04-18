@@ -150,6 +150,7 @@ func refreshProfile(w http.ResponseWriter, r *http.Request) {
 		ErrorResponse(w, r, err)
 		return
 	}
+	title := profile.Title
 
 	// 发送请求
 	sub := profile.Content
@@ -166,6 +167,9 @@ func refreshProfile(w http.ResponseWriter, r *http.Request) {
 	if err == nil {
 		// 进行请求头解析
 		internal.ParseHeaders(res.Headers, sub, profile)
+		if title != "" {
+			profile.Title = title
+		}
 		UpdateDb(profile, 1)
 	} else {
 		ErrorResponse(w, r, err)
