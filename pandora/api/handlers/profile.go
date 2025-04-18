@@ -91,6 +91,9 @@ func addFromWeb(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// 返回页面list
+	ps := make([]*models.Profile, 0)
+
 	// 返回页面错误
 	var tempErr error
 
@@ -101,7 +104,8 @@ func addFromWeb(w http.ResponseWriter, r *http.Request) {
 			profile.Title = "Local-" + utils.GetDateTime()
 		}
 		UpdateDb(profile, 2)
-		render.NoContent(w, r)
+		ps = append(ps, profile)
+		render.JSON(w, r, ps)
 		return
 	} else {
 		tempErr = err
@@ -129,6 +133,7 @@ func addFromWeb(w http.ResponseWriter, r *http.Request) {
 			// 进行请求头解析
 			internal.ParseHeaders(res.Headers, sub, subProfile)
 			UpdateDb(subProfile, 1)
+			ps = append(ps, subProfile)
 			ok = true
 		} else {
 			tempErr = err
@@ -140,7 +145,7 @@ func addFromWeb(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	render.NoContent(w, r)
+	render.JSON(w, r, ps)
 }
 
 func refreshProfile(w http.ResponseWriter, r *http.Request) {

@@ -7,7 +7,7 @@ export const useWebStore = defineStore('useWebStore', {
         secret: '',         // 默认密钥
         logs: [],         // 日志
         dnd: false,         // 拖拽显示
-        dNum: 0,         // 拖拽显示
+        dProfile: [],         // 传输文件
     }),
     getters: {
         // 确保使用 state 参数引用正确

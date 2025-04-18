@@ -61,9 +61,11 @@ function handleDrop(e) {
         p.content = event.target.result
         p.title = file.name
         try {
-          await api.addProfileFromInput(p)
-          webStore.dNum++;
-          success(t('drag.success'))
+          const pList = await api.addProfileFromInput(p)
+          if (pList && pList.length > 0) {
+            webStore.dProfile = pList;
+            success(t('drag.success'))
+          }
         } catch (e) {
           if (e['message']) {
             error(e['message'])

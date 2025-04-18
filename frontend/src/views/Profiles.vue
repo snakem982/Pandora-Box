@@ -99,8 +99,10 @@ async function add() {
   const p = new Profile()
   p.content = profile.content
   try {
-    await api.addProfileFromInput(p)
-    await getProfileList()
+    const pList = await api.addProfileFromInput(p)
+    if (pList && pList.length > 0) {
+      pList.forEach(item => profiles.push(item))
+    }
     profile.content = ""
     dialogFormVisible.value = false
   } catch (e) {
@@ -111,8 +113,10 @@ async function add() {
   }
 }
 
-watch(() => webStore.dNum, async (newValue, oldValue) => {
-  await getProfileList()
+watch(() => webStore.dProfile, async (pList, oldValue) => {
+  if (pList && pList.length > 0) {
+    pList.forEach(item => profiles.push(item))
+  }
 })
 
 async function switchProfile(data: any) {
