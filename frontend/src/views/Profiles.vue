@@ -181,9 +181,12 @@ function goHome(data: any) {
 const editFormVisible = ref(false)
 let editForm = reactive<any>({
 })
+let editFormD = reactive<any>({
+})
 
 function updateProfile(data: any) {
-  editForm = data
+  editFormD = data
+  Object.assign(editForm, data)
   editFormVisible.value = true
 }
 
@@ -234,7 +237,9 @@ async function saveUpdateProfile() {
       }
   }
 
+
   await api.updateProfile(editForm)
+  Object.assign(editFormD, editForm)
   editFormVisible.value = false
   pSuccess(t('profiles.edit.success'))
 }
