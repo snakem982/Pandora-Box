@@ -36,7 +36,7 @@ func profileRouter() http.Handler {
 	// 切换订阅
 	r.Patch("/", switchProfile)
 	// 存储排序
-	r.Get("/order", saveProfilesOrder)
+	r.Get("/order", saveProfileOrder)
 
 	return r
 }

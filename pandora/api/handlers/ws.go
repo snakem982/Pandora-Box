@@ -13,8 +13,8 @@ import (
 	"github.com/snakem982/pandora-box/pandora/pkg/constant"
 )
 
-// 保存排序后的配置文件
-func saveProfilesOrder(w http.ResponseWriter, r *http.Request) {
+// 保存排序后的 Profile 文件
+func saveProfileOrder(w http.ResponseWriter, r *http.Request) {
 	// 必须是 websocket 请求
 	if !(r.Header.Get("Upgrade") == "websocket") {
 		ErrorResponse(w, r, fmt.Errorf("must be a websocket connection"))
@@ -57,7 +57,7 @@ func saveProfilesOrder(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// 保存排序后的配置文件
+// 保存排序后的 WebTest 文件
 func saveWebTestOrder(w http.ResponseWriter, r *http.Request) {
 	// 必须是 websocket 请求
 	if !(r.Header.Get("Upgrade") == "websocket") {
@@ -81,15 +81,15 @@ func saveWebTestOrder(w http.ResponseWriter, r *http.Request) {
 		}
 
 		// 解析消息
-		var profiles []models.Profile
-		if err := json.Unmarshal(msg, &profiles); err != nil {
+		var webTests []models.WebTest
+		if err := json.Unmarshal(msg, &webTests); err != nil {
 			log.Errorln("Decode error:%v", err)
 			break
 		}
 
 		// 保存配置文件顺序
-		if len(profiles) > 0 {
-			_ = cache.Put(constant.WebTestOrder, profiles)
+		if len(webTests) > 0 {
+			_ = cache.Put(constant.WebTestOrder, webTests)
 		}
 
 		// 回显消息
