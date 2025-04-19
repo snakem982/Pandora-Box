@@ -45,7 +45,7 @@ func saveProfilesOrder(w http.ResponseWriter, r *http.Request) {
 
 		// 保存配置文件顺序
 		if len(profiles) > 0 {
-			_ = cache.Put(constant.ProfilesOrder, profiles)
+			_ = cache.Put(constant.ProfileOrder, profiles)
 		}
 
 		// 回显消息

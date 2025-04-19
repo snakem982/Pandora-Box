@@ -61,7 +61,30 @@ func getProfile(w http.ResponseWriter, r *http.Request) {
 	var res []models.Profile
 	_ = cache.GetList(constant.PrefixProfile, &res)
 
-	render.JSON(w, r, res)
+	var order []models.Profile
+	_ = cache.GetList(constant.ProfileOrder, &order)
+
+	// If the order is empty, return the res as is
+	if len(order) == 0 {
+		render.JSON(w, r, res)
+		return
+	}
+
+	// Create a map for quick lookup of res by ID
+	profileMap := make(map[string]models.Profile)
+	for _, profile := range res {
+		profileMap[profile.Id] = profile
+	}
+
+	// Sort res based on the order
+	var sortedRes []models.Profile
+	for _, item := range order {
+		if profile, exists := profileMap[item.Id]; exists {
+			sortedRes = append(sortedRes, profile)
+		}
+	}
+
+	render.JSON(w, r, sortedRes)
 }
 
 func addFromFile(w http.ResponseWriter, r *http.Request) {
