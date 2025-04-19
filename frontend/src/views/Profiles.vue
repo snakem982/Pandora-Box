@@ -239,6 +239,7 @@ async function saveUpdateProfile() {
 
 
   await api.updateProfile(editForm)
+  // 更新当前页面的值
   Object.assign(editFormD, editForm)
   editFormVisible.value = false
   pSuccess(t('profiles.edit.success'))
