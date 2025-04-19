@@ -62,7 +62,9 @@ home:
     src-tip: Website icon cannot be empty
     test-tip: Website test address format error
     success: Operation success
-  timeout: T/O
+    loading: Website Testing...
+    timeout: T/O
+    wait: DUT
   ip:
     title: IP [FYI]
     real: Real IP

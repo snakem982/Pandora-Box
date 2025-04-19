@@ -8,6 +8,7 @@ import (
 	"net"
 	"net/http"
 	"net/url"
+	"regexp"
 	"sync"
 	"time"
 )
@@ -145,4 +146,57 @@ func FastGet(requestURL string, headers map[string]string, proxyURL string) (*Re
 		}
 		return nil, directErr
 	}
+}
+
+// 创建正则表达式
+var headPattern = `204|blank|generate|gstatic`
+
+// SendHead 发送 Head 请求
+func SendHead(requestURL string, proxyURL string) (int, error) {
+
+	// 设置代理地址
+	proxy, err := url.Parse(proxyURL) // 替换为你的代理地址
+	if err != nil {
+		return 500, fmt.Errorf("解析代理路径失败: %v", err)
+	}
+
+	// 创建Transport并设置代理
+	transport := &http.Transport{
+		Proxy: http.ProxyURL(proxy),
+	}
+
+	// 创建HTTP客户端并设置Transport
+	client := &http.Client{
+		Transport: transport,
+		Timeout:   8 * time.Second,
+	}
+
+	// 创建请求
+	re, _ := regexp.Compile(headPattern)
+	method := "GET"
+	if re.MatchString(requestURL) {
+		method = "HEAD"
+	}
+	req, err := http.NewRequest(method, requestURL, nil)
+	if err != nil {
+		return 500, fmt.Errorf("创建请求失败: %v", err)
+	}
+
+	// 设置请求头
+	req.Header.Set("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 13_3) AppleWebKit/537.36 (KHTML, like Gecko) Version/16.4 Safari/537.36")
+
+	// 发送请求
+	resp, err := client.Do(req)
+	if err != nil {
+		return 500, fmt.Errorf("发送请求失败: %v", err)
+	}
+	defer func(Body io.ReadCloser) {
+		err := Body.Close()
+		if err != nil {
+
+		}
+	}(resp.Body)
+
+	// 打印响应状态码
+	return resp.StatusCode, nil
 }

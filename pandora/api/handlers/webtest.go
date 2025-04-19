@@ -3,15 +3,16 @@ package handlers
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/snakem982/pandora-box/pandora/internal"
-	"net/http"
-
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/render"
+	"github.com/metacubex/mihomo/log"
 	"github.com/snakem982/pandora-box/pandora/api/models"
+	"github.com/snakem982/pandora-box/pandora/internal"
 	"github.com/snakem982/pandora-box/pandora/pkg/cache"
 	"github.com/snakem982/pandora-box/pandora/pkg/constant"
 	"github.com/snakem982/pandora-box/pandora/pkg/utils"
+	"net/http"
+	"time"
 )
 
 func WebTest(r chi.Router) {
@@ -25,6 +26,7 @@ func webtestRouter() chi.Router {
 	r.Post("/delete", deleteWebTest)
 	r.Put("/", updateWebTest)
 	r.Get("/order", saveWebTestOrder)
+	r.Post("/delay", delayWebTest)
 
 	return r
 }
@@ -98,4 +100,51 @@ func updateWebTest(w http.ResponseWriter, r *http.Request) {
 	_ = cache.Put(webtest.Id, webtest)
 
 	render.JSON(w, r, webtest)
+}
+
+func delayWebTest(w http.ResponseWriter, r *http.Request) {
+	var list []models.WebTest
+	if err := render.DecodeJSON(r.Body, &list); err != nil {
+		ErrorResponse(w, r, err)
+		return
+	}
+
+	if len(list) == 0 {
+		render.JSON(w, r, list)
+		return
+	}
+
+	// 进行订阅请求
+	pool := utils.NewTimeoutPoolWithDefaults()
+	pool.WaitCount(len(list))
+	for i, web := range list {
+		url := web.TestUrl
+		pool.Submit(func(done chan struct{}) {
+			defer func() {
+				if err := recover(); err != nil {
+					log.Errorln("Delay测试失败 URL= %s, 错误: %v", url, err)
+				}
+				done <- struct{}{}
+			}()
+			// 获取当前时间
+			start := time.Now()
+			code, err := utils.SendHead(url, internal.GetProxyUrl())
+			// 获取以毫秒为单位的执行时间
+			elapsed := time.Since(start).Milliseconds()
+			if err != nil {
+				list[i].Delay = -1
+			}
+			if code != 404 && code != 500 && code != 0 {
+				list[i].Delay = int(elapsed)
+			} else {
+				list[i].Delay = -1
+			}
+		})
+	}
+	pool.StartAndWait()
+
+	render.JSON(w, r, list)
+	for _, test := range list {
+		_ = cache.Put(test.Id, test)
+	}
 }

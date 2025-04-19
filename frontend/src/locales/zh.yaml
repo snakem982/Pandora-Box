@@ -62,7 +62,9 @@ home:
     src-tip: 网站图标不能为空
     test-tip: 网站测试地址格式错误
     success: 操作成功
-  timeout: 超时
+    loading: 测试中。。。
+    timeout: 超时
+    wait: 待测
   ip:
     title: IP [仅供参考]
     real: 落地Ip

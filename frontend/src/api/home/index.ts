@@ -50,6 +50,11 @@ const updateWebTest = (proxy: any) => async function (webTest: WebTest) {
     return await proxy.$http.put('/webtest', webTest);
 }
 
+// 获取 delay
+const getWebTestDelay = (proxy: any) => async function (list: WebTest[]): Promise<WebTest[]> {
+    return await proxy.$http.post('/webtest/delay', list);
+}
+
 export default function createHomeApi(proxy: any) {
     return {
         getVersion: getVersion(proxy),
@@ -59,5 +64,6 @@ export default function createHomeApi(proxy: any) {
         getWebTest: getWebTest(proxy),
         deleteWebTest: deleteWebTest(proxy),
         updateWebTest: updateWebTest(proxy),
+        getWebTestDelay: getWebTestDelay(proxy),
     }
 }

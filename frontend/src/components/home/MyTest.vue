@@ -6,7 +6,7 @@ import {useI18n} from "vue-i18n";
 import {useWebStore} from "@/store/webStore";
 import {WS} from "@/util/ws";
 import {onBeforeRouteLeave} from "vue-router";
-import {pError, pSuccess} from "@/util/pLoad";
+import {pError, pLoad, pSuccess} from "@/util/pLoad";
 import {isHttpOrHttps} from "@/util/format";
 
 
@@ -102,6 +102,19 @@ async function saveUpdateProfile() {
   pSuccess(t('home.web.success'))
 }
 
+// 获取联通性
+function getWebTestDelay() {
+  pLoad(t("home.web.loading"), async () => {
+    const list = await api.getWebTestDelay(webTestList)
+    if (webTestList.length != 0) {
+      webTestList.splice(0, webTestList.length)
+    }
+    list.forEach(item => {
+      webTestList.push(item)
+    })
+  });
+}
+
 
 // 保存排序
 // webSocket相关操作
@@ -138,7 +151,10 @@ onMounted(async () => {
         <el-tooltip
             :content="$t('refresh')"
             placement="top">
-          <el-icon size="22" class="tip">
+          <el-icon
+              @click="getWebTestDelay"
+              size="22"
+              class="tip">
             <icon-mdi-refresh/>
           </el-icon>
         </el-tooltip>
@@ -197,6 +213,12 @@ onMounted(async () => {
               {{ data.title }}
             </div>
             <el-tag
+                v-if="data.delay == 0"
+                type="info"
+                class="icon-delay">
+              {{ t('home.web.wait') }}
+            </el-tag>
+            <el-tag
                 v-if="data.delay > 0"
                 type="success"
                 class="icon-delay">
@@ -206,7 +228,7 @@ onMounted(async () => {
                 v-if="data.delay == -1"
                 type="danger"
                 class="icon-delay">
-              {{ t('home.timeout') }}
+              {{ t('home.web.timeout') }}
             </el-tag>
           </div>
         </template>
