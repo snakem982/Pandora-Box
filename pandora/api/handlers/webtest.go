@@ -1,7 +1,9 @@
 package handlers
 
 import (
+	"encoding/json"
 	"fmt"
+	"github.com/snakem982/pandora-box/pandora/internal"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
@@ -31,6 +33,16 @@ func getWebTest(w http.ResponseWriter, r *http.Request) {
 	// Get the webtest from the database
 	var res []models.WebTest
 	_ = cache.GetList(constant.PrefixWebTest, &res)
+
+	// 返回默认列表
+	if len(res) == 0 {
+		_ = json.Unmarshal(internal.DefaultWebTest, &res)
+		for _, webTest := range res {
+			_ = cache.Put(webTest.Id, webTest)
+		}
+		render.JSON(w, r, res)
+		return
+	}
 
 	var order []models.WebTest
 	_ = cache.Get(constant.WebTestOrder, &order)

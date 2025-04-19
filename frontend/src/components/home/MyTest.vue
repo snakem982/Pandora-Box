@@ -1,19 +1,95 @@
 <script setup lang="ts">
 
-import {cJoin} from "@/util/format";
+import {WebTest} from "@/types/webtest";
+import createApi from "@/api";
+import {useI18n} from "vue-i18n";
+import {useMenuStore} from "@/store/menuStore";
+import {useWebStore} from "@/store/webStore";
+import {WS} from "@/util/ws";
+import {onBeforeRouteLeave} from "vue-router";
+import {pError, pSuccess} from "@/util/pLoad";
 
+
+// i18n
+const {t} = useI18n();
+
+// 获取当前 Vue 实例的 proxy 对象
+const {proxy} = getCurrentInstance()!;
+const api = createApi(proxy);
+
+// 当前页面使用store
+const menuStore = useMenuStore();
+const webStore = useWebStore();
+
+// 编辑相关
 const editShow = ref(false)
 
-let configs = reactive(["google", "youtube", "chatgptsdfsdfsfsfd"]);
-
-
-function getData() {
-  console.log(cJoin(configs, ","))
+function handleDelete(data: any, index: number) {
+  api.deleteWebTest(data)
+  webTestList.splice(index, 1);
 }
 
-function handleDelete(index: number) {
-  configs.splice(index, 1);
+
+// 修改配置
+const editFormVisible = ref(false)
+let editForm = reactive<any>({})
+
+function handleEdit(data: any) {
+  editForm = data
+  editFormVisible.value = true
 }
+
+async function saveUpdateProfile() {
+
+
+  if (!editForm.title) {
+    pError(t('profiles.edit.title-tip'))
+    return
+  }
+
+
+  // await api.updateProfile(editForm)
+  editFormVisible.value = false
+  pSuccess(t('profiles.edit.success'))
+}
+
+// 列表显示
+let webTestList = reactive<WebTest[]>([])
+
+async function getWebTestList() {
+  if (webTestList.length != 0) {
+    webTestList.splice(0, webTestList.length)
+  }
+  const list = await api.getWebTest()
+  list.forEach(item => {
+    webTestList.push(item)
+  })
+}
+
+// 保存排序
+// webSocket相关操作
+let wsOrder: WS
+
+function sendOrder(data: any) {
+  if (wsOrder) {
+    wsOrder.send(JSON.stringify(data))
+  }
+}
+
+// 路由切换前关闭 WebSocket
+onBeforeRouteLeave(() => {
+  wsOrder.close();
+});
+onBeforeUnmount(() => {
+  wsOrder.close();
+})
+
+// vue 周期相关
+onMounted(async () => {
+  const urlTraffic = webStore.wsUrl + "/webtest/order?token=" + webStore.secret;
+  wsOrder = new WS(urlTraffic);
+  await getWebTestList()
+})
 
 </script>
 
@@ -21,7 +97,7 @@ function handleDelete(index: number) {
   <el-row class="t-card" :gutter="20" style="margin-left: 12px">
     <el-col :span="24">
       <el-row>
-        {{ $t('home.web') }}
+        {{ $t('home.web.title') }}
         <el-tooltip
             :content="$t('refresh')"
             placement="top">
@@ -51,8 +127,8 @@ function handleDelete(index: number) {
 
 
       <VDContainer
-          :data="configs"
-          @getData="getData"
+          :data="webTestList"
+          @getData="sendOrder"
           :gap="10"
           :top="8"
           draggable
@@ -62,32 +138,94 @@ function handleDelete(index: number) {
             <div class="icon">
               <img
                   draggable="false"
-                  src="https://studiostaticassetsprod.azureedge.net/bundle-cmc/favicon.svg"
+                  :src="data.src"
                   style="height: 48px;width: 48px;"
                   alt="C">
               <template v-if="editShow">
-                <div class="delete-btn" @click="handleDelete(index)">
+                <div class="delete-btn" @click="handleDelete(data,index)">
                   <icon-mdi-close/>
                 </div>
-                <div class="edit-btn" @click="handleDelete(index)">
+                <div class="edit-btn" @click="handleEdit(data)">
                   <icon-mdi-pencil/>
                 </div>
               </template>
             </div>
             <div
                 class="icon-title"
-                :title="data"
+                :title="data.title"
             >
-              {{ data }}
+              {{ data.title }}
             </div>
-            <el-tag type="success" class="icon-delay">
-              200 ms
+            <el-tag
+                v-if="data.delay > 0"
+                type="success"
+                class="icon-delay">
+              {{ data.delay }}
+            </el-tag>
+            <el-tag
+                v-if="data.delay == -1"
+                type="danger"
+                class="icon-delay">
+              {{ t('home.timeout') }}
             </el-tag>
           </div>
         </template>
       </VDContainer>
     </el-col>
   </el-row>
+
+
+  <el-dialog v-model="editFormVisible"
+             :title="t('edit')"
+             width="520"
+             draggable
+             center
+  >
+    <el-form
+        :model="editForm"
+        label-position="top"
+    >
+      <el-form-item
+          :label="t('home.web.edit')"
+          label-width="120">
+        <el-input
+            v-model="editForm.title"
+            clearable
+            autocomplete="off"/>
+      </el-form-item>
+      <el-form-item
+          :label="t('home.web.src')"
+          label-width="120">
+        <el-input
+            v-model="editForm.src"
+            clearable
+            autocomplete="off"/>
+      </el-form-item>
+      <el-form-item
+          :label="t('home.web.test')"
+          label-width="120">
+        <el-input
+            v-model="editForm.testUrl"
+            clearable
+            autocomplete="off">
+        </el-input>
+      </el-form-item>
+
+    </el-form>
+    <template #footer>
+      <div class="dialog-footer">
+        <el-button @click="editFormVisible = false">
+          {{ t('cancel') }}
+        </el-button>
+        <el-button type="primary"
+                   @click="saveUpdateProfile">
+          {{ t('confirm') }}
+        </el-button>
+      </div>
+    </template>
+  </el-dialog>
+
+
 </template>
 
 <style scoped>

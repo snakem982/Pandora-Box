@@ -1,4 +1,5 @@
 import SparkMD5 from "spark-md5";
+import {WebTest} from "@/types/webtest";
 
 // 获取版本
 const getVersion = (proxy: any) => async function () {
@@ -34,6 +35,20 @@ const getGroupMd5 = (proxy: any) => async function () {
     return SparkMD5.hash(jsonString);
 }
 
+// 获取 WebTest 列表
+const getWebTest = (proxy: any) => async function () {
+    return await proxy.$http.get('/webtest');
+}
+
+// 删除 WebTest
+const deleteWebTest = (proxy: any) => async function (webTest: WebTest) {
+    return await proxy.$http.post('/webtest/delete', webTest);
+}
+
+// 修改 WebTest
+const updateWebTest = (proxy: any) => async function (webTest: WebTest) {
+    return await proxy.$http.put('/webtest', webTest);
+}
 
 export default function createHomeApi(proxy: any) {
     return {
@@ -41,5 +56,8 @@ export default function createHomeApi(proxy: any) {
         getConfigs: getConfigs(proxy),
         getGroupMd5: getGroupMd5(proxy),
         updateConfigs: updateConfigs(proxy),
+        getWebTest: getWebTest(proxy),
+        deleteWebTest: deleteWebTest(proxy),
+        updateWebTest: updateWebTest(proxy),
     }
 }

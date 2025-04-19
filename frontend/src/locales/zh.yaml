@@ -53,7 +53,11 @@ home:
   download: 下载
   upload: 上传
   memory: 内存
-  web: 网站测试
+  web:
+    title: 网站测试
+    edit: 网站标题
+    src: 网站图标  (Base64 或者 URL地址)
+    test: 测试地址
   timeout: 超时
   ip:
     title: IP [仅供参考]
