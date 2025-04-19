@@ -3,11 +3,11 @@
 import {WebTest} from "@/types/webtest";
 import createApi from "@/api";
 import {useI18n} from "vue-i18n";
-import {useMenuStore} from "@/store/menuStore";
 import {useWebStore} from "@/store/webStore";
 import {WS} from "@/util/ws";
 import {onBeforeRouteLeave} from "vue-router";
 import {pError, pSuccess} from "@/util/pLoad";
+import {isHttpOrHttps} from "@/util/format";
 
 
 // i18n
@@ -18,40 +18,7 @@ const {proxy} = getCurrentInstance()!;
 const api = createApi(proxy);
 
 // 当前页面使用store
-const menuStore = useMenuStore();
 const webStore = useWebStore();
-
-// 编辑相关
-const editShow = ref(false)
-
-function handleDelete(data: any, index: number) {
-  api.deleteWebTest(data)
-  webTestList.splice(index, 1);
-}
-
-
-// 修改配置
-const editFormVisible = ref(false)
-let editForm = reactive<any>({})
-
-function handleEdit(data: any) {
-  editForm = data
-  editFormVisible.value = true
-}
-
-async function saveUpdateProfile() {
-
-
-  if (!editForm.title) {
-    pError(t('profiles.edit.title-tip'))
-    return
-  }
-
-
-  // await api.updateProfile(editForm)
-  editFormVisible.value = false
-  pSuccess(t('profiles.edit.success'))
-}
 
 // 列表显示
 let webTestList = reactive<WebTest[]>([])
@@ -65,6 +32,76 @@ async function getWebTestList() {
     webTestList.push(item)
   })
 }
+
+
+// 编辑相关
+const editShow = ref(false)
+
+function handleDelete(data: any, index: number) {
+  api.deleteWebTest(data)
+  webTestList.splice(index, 1);
+}
+
+
+// 修改配置
+const editFormVisible = ref(false)
+let editForm = reactive<any>({})
+let editFormD = reactive<any>({})
+
+const isAdd = ref(false)
+
+function handleAdd() {
+  editForm = reactive({
+    title: '',
+    src: '',
+    testUrl: ''
+  })
+  editFormD = reactive({
+    title: '',
+    src: '',
+    testUrl: ''
+  })
+  isAdd.value = true
+  editFormVisible.value = true
+}
+
+function handleEdit(data: any) {
+  editFormD = data
+  Object.assign(editForm, data)
+  isAdd.value = false
+  editFormVisible.value = true
+}
+
+async function saveUpdateProfile() {
+  if (!editForm.title) {
+    pError(t('home.web.edit-tip'))
+    return
+  }
+
+  if (!editForm.src) {
+    pError(t('home.web.src-tip'))
+    return
+  }
+
+  if (!isHttpOrHttps(editForm.testUrl)) {
+    pError(t('home.web.test-tip'))
+    return
+  }
+
+  const serverForm = await api.updateWebTest(editForm)
+  // 更新当前页面的值
+  Object.assign(editFormD, serverForm)
+  editFormVisible.value = false
+
+  // 处理添加逻辑
+  if (isAdd.value) {
+    webTestList.push(serverForm)
+    sendOrder(webTestList)
+  }
+
+  pSuccess(t('home.web.success'))
+}
+
 
 // 保存排序
 // webSocket相关操作
@@ -108,7 +145,10 @@ onMounted(async () => {
         <el-tooltip
             :content="$t('add')"
             placement="top">
-          <el-icon size="22" class="tip">
+          <el-icon
+              @click="handleAdd"
+              size="22"
+              class="tip">
             <icon-mdi-plus-thick/>
           </el-icon>
         </el-tooltip>
@@ -176,7 +216,7 @@ onMounted(async () => {
 
 
   <el-dialog v-model="editFormVisible"
-             :title="t('edit')"
+             :title="isAdd?t('add'):t('edit')"
              width="520"
              draggable
              center

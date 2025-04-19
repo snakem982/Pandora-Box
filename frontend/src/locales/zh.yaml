@@ -58,6 +58,10 @@ home:
     edit: 网站标题
     src: 网站图标  (Base64 或者 URL地址)
     test: 测试地址
+    edit-tip: 网站标题不能为空
+    src-tip: 网站图标不能为空
+    test-tip: 网站测试地址格式错误
+    success: 操作成功
   timeout: 超时
   ip:
     title: IP [仅供参考]

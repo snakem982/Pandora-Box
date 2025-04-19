@@ -47,3 +47,9 @@ export function formatDate(date: Date): string {
 
   return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}.${milliseconds}`;
 }
+
+// 校验是否 url 格式
+export function isHttpOrHttps(url: any) {
+  const regex = /^(https?):\/\/[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=.]+$/;
+  return regex.test(url);
+}

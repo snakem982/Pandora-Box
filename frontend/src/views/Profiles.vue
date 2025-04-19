@@ -4,7 +4,7 @@ import createApi from "@/api";
 import {pError, pLoad, pSuccess, pWarning} from "@/util/pLoad";
 import {useProxiesStore} from "@/store/proxiesStore";
 import {useMenuStore} from "@/store/menuStore";
-import {prettyBytes} from "@/util/format";
+import {isHttpOrHttps, prettyBytes} from "@/util/format";
 import {useI18n} from "vue-i18n";
 import {Browser, Clipboard} from "@wailsio/runtime"
 import {useWebStore} from "@/store/webStore";
@@ -43,6 +43,7 @@ async function add() {
     if (pList && pList.length > 0) {
       pList.forEach(item => profiles.push(item))
     }
+    sendOrder(profiles)
     addForm.content = ""
     addFormVisible.value = false
   } catch (e) {
@@ -188,11 +189,6 @@ function updateProfile(data: any) {
   editFormD = data
   Object.assign(editForm, data)
   editFormVisible.value = true
-}
-
-function isHttpOrHttps(url: any) {
-  const regex = /^(https?):\/\/[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=.]+$/;
-  return regex.test(url);
 }
 
 function validateField(value: any) {

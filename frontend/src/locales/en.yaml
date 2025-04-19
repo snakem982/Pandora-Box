@@ -58,6 +58,10 @@ home:
     edit: Website Title
     src: Website Icon (Base64 or URL)
     test: Website Testing URL
+    edit-tip: Website title cannot be empty
+    src-tip: Website icon cannot be empty
+    test-tip: Website test address format error
+    success: Operation success
   timeout: T/O
   ip:
     title: IP [FYI]

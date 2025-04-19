@@ -97,5 +97,5 @@ func updateWebTest(w http.ResponseWriter, r *http.Request) {
 	// Add the webtest to the database
 	_ = cache.Put(webtest.Id, webtest)
 
-	render.NoContent(w, r)
+	render.JSON(w, r, webtest)
 }
