@@ -3,8 +3,9 @@ package main
 import (
 	"embed"
 	_ "embed"
-	"github.com/wailsapp/wails/v3/pkg/application"
 	"log"
+
+	"github.com/wailsapp/wails/v3/pkg/application"
 )
 
 //go:embed all:frontend/dist
