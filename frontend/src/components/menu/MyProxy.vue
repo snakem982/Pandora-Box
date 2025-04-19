@@ -2,7 +2,7 @@
 import { useMenuStore } from "@/store/menuStore";
 import { useI18n } from "vue-i18n";
 import createApi from "@/api";
-import { success, warning } from "@/util/pLoad";
+import { pSuccess, pWarning } from "@/util/pLoad";
 
 // 存储规则模式
 const menuStore = useMenuStore();
@@ -21,9 +21,9 @@ function toggle() {
   // 检测通过执行后续操作
   menuStore.setProxy(!menuStore.proxy);
   if (menuStore.proxy) {
-    success(t("proxy-switch-on"));
+    pSuccess(t("proxy-switch-on"));
   } else {
-    warning(t("proxy-switch-off"));
+    pWarning(t("proxy-switch-off"));
   }
 }
 
@@ -40,7 +40,7 @@ function toggle2() {
         enable: true,
       },
     }).then((res: any) => {
-      success(t("tun-switch-on"));
+      pSuccess(t("tun-switch-on"));
     });
   } else {
     api.updateConfigs({
@@ -48,7 +48,7 @@ function toggle2() {
         enable: false,
       },
     }).then((res: any) => {
-      warning(t("tun-switch-off"));
+      pWarning(t("tun-switch-off"));
     });
   }
 }

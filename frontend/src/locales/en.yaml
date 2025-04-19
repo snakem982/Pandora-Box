@@ -100,9 +100,6 @@ proxies:
   vertical-off: Switch grouping to drop-down style
   direct: Currently in direct mode
   loading: Testing...
-  refresh:
-    ing: Updating...
-    success: Update Success
 
 profiles:
   title: Profiles
@@ -116,6 +113,18 @@ profiles:
   placeholder: Subscription, ShareLink, Yaml, Base64, Json
   home: Visit the Subscription Home Page
   del-tip: In use, cannot be deleted
+  edit:
+    title: Title
+    url: URL
+    update: Update Interval (hour)
+    title-tip: The title cannot be empty
+    url-tip: The URL cannot be empty
+    url-error: Wrong URL format
+    update-tip: The update interval must be greater than 0 and less than 128
+    success: Edit Success
+  refresh:
+    ing: Updating...
+    success: Update Success
 
 rule:
   title: Rule

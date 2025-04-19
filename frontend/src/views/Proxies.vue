@@ -5,7 +5,7 @@ import {useProxiesStore} from "@/store/proxiesStore";
 import {useMenuStore} from "@/store/menuStore";
 import {useSettingStore} from "@/store/settingStore";
 import {useI18n} from "vue-i18n";
-import {error, pLoad} from "@/util/pLoad";
+import {pError, pLoad} from "@/util/pLoad";
 
 const {t} = useI18n();
 
@@ -118,7 +118,7 @@ function testDelay() {
       await nodes();
     } catch (e) {
       if (e['message']) {
-        error(e['message'])
+        pError(e['message'])
       }
     }
   });

@@ -62,7 +62,7 @@ func getProfile(w http.ResponseWriter, r *http.Request) {
 	_ = cache.GetList(constant.PrefixProfile, &res)
 
 	var order []models.Profile
-	_ = cache.GetList(constant.ProfileOrder, &order)
+	_ = cache.Get(constant.ProfileOrder, &order)
 
 	// If the order is empty, return the res as is
 	if len(order) == 0 {

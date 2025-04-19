@@ -12,7 +12,7 @@
 import { useMenuStore } from "@/store/menuStore";
 import { useI18n } from "vue-i18n";
 import createApi from "@/api";
-import { success } from "@/util/pLoad";
+import { pSuccess } from "@/util/pLoad";
 
 // 存储规则模式
 const menuStore = useMenuStore();
@@ -47,7 +47,7 @@ watch(
     api.updateConfigs({
       mode: newValue,
     }).then((res: any) => {
-      success(t("rules." + newValue + "-switch"));
+      pSuccess(t("rules." + newValue + "-switch"));
     });
   }
 );

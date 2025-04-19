@@ -100,9 +100,6 @@ proxies:
   vertical-off: 切换分组为下拉样式
   direct: 当前处于直连模式
   loading: 测试中。。。
-  refresh:
-    ing: 更新中。。。
-    success: 更新成功
 
 profiles:
   title: 订阅
@@ -116,6 +113,18 @@ profiles:
   placeholder: 订阅地址、分享链接、Yaml、Base64、Json
   home: 访问订阅主页
   del-tip: 正在使用中，不可删除
+  edit:
+    title: 标题
+    url: 地址
+    update: 更新间隔 (小时)
+    title-tip: 标题不能为空
+    url-tip: 地址不能为空
+    url-error: 地址格式错误
+    update-tip: 更新间隔必须大于 0 且小于 128
+    success: 编辑成功
+  refresh:
+    ing: 更新中。。。
+    success: 更新成功
 
 rule:
   title: 规则

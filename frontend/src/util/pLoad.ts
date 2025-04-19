@@ -14,20 +14,20 @@ export async function pLoad(tip: any, callback: any) {
 export async function copy(textToCopy: any, t: any) {
     try {
         await navigator.clipboard.writeText(textToCopy);
-        success(t("copy.success"));
+        pSuccess(t("copy.success"));
     } catch (error) {
         error(t("copy.fail"));
     }
 }
 
-export function success(msg: any) {
+export function pSuccess(msg: any) {
     ElMessage({
         message: msg,
         type: "success",
     });
 }
 
-export function error(msg: any) {
+export function pError(msg: any) {
     ElMessage({
         message: msg,
         type: "error",
@@ -36,7 +36,7 @@ export function error(msg: any) {
     });
 }
 
-export function warning(msg: any) {
+export function pWarning(msg: any) {
     ElMessage({
         message: msg,
         type: "warning",

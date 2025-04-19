@@ -1,14 +1,17 @@
 <script setup lang="ts">
 import {Profile} from "@/types/profile";
 import createApi from "@/api";
-import {error, pLoad, success, warning} from "@/util/pLoad";
+import {pError, pLoad, pSuccess, pWarning} from "@/util/pLoad";
 import {useProxiesStore} from "@/store/proxiesStore";
 import {useMenuStore} from "@/store/menuStore";
 import {prettyBytes} from "@/util/format";
 import {useI18n} from "vue-i18n";
 import {Browser, Clipboard} from "@wailsio/runtime"
 import {useWebStore} from "@/store/webStore";
+import {WS} from "@/util/ws";
+import {onBeforeRouteLeave} from "vue-router";
 
+// i18n
 const {t} = useI18n();
 
 // 获取当前 Vue 实例的 proxy 对象
@@ -20,36 +23,80 @@ const menuStore = useMenuStore();
 const proxiesStore = useProxiesStore();
 const webStore = useWebStore();
 
-let profiles = reactive<any[]>([])
-const profileInfo = reactive({
+// 头部几个按钮操作
+const addFormVisible = ref(false)
+const isNowAdd = ref(false)
+const addForm = reactive({
+  content: '',
+})
+
+async function add() {
+  if (!addForm.content) {
+    return
+  }
+
+  isNowAdd.value = true
+  const p = new Profile()
+  p.content = addForm.content
+  try {
+    const pList = await api.addProfileFromInput(p)
+    if (pList && pList.length > 0) {
+      pList.forEach(item => profiles.push(item))
+    }
+    addForm.content = ""
+    addFormVisible.value = false
+  } catch (e) {
+    isNowAdd.value = false
+    if (e['message']) {
+      pError(e['message'])
+    }
+  }
+}
+
+function handlePaste() {
+  Clipboard.Text().then(text => {
+    addForm.content = text
+    addFormVisible.value = true
+  })
+}
+
+function openFile() {
+  webStore.dnd = true
+}
+
+// 头部显示
+const headerShow = reactive({
   available: '',
   used: '',
   expire: '',
   update: '',
 })
 
-function setProfile(item: any) {
+function setHeaderShow(item: any) {
   if (item['available']) {
-    profileInfo.available = prettyBytes(item['available'])
+    headerShow.available = prettyBytes(item['available'])
   } else {
-    profileInfo.available = ''
+    headerShow.available = ''
   }
   if (item['used']) {
-    profileInfo.used = prettyBytes(item['used'])
+    headerShow.used = prettyBytes(item['used'])
   } else {
-    profileInfo.used = ''
+    headerShow.used = ''
   }
   if (item['expire']) {
-    profileInfo.expire = item['expire']
+    headerShow.expire = item['expire']
   } else {
-    profileInfo.expire = ''
+    headerShow.expire = ''
   }
   if (item['update']) {
-    profileInfo.update = item['update']
+    headerShow.update = item['update']
   } else {
-    profileInfo.update = ''
+    headerShow.update = ''
   }
 }
+
+// 列表显示
+let profiles = reactive<any[]>([])
 
 async function getProfileList() {
   if (profiles.length != 0) {
@@ -59,15 +106,12 @@ async function getProfileList() {
   list.forEach(item => {
     profiles.push(item)
     if (item['selected']) {
-      setProfile(item)
+      setHeaderShow(item)
     }
   })
 }
 
-onMounted(async () => {
-  await getProfileList()
-})
-
+// 拖动相关
 const canDrag = ref(false)
 
 function mouseEnter() {
@@ -78,47 +122,7 @@ function mouseLeave() {
   canDrag.value = false
 }
 
-
-function handleEmit(value: any) {
-  console.log(profiles)
-}
-
-const dialogFormVisible = ref(false)
-const profile = reactive({
-  content: '',
-})
-
-const isNowAdd = ref(false)
-
-async function add() {
-  if (!profile.content) {
-    return
-  }
-
-  isNowAdd.value = true
-  const p = new Profile()
-  p.content = profile.content
-  try {
-    const pList = await api.addProfileFromInput(p)
-    if (pList && pList.length > 0) {
-      pList.forEach(item => profiles.push(item))
-    }
-    profile.content = ""
-    dialogFormVisible.value = false
-  } catch (e) {
-    isNowAdd.value = false
-    if (e['message']) {
-      error(e['message'])
-    }
-  }
-}
-
-watch(() => webStore.dProfile, async (pList, oldValue) => {
-  if (pList && pList.length > 0) {
-    pList.forEach(item => profiles.push(item))
-  }
-})
-
+// 切换订阅配置
 async function switchProfile(data: any) {
   if (data['selected']) {
     return
@@ -135,7 +139,7 @@ async function switchProfile(data: any) {
       }
     }
     data['selected'] = true
-    setProfile(data)
+    setHeaderShow(data)
 
     api.getRules().then((res) => {
       menuStore.setRuleNum(res.length);
@@ -143,51 +147,102 @@ async function switchProfile(data: any) {
 
   } catch (e) {
     if (e['message']) {
-      error(e['message'])
+      pError(e['message'])
     }
   }
 
 }
 
+// 更新订阅
 async function refresh(data: any) {
-  await pLoad(t('proxies.refresh.ing'), async () => {
+  await pLoad(t('profiles.refresh.ing'), async () => {
     try {
       const re = await api.refreshProfile(data)
       if (data['selected']) {
-        setProfile(re)
+        setHeaderShow(re)
       }
-      success(t('proxies.refresh.success'))
+      Object.assign(data, re);
+      pSuccess(t('profiles.refresh.success'))
     } catch (e) {
       if (e['message']) {
-        error(e['message'])
+        pError(e['message'])
       }
     }
   })
 }
 
-function handlePaste() {
-  Clipboard.Text().then(text => {
-    profile.content = text
-    dialogFormVisible.value = true
-  })
-}
-
-function openFile() {
-  webStore.dnd = true
-}
-
+// 几个按钮操作
+// 到主页
 function goHome(data: any) {
   Browser.OpenURL(data.home)
 }
 
-function updateProfile(data: any) {
+// 修改配置
+const editFormVisible = ref(false)
+let editForm = reactive<any>({
+})
 
+function updateProfile(data: any) {
+  editForm = data
+  editFormVisible.value = true
 }
 
+function isHttpOrHttps(url: any) {
+  const regex = /^(https?):\/\/[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=.]+$/;
+  return regex.test(url);
+}
 
+function validateField(value: any) {
+  // 如果为空，则通过校验
+  if (value === "" || value === null || value === undefined) {
+    return true;
+  }
+
+  // 如果不为空，验证是否是大于0且小于等于128的整数
+  const regex = /^[1-9][0-9]?$|^1[0-2][0-8]$/;
+  return regex.test(value.toString());
+}
+
+async function saveUpdateProfile() {
+
+  switch (editForm.type) {
+    case 2:
+      if (!editForm.title) {
+        pError(t('profiles.edit.title-tip'))
+        return
+      }
+      break
+    case 1:
+      if (!editForm.title) {
+        pError(t('profiles.edit.title-tip'))
+        return
+      }
+
+      if (!editForm.content) {
+        pError(t('profiles.edit.url-tip'))
+        return
+      }
+
+      if(!isHttpOrHttps(editForm.content)){
+        pError(t('profiles.edit.url-error'))
+        return
+      }
+
+      if (!validateField(editForm.interval)) {
+        pError(t('profiles.edit.update-tip'))
+        return
+      }
+  }
+
+  await api.updateProfile(editForm)
+  editFormVisible.value = false
+  pSuccess(t('profiles.edit.success'))
+}
+
+// 删除配置
 async function deleteProfile(data: any, index: any) {
   if (data['selected']) {
-    warning(t('profiles.del-tip'))
+    pWarning(t('profiles.del-tip'))
     return
   }
 
@@ -196,12 +251,41 @@ async function deleteProfile(data: any, index: any) {
     profiles.splice(index, 1)
   } catch (e) {
     if (e['message']) {
-      error(e['message'])
+      pError(e['message'])
     }
   }
 }
 
+// webSocket相关操作
+let wsOrder: WS
 
+function sendOrder(data: any) {
+  if (wsOrder) {
+    wsOrder.send(JSON.stringify(data))
+  }
+}
+
+// 路由切换前关闭 WebSocket
+onBeforeRouteLeave(() => {
+  wsOrder.close();
+});
+onBeforeUnmount(() => {
+  wsOrder.close();
+})
+
+// vue 周期相关
+onMounted(async () => {
+  const urlTraffic = webStore.wsUrl + "/profile/order?token=" + webStore.secret;
+  wsOrder = new WS(urlTraffic);
+
+  await getProfileList()
+})
+
+watch(() => webStore.dProfile, async (pList, oldValue) => {
+  if (pList && pList.length > 0) {
+    pList.forEach(item => profiles.push(item))
+  }
+})
 </script>
 
 <template>
@@ -217,7 +301,7 @@ async function deleteProfile(data: any, index: any) {
               :content="$t('profiles.add')"
               placement="top">
             <el-icon
-                @click="dialogFormVisible = true"
+                @click="addFormVisible = true"
                 class="profile-option-btn">
               <icon-mdi-plus-thick/>
             </el-icon>
@@ -247,20 +331,20 @@ async function deleteProfile(data: any, index: any) {
       </el-space>
 
       <div class="sub-title">
-        <template v-if="profileInfo.available">
-          <span>{{ $t('profiles.available') }} {{ profileInfo.available }}</span>
+        <template v-if="headerShow.available">
+          <span>{{ $t('profiles.available') }} {{ headerShow.available }}</span>
           <el-divider direction="vertical" border-style="dashed"/>
         </template>
-        <template v-if="profileInfo.used">
-          <span>{{ $t('profiles.use') }} {{ profileInfo.used }}</span>
+        <template v-if="headerShow.used">
+          <span>{{ $t('profiles.use') }} {{ headerShow.used }}</span>
           <el-divider direction="vertical" border-style="dashed"/>
         </template>
-        <template v-if="profileInfo.expire">
-          <span>{{ $t('profiles.expire') }} {{ profileInfo.expire }}</span>
+        <template v-if="headerShow.expire">
+          <span>{{ $t('profiles.expire') }} {{ headerShow.expire }}</span>
           <el-divider direction="vertical" border-style="dashed"/>
         </template>
-        <template v-if="profileInfo.update">
-          <span>{{ $t('profiles.update') }} {{ profileInfo.update }}</span>
+        <template v-if="headerShow.update">
+          <span>{{ $t('profiles.update') }} {{ headerShow.update }}</span>
         </template>
       </div>
     </template>
@@ -268,7 +352,7 @@ async function deleteProfile(data: any, index: any) {
 
       <VDContainer
           :data="profiles"
-          @getData="handleEmit"
+          @getData="sendOrder"
           :gap="15"
           :draggable="canDrag"
           style="margin-left: 10px;width: 95%;"
@@ -342,29 +426,83 @@ async function deleteProfile(data: any, index: any) {
     </template>
   </MyLayout>
 
-  <el-dialog v-model="dialogFormVisible"
+  <el-dialog v-model="addFormVisible"
              :title="t('profiles.add')"
              width="520"
              draggable
+             center
   >
-    <el-form :model="profile">
+    <el-form :model="addForm">
       <el-form-item>
         <el-input
+            :rows="3"
             type="textarea"
             :placeholder="t('profiles.placeholder')"
-            v-model="profile.content"
+            v-model="addForm.content"
             autocomplete="off"/>
       </el-form-item>
     </el-form>
     <template #footer>
       <div class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">
+        <el-button @click="addFormVisible = false">
           {{ t('cancel') }}
         </el-button>
         <el-button
             :loading="isNowAdd"
             type="primary"
             @click="add">
+          {{ t('confirm') }}
+        </el-button>
+      </div>
+    </template>
+  </el-dialog>
+
+  <el-dialog v-model="editFormVisible"
+             :title="t('edit')"
+             width="520"
+             draggable
+             center
+  >
+    <el-form
+        :model="editForm"
+        label-position="top"
+    >
+      <el-form-item
+          :label="t('profiles.edit.title')"
+          label-width="120">
+        <el-input
+            v-model="editForm.title"
+            clearable
+            autocomplete="off"/>
+      </el-form-item>
+      <el-form-item
+          v-if="editForm.type == 1"
+          :label="t('profiles.edit.url')"
+          label-width="120">
+        <el-input
+            v-model="editForm.content"
+            clearable
+            autocomplete="off"/>
+      </el-form-item>
+      <el-form-item
+          v-if="editForm.type == 1"
+          :label="t('profiles.edit.update')"
+          label-width="120">
+        <el-input
+            v-model="editForm.interval"
+            clearable
+            autocomplete="off">
+        </el-input>
+      </el-form-item>
+
+    </el-form>
+    <template #footer>
+      <div class="dialog-footer">
+        <el-button @click="editFormVisible = false">
+          {{ t('cancel') }}
+        </el-button>
+        <el-button type="primary"
+                   @click="saveUpdateProfile">
           {{ t('confirm') }}
         </el-button>
       </div>

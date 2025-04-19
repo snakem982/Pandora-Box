@@ -8,7 +8,7 @@
 
 <script setup lang="ts">
 import {useWebStore} from "@/store/webStore.js";
-import {error, pLoad, success, warning} from "@/util/pLoad";
+import {pError, pLoad, pSuccess, pWarning} from "@/util/pLoad";
 import {useI18n} from "vue-i18n";
 import {Profile} from "@/types/profile.js";
 import createApi from "@/api/index.js";
@@ -45,7 +45,7 @@ function handleDrop(e) {
 
   const files = Array.from(e.dataTransfer.files);
   if (files.length > 1) {
-    warning(t('drag.size'))
+    pWarning(t('drag.size'))
     return
   }
 
@@ -64,11 +64,11 @@ function handleDrop(e) {
           const pList = await api.addProfileFromInput(p)
           if (pList && pList.length > 0) {
             webStore.dProfile = pList;
-            success(t('drag.success'))
+            pSuccess(t('drag.success'))
           }
         } catch (e) {
           if (e['message']) {
-            error(e['message'])
+            pError(e['message'])
           }
         }
       })

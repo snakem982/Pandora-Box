@@ -3,6 +3,7 @@ package handlers
 import (
 	"encoding/json"
 	"fmt"
+	"net"
 	"net/http"
 
 	"github.com/gobwas/ws"
@@ -26,13 +27,17 @@ func saveProfileOrder(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		return
 	}
-	defer conn.Close()
+	defer func(conn net.Conn) {
+		err := conn.Close()
+		if err != nil {
+
+		}
+	}(conn)
 
 	// 处理 WebSocket 消息
 	for {
 		msg, op, err := wsutil.ReadClientData(conn)
 		if err != nil {
-			log.Errorln("Read error:%v", err)
 			break
 		}
 
@@ -70,13 +75,17 @@ func saveWebTestOrder(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		return
 	}
-	defer conn.Close()
+	defer func(conn net.Conn) {
+		err := conn.Close()
+		if err != nil {
+
+		}
+	}(conn)
 
 	// 处理 WebSocket 消息
 	for {
 		msg, op, err := wsutil.ReadClientData(conn)
 		if err != nil {
-			log.Errorln("Read error:%v", err)
 			break
 		}
 

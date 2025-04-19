@@ -33,7 +33,7 @@ func getWebTest(w http.ResponseWriter, r *http.Request) {
 	_ = cache.GetList(constant.PrefixWebTest, &res)
 
 	var order []models.WebTest
-	_ = cache.GetList(constant.WebTestOrder, &order)
+	_ = cache.Get(constant.WebTestOrder, &order)
 
 	// If the order is empty, return the webtest as is
 	if len(order) == 0 {
