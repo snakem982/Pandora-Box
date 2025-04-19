@@ -8,7 +8,6 @@ import (
 	plog "github.com/sirupsen/logrus"
 	"github.com/snakem982/pandora-box/pandora/api/models"
 	"github.com/snakem982/pandora-box/pandora/pkg/cache"
-	"github.com/snakem982/pandora-box/pandora/pkg/constant"
 	"github.com/snakem982/pandora-box/pandora/pkg/utils"
 	"io"
 	"os"
@@ -64,15 +63,16 @@ func StartCore(profile models.Profile, reload bool) {
 	useTemplate := false
 	path := profile.Path
 
-	template, err := os.ReadFile(filepath.Join(C.Path.HomeDir(), constant.DefaultTemplate))
-	if err == nil && len(template) > 0 {
-		templateBuf = template
-		var on string
-		_ = cache.Get(constant.DefaultTemplate, &on)
-		if on == "on" {
-			useTemplate = true
-		}
-	}
+	// 获取规则分组模板
+	//template, err := os.ReadFile(filepath.Join(C.Path.HomeDir(), constant.DefaultTemplate))
+	//if err == nil && len(template) > 0 {
+	//	templateBuf = template
+	//	var on string
+	//	_ = cache.Get(constant.TemplateSwitch, &on)
+	//	if on == "on" {
+	//		useTemplate = true
+	//	}
+	//}
 
 	providerBuf, err := os.ReadFile(filepath.Join(C.Path.HomeDir(), path))
 	if err != nil {
