@@ -77,10 +77,19 @@ const testTemplate = async () => {
 // 保存逻辑
 const saveTemplate = async () => {
   try {
+    // 先测试
+    await api.testTemplate({
+      data: yamlContent.value,
+    });
+    // 再保存
     await api.updateTemplate({
       data: yamlContent.value,
       template: now,
     });
+    // 如果是启用中的 进行切换
+    if (now.selected) {
+      await api.switchTemplate(now);
+    }
     pSuccess(t('rule.success'))
   } catch (e) {
     if (e['message']) {
