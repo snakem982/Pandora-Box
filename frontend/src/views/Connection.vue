@@ -42,6 +42,11 @@ function fHost(metadata: any): string {
 }
 
 function filterData(cacheData: any): any {
+
+  if(!cacheData || cacheData.length === 0) {
+    return
+  }
+
   const cache = cacheData.filter((data: any) => {
     const searchLower = search.value.toLowerCase();
     return (
