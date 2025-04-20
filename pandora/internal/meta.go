@@ -1,6 +1,7 @@
 package internal
 
 import (
+	"github.com/snakem982/pandora-box/pandora/pkg/constant"
 	"io"
 	"os"
 	"path/filepath"
@@ -50,6 +51,9 @@ func Init() {
 	_, _ = utils.SaveFile(utils.GetUserHomeDir("geoip.metadb"), GeoIp)
 	_, _ = utils.SaveFile(utils.GetUserHomeDir("GeoSite.dat"), GeoSite)
 	_, _ = utils.SaveFile(utils.GetUserHomeDir("ASN.mmdb"), ASN)
+	GeoIp = nil
+	GeoSite = nil
+	ASN = nil
 }
 
 var NowConfig *config.Config
@@ -60,33 +64,24 @@ func StartCore(profile models.Profile, reload bool) {
 	StartLock.Lock()
 	defer StartLock.Unlock()
 
-	templateBuf := Template_0
-	useTemplate := false
-	path := profile.Path
+	// 获取规则分组
+	useTemplate, templateBuf := getTemplate(profile)
 
-	// 获取规则分组模板
-	//template, err := os.ReadFile(filepath.Join(C.Path.HomeDir(), constant.DefaultTemplate))
-	//if err == nil && len(template) > 0 {
-	//	templateBuf = template
-	//	var on string
-	//	_ = cache.Get(constant.TemplateSwitch, &on)
-	//	if on == "on" {
-	//		useTemplate = true
-	//	}
-	//}
-
-	providerBuf, err := os.ReadFile(filepath.Join(C.Path.HomeDir(), path))
+	// 获取配置文件
+	providerBuf, err := os.ReadFile(filepath.Join(C.Path.HomeDir(), profile.Path))
 	if err != nil {
 		log.Warnln("Read config error: %s", err.Error())
 		return
 	}
 
+	// 解析配置文件
 	rawCfg, err := config.UnmarshalRawConfig(providerBuf)
 	if err != nil {
 		log.Warnln("Unmarshal config error: %s", err.Error())
 		return
 	}
 
+	// 统一规则模板
 	if useTemplate || len(rawCfg.Rule) == 0 {
 		provider := rawCfg.ProxyProvider
 		proxy := rawCfg.Proxy
@@ -95,23 +90,25 @@ func StartCore(profile models.Profile, reload bool) {
 		rawCfg.Proxy = proxy
 	}
 
+	// Pandora-Box 默认配置
 	rawCfg.Port = 0
 	rawCfg.SocksPort = 0
 	rawCfg.TProxyPort = 0
 	rawCfg.RedirPort = 0
+	rawCfg.ExternalController = ""
+	rawCfg.GeodataMode = false
+	rawCfg.Tun.Device = "Pandora"
+	rawCfg.UnifiedDelay = true
+
+	// todo 从数据库中获取 mihomo 配置
+
 	if reload && NowConfig != nil {
 		general := NowConfig.General
 		rawCfg.MixedPort = general.MixedPort
 		rawCfg.AllowLan = general.AllowLan
 		rawCfg.IPv6 = general.IPv6
 		rawCfg.Tun.Enable = general.Tun.Enable
-		rawCfg.UnifiedDelay = general.UnifiedDelay
 	}
-
-	rawCfg.ExternalController = ""
-	rawCfg.GeodataMode = false
-	rawCfg.Tun.Device = "Pandora"
-	rawCfg.UnifiedDelay = true
 
 	NowConfig, err = config.ParseRawConfig(rawCfg)
 	if err != nil {
@@ -120,4 +117,39 @@ func StartCore(profile models.Profile, reload bool) {
 	}
 
 	executor.ApplyConfig(NowConfig, !reload)
+}
+
+// 获取统一规则分组模板
+func getTemplate(profile models.Profile) (bool, []byte) {
+
+	// 优先启用个性模板
+	var template models.Template
+	if profile.Template != "" {
+		_ = cache.Get(profile.Template, &template)
+	}
+	if template.Path != "" {
+		body, err := utils.ReadFile(utils.GetUserHomeDir(template.Path))
+		if err == nil {
+			return true, []byte(body)
+		}
+	}
+
+	// 其次启用通用模板
+	var list []models.Template
+	_ = cache.GetList(constant.PrefixTemplate, &list)
+	for _, m := range list {
+		if m.Selected {
+			template = m
+			break
+		}
+	}
+	if template.Path != "" {
+		body, err := utils.ReadFile(utils.GetUserHomeDir(template.Path))
+		if err == nil {
+			return true, []byte(body)
+		}
+	}
+
+	// 最后返回通用模板
+	return false, Template_0
 }
