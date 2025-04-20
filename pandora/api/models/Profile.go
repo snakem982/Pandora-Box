@@ -20,6 +20,7 @@ type Profile struct {
 	Interval  string `json:"interval,omitempty"`
 	Home      string `json:"home,omitempty"`
 	Update    string `json:"update,omitempty"`
+	Template  string `json:"template,omitempty"`
 }
 
 func (p *Profile) GetUpdateTime() time.Time {

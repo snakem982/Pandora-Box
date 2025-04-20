@@ -13,4 +13,5 @@ export class Profile {
     interval?: string; // 可选
     home?: string; // 可选
     update?: string; // 可选
+    template?: string; // 可选
 }
