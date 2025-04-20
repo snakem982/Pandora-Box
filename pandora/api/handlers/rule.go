@@ -157,7 +157,7 @@ func deleteTemplate(w http.ResponseWriter, r *http.Request) {
 func updateTemplate(w http.ResponseWriter, r *http.Request) {
 	// 读取请求体
 	req := struct {
-		Data     []byte          `json:"data"`
+		Data     string          `json:"data"`
 		Template models.Template `json:"template"`
 	}{}
 	if err := render.DecodeJSON(r.Body, &req); err != nil {
@@ -166,14 +166,11 @@ func updateTemplate(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// 存盘
-	_, err := utils.SaveFile(utils.GetUserHomeDir(req.Template.Path), req.Data)
+	_, err := utils.SaveFile(utils.GetUserHomeDir(req.Template.Path), []byte(req.Data))
 	if err != nil {
 		ErrorResponse(w, r, err)
 		return
 	}
-
-	// 存数据库
-	_ = cache.Put(req.Template.Id, req.Template)
 
 	render.NoContent(w, r)
 }
@@ -181,14 +178,14 @@ func updateTemplate(w http.ResponseWriter, r *http.Request) {
 func testTemplate(w http.ResponseWriter, r *http.Request) {
 	// 读取请求体
 	req := struct {
-		Data []byte `json:"data"`
+		Data string `json:"data"`
 	}{}
 	if err := render.DecodeJSON(r.Body, &req); err != nil {
 		ErrorResponse(w, r, err)
 		return
 	}
 
-	_, err := executor.ParseWithBytes(req.Data)
+	_, err := executor.ParseWithBytes([]byte(req.Data))
 	if err != nil {
 		log.Warnln("[testTemplate] error: %v", err)
 		ErrorResponse(w, r, err)
@@ -206,21 +203,21 @@ func switchTemplate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if template.Selected {
-		var list []models.Template
-		_ = cache.GetList(constant.PrefixTemplate, &list)
-		for _, m := range list {
-			if m.Selected {
-				m.Selected = false
-				_ = cache.Put(m.Id, m)
-				break
-			}
+	// 状态改变
+	var list []models.Template
+	_ = cache.GetList(constant.PrefixTemplate, &list)
+	for _, m := range list {
+		if m.Selected {
+			m.Selected = false
+			_ = cache.Put(m.Id, m)
+			break
 		}
-		// todo 切换
-	} else {
-		// todo 切换
 	}
-	_ = cache.Put(template.Id, template)
+	if template.Selected {
+		_ = cache.Put(template.Id, template)
+	}
+
+	// todo 切换
 
 	render.NoContent(w, r)
 }

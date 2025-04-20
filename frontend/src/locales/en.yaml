@@ -138,6 +138,7 @@ profiles:
 
 rule:
   title: Rule
+  success: Save success
   now:
     title: View current rules
     search: Search payload
@@ -152,11 +153,12 @@ rule:
     m3: Streaming
     reset: Reset
     test: Test
+    test-success : Test success
+    switch-success: Switch success
   ignore:
     title: Ignore these domains
     tip: Split by row
     place: Type Here
-    success: Save success
 
 connections:
   title: Connections

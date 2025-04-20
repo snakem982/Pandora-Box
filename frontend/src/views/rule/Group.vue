@@ -8,6 +8,7 @@ import "ace-builds/src-noconflict/ext-language_tools"; // YAML 支持
 import "ace-builds/src-noconflict/theme-monokai"; // 主题支持
 import createApi from "@/api";
 import {useI18n} from "vue-i18n";
+import {pError, pSuccess} from "@/util/pLoad";
 
 // 编辑器使用
 const editorOptions = {
@@ -32,24 +33,14 @@ let now = reactive({
   title: "",
   selected: false
 })
-// Template 下拉展示
-const isDropdownOpen = ref(false);
-
-const selectOption = async (item: any) => {
-  Object.assign(now, item);
-  // 处理编辑器内容
-  yamlContent.value = await api.getTemplateById(item.id);
-  isDropdownOpen.value = false;
-};
 
 onMounted(async () => {
   // 初始化
-  const list = await api.getTemplateList();
-  tList = list;
-  Object.assign(now, list[0]);
+  tList = await api.getTemplateList();
+  Object.assign(now, tList[0]);
 
   // 处理选中项
-  for (const item of list) {
+  for (const item of tList) {
     if (item.selected) {
       Object.assign(now, item);
       break;
@@ -59,6 +50,59 @@ onMounted(async () => {
   // 处理编辑器内容
   yamlContent.value = await api.getTemplateById(now.id);
 });
+
+// Template 下拉列表逻辑
+const isDropdownOpen = ref(false);
+const selectOption = async (item: any) => {
+  Object.assign(now, item);
+  // 处理编辑器内容
+  yamlContent.value = await api.getTemplateById(item.id);
+  isDropdownOpen.value = false;
+};
+
+// 测试逻辑
+const testTemplate = async () => {
+  try {
+    await api.testTemplate({
+      data: yamlContent.value,
+    });
+    pSuccess(t('rule.group.test-success'))
+  } catch (e) {
+    if (e['message']) {
+      pError(e['message'])
+    }
+  }
+}
+
+// 保存逻辑
+const saveTemplate = async () => {
+  try {
+    await api.updateTemplate({
+      data: yamlContent.value,
+      template: now,
+    });
+    pSuccess(t('rule.success'))
+  } catch (e) {
+    if (e['message']) {
+      pError(e['message'])
+    }
+  }
+}
+
+// 切换逻辑
+const switchTemplate = async () => {
+  try {
+    await api.switchTemplate(now);
+    tList = await api.getTemplateList();
+    pSuccess(t('rule.group.switch-success'))
+  } catch (e) {
+    if (e['message']) {
+      pError(e['message'])
+    }
+  }
+}
+
+
 </script>
 
 <template>
@@ -80,18 +124,15 @@ onMounted(async () => {
         </ul>
       </div>
       <el-divider direction="vertical" border-style="dashed"/>
-      <el-button>
-        {{ t("rule.group.reset") }}
-      </el-button>
-      <el-button>
+      <el-button @click="testTemplate">
         {{ t("rule.group.test") }}
       </el-button>
-      <el-button>
+      <el-button @click="saveTemplate">
         {{ t("save") }}
       </el-button>
       <el-divider direction="vertical" border-style="dashed"/>
       <el-text :class="now.selected ? '' : 'st'">{{ t("off") }}</el-text>
-      <el-switch v-model="now.selected" class="set-switch"/>
+      <el-switch @click="switchTemplate" v-model="now.selected" class="set-switch"/>
       <el-text :class="now.selected ? 'st' : ''">{{ t("on") }}</el-text>
     </el-space>
 

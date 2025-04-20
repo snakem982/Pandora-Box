@@ -138,6 +138,7 @@ profiles:
 
 rule:
   title: 规则
+  success: 保存成功
   now:
     title: 查看目前规则
     search: 搜索规则
@@ -152,11 +153,12 @@ rule:
     m3: 流媒体
     reset: 重置
     test: 测试
+    test-success : 测试成功
+    switch-success: 切换成功
   ignore:
     title: 忽略这些域名
     tip: 按行分割
     place: 在这里输入
-    success: 保存成功
 
 connections:
   title: 连接

@@ -29,7 +29,7 @@ async function savaIgnore() {
 
   try {
     await api.updateIgnore(ignores)
-    pSuccess(t('rule.ignore.success'))
+    pSuccess(t('rule.success'))
   } catch (e) {
     if (e['message']) {
       pError(e['message'])
