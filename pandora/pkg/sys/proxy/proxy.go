@@ -3,31 +3,32 @@ package sys
 import (
 	"fmt"
 	"github.com/snakem982/pandora-box/pandora/pkg/utils"
-	"strconv"
 )
 
-func SetProxy(port string) error {
-	temp, _ := strconv.Atoi(port)
-	if !utils.IsPortAvailable(temp) {
-		return fmt.Errorf("port %s is not available", port)
+// EnableProxy 开启系统代理
+func EnableProxy(host string, port int) error {
+	// 检测端口，不可用进行报错
+	if !utils.IsPortAvailable(port) {
+		return fmt.Errorf("port %d is not available", port)
 	}
 
 	_ = OnHttp(Addr{
-		Host: "127.0.0.1",
-		Port: temp,
+		Host: host,
+		Port: port,
 	})
 	_ = OnHttps(Addr{
-		Host: "127.0.0.1",
-		Port: temp,
+		Host: host,
+		Port: port,
 	})
 	_ = OnSocks(Addr{
-		Host: "127.0.0.1",
-		Port: temp,
+		Host: host,
+		Port: port,
 	})
 
 	return nil
 }
 
-func RemoveProxy() {
+// DisableProxy 关闭代理
+func DisableProxy() {
 	_ = OffAll()
 }
