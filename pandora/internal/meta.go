@@ -150,6 +150,6 @@ func getTemplate(profile models.Profile) (bool, []byte) {
 		}
 	}
 
-	// 最后返回通用模板
+	// 最后返回默认模板
 	return false, Template_0
 }
