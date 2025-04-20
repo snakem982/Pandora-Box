@@ -1,17 +1,25 @@
-<script setup>
-import {VAceEditor} from 'vue3-ace-editor';
-import 'ace-builds/src-noconflict/ace';
-import 'ace-builds/src-noconflict/ext-searchbox'; // 查找替换
-import 'ace-builds/src-noconflict/mode-yaml'; // YAML 支持
-import 'ace-builds/src-noconflict/ext-beautify';
-import 'ace-builds/src-noconflict/ext-language_tools'; // YAML 支持
-import 'ace-builds/src-noconflict/theme-monokai'; // 主题支持
+<script setup lang="ts">
+import { VAceEditor } from "vue3-ace-editor";
+import "ace-builds/src-noconflict/ace";
+import "ace-builds/src-noconflict/ext-searchbox"; // 查找替换
+import "ace-builds/src-noconflict/mode-yaml"; // YAML 支持
+import "ace-builds/src-noconflict/ext-beautify";
+import "ace-builds/src-noconflict/ext-language_tools"; // YAML 支持
+import "ace-builds/src-noconflict/theme-monokai"; // 主题支持
 
-const yamlContent = ref(`# 示例 YAML
-key: 🚀 节点选择
-list:
-  - 🇺🇸 美国
-  - item2 🇭🇰`);
+import createApi from "@/api";
+import { pError, pSuccess } from "@/util/pLoad";
+import { useI18n } from "vue-i18n";
+
+// i18n
+const { t } = useI18n();
+
+// 获取当前 Vue 实例的 proxy 对象 和 api
+const { proxy } = getCurrentInstance()!;
+const api = createApi(proxy);
+
+// 编辑器显示内容
+const yamlContent = ref("");
 
 const editorOptions = {
   showPrintMargin: false,
@@ -20,73 +28,77 @@ const editorOptions = {
 const isDropdownOpen = ref(false);
 const selectedOption = ref(null);
 
-const selectOption = (option) => {
-  selectedOption.value = option;
+const selectOption = async (item: any) => {
+  selectedOption.value = t("rule.group." + item.title);
   isDropdownOpen.value = false;
+
+  // 处理编辑器内容
+  const res = await api.getTemplateById(item.id);
+  yamlContent.value = res.data;
 };
 
-const isOpen = ref(false)
+const isOpen = ref(false);
+let tList = reactive([]);
 
+onMounted(async () => {
+  const list = await api.getTemplateList();
+  tList = list;
+  let id = list[0].id;
+  // 处理选中项
+  for (const item of list) {
+    if (item.selected) {
+      id = item.id;
+      selectedOption.value = t("rule.group." + item.title);
+      break;
+    }
+  }
+  // 处理编辑器内容
+  const res = await api.getTemplateById(id);
+  yamlContent.value = res.data;
+});
 </script>
 
 <template>
   <div class="group">
-
     <el-space class="op">
       <div class="dropdown">
         <button class="dropdown-btn" @click="isDropdownOpen = !isDropdownOpen">
-          {{ selectedOption || $t('rule.group.model') }}
+          {{ selectedOption || $t("rule.group.model") }}
         </button>
         <ul v-if="isDropdownOpen" class="dropdown-list">
           <li
-              :key="$t('rule.group.m1')"
-              @click="selectOption($t('rule.group.m1'))"
-              class="dropdown-item"
+            :key="item.id + index"
+            @click="selectOption(item)"
+            class="dropdown-item"
+            v-for="(item, index) in tList"
           >
-            {{ $t('rule.group.m1') }}
-          </li>
-          <li
-              :key="$t('rule.group.m2')"
-              @click="selectOption($t('rule.group.m2'))"
-              class="dropdown-item"
-          >
-            {{ $t('rule.group.m2') }}
-          </li>
-          <li
-              :key="$t('rule.group.m3')"
-              @click="selectOption($t('rule.group.m3'))"
-              class="dropdown-item"
-          >
-            {{ $t('rule.group.m3') }}
+            {{ $t("rule.group." + item.title) }}
           </li>
         </ul>
       </div>
-      <el-divider direction="vertical" border-style="dashed"/>
+      <el-divider direction="vertical" border-style="dashed" />
       <el-button>
-        {{ $t('rule.group.reset') }}
+        {{ $t("rule.group.reset") }}
       </el-button>
       <el-button>
-        {{ $t('rule.group.test') }}
+        {{ $t("rule.group.test") }}
       </el-button>
       <el-button>
-        {{ $t('save') }}
+        {{ $t("save") }}
       </el-button>
-      <el-divider direction="vertical" border-style="dashed"/>
-      <el-text :class="isOpen?'':'st'">{{ $t('off') }}</el-text>
-      <el-switch
-          v-model="isOpen"
-          class="set-switch"
-      />
-      <el-text :class="isOpen?'st':''">{{ $t('on') }}</el-text>
+      <el-divider direction="vertical" border-style="dashed" />
+      <el-text :class="isOpen ? '' : 'st'">{{ $t("off") }}</el-text>
+      <el-switch v-model="isOpen" class="set-switch" />
+      <el-text :class="isOpen ? 'st' : ''">{{ $t("on") }}</el-text>
     </el-space>
 
     <VAceEditor
-        v-model:value="yamlContent"
-        lang="yaml"
-        theme="monokai"
-        :options="editorOptions"
-        style="width: 100%;height: calc(100vh - 325px);"
-        class="editor"
+      v-model:value="yamlContent"
+      lang="yaml"
+      theme="monokai"
+      :options="editorOptions"
+      style="width: 100%; height: calc(100vh - 325px)"
+      class="editor"
     />
   </div>
 </template>
@@ -174,14 +186,12 @@ const isOpen = ref(false)
   --el-button-bg-color: transparent;
   --el-button-text-color: var(--text-color);
   --el-button-hover-text-color: var(--left-item-selected-bg);
-  --el-button-hover-bg-color: var(--text-color)
+  --el-button-hover-bg-color: var(--text-color);
 }
-
 
 .st {
   color: var(--text-color);
 }
-
 
 .editor {
   margin-top: 25px;
@@ -190,7 +200,8 @@ const isOpen = ref(false)
 :deep(.ace_editor) {
   border: 2px solid var(--text-color);
   border-radius: 8px;
-  font: 15px 'Twemoji', 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'Source Code Pro', 'source-code-pro', monospace;
+  font: 15px "Twemoji", "Monaco", "Menlo", "Ubuntu Mono", "Consolas",
+    "Source Code Pro", "source-code-pro", monospace;
 }
 
 :deep(.ace_gutter) {
@@ -217,13 +228,11 @@ const isOpen = ref(false)
   width: 374px;
 }
 
-
-:deep(.ace_button,.ace_searchbtn_close) {
+:deep(.ace_button, .ace_searchbtn_close) {
   color: #cccccc;
 }
 
 :deep(.ace_button:hover) {
   color: black;
 }
-
 </style>
