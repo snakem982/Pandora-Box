@@ -16,7 +16,7 @@ dns:
   enable: true
   ipv6: false
   prefer-h3: true
-  listen: 0.0.0.0:1052
+  listen: 0.0.0.0:1051
   enhanced-mode: fake-ip
   fake-ip-range: 198.18.0.1/16
   nameserver:

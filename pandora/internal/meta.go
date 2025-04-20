@@ -1,6 +1,12 @@
 package internal
 
 import (
+	"io"
+	"os"
+	"path/filepath"
+	"runtime"
+	"sync"
+
 	"github.com/metacubex/mihomo/config"
 	C "github.com/metacubex/mihomo/constant"
 	"github.com/metacubex/mihomo/hub/executor"
@@ -9,11 +15,6 @@ import (
 	"github.com/snakem982/pandora-box/pandora/api/models"
 	"github.com/snakem982/pandora-box/pandora/pkg/cache"
 	"github.com/snakem982/pandora-box/pandora/pkg/utils"
-	"io"
-	"os"
-	"path/filepath"
-	"runtime"
-	"sync"
 )
 
 // Init meta 启动前的初始化
@@ -59,7 +60,7 @@ func StartCore(profile models.Profile, reload bool) {
 	StartLock.Lock()
 	defer StartLock.Unlock()
 
-	templateBuf := PandoraDefaultConfig
+	templateBuf := Template_0
 	useTemplate := false
 	path := profile.Path
 

@@ -2,16 +2,18 @@ package handlers
 
 import (
 	"fmt"
+	"net/http"
+
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/render"
 	"github.com/metacubex/mihomo/hub/executor"
 	"github.com/metacubex/mihomo/log"
 	"github.com/snakem982/pandora-box/pandora/api/models"
+	"github.com/snakem982/pandora-box/pandora/internal"
 	"github.com/snakem982/pandora-box/pandora/pkg/cache"
 	"github.com/snakem982/pandora-box/pandora/pkg/constant"
 	sys "github.com/snakem982/pandora-box/pandora/pkg/sys/proxy"
 	"github.com/snakem982/pandora-box/pandora/pkg/utils"
-	"net/http"
 )
 
 func Rule(r chi.Router) {
@@ -63,6 +65,30 @@ func updateIgnore(w http.ResponseWriter, r *http.Request) {
 func getTemplateList(w http.ResponseWriter, r *http.Request) {
 	var list []models.Template
 	_ = cache.GetList(constant.PrefixTemplate, &list)
+
+	if len(list) == 0 {
+		// 如果没有数据，使用默认的模板
+		list2 := [3][]byte{internal.Template_0, internal.Template_1, internal.Template_2}
+		titles := [3]string{"m1", "m2", "m3"}
+		for i := 0; i < 3; i++ {
+			template := models.Template{
+				Id:       fmt.Sprintf("%s%d", constant.PrefixTemplate, i),
+				Order:    int64(i),
+				Title:    titles[i],
+				Path:     fmt.Sprintf("/%s/%s.yaml", constant.DefaultTemplateDir, fmt.Sprintf("%s%d", constant.PrefixTemplate, i)),
+				Selected: false,
+			}
+
+			// 存盘
+			_, _ = utils.SaveFile(utils.GetUserHomeDir(template.Path), list2[i])
+
+			// 存数据库
+			_ = cache.Put(template.Id, template)
+
+			// 返回页面
+			list = append(list, template)
+		}
+	}
 
 	render.JSON(w, r, list)
 }

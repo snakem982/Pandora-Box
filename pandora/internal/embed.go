@@ -2,8 +2,14 @@ package internal
 
 import _ "embed"
 
-//go:embed em/config.yaml
-var PandoraDefaultConfig []byte
+//go:embed em/Template_0.yaml
+var Template_0 []byte
+
+//go:embed em/Template_1.yaml
+var Template_1 []byte
+
+//go:embed em/Template_2.yaml
+var Template_2 []byte
 
 //go:embed em/config_download.yaml
 var PandoraDefaultDownloadConfig []byte
