@@ -1,16 +1,55 @@
 <script setup lang="ts">
 
+import createApi from "@/api";
+import {pError, pSuccess} from "@/util/pLoad";
+import {useI18n} from "vue-i18n";
+
+// i18n
+const {t} = useI18n();
+
+// 获取当前 Vue 实例的 proxy 对象 和 api
+const {proxy} = getCurrentInstance()!;
+const api = createApi(proxy);
+
+
+const bypass = ref('')
+
+onMounted(async () => {
+  const ignore: string[] = await api.getIgnore()
+  bypass.value = ignore.join("\n")
+})
+
+async function savaIgnore() {
+  let value = bypass.value.trim();
+  if (value === '') {
+    return
+  }
+
+  const ignores = value.split("\n");
+
+  try {
+    await api.updateIgnore(ignores)
+    pSuccess(t('rule.ignore.success'))
+  } catch (e) {
+    if (e['message']) {
+      pError(e['message'])
+    }
+  }
+}
+
+
 </script>
 
 <template>
   <div class="ignore">
     <el-space class="op">
-      <el-button>{{ $t('save') }}</el-button>
+      <el-button @click="savaIgnore">{{ $t('save') }}</el-button>
       <el-divider direction="vertical" border-style="dashed"/>
       <el-text class="st">{{ $t('rule.ignore.tip') }}</el-text>
     </el-space>
     <div class="content">
       <textarea
+          v-model="bypass"
           class="custom-textarea"
           :placeholder="$t('rule.ignore.place')"
       ></textarea>
@@ -47,13 +86,13 @@
 
 .custom-textarea {
   background-color: transparent; /* 背景透明 */
-  border: 2px solid var(--text-color);       /* 边界为 2px 的白色 */
-  color: white;                  /* 文字颜色为白色 */
-  padding: 8px;                  /* 内间距，确保内容不贴边 */
-  border-radius: 8px;            /* 圆角样式（可选） */
-  font-size: 16px;               /* 字体大小 */
-  resize: none;                  /* 禁止调整大小（可选） */
-  outline: none;                 /* 去掉点击时的默认高亮框 */
+  border: 2px solid var(--text-color); /* 边界为 2px 的白色 */
+  color: white; /* 文字颜色为白色 */
+  padding: 8px; /* 内间距，确保内容不贴边 */
+  border-radius: 8px; /* 圆角样式（可选） */
+  font-size: 16px; /* 字体大小 */
+  resize: none; /* 禁止调整大小（可选） */
+  outline: none; /* 去掉点击时的默认高亮框 */
   width: 96%;
   height: calc(100vh - 340px);
 }

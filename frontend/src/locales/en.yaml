@@ -156,6 +156,7 @@ rule:
     title: Ignore these domains
     tip: Split by row
     place: Type Here
+    success: Save success
 
 connections:
   title: Connections

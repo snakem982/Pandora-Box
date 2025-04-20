@@ -21,6 +21,8 @@ export default function createApi(proxy: any) {
         closeConnection: createConnApi(proxy).closeConnection,
         closeAllConnection: createConnApi(proxy).closeAllConnection,
         getRules: createRuleApi(proxy).getRules,
+        getIgnore: createRuleApi(proxy).getIgnore,
+        updateIgnore: createRuleApi(proxy).updateIgnore,
         addProfileFromInput: createProfilesApi(proxy).addProfileFromInput,
         addProfileFromFile: createProfilesApi(proxy).addProfileFromFile,
         deleteProfile: createProfilesApi(proxy).deleteProfile,

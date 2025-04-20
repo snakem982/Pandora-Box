@@ -156,6 +156,7 @@ rule:
     title: 忽略这些域名
     tip: 按行分割
     place: 在这里输入
+    success: 保存成功
 
 connections:
   title: 连接
