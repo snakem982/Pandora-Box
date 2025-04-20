@@ -9,6 +9,7 @@ import (
 	"github.com/snakem982/pandora-box/pandora/api/models"
 	"github.com/snakem982/pandora-box/pandora/pkg/cache"
 	"github.com/snakem982/pandora-box/pandora/pkg/constant"
+	sys "github.com/snakem982/pandora-box/pandora/pkg/sys/proxy"
 	"github.com/snakem982/pandora-box/pandora/pkg/utils"
 	"net/http"
 )
@@ -19,9 +20,9 @@ func Rule(r chi.Router) {
 
 func ruleRouter() chi.Router {
 	r := chi.NewRouter()
-	// bypass
-	r.Get("/bypass", getBypass)
-	r.Post("/bypass", deleteBypass)
+	// 忽略的域名
+	r.Get("/ignore", getIgnore)
+	r.Put("/ignore", updateIgnore)
 
 	// 统一规则分组
 	r.Get("/list", getTemplateList)
@@ -37,12 +38,24 @@ func ruleRouter() chi.Router {
 	return r
 }
 
-func getBypass(w http.ResponseWriter, r *http.Request) {
-
-	render.NoContent(w, r)
+func getIgnore(w http.ResponseWriter, r *http.Request) {
+	ignore, _ := sys.GetIgnore()
+	render.JSON(w, r, ignore)
 }
 
-func deleteBypass(w http.ResponseWriter, r *http.Request) {
+func updateIgnore(w http.ResponseWriter, r *http.Request) {
+	var body []string
+	if err := render.DecodeJSON(r.Body, &body); err != nil {
+		ErrorResponse(w, r, err)
+		return
+	}
+
+	log.Infoln("[updateIgnore] %v", body)
+
+	if err := sys.SetIgnore(body); err != nil {
+		ErrorResponse(w, r, err)
+		return
+	}
 
 	render.NoContent(w, r)
 }
