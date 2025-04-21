@@ -88,7 +88,7 @@ setting:
   title: Setting
   mihomo:
     port: Mixed-Port
-    dns: DNS Overwrite
+    dns: DNS Override
     lan: LAN
   px:
     startup: Boot Startup
@@ -173,3 +173,7 @@ connections:
 log:
   title: Log
   search: Search
+
+dns:
+  title: DNS Override
+  success: Save success

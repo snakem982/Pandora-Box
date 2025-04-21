@@ -1,0 +1,19 @@
+dns:
+  enable: true
+  ipv6: false
+  prefer-h3: true
+  listen: 0.0.0.0:1051
+  enhanced-mode: fake-ip
+  fake-ip-range: 198.18.0.1/16
+  nameserver:
+    - tls://8.8.4.4
+    - tls://1.1.1.1
+  nameserver-policy:
+    'geosite:cn':
+      - system
+      - 180.76.76.76
+      - 223.5.5.5
+  proxy-server-nameserver:
+    - 180.76.76.76
+    - 202.175.3.3
+    - 223.5.5.5

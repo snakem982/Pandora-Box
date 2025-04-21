@@ -19,6 +19,7 @@ const (
 	SecretKey          = "SecretKey_pb"
 	RecoverTmp         = "RecoverTmp"
 	QuitSignal         = "QuitSignal"
+	Dns                = "DNS"
 )
 
 const (

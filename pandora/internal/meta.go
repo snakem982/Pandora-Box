@@ -112,10 +112,11 @@ func StartCore(profile models.Profile, reload bool) {
 
 	NowConfig, err = config.ParseRawConfig(rawCfg)
 	if err != nil {
-		log.Warnln("Parse config error: %s", err.Error())
+		log.Warnln("[StartCore] error: %s", err.Error())
 		return
 	}
 
+	// 应用配置
 	executor.ApplyConfig(NowConfig, !reload)
 }
 

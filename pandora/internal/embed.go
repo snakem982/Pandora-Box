@@ -28,3 +28,6 @@ var PandoraVersion string
 
 //go:embed em/webtest.json
 var DefaultWebTest []byte
+
+//go:embed em/dns.yaml
+var DefaultDNS string

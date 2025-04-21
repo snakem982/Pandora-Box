@@ -88,7 +88,7 @@ setting:
   title: 设置
   mihomo:
     port: 端口
-    dns: DNS重写
+    dns: DNS覆写
     lan: 局域网
   px:
     startup: 开机启动
@@ -173,4 +173,8 @@ connections:
 log:
   title: 日志
   search: 搜索
+
+dns:
+  title: DNS 覆写
+  success: 保存成功
 

@@ -8,6 +8,8 @@ import { copy } from "@/util/pLoad";
 import {useI18n} from "vue-i18n";
 import { useSettingStore } from "@/store/settingStore";
 import createApi from "@/api";
+import {changeMenu} from "@/util/menu";
+import {useRouter} from "vue-router";
 
 // 获取当前 Vue 实例的 proxy 对象 和 api
 const {proxy} = getCurrentInstance()!;
@@ -17,6 +19,9 @@ const api = createApi(proxy);
 const webStore = useWebStore()
 const settingStore = useSettingStore()
 const {t} = useI18n()
+
+// 使用路由
+const router = useRouter()
 
 
 const dns = ref(false)
@@ -56,7 +61,9 @@ onMounted(() => {
             <strong>
               {{ $t('setting.mihomo.dns') }} :
             </strong>
-            <el-icon class="btn">
+            <el-icon
+                @click="changeMenu('Dns',router)"
+                class="btn">
               <EditPen/>
             </el-icon>
             <el-switch

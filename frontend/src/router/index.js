@@ -11,6 +11,7 @@ import Ignore from '@/views/rule/Ignore.vue';
 import Connection from "@/views/Connection.vue";
 import Log from "@/views/Log.vue";
 import Crawl from "@/views/Crawl.vue";
+import Dns from "@/views/setting/Dns.vue";
 
 const routes = [
     {
@@ -37,6 +38,11 @@ const routes = [
         path: '/Profiles',
         name: 'Profiles',
         component: Profiles,
+    },
+    {
+        path: '/Dns',
+        name: 'Dns',
+        component: Dns,
     },
     {
         path: '/Rule',

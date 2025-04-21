@@ -3,6 +3,7 @@ import createHomeApi from "@/api/home";
 import createConnApi from "@/api/connections";
 import createRuleApi from "./rule";
 import createProfilesApi from "@/api/profiles";
+import createDnsApi from "@/api/dns";
 
 export default function createApi(proxy: any) {
     return {
@@ -37,5 +38,8 @@ export default function createApi(proxy: any) {
         getProfileList: createProfilesApi(proxy).getProfileList,
         refreshProfile: createProfilesApi(proxy).refreshProfile,
         switchProfile: createProfilesApi(proxy).switchProfile,
+        getDNS: createDnsApi(proxy).getDNS,
+        updateDNS: createDnsApi(proxy).updateDNS,
+        switchDNS: createDnsApi(proxy).switchDNS,
     };
 }
