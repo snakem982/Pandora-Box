@@ -55,12 +55,18 @@ func updateDNS(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var dns models.Dns
-	_ = cache.Get(constant.Dns, &dns)
-	dns.Content = req.Data
+	// 保存dns 内容
+	dns := models.Dns{
+		Content: req.Data,
+	}
 	_ = cache.Put(constant.Dns, dns)
 
-	// todo 如果 dns腹泻是启用中 进行 配置重载
+	// 进行 配置重载
+	var mi models.Mihomo
+	_ = cache.Get(constant.Mihomo, &mi)
+	if mi.Dns {
+		internal.SwitchProfile()
+	}
 
 	render.NoContent(w, r)
 }
@@ -75,12 +81,12 @@ func switchDNS(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var dns models.Dns
-	_ = cache.Get(constant.Dns, &dns)
-	dns.Enable = req.Enable
-	_ = cache.Put(constant.Dns, dns)
-
-	// todo 进行 配置重载
+	// 进行 配置重载
+	var mi models.Mihomo
+	_ = cache.Get(constant.Mihomo, &mi)
+	mi.Dns = req.Enable
+	_ = cache.Put(constant.Mihomo, mi)
+	internal.SwitchProfile()
 
 	render.NoContent(w, r)
 }

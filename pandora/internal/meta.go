@@ -1,11 +1,13 @@
 package internal
 
 import (
+	"github.com/metacubex/mihomo/tunnel"
 	"github.com/snakem982/pandora-box/pandora/pkg/constant"
 	"io"
 	"os"
 	"path/filepath"
 	"runtime"
+	"strings"
 	"sync"
 
 	"github.com/metacubex/mihomo/config"
@@ -60,7 +62,7 @@ var NowConfig *config.Config
 var StartLock = sync.Mutex{}
 
 // StartCore 函数用于启动核心功能，接收两个参数：profile和reload，分别为配置文件和是否自动reload的标志位
-func StartCore(profile models.Profile, reload bool) {
+func StartCore(profile models.Profile) {
 	StartLock.Lock()
 	defer StartLock.Unlock()
 
@@ -74,7 +76,7 @@ func StartCore(profile models.Profile, reload bool) {
 		return
 	}
 
-	// 解析配置文件
+	// 解析配置文件1
 	rawCfg, err := config.UnmarshalRawConfig(providerBuf)
 	if err != nil {
 		log.Warnln("Unmarshal config error: %s", err.Error())
@@ -100,24 +102,47 @@ func StartCore(profile models.Profile, reload bool) {
 	rawCfg.Tun.Device = "Pandora"
 	rawCfg.UnifiedDelay = true
 
-	// todo 从数据库中获取 mihomo 配置
-
-	if reload && NowConfig != nil {
-		general := NowConfig.General
-		rawCfg.MixedPort = general.MixedPort
-		rawCfg.AllowLan = general.AllowLan
-		rawCfg.IPv6 = general.IPv6
-		rawCfg.Tun.Enable = general.Tun.Enable
+	// 从数据库中获取 mihomo 配置,进行 rawCfg 赋值
+	var mi models.Mihomo
+	_ = cache.Get(constant.Mihomo, &mi)
+	if mi.BindAddress == "" {
+		mi = models.Mihomo{
+			Mode:        "rule",
+			Proxy:       false,
+			Tun:         false,
+			Port:        9697,
+			BindAddress: "127.0.0.1",
+			Stack:       "Mixed",
+			Dns:         false,
+			Ipv6:        false,
+		}
 	}
+	rawCfg.Mode = tunnel.ModeMapping[mi.Mode]
+	rawCfg.Tun.Enable = mi.Tun
+	rawCfg.AllowLan = true
+	rawCfg.MixedPort = mi.Port
+	rawCfg.BindAddress = mi.BindAddress
+	rawCfg.Tun.Stack = C.StackTypeMapping[strings.ToLower(mi.Stack)]
+	rawCfg.IPv6 = mi.Ipv6
 
-	NowConfig, err = config.ParseRawConfig(rawCfg)
-	if err != nil {
-		log.Warnln("[StartCore] error: %s", err.Error())
-		return
+	// 解析配置文件2
+	NowConfig, _ = config.ParseRawConfig(rawCfg)
+
+	// 覆盖dns
+	if mi.Dns {
+		var dns models.Dns
+		_ = cache.Get(constant.Dns, &dns)
+
+		if dns.Content == "" {
+			dns.Content = DefaultDNS
+		}
+
+		cfg, _ := executor.ParseWithBytes([]byte(dns.Content))
+		NowConfig.DNS = cfg.DNS
 	}
 
 	// 应用配置
-	executor.ApplyConfig(NowConfig, !reload)
+	executor.ApplyConfig(NowConfig, true)
 }
 
 // 获取统一规则分组模板
@@ -153,4 +178,30 @@ func getTemplate(profile models.Profile) (bool, []byte) {
 
 	// 最后返回默认模板
 	return false, Template_0
+}
+
+// SwitchProfile 切换配置
+func SwitchProfile() {
+	// 应用配置
+	var profile models.Profile
+
+	// 获取切换配置
+	var profiles []models.Profile
+	_ = cache.GetList(constant.PrefixProfile, &profiles)
+
+	if len(profiles) == 0 {
+		return
+	}
+
+	haveSelected := false
+	for _, p := range profiles {
+		if p.Selected {
+			profile = p
+			haveSelected = true
+		}
+	}
+
+	if haveSelected {
+		StartCore(profile)
+	}
 }

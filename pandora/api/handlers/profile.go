@@ -265,7 +265,7 @@ func switchProfile(w http.ResponseWriter, r *http.Request) {
 	profile.Selected = true
 	_ = cache.Put(profile.Id, profile)
 
-	internal.StartCore(profile, true)
+	internal.StartCore(profile)
 
 	render.NoContent(w, r)
 }
