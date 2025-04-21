@@ -202,6 +202,11 @@ func refreshProfile(w http.ResponseWriter, r *http.Request) {
 			profile.Title = title
 		}
 		UpdateDb(profile, 1)
+
+		// 如果配置正在使用中  进行配置更新
+		if profile.Selected {
+			internal.StartCore(*profile)
+		}
 	} else {
 		ErrorResponse(w, r, err)
 		log.Errorln("[refreshProfile] URL = %s, Resolve Error:%v", sub, err)

@@ -3,6 +3,7 @@ package internal
 import (
 	"github.com/metacubex/mihomo/tunnel"
 	"github.com/snakem982/pandora-box/pandora/pkg/constant"
+	sys "github.com/snakem982/pandora-box/pandora/pkg/sys/proxy"
 	"io"
 	"os"
 	"path/filepath"
@@ -143,6 +144,11 @@ func StartCore(profile models.Profile) {
 
 	// 应用配置
 	executor.ApplyConfig(NowConfig, true)
+
+	// 代理开启
+	if mi.Proxy {
+		_ = sys.EnableProxy(mi.BindAddress, mi.Port)
+	}
 }
 
 // 获取统一规则分组模板
