@@ -30,12 +30,26 @@ onMounted(() => {
   props.load(yamlContent);
 });
 
+const disabled = ref(true)
+let isFirst = true
+// 监听内容变化
+const onContentChange = () => {
+  if (isFirst) {
+    isFirst = false;
+    return
+  }
+
+  disabled.value = false;
+};
+
 </script>
 
 <template>
   <div class="group">
     <el-space class="op">
-      <el-button @click="save(yamlContent)">
+      <el-button
+          :disabled="disabled"
+          @click="save(yamlContent)">
         {{ t("save") }}
       </el-button>
     </el-space>
@@ -47,6 +61,7 @@ onMounted(() => {
         :options="editorOptions"
         style="width: 100%; height: calc(100vh - 300px)"
         class="editor"
+        @change="onContentChange"
     />
   </div>
 </template>
