@@ -27,7 +27,7 @@ const toggleEditing = () => {
 };
 
 // 保存端口值
-const savePort = () => {
+const savePort = async () => {
   // 检查端口值是否在有效范围内
   if (port.value < 1 || port.value > 65535) {
     pError(t('setting.mihomo.port-error'))
@@ -40,18 +40,37 @@ const savePort = () => {
     return;
   }
 
-  // 检测端口号是否被占用 
-  // todo
+  try {
+    // 检测端口是否被占用
+    await api.checkAddressPort({
+      "bindAddress": settingStore.bindAddress,
+      "port": Number(port.value),
+    })
 
-  // 更新配置
-  api.updateConfigs({
-    "mixed-port": Number(port.value),
-  }).then((res: any) => {
-    settingStore.setPort(port.value);
-    isEditing.value = false; // 退出编辑模式
-    // 同步 mihomo 配置
-    pUpdateMihomo(menuStore, settingStore, api)
-  });
+    // 更新配置
+    api.updateConfigs({
+      "mixed-port": Number(port.value),
+    }).then((res: any) => {
+      settingStore.setPort(port.value);
+      isEditing.value = false; // 退出编辑模式
+      // 同步 mihomo 配置
+      pUpdateMihomo(menuStore, settingStore, api)
+
+      if (menuStore.proxy) {
+        // 未被占用开启代理
+        api.enableProxy({
+          "bindAddress": settingStore.bindAddress,
+          "port": settingStore.port,
+        })
+      }
+    });
+
+  } catch (e) {
+    if (e['message']) {
+      pError(e['message'])
+    }
+  }
+
 };
 
 // 取消编辑

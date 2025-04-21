@@ -5,6 +5,7 @@ import createRuleApi from "./rule";
 import createProfilesApi from "@/api/profiles";
 import createDnsApi from "@/api/dns";
 import createMihomoApi from "@/api/mihomo";
+import createPandoraApi from "@/api/pandora";
 
 export default function createApi(proxy: any) {
     return {
@@ -44,5 +45,8 @@ export default function createApi(proxy: any) {
         switchDNS: createDnsApi(proxy).switchDNS,
         getMihomo: createMihomoApi(proxy).getMihomo,
         updateMihomo: createMihomoApi(proxy).updateMihomo,
+        enableProxy: createPandoraApi(proxy).enableProxy,
+        disableProxy: createPandoraApi(proxy).disableProxy,
+        checkAddressPort: createPandoraApi(proxy).checkAddressPort,
     };
 }

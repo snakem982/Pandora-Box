@@ -5,12 +5,12 @@ import (
 	"strconv"
 )
 
-// IsPortAvailable 检测端口是否被占用
-func IsPortAvailable(port int) bool {
-	address := ":" + strconv.Itoa(port)
+// IsPortAvailable 检测地址端口是否被占用
+func IsPortAvailable(host string, port int) error {
+	address := host + ":" + strconv.Itoa(port)
 	listener, err := net.Listen("tcp", address)
 	if err != nil {
-		return false // 端口被占用
+		return err // 端口被占用
 	}
 	defer func(listener net.Listener) {
 		err := listener.Close()
@@ -18,12 +18,13 @@ func IsPortAvailable(port int) bool {
 
 		}
 	}(listener)
-	return true // 端口可用
+
+	return nil // 端口可用
 }
 
 // GetRandomPort 获取一个随机可用端口
-func GetRandomPort() (int, error) {
-	listener, err := net.Listen("tcp", ":0") // 监听端口 0
+func GetRandomPort(host string) (int, error) {
+	listener, err := net.Listen("tcp", host+":0") // 监听端口 0
 	if err != nil {
 		return 0, err
 	}

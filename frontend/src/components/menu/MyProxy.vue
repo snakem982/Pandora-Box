@@ -2,7 +2,7 @@
 import {useMenuStore} from "@/store/menuStore";
 import {useI18n} from "vue-i18n";
 import createApi from "@/api";
-import {pSuccess, pWarning} from "@/util/pLoad";
+import {pError, pSuccess, pWarning} from "@/util/pLoad";
 import {useSettingStore} from "@/store/settingStore";
 import {pUpdateMihomo} from "@/util/mihomo";
 
@@ -18,19 +18,40 @@ const api = createApi(proxy);
 const {t} = useI18n();
 
 // 代理开关
-function proxySwitch() {
-  // 检测端口是否被占用
+async function proxySwitch() {
+  let ok = false
 
   // 检测通过执行后续操作
-  menuStore.setProxy(!menuStore.proxy);
-  if (menuStore.proxy) {
-    pSuccess(t("proxy-switch-on"));
+  if (!menuStore.proxy) {
+    try {
+      // 检测端口是否被占用
+      await api.checkAddressPort({
+        "bindAddress": settingStore.bindAddress,
+        "port": settingStore.port,
+      })
+      // 未被占用开启代理
+      await api.enableProxy({
+        "bindAddress": settingStore.bindAddress,
+        "port": settingStore.port,
+      })
+      ok = true
+      pSuccess(t("proxy-switch-on"));
+    } catch (e) {
+      if (e['message']) {
+        pError(e['message'])
+      }
+    }
   } else {
+    await api.disableProxy()
+    ok = true
     pWarning(t("proxy-switch-off"));
   }
 
-  // 同步 mihomo 配置
-  pUpdateMihomo(menuStore, settingStore, api)
+  // 同步配置
+  if (ok) {
+    menuStore.setProxy(!menuStore.proxy);
+    pUpdateMihomo(menuStore, settingStore, api)
+  }
 }
 
 // 虚拟网卡开关
