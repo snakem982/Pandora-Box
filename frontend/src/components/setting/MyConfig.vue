@@ -10,6 +10,8 @@ import {useSettingStore} from "@/store/settingStore";
 import createApi from "@/api";
 import {changeMenu} from "@/util/menu";
 import {useRouter} from "vue-router";
+import {pUpdateMihomo} from "@/util/mihomo";
+import {useMenuStore} from "@/store/menuStore";
 
 // 获取当前 Vue 实例的 proxy 对象 和 api
 const {proxy} = getCurrentInstance()!;
@@ -17,27 +19,32 @@ const api = createApi(proxy);
 
 // 使用 store
 const webStore = useWebStore()
+const menuStore = useMenuStore()
 const settingStore = useSettingStore()
 const {t} = useI18n()
 
 // 使用路由
 const router = useRouter()
 
-// 页面数据
-const dns = ref(false)
-const ipv6 = ref(false)
-const startup = ref(false)
+// 数据监听
+// dns
+watch(() => settingStore.dns, (newValue) => {
+  // 更新配置
+  api.switchDNS({
+    enable: newValue,
+  });
+});
 
-// 初始化
-onMounted(() => {
-  dns.value = settingStore.dns
-  ipv6.value = settingStore.ipv6
-  startup.value = settingStore.startup
-})
-
-// 存储 mihomo
-
-
+// ipv6
+watch(() => settingStore.ipv6, (newValue) => {
+  // 更新配置
+  api.updateConfigs({
+    ipv6: newValue,
+  }).then((res: any) => {
+    // 同步 mihomo 配置
+    pUpdateMihomo(menuStore, settingStore, api)
+  });
+});
 
 
 </script>
@@ -72,7 +79,7 @@ onMounted(() => {
               <EditPen/>
             </el-icon>
             <el-switch
-                v-model="dns"
+                v-model="settingStore.dns"
                 class="set-switch"
                 style="margin-left: 28px"
             />
@@ -80,7 +87,7 @@ onMounted(() => {
           <li>
             <strong>IPV6 :</strong>
             <el-switch
-                v-model="ipv6"
+                v-model="settingStore.ipv6"
                 class="set-switch"
             />
           </li>
@@ -120,7 +127,7 @@ onMounted(() => {
             <strong>{{ $t('setting.px.startup') }} :</strong>
             <el-switch
                 disabled
-                v-model="startup"
+                v-model="settingStore.startup"
                 class="set-switch"
             />
           </li>
