@@ -67,6 +67,7 @@ declare module 'vue' {
     IconMdiTshirtCrewOutline: typeof import('~icons/mdi/tshirt-crew-outline')['default']
     IconMdiViewDashboard: typeof import('~icons/mdi/view-dashboard')['default']
     Language: typeof import('./components/menu/Language.vue')['default']
+    MyBind: typeof import('./components/setting/MyBind.vue')['default']
     MyBottom: typeof import('./components/menu/MyBottom.vue')['default']
     MyChart: typeof import('./components/home/MyChart.vue')['default']
     MyConfig: typeof import('./components/setting/MyConfig.vue')['default']

@@ -4,6 +4,7 @@ import createConnApi from "@/api/connections";
 import createRuleApi from "./rule";
 import createProfilesApi from "@/api/profiles";
 import createDnsApi from "@/api/dns";
+import createMihomoApi from "@/api/mihomo";
 
 export default function createApi(proxy: any) {
     return {
@@ -41,5 +42,7 @@ export default function createApi(proxy: any) {
         getDNS: createDnsApi(proxy).getDNS,
         updateDNS: createDnsApi(proxy).updateDNS,
         switchDNS: createDnsApi(proxy).switchDNS,
+        getMihomo: createMihomoApi(proxy).getMihomo,
+        updateMihomo: createMihomoApi(proxy).updateMihomo,
     };
 }

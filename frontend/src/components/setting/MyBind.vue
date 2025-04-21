@@ -2,11 +2,11 @@
 import {ref} from "vue";
 import {EditPen} from "@element-plus/icons-vue";
 import {useSettingStore} from "@/store/settingStore";
-import {pError} from "@/util/pLoad";
 import {useI18n} from "vue-i18n";
+import {pError} from "@/util/pLoad";
 import {pUpdateMihomo} from "@/util/mihomo";
-import {useMenuStore} from "@/store/menuStore";
 import createApi from "@/api";
+import {useMenuStore} from "@/store/menuStore";
 
 // 使用 store
 const menuStore = useMenuStore()
@@ -19,35 +19,40 @@ const api = createApi(proxy);
 
 // 定义数据
 const isEditing = ref(false);
-const port = ref(0);
+const bind = ref("");
 
 // 切换编辑模式
 const toggleEditing = () => {
   isEditing.value = !isEditing.value;
 };
 
-// 保存端口值
-const savePort = () => {
-  // 检查端口值是否在有效范围内
-  if (port.value < 1 || port.value > 65535) {
-    pError(t('setting.mihomo.port-error'))
+// IPv4 的正则表达式
+const ipv4Regex = /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
+
+// IPv6 的正则表达式
+const ipv6Regex = /^(([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}|(::[0-9a-fA-F]{1,4}){1,7}[0-9a-fA-F]{0,4})$/;
+
+
+// 保存监听地址
+const saveBind = () => {
+  // 检测是否匹配 IPv4 或 IPv6
+  if (!ipv4Regex.test(bind.value) && !ipv6Regex.test(bind.value)) {
+    pError(t('setting.mihomo.bind-error'))
     return;
   }
 
-  // 端口号没有变化
-  if (port.value === settingStore.port) {
+  // 监听地址没有变化
+  if (bind.value === settingStore.bindAddress) {
     isEditing.value = false;
     return;
   }
 
-  // 检测端口号是否被占用 
-  // todo
-
   // 更新配置
   api.updateConfigs({
-    "mixed-port": Number(port.value),
+    "allow-lan": true,
+    "bind-address": settingStore.bindAddress,
   }).then((res: any) => {
-    settingStore.setPort(port.value);
+    settingStore.setBindAddress(bind.value);
     isEditing.value = false; // 退出编辑模式
     // 同步 mihomo 配置
     pUpdateMihomo(menuStore, settingStore, api)
@@ -57,18 +62,18 @@ const savePort = () => {
 // 取消编辑
 const cancelEdit = () => {
   isEditing.value = false;
-  port.value = settingStore.port; // 恢复原始值
+  bind.value = settingStore.bindAddress; // 恢复原始值
 };
 
 
 onMounted(() => {
   // 初始化端口值
-  port.value = settingStore.port;
+  bind.value = settingStore.bindAddress;
 });
 
 // 更新端口值
-watch(() => settingStore.port, (newValue) => {
-  port.value = newValue;
+watch(() => settingStore.bindAddress, (newValue) => {
+  bind.value = newValue;
 });
 
 
@@ -76,11 +81,11 @@ watch(() => settingStore.port, (newValue) => {
 
 <template>
   <div class="input-container">
-    <span>{{ $t('setting.mihomo.port') }} :</span>
+    <span>{{ $t('setting.mihomo.bindAddress') }} :</span>
     <template v-if="isEditing">
       <input
           type="text"
-          v-model="port"
+          v-model="bind"
           placeholder="请输入端口号"
           autocapitalize="off"
           autocomplete="off"
@@ -89,7 +94,7 @@ watch(() => settingStore.port, (newValue) => {
       />
     </template>
     <template v-else>
-      <span class="content">{{ settingStore.port }}</span>
+      <span class="content">{{ settingStore.bindAddress }}</span>
     </template>
     <el-icon
         class="btn"
@@ -99,7 +104,7 @@ watch(() => settingStore.port, (newValue) => {
     </el-icon>
     <el-icon
         class="btn"
-        @click="savePort"
+        @click="saveBind"
         v-if="isEditing">
       <icon-ep-select/>
     </el-icon>

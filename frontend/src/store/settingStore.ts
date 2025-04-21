@@ -4,8 +4,8 @@ export const useSettingStore = defineStore('setting', {
     state: () => ({
         testUrl: 'https://www.google.com/blank.html',
         port: 12345,
+        bindAddress: "127.0.0.1",
         stack: 'Mixed',
-        lan: false,
         ipv6: false,
         dns: false,
         startup: false,
@@ -15,13 +15,10 @@ export const useSettingStore = defineStore('setting', {
             this.testUrl = testUrl;
         },
         setPort(port: any) {
-            this.port = port;
+            this.port = Number(port);
         },
         setStack(stack: any) {
             this.stack = stack;
-        },
-        setLan(lan: any) {
-            this.lan = lan; 
         },
         setIpv6(ipv6: any) {
             this.ipv6 = ipv6;
@@ -31,6 +28,9 @@ export const useSettingStore = defineStore('setting', {
         },
         setStartup(startup: any) {
             this.startup = startup;
+        },
+        setBindAddress(bindAddress: any) {
+            this.bindAddress = bindAddress;
         },
     },
     persist: true,

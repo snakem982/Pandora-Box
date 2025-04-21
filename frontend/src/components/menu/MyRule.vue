@@ -9,20 +9,23 @@
 </template>
 
 <script lang="ts" setup>
-import { useMenuStore } from "@/store/menuStore";
-import { useI18n } from "vue-i18n";
+import {useMenuStore} from "@/store/menuStore";
+import {useI18n} from "vue-i18n";
 import createApi from "@/api";
-import { pSuccess } from "@/util/pLoad";
+import {pSuccess} from "@/util/pLoad";
+import {pUpdateMihomo} from "@/util/mihomo";
+import {useSettingStore} from "@/store/settingStore";
 
-// 存储规则模式
+// 使用store
 const menuStore = useMenuStore();
+const settingStore = useSettingStore();
 
 // 获取当前 Vue 实例的 proxy 对象
-const { proxy } = getCurrentInstance()!;
+const {proxy} = getCurrentInstance()!;
 const api = createApi(proxy);
 
 // 国际化
-const { t } = useI18n();
+const {t} = useI18n();
 const getOptions = function (): any[] {
   return [
     {
@@ -42,14 +45,16 @@ const getOptions = function (): any[] {
 
 // 监听 store.rule 的变化
 watch(
-  () => menuStore.rule,
-  (newValue, oldValue) => {
-    api.updateConfigs({
-      mode: newValue,
-    }).then((res: any) => {
-      pSuccess(t("rules." + newValue + "-switch"));
-    });
-  }
+    () => menuStore.rule,
+    (newValue, oldValue) => {
+      api.updateConfigs({
+        mode: newValue,
+      }).then((res: any) => {
+        pSuccess(t("rules." + newValue + "-switch"));
+        // 同步 mihomo 配置
+        pUpdateMihomo(menuStore, settingStore, api)
+      });
+    }
 );
 </script>
 

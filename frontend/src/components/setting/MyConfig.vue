@@ -4,9 +4,9 @@ import MyPort from "@/components/setting/MyPort.vue";
 import MyTun from "@/components/setting/MyTun.vue";
 import {EditPen} from "@element-plus/icons-vue";
 import {useWebStore} from "@/store/webStore";
-import { copy } from "@/util/pLoad";
+import {copy} from "@/util/pLoad";
 import {useI18n} from "vue-i18n";
-import { useSettingStore } from "@/store/settingStore";
+import {useSettingStore} from "@/store/settingStore";
 import createApi from "@/api";
 import {changeMenu} from "@/util/menu";
 import {useRouter} from "vue-router";
@@ -23,19 +23,21 @@ const {t} = useI18n()
 // 使用路由
 const router = useRouter()
 
-
+// 页面数据
 const dns = ref(false)
-const lan = ref(false)
 const ipv6 = ref(false)
 const startup = ref(false)
 
-
+// 初始化
 onMounted(() => {
   dns.value = settingStore.dns
-  lan.value = settingStore.lan
   ipv6.value = settingStore.ipv6
   startup.value = settingStore.startup
 })
+
+// 存储 mihomo
+
+
 
 
 </script>
@@ -53,6 +55,9 @@ onMounted(() => {
         <ul class="info-list">
           <li>
             <MyPort></MyPort>
+          </li>
+          <li>
+            <MyBind></MyBind>
           </li>
           <li>
             <MyTun></MyTun>
@@ -73,13 +78,6 @@ onMounted(() => {
             />
           </li>
           <li>
-            <strong>{{ $t('setting.mihomo.lan') }} :</strong>
-            <el-switch
-                v-model="lan"
-                class="set-switch"
-            />
-          </li>
-          <li>
             <strong>IPV6 :</strong>
             <el-switch
                 v-model="ipv6"
@@ -89,16 +87,18 @@ onMounted(() => {
           <li style="height: 30px">
             <strong>API :</strong>
             {{ webStore.baseUrl }}
-            <el-button 
-            @click="copy(webStore.baseUrl,t)"
-            >复制</el-button>
+            <el-button
+                @click="copy(webStore.baseUrl,t)">
+              复制
+            </el-button>
           </li>
           <li style="height: 30px">
             <strong>Secret:</strong>
             {{ webStore.secret }}
             <el-button
-            @click="copy(webStore.secret,t)"
-            >复制</el-button>
+                @click="copy(webStore.secret,t)">
+              复制
+            </el-button>
           </li>
         </ul>
       </div>
@@ -140,7 +140,6 @@ onMounted(() => {
       </div>
     </el-col>
   </el-row>
-
 
 
 </template>

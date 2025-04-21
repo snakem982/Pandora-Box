@@ -20,6 +20,7 @@ const (
 	RecoverTmp         = "RecoverTmp"
 	QuitSignal         = "QuitSignal"
 	Dns                = "DNS"
+	Mihomo             = "Mihomo"
 )
 
 const (

@@ -88,8 +88,11 @@ setting:
   title: Setting
   mihomo:
     port: Mixed-Port
+    port-error: The port number must be greater than 0 and less than 65535
     dns: DNS Override
     lan: LAN
+    bindAddress: Bind Address
+    bind-error: Wrong address
   px:
     startup: Boot Startup
     dir: Config

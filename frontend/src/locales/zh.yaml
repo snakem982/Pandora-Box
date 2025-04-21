@@ -88,8 +88,11 @@ setting:
   title: 设置
   mihomo:
     port: 端口
+    port-error: 端口号必须大于0，小于65535
     dns: DNS覆写
     lan: 局域网
+    bindAddress: 监听地址
+    bind-error: 错误的地址
   px:
     startup: 开机启动
     dir: 配置目录

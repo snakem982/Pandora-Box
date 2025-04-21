@@ -1,21 +1,24 @@
 <script setup lang="ts">
-import { useMenuStore } from "@/store/menuStore";
-import { useI18n } from "vue-i18n";
+import {useMenuStore} from "@/store/menuStore";
+import {useI18n} from "vue-i18n";
 import createApi from "@/api";
-import { pSuccess, pWarning } from "@/util/pLoad";
+import {pSuccess, pWarning} from "@/util/pLoad";
+import {useSettingStore} from "@/store/settingStore";
+import {pUpdateMihomo} from "@/util/mihomo";
 
-// 存储规则模式
+// 使用store
 const menuStore = useMenuStore();
+const settingStore = useSettingStore();
 
 // 获取当前 Vue 实例的 proxy 对象
-const { proxy } = getCurrentInstance()!;
+const {proxy} = getCurrentInstance()!;
 const api = createApi(proxy);
 
 // 国际化
-const { t } = useI18n();
+const {t} = useI18n();
 
 // 代理开关
-function toggle() {
+function proxySwitch() {
   // 检测端口是否被占用
 
   // 检测通过执行后续操作
@@ -25,10 +28,13 @@ function toggle() {
   } else {
     pWarning(t("proxy-switch-off"));
   }
+
+  // 同步 mihomo 配置
+  pUpdateMihomo(menuStore, settingStore, api)
 }
 
 // 虚拟网卡开关
-function toggle2() {
+function tunSwitch() {
   // 检测是否运行在管理员模式下
 
 
@@ -41,6 +47,9 @@ function toggle2() {
       },
     }).then((res: any) => {
       pSuccess(t("tun-switch-on"));
+
+      // 同步 mihomo 配置
+      pUpdateMihomo(menuStore, settingStore, api)
     });
   } else {
     api.updateConfigs({
@@ -49,9 +58,29 @@ function toggle2() {
       },
     }).then((res: any) => {
       pWarning(t("tun-switch-off"));
+
+      // 同步 mihomo 配置
+      pUpdateMihomo(menuStore, settingStore, api)
     });
   }
 }
+
+
+onMounted(() => {
+  api.getMihomo().then((res) => {
+    menuStore.setRule(res.mode)
+    menuStore.setProxy(res.proxy)
+    menuStore.setTun(res.tun)
+
+    settingStore.setPort(res.port)
+    settingStore.setBindAddress(res.bindAddress)
+    settingStore.setStack(res.stack)
+    settingStore.setDns(res.dns)
+    settingStore.setIpv6(res.ipv6)
+  })
+})
+
+
 </script>
 
 <template>
@@ -61,8 +90,8 @@ function toggle2() {
         {{ $t("proxy-switch") }}
       </span>
       <div
-        :class="['switch', { 'switch-on': menuStore.proxy }]"
-        @click="toggle"
+          :class="['switch', { 'switch-on': menuStore.proxy }]"
+          @click="proxySwitch"
       >
         <div class="switch-circle"></div>
       </div>
@@ -71,7 +100,7 @@ function toggle2() {
       <span class="switch-label">
         {{ $t("tun-switch") }}
       </span>
-      <div :class="['switch', { 'switch-on': menuStore.tun }]" @click="toggle2">
+      <div :class="['switch', { 'switch-on': menuStore.tun }]" @click="tunSwitch">
         <div class="switch-circle"></div>
       </div>
     </div>
