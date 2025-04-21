@@ -4,6 +4,8 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/render"
 	"github.com/metacubex/mihomo/hub/executor"
+	"github.com/metacubex/mihomo/log"
+	"github.com/metacubex/mihomo/tunnel/statistic"
 	"github.com/snakem982/pandora-box/pandora/internal"
 	sys "github.com/snakem982/pandora-box/pandora/pkg/sys/proxy"
 	"github.com/snakem982/pandora-box/pandora/pkg/utils"
@@ -50,6 +52,12 @@ func enableProxy(w http.ResponseWriter, r *http.Request) {
 
 func disableProxy(w http.ResponseWriter, r *http.Request) {
 	sys.DisableProxy()
+	log.Warnln("System proxy disabled")
+	statistic.DefaultManager.Range(func(c statistic.Tracker) bool {
+		_ = c.Close()
+		return true
+	})
+	log.Warnln("All connections disconnected")
 	render.NoContent(w, r)
 }
 

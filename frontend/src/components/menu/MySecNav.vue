@@ -25,6 +25,8 @@ function onConn(ev: MessageEvent) {
   const parsedData = JSON.parse(ev.data);
   if (parsedData["connections"]) {
     conn.value = parsedData["connections"].length;
+  } else {
+    conn.value = 0;
   }
 }
 
@@ -50,11 +52,6 @@ onMounted(() => {
   api.getRules().then((res) => {
     menuStore.setRuleNum(res.length);
   });
-});
-
-onUnmounted(() => {
-  wsConn.close();
-  logConn.close();
 });
 </script>
 
