@@ -9,7 +9,7 @@ type Profile struct {
 	Id        string `json:"id"`
 	Type      int    `json:"type"` // 1: 远程订阅 2：本地配置 3：爬取合并
 	Title     string `json:"title,omitempty"`
-	Order     int64  `json:"order"`
+	Order     string `json:"order"`
 	Selected  bool   `json:"selected,omitempty"`
 	Path      string `json:"path"`
 	Content   string `json:"content,omitempty"`

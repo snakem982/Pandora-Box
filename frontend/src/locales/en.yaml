@@ -138,6 +138,9 @@ profiles:
   refresh:
     ing: Updating...
     success: Update Success
+  switch:
+    ing: Switching...
+    success: Switch success
 
 rule:
   title: Rule

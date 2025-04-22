@@ -104,12 +104,14 @@ async function getProfileList() {
     profiles.splice(0, profiles.length)
   }
   const list = await api.getProfileList()
-  list.forEach(item => {
-    profiles.push(item)
-    if (item['selected']) {
-      setHeaderShow(item)
-    }
-  })
+  if (list && list.length != 0) {
+    list.forEach(item => {
+      profiles.push(item)
+      if (item['selected']) {
+        setHeaderShow(item)
+      }
+    })
+  }
 }
 
 // 拖动相关
@@ -129,28 +131,31 @@ async function switchProfile(data: any) {
     return
   }
 
-  try {
-    await api.switchProfile(data)
-    proxiesStore.active = ""
+  await pLoad(t('profiles.switch.ing'), async () => {
+    try {
+      await api.switchProfile(data)
+      proxiesStore.active = ""
 
-    for (let profile of profiles) {
-      if (profile['selected']) {
-        profile['selected'] = false
-        break
+      for (let profile of profiles) {
+        if (profile['selected']) {
+          profile['selected'] = false
+          break
+        }
+      }
+      data['selected'] = true
+      setHeaderShow(data)
+
+      api.getRules().then((res) => {
+        menuStore.setRuleNum(res.length);
+      });
+
+      pSuccess(t('profiles.switch.success'))
+    } catch (e) {
+      if (e['message']) {
+        pError(e['message'])
       }
     }
-    data['selected'] = true
-    setHeaderShow(data)
-
-    api.getRules().then((res) => {
-      menuStore.setRuleNum(res.length);
-    });
-
-  } catch (e) {
-    if (e['message']) {
-      pError(e['message'])
-    }
-  }
+  })
 
 }
 
@@ -180,10 +185,8 @@ function goHome(data: any) {
 
 // 修改配置
 const editFormVisible = ref(false)
-let editForm = reactive<any>({
-})
-let editFormD = reactive<any>({
-})
+let editForm = reactive<any>({})
+let editFormD = reactive<any>({})
 
 function updateProfile(data: any) {
   editFormD = data
@@ -222,7 +225,7 @@ async function saveUpdateProfile() {
         return
       }
 
-      if(!isHttpOrHttps(editForm.content)){
+      if (!isHttpOrHttps(editForm.content)) {
         pError(t('profiles.edit.url-error'))
         return
       }

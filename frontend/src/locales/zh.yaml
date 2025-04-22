@@ -138,6 +138,9 @@ profiles:
   refresh:
     ing: 更新中。。。
     success: 更新成功
+  switch:
+    ing: 切换中。。。
+    success: 切换成功
 
 rule:
   title: 规则

@@ -54,7 +54,7 @@ func UpdateDb(profile *models.Profile, kind int) {
 	if kind == 2 {
 		profile.Content = ""
 	}
-	_ = cache.Put(profile.Id, profile)
+	_ = cache.Put(profile.Id, *profile)
 }
 
 func getProfile(w http.ResponseWriter, r *http.Request) {

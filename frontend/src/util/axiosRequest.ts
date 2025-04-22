@@ -6,7 +6,7 @@ export class AxiosRequest {
     private instance: AxiosInstance;
 
     // 默认配置baseURL等
-    constructor(baseURL: string, secret: string = "", timeout = 20000) {
+    constructor(baseURL: string, secret: string = "", timeout = 30000) {
         this.instance = axios.create({
             baseURL,
             timeout,

@@ -2,7 +2,7 @@ export class Profile {
     id!: string;
     type!: number; // 1: 远程订阅, 2: 本地配置, 3: 爬取合并
     title?: string; // 可选
-    order!: bigint;
+    order!: string;
     selected?: boolean; // 可选
     path!: string;
     content?: string | ArrayBuffer; // 可选

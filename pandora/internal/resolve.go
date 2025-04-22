@@ -74,7 +74,7 @@ func Resolve(content string, profile *models.Profile, refresh bool) error {
 	if !refresh {
 		snowflakeId := utils.SnowflakeId()
 		profile.Id = fmt.Sprintf("%s%d", constant.PrefixProfile, snowflakeId)
-		profile.Order = snowflakeId
+		profile.Order = strconv.FormatInt(snowflakeId, 10)
 		profile.Path = "./profiles/" + profile.Id + ".yaml"
 	}
 
@@ -139,7 +139,7 @@ func Resolve(content string, profile *models.Profile, refresh bool) error {
 			var yml []byte
 			if findProvider {
 				yml, _ = yaml.Marshal(rawCfg)
-				profile.Path = fmt.Sprintf("./profiles/%d/%s.yaml", profile.Order, profile.Id)
+				profile.Path = fmt.Sprintf("./profiles/%s/%s.yaml", profile.Order, profile.Id)
 			} else {
 				yml = tempBytes
 			}
@@ -157,10 +157,10 @@ func Resolve(content string, profile *models.Profile, refresh bool) error {
 	return err
 }
 
-func changeProvidersPath(snowflakeId int64, config *config.RawConfig) (findProvider bool) {
+func changeProvidersPath(snowflakeId string, config *config.RawConfig) (findProvider bool) {
 	findProvider = false
 
-	dir := fmt.Sprintf("./profiles/%d/", snowflakeId)
+	dir := fmt.Sprintf("./profiles/%s/", snowflakeId)
 	proxyProviders := config.ProxyProvider
 	for _, provider := range proxyProviders {
 
