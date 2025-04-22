@@ -217,7 +217,8 @@ func switchTemplate(w http.ResponseWriter, r *http.Request) {
 		_ = cache.Put(template.Id, template)
 	}
 
-	// todo 切换
+	// 进行配置切换
+	internal.SwitchProfile()
 
 	render.NoContent(w, r)
 }

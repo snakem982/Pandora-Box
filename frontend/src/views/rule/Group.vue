@@ -9,6 +9,8 @@ import "ace-builds/src-noconflict/theme-monokai"; // 主题支持
 import createApi from "@/api";
 import {useI18n} from "vue-i18n";
 import {pError, pSuccess} from "@/util/pLoad";
+import {useMenuStore} from "@/store/menuStore";
+import {useProxiesStore} from "@/store/proxiesStore";
 
 // 编辑器使用
 const editorOptions = {
@@ -16,6 +18,10 @@ const editorOptions = {
 };
 // 编辑器显示内容
 const yamlContent = ref("");
+
+// 当前页面使用store
+const menuStore = useMenuStore();
+const proxiesStore = useProxiesStore();
 
 // i18n
 const {t} = useI18n();
@@ -89,6 +95,10 @@ const saveTemplate = async () => {
     // 如果是启用中的 进行切换
     if (now.selected) {
       await api.switchTemplate(now);
+      proxiesStore.active = ""
+      api.getRules().then((res) => {
+        menuStore.setRuleNum(res.length);
+      });
     }
     pSuccess(t('rule.success'))
   } catch (e) {
@@ -104,6 +114,12 @@ const switchTemplate = async () => {
     await api.switchTemplate(now);
     tList = await api.getTemplateList();
     pSuccess(t('rule.group.switch-success'))
+
+    proxiesStore.active = ""
+    api.getRules().then((res) => {
+      menuStore.setRuleNum(res.length);
+    });
+
   } catch (e) {
     if (e['message']) {
       pError(e['message'])

@@ -92,7 +92,7 @@ watch(() => settingStore.ipv6, (newValue) => {
             />
           </li>
           <li style="height: 30px">
-            <strong>API :</strong>
+            <strong>Api :</strong>
             {{ webStore.baseUrl }}
             <el-button
                 @click="copy(webStore.baseUrl,t)">
