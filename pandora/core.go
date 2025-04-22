@@ -9,7 +9,7 @@ import (
 
 func StartCore() (port int, secret string) {
 	internal.Init()
-	log.Errorln("Initialization completed")
+	log.Infoln("Initialization completed")
 
 	route.Register(handlers.Profile)
 	route.Register(handlers.WebTest)
@@ -21,8 +21,8 @@ func StartCore() (port int, secret string) {
 	port = 9686
 	secret = "Y8IUaPeFLTRvsrdf2mUJkLMBuphVZRE5"
 	cors := route.Cors{AllowOrigins: []string{"*"}, AllowPrivateNetwork: true}
-	addr := route.StartByPandoraBox("127.0.0.1", port, secret, cors)
-	log.Errorln("Routing startup completed, Address: %s", addr)
+	route.StartByPandoraBox("127.0.0.1", port, secret, cors)
+	log.Infoln("Routing startup completed")
 
 	// 开启mihomo
 	internal.SwitchProfile()
