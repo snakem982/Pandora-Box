@@ -11,9 +11,9 @@ import (
 // GetProxyUrl 获取代理
 func GetProxyUrl() string {
 	// 从系统获取
-	htp, err := sys.GetHttp()
-	if err == nil && htp != nil {
-		return fmt.Sprintf("http://%s:%d", htp.Host, htp.Port)
+	addr, err := sys.GetHttp()
+	if err == nil && addr != nil {
+		return fmt.Sprintf("http://%s:%d", addr.Host, addr.Port)
 	}
 
 	// 从数据库中获取
