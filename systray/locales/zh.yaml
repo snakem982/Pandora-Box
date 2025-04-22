@@ -1,0 +1,10 @@
+show: 显示窗口
+rule: 规则模式
+global: 全局模式
+direct: 直连模式
+profiles: 订阅
+proxy: 系统代理
+tun: TUN模式
+quit: 退出
+
+

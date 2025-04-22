@@ -36,7 +36,7 @@ let tList = reactive([]);
 // Template
 let now = reactive({
   id: "",
-  title: "",
+  title: "m1",
   selected: false
 })
 
