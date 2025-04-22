@@ -160,7 +160,10 @@ rule:
     reset: Reset
     test: Test
     test-success : Test success
-    switch-success: Switch success
+    save-ing: Saving...
+    switch:
+      ing: Switching...
+      success: Switch success
   ignore:
     title: Ignore these domains
     tip: Split by row

@@ -8,7 +8,7 @@ import "ace-builds/src-noconflict/ext-language_tools"; // YAML 支持
 import "ace-builds/src-noconflict/theme-monokai"; // 主题支持
 import createApi from "@/api";
 import {useI18n} from "vue-i18n";
-import {pError, pSuccess} from "@/util/pLoad";
+import {pError, pLoad, pSuccess} from "@/util/pLoad";
 import {useMenuStore} from "@/store/menuStore";
 import {useProxiesStore} from "@/store/proxiesStore";
 
@@ -82,49 +82,52 @@ const testTemplate = async () => {
 
 // 保存逻辑
 const saveTemplate = async () => {
-  try {
-    // 先测试
-    await api.testTemplate({
-      data: yamlContent.value,
-    });
-    // 再保存
-    await api.updateTemplate({
-      data: yamlContent.value,
-      template: now,
-    });
-    // 如果是启用中的 进行切换
-    if (now.selected) {
-      await api.switchTemplate(now);
-      proxiesStore.active = ""
-      api.getRules().then((res) => {
-        menuStore.setRuleNum(res.length);
+  await pLoad(t('rule.group.save-ing'), async () => {
+    try {
+      // 先测试
+      await api.testTemplate({
+        data: yamlContent.value,
       });
+      // 再保存
+      await api.updateTemplate({
+        data: yamlContent.value,
+        template: now,
+      });
+      // 如果是启用中的 进行切换
+      if (now.selected) {
+        await api.switchTemplate(now);
+        proxiesStore.active = ""
+        api.getRules().then((res) => {
+          menuStore.setRuleNum(res.length);
+        });
+      }
+      pSuccess(t('rule.success'))
+    } catch (e) {
+      if (e['message']) {
+        pError(e['message'])
+      }
     }
-    pSuccess(t('rule.success'))
-  } catch (e) {
-    if (e['message']) {
-      pError(e['message'])
-    }
-  }
+  })
 }
 
 // 切换逻辑
 const switchTemplate = async () => {
-  try {
-    await api.switchTemplate(now);
-    tList = await api.getTemplateList();
-    pSuccess(t('rule.group.switch-success'))
+  await pLoad(t('rule.group.switch.ing'), async () => {
+    try {
+      await api.switchTemplate(now);
+      tList = await api.getTemplateList();
+      pSuccess(t('rule.group.switch.success'))
 
-    proxiesStore.active = ""
-    api.getRules().then((res) => {
-      menuStore.setRuleNum(res.length);
-    });
-
-  } catch (e) {
-    if (e['message']) {
-      pError(e['message'])
+      proxiesStore.active = ""
+      api.getRules().then((res) => {
+        menuStore.setRuleNum(res.length);
+      });
+    } catch (e) {
+      if (e['message']) {
+        pError(e['message'])
+      }
     }
-  }
+  })
 }
 
 

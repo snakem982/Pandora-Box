@@ -160,7 +160,10 @@ rule:
     reset: 重置
     test: 测试
     test-success : 测试成功
-    switch-success: 切换成功
+    save-ing: 保存中。。。
+    switch:
+      ing: 切换中。。。
+      success: 切换成功
   ignore:
     title: 忽略这些域名
     tip: 按行分割
