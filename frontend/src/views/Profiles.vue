@@ -6,7 +6,7 @@ import {useProxiesStore} from "@/store/proxiesStore";
 import {useMenuStore} from "@/store/menuStore";
 import {isHttpOrHttps, prettyBytes} from "@/util/format";
 import {useI18n} from "vue-i18n";
-import {Browser, Clipboard} from "@wailsio/runtime"
+import {Browser, Clipboard, Events} from "@wailsio/runtime"
 import {useWebStore} from "@/store/webStore";
 import {WS} from "@/util/ws";
 import {onBeforeRouteLeave} from "vue-router";
@@ -111,6 +111,12 @@ async function getProfileList() {
         setHeaderShow(item)
       }
     })
+
+    await Events.Emit({
+      name: "profiles",
+      data: list
+    })
+
   }
 }
 
@@ -148,6 +154,11 @@ async function switchProfile(data: any) {
       api.getRules().then((res) => {
         menuStore.setRuleNum(res.length);
       });
+
+      await Events.Emit({
+        name: "profiles",
+        data: profiles
+      })
 
       pSuccess(t('profiles.switch.success'))
     } catch (e) {
@@ -242,6 +253,11 @@ async function saveUpdateProfile() {
   Object.assign(editFormD, editForm)
   editFormVisible.value = false
   pSuccess(t('profiles.edit.success'))
+
+  await Events.Emit({
+    name: "profiles",
+    data: profiles
+  })
 }
 
 // 删除配置
@@ -254,6 +270,10 @@ async function deleteProfile(data: any, index: any) {
   try {
     await api.deleteProfile(data)
     profiles.splice(index, 1)
+    await Events.Emit({
+      name: "profiles",
+      data: profiles
+    })
   } catch (e) {
     if (e['message']) {
       pError(e['message'])
@@ -266,6 +286,10 @@ let wsOrder: WS
 
 function sendOrder(data: any) {
   if (wsOrder) {
+    Events.Emit({
+      name: "profiles",
+      data: data
+    })
     wsOrder.send(JSON.stringify(data))
   }
 }
@@ -286,7 +310,7 @@ onMounted(async () => {
   await getProfileList()
 })
 
-watch(() => webStore.dProfile, async (pList, oldValue) => {
+watch(() => webStore.dProfile, async (pList) => {
   if (pList && pList.length > 0) {
     pList.forEach(item => profiles.push(item))
   }

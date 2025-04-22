@@ -14,9 +14,10 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import {useI18n} from 'vue-i18n';
 import {useMenuStore} from "@/store/menuStore.js";
+import {Events} from "@wailsio/runtime"
 
 // 存储语言
 const menuStore = useMenuStore()
@@ -47,15 +48,23 @@ const cancelHide = () => {
 };
 
 // 切换语言
-const changeLang = (value) => {
+const changeLang = (value: any) => {
   locale.value = value
   menuStore.setLanguage(value)
+  Events.Emit({
+    name: "translate",
+    data: value
+  })
 }
 
-onBeforeMount(() => {
+onMounted(() => {
   // 设置语言
   if (menuStore.language) {
     locale.value = menuStore.language
+    Events.Emit({
+      name: "translate",
+      data: menuStore.language
+    })
   }
 })
 </script>

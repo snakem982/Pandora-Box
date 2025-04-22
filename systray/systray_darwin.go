@@ -2,63 +2,117 @@ package systray
 
 import (
 	_ "embed"
+	"encoding/json"
+	"github.com/snakem982/pandora-box/pandora/api/models"
 	"github.com/wailsapp/wails/v3/pkg/application"
 )
 
 //go:embed icon/icon-128.png
 var Icon []byte
 
+var t = GetI18nInstance().Translate
+
+// 保存下拉列表元素
+var i18nMenuItem = make(map[string]*application.MenuItem)
+
 func Run(app *application.App, systemTray *application.SystemTray, window *application.WebviewWindow) {
 	systemTray.SetIcon(Icon)
+	systemTray.SetTooltip("Pandora-Box")
+
 	myMenu := app.NewMenu()
 
-	item := myMenu.Add("显示窗口")
-	item.OnClick(func(ctx *application.Context) {
+	show := myMenu.Add("显示窗口")
+	show.OnClick(func(ctx *application.Context) {
 		window.Show()
 	})
-
+	i18nMenuItem["show"] = show
 	myMenu.AddSeparator()
 
-	// Callbacks can be shared. This is useful for radio groups
-	radioCallback := func(ctx *application.Context) {
+	rule := myMenu.AddRadio("规则模式", false)
+	rule.OnClick(func(ctx *application.Context) {
 		menuItem := ctx.ClickedMenuItem()
-		menuItem.SetLabel(menuItem.Label() + "!")
-	}
+		println(menuItem.Label())
+	})
+	i18nMenuItem["rule"] = rule
 
-	// Radio groups are created implicitly by placing radio items next to each other in a menu
-	myMenu.AddRadio("规则模式", true).OnClick(radioCallback)
-	myMenu.AddRadio("全局模式", false).OnClick(radioCallback)
-	myMenu.AddRadio("直连模式", false).OnClick(radioCallback)
+	global := myMenu.AddRadio("全局模式", false)
+	global.OnClick(func(ctx *application.Context) {
+		menuItem := ctx.ClickedMenuItem()
+		println(menuItem.Label())
+	})
+	i18nMenuItem["global"] = global
 
+	direct := myMenu.AddRadio("直连模式", false)
+	direct.OnClick(func(ctx *application.Context) {
+		menuItem := ctx.ClickedMenuItem()
+		println(menuItem.Label())
+	})
+	i18nMenuItem["direct"] = direct
 	myMenu.AddSeparator()
 
-	subMenu := myMenu.AddSubmenu("订阅")
-	subMenu.Add("订阅1").OnClick(func(ctx *application.Context) {
-		ctx.ClickedMenuItem().SetLabel("Clicked!")
-	})
-	subMenu.Add("订阅2").OnClick(func(ctx *application.Context) {
-		ctx.ClickedMenuItem().SetLabel("Clicked!")
-	})
-	subMenu.Add("订阅3").OnClick(func(ctx *application.Context) {
-		ctx.ClickedMenuItem().SetLabel("Clicked!")
-	})
+	profiles := myMenu.AddSubmenu("订阅")
+	i18nMenuItem["profiles"] = myMenu.FindByLabel("订阅")
 	myMenu.AddSeparator()
 
-	item2 := myMenu.Add("系统代理")
-	item2.OnClick(func(ctx *application.Context) {
-		item2.SetChecked(!ctx.ClickedMenuItem().Checked())
+	proxy := myMenu.Add("系统代理")
+	proxy.OnClick(func(ctx *application.Context) {
+		proxy.SetChecked(!ctx.ClickedMenuItem().Checked())
 	})
+	i18nMenuItem["proxy"] = proxy
 
-	item3 := myMenu.Add("TUN 模式")
-	item3.OnClick(func(ctx *application.Context) {
-		item3.SetChecked(!ctx.ClickedMenuItem().Checked())
+	tun := myMenu.Add("TUN 模式")
+	tun.OnClick(func(ctx *application.Context) {
+		tun.SetChecked(!ctx.ClickedMenuItem().Checked())
 	})
+	i18nMenuItem["tun"] = tun
 	myMenu.AddSeparator()
 
-	myMenu.Add("退出").OnClick(func(ctx *application.Context) {
+	quit := myMenu.Add("退出")
+	quit.OnClick(func(ctx *application.Context) {
 		app.Quit()
 	})
+	i18nMenuItem["quit"] = quit
 
 	systemTray.SetMenu(myMenu)
 	systemTray.WindowOffset(2)
+
+	listenTranslate(app)
+	listenProfiles(app, myMenu, profiles)
+}
+
+// 监听语言切换
+func listenTranslate(app *application.App) {
+	// Custom event handling
+	app.OnEvent("translate", func(e *application.CustomEvent) {
+		lang := e.Data.(string)
+		for key, value := range i18nMenuItem {
+			value.SetLabel(t(lang, key))
+		}
+	})
+}
+
+// 监听订阅
+func listenProfiles(app *application.App, myMenu, profiles *application.Menu) {
+	// Custom event handling
+	app.OnEvent("profiles", func(e *application.CustomEvent) {
+		var p []models.Profile
+		bytes, _ := json.Marshal(e.Data)
+		_ = json.Unmarshal(bytes, &p)
+
+		profiles.Clear()
+
+		for _, profile := range p {
+			direct1 := profiles.AddRadio(profile.Title, profile.Selected)
+			direct1.OnClick(func(ctx *application.Context) {
+				if profile.Selected {
+					return
+				}
+				app.EmitEvent("switchProfiles", profile)
+			})
+		}
+
+		profiles.Update()
+		myMenu.Update()
+	})
+
 }
