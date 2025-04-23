@@ -3,6 +3,9 @@ package handlers
 import (
 	"encoding/json"
 	"fmt"
+	"net/http"
+	"time"
+
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/render"
 	"github.com/metacubex/mihomo/log"
@@ -11,8 +14,6 @@ import (
 	"github.com/snakem982/pandora-box/pandora/pkg/cache"
 	"github.com/snakem982/pandora-box/pandora/pkg/constant"
 	"github.com/snakem982/pandora-box/pandora/pkg/utils"
-	"net/http"
-	"time"
 )
 
 func WebTest(r chi.Router) {
@@ -27,6 +28,7 @@ func webtestRouter() chi.Router {
 	r.Put("/", updateWebTest)
 	r.Get("/order", saveWebTestOrder)
 	r.Post("/delay", delayWebTest)
+	r.Post("/ip", getWebTestIp)
 
 	return r
 }
@@ -147,4 +149,30 @@ func delayWebTest(w http.ResponseWriter, r *http.Request) {
 	for _, test := range list {
 		_ = cache.Put(test.Id, test)
 	}
+}
+
+func getWebTestIp(w http.ResponseWriter, r *http.Request) {
+	req := struct {
+		Url string `json:"url"`
+	}{}
+	if err := render.DecodeJSON(r.Body, &req); err != nil {
+		ErrorResponse(w, r, err)
+		return
+	}
+
+	headers := map[string]string{
+		"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3",
+		"Accept":     "application/json",
+	}
+	body, _, err := utils.SendGet(req.Url, headers, internal.GetProxyUrl())
+	if err != nil {
+		ErrorResponse(w, r, err)
+		return
+	}
+	if body == "" {
+		ErrorResponse(w, r, fmt.Errorf("body is empty"))
+		return
+	}
+
+	render.JSON(w, r, body)
 }

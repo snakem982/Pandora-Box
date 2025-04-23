@@ -4,6 +4,7 @@
 import {useHomeStore} from "@/store/homeStore";
 import {useI18n} from "vue-i18n";
 import createApi from "@/api";
+import {pError} from "@/util/pLoad";
 
 // 获取当前 Vue 实例的 proxy 对象
 const {proxy} = getCurrentInstance()!;
@@ -38,7 +39,7 @@ function updateTimer() {
 }
 
 // 获取 ip 信息
-async function getIpInfo() {
+async function getIpInfo(hide: boolean = true) {
   ipInfo.value = homeStore.ip;
   try {
     // 切换节点后才进行 ip 请求
@@ -50,18 +51,22 @@ async function getIpInfo() {
     }
 
     // 进行ip探测
-    const response = await fetch("http://ip-api.com/json/?lang=" + t('home.ip.lang'));
-    if (!response.ok) {
-      return
-    }
-    const data = await response.json();
+    const url = "http://ip-api.com/json/?lang=" + t('home.ip.lang');
+    const data = await api.getWebTestIp({url});
     data['as'] = data['as'].split(" ")[0];
 
     // 绑定数据
     ipInfo.value = data;
     homeStore.setIp(data)
-  } catch (error) {
-    console.error("Error fetching data:", error);
+  } catch (e) {
+    if (hide) {
+      // 隐藏错误提示
+      return
+    }
+    // 显示错误提示
+    if (e['message']) {
+        pError(e['message'])
+      }
   }
 }
 
@@ -88,7 +93,7 @@ onMounted(async () => {
   const configs = await api.getConfigs();
   port.value = configs['mixed-port'];
   // 获取ip
-  await getIpInfo()
+  await getIpInfo(true)
 })
 
 
@@ -102,7 +107,7 @@ onMounted(async () => {
         <div class="title">
           {{ $t('home.ip.title') }}
           <el-icon size="22"
-                   @click="getIpInfo"
+                   @click="getIpInfo(false)"
                    class="refreshIp">
             <icon-mdi-refresh/>
           </el-icon>
