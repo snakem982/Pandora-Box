@@ -3,6 +3,7 @@ package systray
 import (
 	_ "embed"
 	"encoding/json"
+
 	"github.com/snakem982/pandora-box/pandora/api/models"
 	"github.com/wailsapp/wails/v3/pkg/application"
 )
@@ -95,6 +96,9 @@ func listenMode(app *application.App) {
 	// Custom event handling
 	app.OnEvent("mode", func(e *application.CustomEvent) {
 		key := e.Data.(string)
+		i18nMenuItem["rule"].SetChecked(false)
+		i18nMenuItem["global"].SetChecked(false)
+		i18nMenuItem["direct"].SetChecked(false)
 		i18nMenuItem[key].SetChecked(true)
 	})
 }
