@@ -74,7 +74,7 @@ watch(() => settingStore.ipv6, (newValue) => {
               {{ $t('setting.mihomo.dns') }} :
             </strong>
             <el-icon
-                @click="changeMenu('Dns',router)"
+                @click="changeMenu('Setting/Dns',router)"
                 class="btn">
               <EditPen/>
             </el-icon>

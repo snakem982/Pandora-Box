@@ -30,6 +30,11 @@ const routes = [
         component: Setting,
     },
     {
+        path: '/Setting/Dns',
+        name: 'Dns',
+        component: Dns,
+    },
+    {
         path: '/Proxies',
         name: 'Proxies',
         component: Proxies,
@@ -38,11 +43,6 @@ const routes = [
         path: '/Profiles',
         name: 'Profiles',
         component: Profiles,
-    },
-    {
-        path: '/Dns',
-        name: 'Dns',
-        component: Dns,
     },
     {
         path: '/Rule',
