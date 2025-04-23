@@ -39,14 +39,14 @@ func main() {
 			Backdrop:                application.MacBackdropTranslucent,
 			TitleBar:                application.MacTitleBarHiddenInset,
 		},
+		Windows: application.WindowsWindow{
+			HiddenOnTaskbar: true,
+		},
 		URL:       "/?host=127.0.0.1&port=9686&secret=Y8IUaPeFLTRvsrdf2mUJkLMBuphVZRE5",
 		Width:     1100,
 		Height:    760,
 		MinWidth:  960,
 		MinHeight: 660,
-		Windows: application.WindowsWindow{
-			HiddenOnTaskbar: true,
-		},
 	})
 
 	// 处理窗口显示
