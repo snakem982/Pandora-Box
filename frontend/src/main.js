@@ -61,13 +61,14 @@ const menuStore = useMenuStore()
 router.afterEach((to) => {
     const split = to.path.split("/");
     menuStore.setMenu(split[1]);
-    if (split.length > 2) {
+    if (split.length > 2 && split[1] === "Rule") {
         menuStore.setRuleMenu(split[2]);
     }
 });
 
 // 设置起始时间 和 操作系统类型
 const homeStore = useHomeStore();
+
 function getOSFromUserAgent() {
     const userAgent = navigator.userAgent.toLowerCase();
 
@@ -81,6 +82,7 @@ function getOSFromUserAgent() {
         return "Unknown OS";
     }
 }
+
 homeStore.setOS(getOSFromUserAgent())
 homeStore.setStartTime(Date.now())
 
