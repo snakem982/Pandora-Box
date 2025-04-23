@@ -45,6 +45,7 @@ export default function createApi(proxy: any) {
         switchDNS: createDnsApi(proxy).switchDNS,
         getMihomo: createMihomoApi(proxy).getMihomo,
         updateMihomo: createMihomoApi(proxy).updateMihomo,
+        waitRunning: createMihomoApi(proxy).waitRunning,
         enableProxy: createPandoraApi(proxy).enableProxy,
         disableProxy: createPandoraApi(proxy).disableProxy,
         checkAddressPort: createPandoraApi(proxy).checkAddressPort,

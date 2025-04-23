@@ -73,6 +73,7 @@ declare module 'vue' {
     MyConfig: typeof import('./components/setting/MyConfig.vue')['default']
     MyDrop: typeof import('./components/MyDrop.vue')['default']
     MyEditor: typeof import('./components/MyEditor.vue')['default']
+    MyEvent: typeof import('./components/MyEvent.vue')['default']
     MyHr: typeof import('./components/proxies/MyHr.vue')['default']
     MyIp: typeof import('./components/home/MyIp.vue')['default']
     MyLayout: typeof import('./components/MyLayout.vue')['default']

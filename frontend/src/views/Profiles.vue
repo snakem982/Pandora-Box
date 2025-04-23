@@ -142,6 +142,8 @@ async function switchProfile(data: any) {
       await api.switchProfile(data)
       proxiesStore.active = ""
 
+      await api.waitRunning()
+
       for (let profile of profiles) {
         if (profile['selected']) {
           profile['selected'] = false
@@ -169,6 +171,22 @@ async function switchProfile(data: any) {
   })
 
 }
+
+Events.On("hasSwitchProfile", async (ev: any) => {
+  let data = ev.data
+
+  for (let profile of profiles) {
+    if (profile['selected']) {
+      profile['selected'] = false
+    }
+    if (profile['id'] == data['id']) {
+      data = profile
+    }
+  }
+
+  data['selected'] = true
+  setHeaderShow(data)
+});
 
 // 更新订阅
 async function refresh(data: any) {

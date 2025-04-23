@@ -30,33 +30,12 @@ func Run(app *application.App, systemTray *application.SystemTray, window *appli
 	myMenu.AddSeparator()
 
 	rule := myMenu.AddRadio("规则模式", true)
-	rule.OnClick(func(ctx *application.Context) {
-		menuItem := ctx.ClickedMenuItem()
-		if menuItem.Checked() {
-			return
-		}
-		app.EmitEvent("switchMode", "rule")
-	})
 	i18nMenuItem["rule"] = rule
 
 	global := myMenu.AddRadio("全局模式", false)
-	global.OnClick(func(ctx *application.Context) {
-		menuItem := ctx.ClickedMenuItem()
-		if menuItem.Checked() {
-			return
-		}
-		app.EmitEvent("switchMode", "global")
-	})
 	i18nMenuItem["global"] = global
 
 	direct := myMenu.AddRadio("直连模式", false)
-	direct.OnClick(func(ctx *application.Context) {
-		menuItem := ctx.ClickedMenuItem()
-		if menuItem.Checked() {
-			return
-		}
-		app.EmitEvent("switchMode", "direct")
-	})
 	i18nMenuItem["direct"] = direct
 	myMenu.AddSeparator()
 
@@ -86,20 +65,37 @@ func Run(app *application.App, systemTray *application.SystemTray, window *appli
 	systemTray.SetMenu(myMenu)
 	systemTray.WindowOffset(2)
 
-	listenMode(app)
+	listenMode(app, myMenu)
 	listenTranslate(app)
 	listenProfiles(app, myMenu, profiles)
 }
 
 // 监听模式切换
-func listenMode(app *application.App) {
+func listenMode(app *application.App, myMenu *application.Menu) {
+
+	modes := []string{"rule", "global", "direct"}
+	now := "rule"
+	for _, mode := range modes {
+		i18nMenuItem[mode].OnClick(func(ctx *application.Context) {
+			if now == mode {
+				return
+			}
+			app.EmitEvent("switchMode", mode)
+		})
+	}
+
 	// Custom event handling
 	app.OnEvent("mode", func(e *application.CustomEvent) {
 		key := e.Data.(string)
-		i18nMenuItem["rule"].SetChecked(false)
-		i18nMenuItem["global"].SetChecked(false)
-		i18nMenuItem["direct"].SetChecked(false)
+		if now == key {
+			return
+		}
+		for _, mode := range modes {
+			i18nMenuItem[mode].SetChecked(false)
+		}
 		i18nMenuItem[key].SetChecked(true)
+		now = key
+		myMenu.Update()
 	})
 }
 
@@ -127,9 +123,11 @@ func listenProfiles(app *application.App, myMenu, profiles *application.Menu) {
 		for _, profile := range p {
 			direct1 := profiles.AddRadio(profile.Title, profile.Selected)
 			direct1.OnClick(func(ctx *application.Context) {
+				println("1========", profile.Selected)
 				if profile.Selected {
 					return
 				}
+				println("2========", profile.Title)
 				app.EmitEvent("switchProfiles", profile)
 			})
 		}

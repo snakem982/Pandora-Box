@@ -6,6 +6,7 @@ import {useMenuStore} from "@/store/menuStore";
 import {useSettingStore} from "@/store/settingStore";
 import {useI18n} from "vue-i18n";
 import {pError, pLoad} from "@/util/pLoad";
+import {Events} from "@wailsio/runtime";
 
 const {t} = useI18n();
 
@@ -204,6 +205,14 @@ watch(
       updateButtonVisibility();
     }
 );
+
+Events.On("hasSwitchProfile", async (ev: any) => {
+  await groups();
+  await nodes();
+  updateButtonVisibility();
+});
+
+
 </script>
 
 <template>
