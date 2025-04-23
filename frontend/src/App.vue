@@ -15,6 +15,7 @@
       <MySecNav></MySecNav>
       <MyBottom></MyBottom>
 
+      <MyEvent></MyEvent>
     </div>
 
     <div class="right">
@@ -30,6 +31,7 @@ import MySecNav from "@/components/menu/MySecNav.vue";
 import MyDrop from "@/components/MyDrop.vue";
 import MyBottom from "@/components/menu/MyBottom.vue";
 import {useWebStore} from "@/store/webStore";
+import MyEvent from "@/components/MyEvent.vue";
 
 const backgroundImage = ref("url('/images/quang.jpg')")
 // backgroundImage.value = "radial-gradient(circle, #2c3e50, #4a5568)"
