@@ -5,6 +5,7 @@ export const useHomeStore = defineStore('home', {
         startTime: 0,
         os: '',
         md5: '',
+        md6: '',
         ip: {
             query: '',
             regionName: '',
@@ -24,6 +25,9 @@ export const useHomeStore = defineStore('home', {
         },
         setMd5(md5: string) {
             this.md5 = md5;
+        },
+        setMd6(md6: string) {
+            this.md6 = md6;
         },
         setIp(ip: any) {
             this.ip = ip;

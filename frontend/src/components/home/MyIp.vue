@@ -43,11 +43,11 @@ async function getIpInfo(hide: boolean = true) {
   ipInfo.value = homeStore.ip;
   try {
     // 切换节点后才进行 ip 请求
-    const md5 = await api.getGroupMd5()
-    if (homeStore.md5 === md5) {
+    const md6 = await api.getGroupMd5()
+    if (homeStore.md6 === md6) {
       return
     } else {
-      homeStore.setMd5(md5)
+      homeStore.setMd6(md6)
     }
 
     // 进行ip探测
