@@ -78,6 +78,16 @@ onMounted(() => {
       })
     }
   })
+  // 发送系统代理数据
+  Events.Emit({
+    name: "proxy",
+    data: menuStore.proxy
+  })
+  // 发送虚拟网卡数据
+  Events.Emit({
+    name: "tun",
+    data: menuStore.tun
+  })
 })
 
 </script>

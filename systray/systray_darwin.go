@@ -44,15 +44,9 @@ func Run(app *application.App, systemTray *application.SystemTray, window *appli
 	myMenu.AddSeparator()
 
 	proxy := myMenu.Add("系统代理")
-	proxy.OnClick(func(ctx *application.Context) {
-		proxy.SetChecked(!ctx.ClickedMenuItem().Checked())
-	})
 	i18nMenuItem["proxy"] = proxy
 
 	tun := myMenu.Add("TUN 模式")
-	tun.OnClick(func(ctx *application.Context) {
-		tun.SetChecked(!ctx.ClickedMenuItem().Checked())
-	})
 	i18nMenuItem["tun"] = tun
 	myMenu.AddSeparator()
 
@@ -65,9 +59,22 @@ func Run(app *application.App, systemTray *application.SystemTray, window *appli
 	systemTray.SetMenu(myMenu)
 	systemTray.WindowOffset(2)
 
-	listenMode(app, myMenu)
 	listenTranslate(app)
+	listenMode(app, myMenu)
 	listenProfiles(app, myMenu, profiles)
+	listenProxy(app, proxy)
+	listenTun(app, tun)
+}
+
+// 监听语言切换
+func listenTranslate(app *application.App) {
+	// Custom event handling
+	app.OnEvent("translate", func(e *application.CustomEvent) {
+		lang := e.Data.(string)
+		for key, value := range i18nMenuItem {
+			value.SetLabel(t(lang, key))
+		}
+	})
 }
 
 // 监听模式切换
@@ -99,17 +106,6 @@ func listenMode(app *application.App, myMenu *application.Menu) {
 	})
 }
 
-// 监听语言切换
-func listenTranslate(app *application.App) {
-	// Custom event handling
-	app.OnEvent("translate", func(e *application.CustomEvent) {
-		lang := e.Data.(string)
-		for key, value := range i18nMenuItem {
-			value.SetLabel(t(lang, key))
-		}
-	})
-}
-
 // 监听订阅
 func listenProfiles(app *application.App, myMenu, profiles *application.Menu) {
 	// Custom event handling
@@ -123,11 +119,9 @@ func listenProfiles(app *application.App, myMenu, profiles *application.Menu) {
 		for _, profile := range p {
 			direct1 := profiles.AddRadio(profile.Title, profile.Selected)
 			direct1.OnClick(func(ctx *application.Context) {
-				println("1========", profile.Selected)
 				if profile.Selected {
 					return
 				}
-				println("2========", profile.Title)
 				app.EmitEvent("switchProfiles", profile)
 			})
 		}
@@ -135,5 +129,26 @@ func listenProfiles(app *application.App, myMenu, profiles *application.Menu) {
 		profiles.Update()
 		myMenu.Update()
 	})
+}
 
+// 监听系统代理
+func listenProxy(app *application.App, proxy *application.MenuItem) {
+	// Custom event handling
+	app.OnEvent("proxy", func(e *application.CustomEvent) {
+		proxy.SetChecked(e.Data.(bool))
+	})
+	proxy.OnClick(func(ctx *application.Context) {
+		app.EmitEvent("switchProxy")
+	})
+}
+
+// 监听 TUN 模式
+func listenTun(app *application.App, tun *application.MenuItem) {
+	// Custom event handling
+	app.OnEvent("tun", func(e *application.CustomEvent) {
+		tun.SetChecked(e.Data.(bool))
+	})
+	tun.OnClick(func(ctx *application.Context) {
+		app.EmitEvent("switchTun")
+	})
 }

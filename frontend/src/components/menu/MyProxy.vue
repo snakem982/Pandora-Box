@@ -2,6 +2,7 @@
 import {useMenuStore} from "@/store/menuStore";
 import {useI18n} from "vue-i18n";
 import createApi from "@/api";
+import {Events} from "@wailsio/runtime";
 import {pError, pSuccess, pWarning} from "@/util/pLoad";
 import {useSettingStore} from "@/store/settingStore";
 import {pUpdateMihomo} from "@/util/mihomo";
@@ -53,6 +54,13 @@ async function proxySwitch() {
     pUpdateMihomo(menuStore, settingStore, api)
   }
 }
+
+Events.On("switchProxy", async (ev: any) => {
+  await proxySwitch()
+  // 发送事件通知
+  Events.Emit({name: "proxy", data: menuStore.proxy});
+});
+
 
 // 虚拟网卡开关
 function tunSwitch() {
