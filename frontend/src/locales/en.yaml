@@ -42,6 +42,9 @@ save: Save
 copy:
   success: Copy success
   fail: Copy failed
+switch:
+  ing: Switching...
+  success: Switch success
 
 drag:
   hear: Drag the profile here to import

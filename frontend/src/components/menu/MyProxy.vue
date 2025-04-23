@@ -3,7 +3,7 @@ import {useMenuStore} from "@/store/menuStore";
 import {useI18n} from "vue-i18n";
 import createApi from "@/api";
 import {Events} from "@wailsio/runtime";
-import {pError, pSuccess, pWarning} from "@/util/pLoad";
+import {pError, pLoad, pSuccess, pWarning} from "@/util/pLoad";
 import {useSettingStore} from "@/store/settingStore";
 import {pUpdateMihomo} from "@/util/mihomo";
 
@@ -19,7 +19,7 @@ const api = createApi(proxy);
 const {t} = useI18n();
 
 // 代理开关
-async function proxySwitch() {
+async function doSwitch() {
   let ok = false
 
   // 检测通过执行后续操作
@@ -53,12 +53,17 @@ async function proxySwitch() {
     menuStore.setProxy(!menuStore.proxy);
     pUpdateMihomo(menuStore, settingStore, api)
   }
+
+  // 发送事件通知
+  await Events.Emit({name: "proxy", data: menuStore.proxy});
+}
+
+const proxySwitch = async () => {
+  await pLoad(t('switch.ing'), doSwitch)
 }
 
 Events.On("switchProxy", async (ev: any) => {
   await proxySwitch()
-  // 发送事件通知
-  Events.Emit({name: "proxy", data: menuStore.proxy});
 });
 
 
@@ -93,23 +98,6 @@ function tunSwitch() {
     });
   }
 }
-
-
-onMounted(() => {
-  api.getMihomo().then((res) => {
-    menuStore.setRule(res.mode)
-    menuStore.setProxy(res.proxy)
-    menuStore.setTun(res.tun)
-
-    settingStore.setPort(res.port)
-    settingStore.setBindAddress(res.bindAddress)
-    settingStore.setStack(res.stack)
-    settingStore.setDns(res.dns)
-    settingStore.setIpv6(res.ipv6)
-  })
-})
-
-
 </script>
 
 <template>

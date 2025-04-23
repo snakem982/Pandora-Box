@@ -43,10 +43,10 @@ func Run(app *application.App, systemTray *application.SystemTray, window *appli
 	i18nMenuItem["profiles"] = myMenu.FindByLabel("订阅")
 	myMenu.AddSeparator()
 
-	proxy := myMenu.Add("系统代理")
+	proxy := myMenu.AddCheckbox("系统代理", false)
 	i18nMenuItem["proxy"] = proxy
 
-	tun := myMenu.Add("TUN 模式")
+	tun := myMenu.AddCheckbox("TUN 模式", false)
 	i18nMenuItem["tun"] = tun
 	myMenu.AddSeparator()
 
@@ -63,7 +63,7 @@ func Run(app *application.App, systemTray *application.SystemTray, window *appli
 	listenMode(app, myMenu)
 	listenProfiles(app, myMenu, profiles)
 	listenProxy(app, proxy)
-	listenTun(app, tun)
+	listenTun(app, myMenu, tun)
 }
 
 // 监听语言切换
@@ -143,10 +143,11 @@ func listenProxy(app *application.App, proxy *application.MenuItem) {
 }
 
 // 监听 TUN 模式
-func listenTun(app *application.App, tun *application.MenuItem) {
+func listenTun(app *application.App, myMenu *application.Menu, tun *application.MenuItem) {
 	// Custom event handling
 	app.OnEvent("tun", func(e *application.CustomEvent) {
 		tun.SetChecked(e.Data.(bool))
+		myMenu.Update()
 	})
 	tun.OnClick(func(ctx *application.Context) {
 		app.EmitEvent("switchTun")

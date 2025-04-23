@@ -42,6 +42,9 @@ save: 保存
 copy:
   success: 复制成功
   fail: 复制失败
+switch:
+  ing: 切换中。。。
+  success: 切换成功
 
 drag:
   hear: 拖拽配置文件到这里导入
