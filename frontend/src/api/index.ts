@@ -21,6 +21,7 @@ export default function createApi(proxy: any) {
         deleteWebTest: createHomeApi(proxy).deleteWebTest,
         updateWebTest: createHomeApi(proxy).updateWebTest,
         getWebTestDelay: createHomeApi(proxy).getWebTestDelay,
+        getWebTestIp: createHomeApi(proxy).getWebTestIp,
         closeConnection: createConnApi(proxy).closeConnection,
         closeAllConnection: createConnApi(proxy).closeAllConnection,
         getRules: createRuleApi(proxy).getRules,
