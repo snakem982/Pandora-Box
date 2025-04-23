@@ -28,24 +28,33 @@ func Run(app *application.App, systemTray *application.SystemTray, window *appli
 	i18nMenuItem["show"] = show
 	myMenu.AddSeparator()
 
-	rule := myMenu.AddRadio("规则模式", false)
+	rule := myMenu.AddRadio("规则模式", true)
 	rule.OnClick(func(ctx *application.Context) {
 		menuItem := ctx.ClickedMenuItem()
-		println(menuItem.Label())
+		if menuItem.Checked() {
+			return
+		}
+		app.EmitEvent("switchMode", "rule")
 	})
 	i18nMenuItem["rule"] = rule
 
 	global := myMenu.AddRadio("全局模式", false)
 	global.OnClick(func(ctx *application.Context) {
 		menuItem := ctx.ClickedMenuItem()
-		println(menuItem.Label())
+		if menuItem.Checked() {
+			return
+		}
+		app.EmitEvent("switchMode", "global")
 	})
 	i18nMenuItem["global"] = global
 
 	direct := myMenu.AddRadio("直连模式", false)
 	direct.OnClick(func(ctx *application.Context) {
 		menuItem := ctx.ClickedMenuItem()
-		println(menuItem.Label())
+		if menuItem.Checked() {
+			return
+		}
+		app.EmitEvent("switchMode", "direct")
 	})
 	i18nMenuItem["direct"] = direct
 	myMenu.AddSeparator()
@@ -76,8 +85,18 @@ func Run(app *application.App, systemTray *application.SystemTray, window *appli
 	systemTray.SetMenu(myMenu)
 	systemTray.WindowOffset(2)
 
+	listenMode(app)
 	listenTranslate(app)
 	listenProfiles(app, myMenu, profiles)
+}
+
+// 监听模式切换
+func listenMode(app *application.App) {
+	// Custom event handling
+	app.OnEvent("mode", func(e *application.CustomEvent) {
+		key := e.Data.(string)
+		i18nMenuItem[key].SetChecked(true)
+	})
 }
 
 // 监听语言切换

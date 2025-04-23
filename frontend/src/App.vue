@@ -8,14 +8,15 @@
         <div class="top-icon"></div>
         <span class="top-title-text">Pandora-Box</span>
       </div>
+    
+      <MyEvent></MyEvent>
 
       <MyNav></MyNav>
       <MyRule></MyRule>
       <MyProxy></MyProxy>
       <MySecNav></MySecNav>
       <MyBottom></MyBottom>
-
-      <MyEvent></MyEvent>
+      
     </div>
 
     <div class="right">
