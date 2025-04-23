@@ -8,6 +8,7 @@ import {WS} from "@/util/ws";
 import {onBeforeRouteLeave} from "vue-router";
 import {pError, pLoad, pSuccess} from "@/util/pLoad";
 import {isHttpOrHttps} from "@/util/format";
+import {useHomeStore} from "@/store/homeStore";
 
 
 // i18n
@@ -19,6 +20,7 @@ const api = createApi(proxy);
 
 // 当前页面使用store
 const webStore = useWebStore();
+const homeStore = useHomeStore()
 
 // 列表显示
 let webTestList = reactive<WebTest[]>([])
@@ -103,16 +105,18 @@ async function saveUpdateProfile() {
 }
 
 // 获取联通性
+const webTest = async () => {
+  const list = await api.getWebTestDelay(webTestList)
+  if (webTestList.length != 0) {
+    webTestList.splice(0, webTestList.length)
+  }
+  list.forEach(item => {
+    webTestList.push(item)
+  })
+}
+
 function getWebTestDelay() {
-  pLoad(t("home.web.loading"), async () => {
-    const list = await api.getWebTestDelay(webTestList)
-    if (webTestList.length != 0) {
-      webTestList.splice(0, webTestList.length)
-    }
-    list.forEach(item => {
-      webTestList.push(item)
-    })
-  });
+  pLoad(t("home.web.loading"), webTest);
 }
 
 
@@ -139,6 +143,15 @@ onMounted(async () => {
   const urlTraffic = webStore.wsUrl + "/webtest/order?token=" + webStore.secret;
   wsOrder = new WS(urlTraffic);
   await getWebTestList()
+
+  // 切换节点后才进行 ip 请求
+  const md5 = await api.getGroupMd5()
+  if (homeStore.md5 === md5) {
+    return
+  } else {
+    homeStore.setMd5(md5)
+    await webTest()
+  }
 })
 
 </script>
