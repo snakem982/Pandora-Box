@@ -3,6 +3,7 @@ package handlers
 import (
 	"net/http"
 	"path/filepath"
+	"sort"
 	"strings"
 
 	"github.com/go-chi/chi/v5"
@@ -64,27 +65,32 @@ func getProfile(w http.ResponseWriter, r *http.Request) {
 	var order []models.Profile
 	_ = cache.Get(constant.ProfileOrder, &order)
 
-	// If the order is empty, return the res as is
-	if len(order) == 0 {
-		render.JSON(w, r, res)
-		return
+	// 创建一个 map 用于快速查找 order 中的元素
+	orderMap := make(map[string]int)
+	for index, item := range order {
+		orderMap[item.Id] = index
 	}
 
-	// Create a map for quick lookup of res by ID
-	profileMap := make(map[string]models.Profile)
-	for _, profile := range res {
-		profileMap[profile.Id] = profile
-	}
-
-	// Sort res based on the order
-	var sortedRes []models.Profile
-	for _, item := range order {
-		if profile, exists := profileMap[item.Id]; exists {
-			sortedRes = append(sortedRes, profile)
+	// 对 res 进行排序
+	sort.SliceStable(res, func(i, j int) bool {
+		// 如果 res[i] 和 res[j] 都在 order 中，按 order 中的顺序排序
+		indexI, existsI := orderMap[res[i].Id]
+		indexJ, existsJ := orderMap[res[j].Id]
+		if existsI && existsJ {
+			return indexI < indexJ
 		}
-	}
+		// 如果只有一个在 order 中，优先排序在 order 中的
+		if existsI {
+			return true
+		}
+		if existsJ {
+			return false
+		}
+		// 如果都不在 order 中，按 Order 字段排序
+		return res[i].Order < res[j].Order
+	})
 
-	render.JSON(w, r, sortedRes)
+	render.JSON(w, r, res)
 }
 
 func addFromFile(w http.ResponseWriter, r *http.Request) {
