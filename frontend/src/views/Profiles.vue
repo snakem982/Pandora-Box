@@ -484,9 +484,12 @@ watch(() => webStore.dProfile, async (pList) => {
         <el-input
             :rows="3"
             type="textarea"
+            autocapitalize="off"
+            autocomplete="off"
+            spellcheck="false"
             :placeholder="t('profiles.placeholder')"
             v-model="addForm.content"
-            autocomplete="off"/>
+            />
       </el-form-item>
     </el-form>
     <template #footer>
@@ -520,7 +523,9 @@ watch(() => webStore.dProfile, async (pList) => {
         <el-input
             v-model="editForm.title"
             clearable
-            autocomplete="off"/>
+            autocapitalize="off"
+            autocomplete="off"
+            spellcheck="false"/>
       </el-form-item>
       <el-form-item
           v-if="editForm.type == 1"
@@ -529,7 +534,9 @@ watch(() => webStore.dProfile, async (pList) => {
         <el-input
             v-model="editForm.content"
             clearable
-            autocomplete="off"/>
+            autocapitalize="off"
+            autocomplete="off"
+            spellcheck="false"/>
       </el-form-item>
       <el-form-item
           v-if="editForm.type == 1"
@@ -538,7 +545,9 @@ watch(() => webStore.dProfile, async (pList) => {
         <el-input
             v-model="editForm.interval"
             clearable
-            autocomplete="off">
+            autocapitalize="off"
+            autocomplete="off"
+            spellcheck="false">
         </el-input>
       </el-form-item>
 

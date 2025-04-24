@@ -266,7 +266,9 @@ onMounted(async () => {
         <el-input
             v-model="editForm.title"
             clearable
-            autocomplete="off"/>
+            autocapitalize="off"
+            autocomplete="off"
+            spellcheck="false"/>
       </el-form-item>
       <el-form-item
           :label="t('home.web.src')"
@@ -274,7 +276,9 @@ onMounted(async () => {
         <el-input
             v-model="editForm.src"
             clearable
-            autocomplete="off"/>
+            autocapitalize="off"
+            autocomplete="off"
+            spellcheck="false"/>
       </el-form-item>
       <el-form-item
           :label="t('home.web.test')"
@@ -282,7 +286,9 @@ onMounted(async () => {
         <el-input
             v-model="editForm.testUrl"
             clearable
-            autocomplete="off">
+            autocapitalize="off"
+            autocomplete="off"
+            spellcheck="false">
         </el-input>
       </el-form-item>
 
