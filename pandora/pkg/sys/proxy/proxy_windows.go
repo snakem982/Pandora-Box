@@ -3,11 +3,12 @@ package sys
 import (
 	"bufio"
 	"bytes"
-	sys "github.com/snakem982/pandora-box/pandora/pkg/sys/cmd"
 	"io"
 	"net/textproto"
 	"strconv"
 	"strings"
+
+	sys "github.com/snakem982/pandora-box/pandora/pkg/sys/cmd"
 )
 
 func OffAll() error {
@@ -75,6 +76,47 @@ func OnSocks(addr Addr) error {
 
 func OffSocks() error {
 	return nil
+}
+
+func GetHttp() (*Addr, error) {
+	// 检查代理是否启用
+	enabled, err := getProxy()
+	if err != nil {
+		return nil, err
+	}
+	if !enabled {
+		// 如果代理未启用，返回 nil
+		return nil, nil
+	}
+
+	// 获取代理服务器地址
+	m, err := get("ProxyServer")
+	if err != nil {
+		return nil, err
+	}
+	addr := m["ProxyServer"]
+	if addr == "" {
+		return nil, nil
+	}
+
+	// 解析 HTTP 代理地址
+	if strings.Contains(addr, "=") {
+		// 如果 ProxyServer 包含多个协议的代理地址，提取 http= 部分
+		parts := strings.Split(addr, ";")
+		for _, part := range parts {
+			if strings.HasPrefix(part, "http=") {
+				addr = strings.TrimPrefix(part, "http=")
+				break
+			}
+		}
+	} else {
+		// 如果只有一个代理地址，直接使用
+		addr = strings.TrimSpace(addr)
+	}
+
+	// 返回解析后的地址
+	parsedAddr := ParseAddr(addr)
+	return &parsedAddr, nil
 }
 
 const settingPath = `HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Internet Settings`
