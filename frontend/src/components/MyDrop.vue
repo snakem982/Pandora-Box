@@ -1,36 +1,35 @@
 <template>
-  <div class="mask"
-       @click="webStore.dnd=false"
-       v-show="webStore.dnd">
-    <h3>{{ t('drag.hear') }}</h3>
+  <div class="mask" @click="webStore.dnd = false" v-show="webStore.dnd">
+    <h3>{{ t("drag.hear") }}</h3>
   </div>
 </template>
 
 <script setup lang="ts">
-import {useWebStore} from "@/store/webStore.js";
-import {pError, pLoad, pSuccess, pWarning} from "@/util/pLoad";
-import {useI18n} from "vue-i18n";
-import {Profile} from "@/types/profile.js";
+import { useWebStore } from "@/store/webStore.js";
+import { pError, pLoad, pSuccess, pWarning } from "@/util/pLoad";
+import { useI18n } from "vue-i18n";
+import { Profile } from "@/types/profile.js";
 import createApi from "@/api/index.js";
+import { Events } from "@wailsio/runtime";
 
-const {t} = useI18n();
+const { t } = useI18n();
 const webStore = useWebStore();
 // 获取当前 Vue 实例的 proxy 对象
-const {proxy} = getCurrentInstance()!;
+const { proxy } = getCurrentInstance()!;
 const api = createApi(proxy);
 
-onMounted(() => manageDragEvents('add'));
-onUnmounted(() => manageDragEvents('remove'));
+onMounted(() => manageDragEvents("add"));
+onUnmounted(() => manageDragEvents("remove"));
 
 function manageDragEvents(action) {
-  const method = action === 'add' ? 'addEventListener' : 'removeEventListener';
-  document.body[method]('dragenter', handleDragEnter);
-  document.body[method]('dragover', preventDefault);
-  document.body[method]('drop', handleDrop);
+  const method = action === "add" ? "addEventListener" : "removeEventListener";
+  document.body[method]("dragenter", handleDragEnter);
+  document.body[method]("dragover", preventDefault);
+  document.body[method]("drop", handleDrop);
 }
 
 function handleDragEnter(e) {
-  if (e.dataTransfer && e.dataTransfer.types.includes('Files')) {
+  if (e.dataTransfer && e.dataTransfer.types.includes("Files")) {
     webStore.dnd = true;
   }
 }
@@ -45,8 +44,8 @@ function handleDrop(e) {
 
   const files = Array.from(e.dataTransfer.files);
   if (files.length > 1) {
-    pWarning(t('drag.size'))
-    return
+    pWarning(t("drag.size"));
+    return;
   }
 
   files.forEach((file: any) => {
@@ -56,23 +55,30 @@ function handleDrop(e) {
       console.log(`Content of ${file.name}:`);
       // console.log(event.target.result);
 
-      await pLoad(t('drag.add'), async () => {
-        const p = new Profile()
-        p.content = event.target.result
-        p.title = file.name
+      await pLoad(t("drag.add"), async () => {
+        const p = new Profile();
+        p.content = event.target.result;
+        p.title = file.name;
         try {
-          const pList = await api.addProfileFromInput(p)
+          const pList = await api.addProfileFromInput(p);
           if (pList && pList.length > 0) {
             webStore.dProfile = pList;
-            pSuccess(t('drag.success'))
+            pSuccess(t("drag.success"));
+
+            // 发送订阅配置数据
+            api.getProfileList().then((list) => {
+              Events.Emit({
+                name: "profiles",
+                data: list,
+              });
+            });
           }
         } catch (e) {
-          if (e['message']) {
-            pError(e['message'])
+          if (e["message"]) {
+            pError(e["message"]);
           }
         }
-      })
-
+      });
     };
 
     reader.onerror = (error) => {
@@ -83,8 +89,6 @@ function handleDrop(e) {
     reader.readAsText(file);
   });
 }
-
-
 </script>
 
 <style scoped>
