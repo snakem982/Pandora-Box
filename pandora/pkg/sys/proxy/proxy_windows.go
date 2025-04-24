@@ -115,8 +115,7 @@ func GetHttp() (*Addr, error) {
 	}
 
 	// 返回解析后的地址
-	parsedAddr := ParseAddr(addr)
-	return &parsedAddr, nil
+	return ParseAddrPtr(addr), nil
 }
 
 const settingPath = `HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Internet Settings`
