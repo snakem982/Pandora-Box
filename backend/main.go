@@ -41,7 +41,7 @@ func main() {
 		select {
 		case <-termSign:
 			executor.Shutdown()
-			utils.CleanPid("pandora.pid")
+			utils.UnlockSingleton()
 			pandora.Release()
 		}
 		return

@@ -87,7 +87,7 @@ func onReady(w webview.WebView) {
 
 func onExit() {
 	sys.DisableProxy()
-	utils.CleanPid("pandora-box.pid")
+	utils.UnlockSingleton()
 	port := static.Get("port")
 	secret := static.Get("secret")
 	headers := map[string]string{

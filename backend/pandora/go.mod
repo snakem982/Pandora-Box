@@ -12,7 +12,7 @@ require (
 	github.com/panjf2000/ants/v2 v2.11.3
 	github.com/sirupsen/logrus v1.9.3
 	golang.org/x/net v0.38.0
-	golang.org/x/sys v0.31.0
+	golang.org/x/sys v0.32.0
 	gopkg.in/yaml.v3 v3.0.1
 )
 
@@ -39,6 +39,7 @@ require (
 	github.com/go-task/slim-sprig/v3 v3.0.0 // indirect
 	github.com/gobwas/httphead v0.1.0 // indirect
 	github.com/gobwas/pool v0.2.1 // indirect
+	github.com/gofrs/flock v0.12.1 // indirect
 	github.com/gofrs/uuid/v5 v5.3.1 // indirect
 	github.com/google/btree v1.1.3 // indirect
 	github.com/google/go-cmp v0.7.0 // indirect

@@ -71,6 +71,6 @@ func getAdmin(w http.ResponseWriter, r *http.Request) {
 }
 
 func exitMihomo(w http.ResponseWriter, r *http.Request) {
-	utils.CleanPid("pandora.pid")
+	utils.UnlockSingleton()
 	os.Exit(1)
 }
