@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import MyHr from "@/components/proxies/MyHr.vue";
 import MySimpleInput from "@/components/MySimpleInput.vue";
-import { useWebStore } from "@/store/webStore";
+import {useWebStore} from "@/store/webStore";
 
 // 调整顶部高度
 const distanceFromTop = ref(195);
@@ -14,6 +14,7 @@ const webStore = useWebStore();
 
 // 搜索框
 const search = ref("");
+
 function handleInputChange(value: any) {
   search.value = value;
 }
@@ -23,18 +24,19 @@ function filterData() {
   return webStore.logs.filter((data: any) => {
     const searchLower = search.value.toLowerCase();
     return (
-      !search.value ||
-      data.payload.toLowerCase().includes(searchLower) || // 内容过滤
-      data.type.toLowerCase().includes(searchLower) // 类型过滤
+        !search.value ||
+        data.payload.toLowerCase().includes(searchLower) || // 内容过滤
+        data.type.toLowerCase().includes(searchLower) // 类型过滤
     );
   });
 }
+
 </script>
 
 <template>
   <MyLayout
-    :top-height="distanceFromTop - 15"
-    :bottom-height="distanceFromTop + 25"
+      :top-height="distanceFromTop - 15"
+      :bottom-height="distanceFromTop + 25"
   >
     <template #top>
       <MySearch></MySearch>
@@ -49,9 +51,9 @@ function filterData() {
       <div class="conn">
         <div class="search">
           <MySimpleInput
-            :onInputChange="handleInputChange"
-            :placeholder="$t('log.search')"
-            class="search"
+              :onInputChange="handleInputChange"
+              :placeholder="$t('log.search')"
+              class="search"
           ></MySimpleInput>
         </div>
       </div>
@@ -112,7 +114,6 @@ function filterData() {
   padding: 5px 10px;
   font-size: 14px;
   line-height: 1.5;
-  -webkit-user-select: text;
   user-select: text;
   background-color: rgba(0, 0, 0, 0.1);
 }

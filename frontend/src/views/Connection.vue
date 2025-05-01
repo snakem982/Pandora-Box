@@ -43,16 +43,16 @@ function fHost(metadata: any): string {
 
 function filterData(cacheData: any): any {
 
-  if(!cacheData || cacheData.length === 0) {
+  if (!cacheData || cacheData.length === 0) {
     return
   }
 
   const cache = cacheData.filter((data: any) => {
     const searchLower = search.value.toLowerCase();
     return (
-      (!search.value || fHost(data.metadata).toLowerCase().includes(searchLower)) || // 主机过滤
-      data.rule.toLowerCase().includes(searchLower) || // 规则过滤
-      (data.metadata.process && data.metadata.process.toLowerCase().includes(searchLower)) // 程序过滤
+        (!search.value || fHost(data.metadata).toLowerCase().includes(searchLower)) || // 主机过滤
+        data.rule.toLowerCase().includes(searchLower) || // 规则过滤
+        (data.metadata.process && data.metadata.process.toLowerCase().includes(searchLower)) // 程序过滤
     );
   });
 
@@ -228,7 +228,6 @@ function closeAll() {
 }
 
 .od {
-  -webkit-user-select: text;
   user-select: text;
 }
 

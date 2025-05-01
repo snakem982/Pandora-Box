@@ -26,8 +26,10 @@ func main() {
 	// 解析命令行参数
 	flag.Parse()
 
-	// 初始化
-	pandora.Init()
+	// 保持单例
+	if utils.NotSingleton("pandora-box.pid") {
+		os.Exit(1)
+	}
 
 	// 加载后端，成功发送数据
 	if *background {
@@ -48,11 +50,6 @@ func main() {
 			pandora.Release()
 		}
 		return
-	}
-
-	// 保持单例
-	if utils.NotSingleton("pandora-box.pid") {
-		os.Exit(1)
 	}
 
 	// 获取网页地址

@@ -21,6 +21,8 @@ func Release() {
 }
 
 func StartCore(server string) (port int, secret string) {
+	// 初始化
+	Init()
 
 	route.Register(handlers.Profile)
 	route.Register(handlers.WebTest)

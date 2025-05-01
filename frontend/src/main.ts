@@ -93,41 +93,34 @@ app.directive('pxDrag', {
         let isDragging = false;
 
         const startDrag = (event: any) => {
-            // **确保只在父元素上触发**
             if (event.target === el && event.buttons === 1) {
                 isDragging = true;
                 document.body.style.cursor = 'move';
-
-                // 调用你的拖拽逻辑
                 if (window['pxDrag']) {
                     window['pxDrag']();
                 }
             }
         };
 
-        const onDrag = () => {
-            if (isDragging) {
-                document.body.style.cursor = 'move';
-            }
-        };
 
         const endDrag = () => {
             isDragging = false;
             document.body.style.cursor = '';
         };
 
-        el.addEventListener('mousedown', startDrag);
-        document.addEventListener('mousemove', onDrag);
-        document.addEventListener('mouseup', endDrag);
-        document.addEventListener('mouseleave', endDrag);
-
-        // 存储清理函数
-        el._cleanup = () => {
+        const cleanup = () => {
             el.removeEventListener('mousedown', startDrag);
-            document.removeEventListener('mousemove', onDrag);
             document.removeEventListener('mouseup', endDrag);
             document.removeEventListener('mouseleave', endDrag);
         };
+
+        // 确保不重复绑定
+        cleanup();
+        el.addEventListener('mousedown', startDrag);
+        document.addEventListener('mouseup', endDrag);
+        document.addEventListener('mouseleave', endDrag);
+
+        el._cleanup = cleanup;
     },
     unmounted(el) {
         if (el._cleanup) {

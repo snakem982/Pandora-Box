@@ -3,7 +3,10 @@ module pandora-box
 go 1.24.1
 
 require (
+	github.com/energye/systray v1.0.2
 	github.com/go-chi/chi/v5 v5.2.1
+	github.com/go-chi/render v1.0.3
+	github.com/metacubex/mihomo v1.19.4
 	github.com/nicksnyder/go-i18n/v2 v2.6.0
 	github.com/sagernet/sing v0.5.2
 	github.com/snakem982/pandora-box v0.0.0
@@ -24,7 +27,6 @@ require (
 	github.com/coreos/go-iptables v0.8.0 // indirect
 	github.com/dlclark/regexp2 v1.11.5 // indirect
 	github.com/ebitengine/purego v0.8.2 // indirect
-	github.com/energye/systray v1.0.2 // indirect
 	github.com/enfein/mieru/v3 v3.13.0 // indirect
 	github.com/ericlagergren/aegis v0.0.0-20230312195928-b4ce538b56f9 // indirect
 	github.com/ericlagergren/polyval v0.0.0-20220411101811-e25bc10ba391 // indirect
@@ -32,7 +34,6 @@ require (
 	github.com/ericlagergren/subtle v0.0.0-20220507045147-890d697da010 // indirect
 	github.com/fsnotify/fsnotify v1.7.0 // indirect
 	github.com/gaukas/godicttls v0.0.4 // indirect
-	github.com/go-chi/render v1.0.3 // indirect
 	github.com/go-ole/go-ole v1.3.0 // indirect
 	github.com/go-task/slim-sprig/v3 v3.0.0 // indirect
 	github.com/gobwas/httphead v0.1.0 // indirect
@@ -59,7 +60,6 @@ require (
 	github.com/metacubex/chacha v0.1.2 // indirect
 	github.com/metacubex/gopacket v1.1.20-0.20230608035415-7e2f98a3e759 // indirect
 	github.com/metacubex/gvisor v0.0.0-20250324165734-5857f47bd43b // indirect
-	github.com/metacubex/mihomo v1.19.4 // indirect
 	github.com/metacubex/quic-go v0.51.1-0.20250423035655-e3948b36ce14 // indirect
 	github.com/metacubex/randv2 v0.2.0 // indirect
 	github.com/metacubex/sing-quic v0.0.0-20250423042228-20af53d3de7e // indirect
