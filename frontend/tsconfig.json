@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "types": [
+      "vue",
+      "vue-router"
+    ],
+    "baseUrl": "./",
+    "paths": {
+      "@/*": [
+        "src/*"
+      ]
+    },
+    "lib": [
+      "ESNext",
+      "dom",
+    ],
+    "esModuleInterop": true
+  }
+}

@@ -1,0 +1,207 @@
+language: English
+
+nav:
+  home: Home
+  setting: Setting
+  proxies: Proxies
+  profiles: Profiles
+
+rules:
+  rule: Rule
+  global: Global
+  direct: Direct
+  rule-switch: Switched to Rule mode
+  global-switch: Switched to Global mode
+  direct-switch: Switched to Direct mode
+
+proxy-switch: Proxy
+proxy-switch-on: Proxy is ON
+proxy-switch-off: Proxy is OFF
+tun-switch: Tun
+tun-switch-on: Tun is ON
+tun-switch-off: Tun is OFF
+tun-warning: This feature requires administrator privileges
+
+sec-nav:
+  rule: Rule
+  conn: Connections
+  log: Log
+  crawl: Crawl
+
+delete: Delete
+confirm: Confirm
+cancel: Cancel
+on: ON
+off: OFF
+refresh: Refresh
+add: Add
+edit: Edit
+quit: Quit
+theme: Theme
+mini: Minus
+minus: Minus to tray
+save: Save
+copy:
+  success: Copy success
+  fail: Copy failed
+switch:
+  ing: Switching...
+  success: Switch success
+
+drag:
+  hear: Drag the profile here to import
+  size: Only allowed to import single file
+  add: Importing...
+  success: Import Success
+
+home:
+  download: Download
+  upload: Upload
+  memory: Memory
+  web:
+    title: Website Testing
+    edit: Website Title
+    src: Website Icon (Base64 or URL)
+    test: Website Testing URL
+    edit-tip: Website title cannot be empty
+    src-tip: Website icon cannot be empty
+    test-tip: Website test address format error
+    success: Operation success
+    loading: Website Testing...
+    timeout: T/O
+    wait: DUT
+  ip:
+    title: IP [FYI]
+    real: Real IP
+    city: City
+    country: Country
+    isp: ISP
+    asn: ASN
+    time-zone: T-Zone
+    lang: en
+  system:
+    title: System
+    os: OS
+    runtime: Runtime
+    startup: Boot Startup
+    service: Service Mode
+    port: Mixed-Port
+    version: Pandora-Box
+    day: Day
+
+setting:
+  title: Setting
+  mihomo:
+    port: Mixed-Port
+    port-error: The port number must be greater than 0 and less than 65535
+    dns: DNS Override
+    lan: LAN
+    bindAddress: Bind Address
+    bind-error: Wrong address
+  px:
+    startup: Boot Startup
+    dir: Config
+    open: Open
+    import: Import
+    export: Export
+    update: Update
+    check: Check
+
+proxies:
+  title: Proxies
+  test: Latency Test
+  hide-on: Display bad nodes 
+  hide-off: Hide bad nodes
+  sort-on: Sort by default
+  sort-off: Sort by latency
+  vertical-on: Switch grouping to left-right style
+  vertical-off: Switch grouping to drop-down style
+  direct: Currently in direct mode
+  loading: Testing...
+
+profiles:
+  title: Profiles
+  add: Add
+  paste: Import from Clipboard
+  open: Import from file
+  available: Available
+  use: Used
+  expire: Expiration
+  update: Update
+  placeholder: Subscription, ShareLink, Yaml, Base64, Json
+  home: Visit the Subscription Home Page
+  del-tip: In use, cannot be deleted
+  edit:
+    title: Title
+    url: URL
+    update: Update Interval (hour)
+    title-tip: The title cannot be empty
+    url-tip: The URL cannot be empty
+    url-error: Wrong URL format
+    update-tip: The update interval must be greater than 0 and less than 128
+    success: Edit Success
+  refresh:
+    ing: Updating...
+    success: Update Success
+  switch:
+    ing: Switching...
+    success: Switch success
+
+rule:
+  title: Rule
+  success: Save success
+  now:
+    title: View current rules
+    search: Search payload
+    type: Type
+    payload: Payload
+    proxy: Proxy
+  group:
+    title: Unified rule grouping
+    model: Choose a template
+    m1: Default
+    m2: Multi-national
+    m3: Streaming
+    reset: Reset
+    test: Test
+    test-success : Test success
+    save-ing: Saving...
+    switch:
+      ing: Switching...
+      success: Switch success
+  ignore:
+    title: Ignore these domains
+    tip: Split by row
+    place: Type Here
+
+connections:
+  title: Connections
+  search: Search host
+  close: Close all
+  host: Host
+  download: Download
+  upload: Upload
+  rule: Rule
+  chains: Chains
+
+log:
+  title: Log
+  search: Search
+
+dns:
+  title: DNS Override
+  success: Save success
+
+bg:
+  default: Default
+  azure: Azure
+  carbon: Carbon
+  harbor: Harbor
+  cuke: Cucumber
+  sea: Serene
+  women: Serious
+  stars: Starry
+  handle: Handle
+  galaxy: Galaxy
+  game: Game
+  random: Random

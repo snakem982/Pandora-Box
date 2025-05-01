@@ -1,0 +1,10 @@
+# pandora-box/window
+window\window_windows.go: In function 'WindowProc':
+window\window_windows.go:25:20: error: implicit declaration of function 'GET_X_LPARAM'; did you mean 'GET_SC_WPARAM'? [-Wimplicit-function-declaration]
+   25 |             pt.x = GET_X_LPARAM(lParam);
+      |                    ^~~~~~~~~~~~
+      |                    GET_SC_WPARAM
+window\window_windows.go:26:20: error: implicit declaration of function 'GET_Y_LPARAM'; did you mean 'GET_SC_WPARAM'? [-Wimplicit-function-declaration]
+   26 |             pt.y = GET_Y_LPARAM(lParam);
+      |                    ^~~~~~~~~~~~
+      |                    GET_SC_WPARAM

@@ -1,0 +1,210 @@
+language: 简体中文
+
+nav:
+  home: 主页
+  setting: 设置
+  proxies: 代理
+  profiles: 订阅
+
+rules:
+  rule: 规则
+  global: 全局
+  direct: 直连
+  rule-switch: 已经切换为 规则 模式
+  global-switch: 已经切换为 全局 模式
+  direct-switch: 已经切换为 直连 模式
+
+proxy-switch: 代理
+proxy-switch-on: 代理已开启
+proxy-switch-off: 代理已关闭
+tun-switch: 虚拟网卡
+tun-switch-on: 虚拟网卡已开启
+tun-switch-off: 虚拟网卡已关闭
+tun-warning: 该功能需要管理员权限
+
+sec-nav:
+  rule: 规则
+  conn: 连接
+  log: 日志
+  crawl: 爬取
+
+delete: 删除
+confirm: 确定
+cancel: 取消
+on: 开启
+off: 关闭
+refresh: 刷新
+add: 添加
+edit: 编辑
+quit: 退出
+theme: 主题
+mini: 最小化
+minus: 最小化到托盘
+save: 保存
+copy:
+  success: 复制成功
+  fail: 复制失败
+switch:
+  ing: 切换中。。。
+  success: 切换成功
+
+drag:
+  hear: 拖拽配置文件到这里导入
+  size: 只允许单文件导入
+  add: 导入中。。。
+  success: 导入成功
+
+home:
+  download: 下载
+  upload: 上传
+  memory: 内存
+  web:
+    title: 网站测试
+    edit: 网站标题
+    src: 网站图标  (Base64 或者 URL地址)
+    test: 测试地址
+    edit-tip: 网站标题不能为空
+    src-tip: 网站图标不能为空
+    test-tip: 网站测试地址格式错误
+    success: 操作成功
+    loading: 测试中。。。
+    timeout: 超时
+    wait: 待测
+  ip:
+    title: IP [仅供参考]
+    real: 落地Ip
+    city: 城市
+    country: 国家/地区
+    isp: 服务商
+    asn: 自治域
+    time-zone: 时区
+    lang: zh-CN
+  system:
+    title: 系统信息
+    os: 操作系统
+    runtime: 运行时间
+    startup: 开机自启
+    service: 运行模式
+    port: 代理端口
+    version: Pandora-Box
+    day: 天
+
+setting:
+  title: 设置
+  mihomo:
+    port: 端口
+    port-error: 端口号必须大于0，小于65535
+    dns: DNS覆写
+    lan: 局域网
+    bindAddress: 监听地址
+    bind-error: 错误的地址
+  px:
+    startup: 开机启动
+    dir: 配置目录
+    open: 打开
+    import: 导入
+    export: 导出
+    update: 软件更新
+    check: 检查
+
+proxies:
+  title: 代理
+  test: 测试延迟
+  hide-on: 显示不可用节点
+  hide-off: 隐藏不可用节点
+  sort-on: 默认排序
+  sort-off: 按延迟排序
+  vertical-on: 切换分组为左右样式
+  vertical-off: 切换分组为下拉样式
+  direct: 当前处于直连模式
+  loading: 测试中。。。
+
+profiles:
+  title: 订阅
+  add: 添加订阅
+  paste: 从剪贴板导入
+  open: 从文件导入
+  available: 可用
+  use: 已用
+  expire: 到期时间
+  update: 更新时间
+  placeholder: 订阅地址、分享链接、Yaml、Base64、Json
+  home: 访问订阅主页
+  del-tip: 正在使用中，不可删除
+  edit:
+    title: 标题
+    url: 地址
+    update: 更新间隔 (小时)
+    title-tip: 标题不能为空
+    url-tip: 地址不能为空
+    url-error: 地址格式错误
+    update-tip: 更新间隔必须大于 0 且小于 128
+    success: 编辑成功
+  refresh:
+    ing: 更新中。。。
+    success: 更新成功
+  switch:
+    ing: 切换中。。。
+    success: 切换成功
+
+rule:
+  title: 规则
+  success: 保存成功
+  now:
+    title: 查看目前规则
+    search: 搜索规则
+    type: 类型
+    payload: 内容
+    proxy: 代理
+  group:
+    title: 统一规则分组
+    model: 选择一个模版
+    m1: 默认分组
+    m2: 多国别
+    m3: 流媒体
+    reset: 重置
+    test: 测试
+    test-success: 测试成功
+    save-ing: 保存中。。。
+    switch:
+      ing: 切换中。。。
+      success: 切换成功
+  ignore:
+    title: 忽略这些域名
+    tip: 按行分割
+    place: 在这里输入
+
+connections:
+  title: 连接
+  search: 搜索主机
+  close: 一键关闭
+  host: 主机
+  download: 下载
+  upload: 上传
+  rule: 规则
+  chains: 节点链
+
+log:
+  title: 日志
+  search: 搜索
+
+dns:
+  title: DNS 覆写
+  success: 保存成功
+
+bg:
+  default: 默认
+  azure: 天青色
+  carbon: 炭火
+  harbor: 港口
+  cuke: 黄瓜
+  sea: 静海
+  women: 严肃
+  stars: 星空
+  handle: 手柄
+  galaxy: 星系
+  game: 游戏
+  random: 随机
+
+
+

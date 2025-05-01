@@ -1,0 +1,47 @@
+{
+  "name": "pandora-box",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@element-plus/icons-vue": "^2.3.1",
+    "@intlify/unplugin-vue-i18n": "^6.0.8",
+    "ace-builds": "^1.40.1",
+    "apexcharts": "^4.7.0",
+    "axios": "^1.8.4",
+    "date-fns": "^4.1.0",
+    "element-plus": "^2.9.8",
+    "pinia": "3.0.2",
+    "pinia-plugin-persistedstate": "^4.2.0",
+    "spark-md5": "^3.0.2",
+    "vue": "^3.5.13",
+    "vue-i18n": "^11.1.3",
+    "vue-router": "^4.5.0",
+    "vue-to-counter": "^1.1.1",
+    "vue3-ace-editor": "^2.2.4",
+    "vue3-apexcharts": "^1.8.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.25.1",
+    "@iconify-json/ep": "^1.2.2",
+    "@iconify-json/mdi": "^1.2.3",
+    "@tauri-apps/cli": "^2",
+    "@vitejs/plugin-vue": "^5.2.3",
+    "eslint": "^9.25.1",
+    "eslint-import-resolver-alias": "^1.1.2",
+    "eslint-plugin-vue": "^10.0.0",
+    "globals": "^16.0.0",
+    "typescript": "~5.8.3",
+    "typescript-eslint": "^8.31.0",
+    "unplugin-auto-import": "19.1.2",
+    "unplugin-icons": "22.1.0",
+    "unplugin-vue-components": "28.5.0",
+    "vite": "^6.3.3",
+    "vue-tsc": "^2.2.10"
+  }
+}
