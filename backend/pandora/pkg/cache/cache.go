@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/metacubex/bbolt"
+	"github.com/metacubex/mihomo/component/profile/cachefile"
 	"github.com/metacubex/mihomo/log"
 	"github.com/snakem982/pandora-box/pkg/constant"
 	"github.com/snakem982/pandora-box/pkg/utils"
@@ -17,23 +18,27 @@ var BName = []byte("Pandora-Box")
 var BDb *bbolt.DB
 var once sync.Once
 
-func GetDBInstance() *bbolt.DB {
-	once.Do(func() {
-		var err error
-		BDb, err = bbolt.Open(utils.GetUserHomeDir(constant.DefaultDB), os.ModePerm, nil)
-		if err != nil {
-			panic(err)
-			return
-		}
-		_ = BDb.Batch(func(tx *bbolt.Tx) error {
-			_, err := tx.CreateBucketIfNotExists(BName)
+func GetDBInstance(isClient bool) *bbolt.DB {
+	if isClient {
+		once.Do(func() {
+			var err error
+			BDb, err = bbolt.Open(utils.GetUserHomeDir(constant.DefaultDB), os.ModePerm, nil)
 			if err != nil {
-				log.Warnln("[CacheFile] can't create bucket: %s", err.Error())
-				return fmt.Errorf("create bucket: %v", err)
+				panic(err)
+				return
 			}
-			return nil
+			_ = BDb.Batch(func(tx *bbolt.Tx) error {
+				_, err := tx.CreateBucketIfNotExists(BName)
+				if err != nil {
+					log.Warnln("[CacheFile] can't create bucket: %s", err.Error())
+					return fmt.Errorf("create bucket: %v", err)
+				}
+				return nil
+			})
 		})
-	})
+	} else {
+		BDb = cachefile.Cache().DB
+	}
 
 	return BDb
 }

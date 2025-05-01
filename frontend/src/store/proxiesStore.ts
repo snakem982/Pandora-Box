@@ -1,4 +1,5 @@
 import {defineStore} from 'pinia';
+import {defaultPersist} from "@/types/persist";
 
 export const useProxiesStore = defineStore('proxies', {
     state: () => ({
@@ -21,5 +22,5 @@ export const useProxiesStore = defineStore('proxies', {
             this.active = active;
         },
     },
-    persist: true,
+    persist: defaultPersist,
 });

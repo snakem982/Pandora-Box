@@ -53,6 +53,7 @@ function preloadBackgroundImage(bg: string) {
 
 onMounted(() => {
   preloadBackgroundImage(menuStore.background);
+
 });
 
 watch(() => menuStore.background, (nextBackground) => {

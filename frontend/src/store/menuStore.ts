@@ -1,4 +1,5 @@
 import {defineStore} from 'pinia';
+import {defaultPersist} from "@/types/persist";
 
 export const useMenuStore = defineStore('menu', {
     state: () => ({
@@ -41,5 +42,5 @@ export const useMenuStore = defineStore('menu', {
             this.background = background;
         },
     },
-    persist: true,
+    persist: defaultPersist,
 });

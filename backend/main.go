@@ -34,7 +34,7 @@ func main() {
 		}
 
 		// 开启后端api
-		pandora.StartCore(*addr)
+		pandora.StartCore(*addr, false)
 
 		termSign := make(chan os.Signal, 1)
 		signal.Notify(termSign, syscall.SIGINT, syscall.SIGTERM)
@@ -55,12 +55,11 @@ func main() {
 	// 获取网页地址
 	var url string
 	if *debug {
-		port, secret := pandora.StartCore("")
+		port, secret := pandora.StartCore("", true)
 		url = fmt.Sprintf("http://localhost:1420/?port=%d&secret=%s", port, secret)
 	} else {
 		// 初始化工作目录
-		pandora.Init()
-		pandora.Release()
+		pandora.Init(true)
 
 		// 启动api
 		url = window.TryAdmin()
@@ -73,6 +72,8 @@ func main() {
 	traymenu.Start(w)
 	// 绑定窗口函数
 	window.Init(w)
+	// storage
+	window.Storage(w)
 	// 进行地址加载
 	w.Navigate(url)
 

@@ -12,17 +12,17 @@ import (
 	"time"
 )
 
-func Init() {
-	internal.Init()
+func Init(isClient bool) {
+	internal.Init(isClient)
 }
 
 func Release() {
 	cache.Close()
 }
 
-func StartCore(server string) (port int, secret string) {
+func StartCore(server string, isClient bool) (port int, secret string) {
 	// 初始化
-	Init()
+	Init(isClient)
 
 	route.Register(handlers.Profile)
 	route.Register(handlers.WebTest)

@@ -3,7 +3,6 @@ package internal
 import (
 	"github.com/metacubex/mihomo/tunnel"
 	"github.com/snakem982/pandora-box/pkg/constant"
-	sysAdmin "github.com/snakem982/pandora-box/pkg/sys/admin"
 	sysProxy "github.com/snakem982/pandora-box/pkg/sys/proxy"
 	"io"
 	"os"
@@ -23,12 +22,16 @@ import (
 )
 
 // Init meta 启动前的初始化
-func Init() {
+func Init(isClient bool) {
 	// 设置工作目录
 	C.SetHomeDir(utils.GetUserHomeDir())
 
 	// 设置日志输出目录
-	logFilePath := utils.GetUserHomeDir("logs", "px.log")
+	logName := "api.log"
+	if isClient {
+		logName = "client.log"
+	}
+	logFilePath := utils.GetUserHomeDir("logs", logName)
 	f, err := utils.CreateFileForAppend(logFilePath)
 	if err != nil {
 		return
@@ -44,7 +47,7 @@ func Init() {
 	}
 
 	// 设置cache db
-	db := cache.GetDBInstance()
+	db := cache.GetDBInstance(isClient)
 	if db == nil {
 		os.Exit(1)
 	}
@@ -54,7 +57,7 @@ func Init() {
 	log.Infoln("[HomePath] is %s", utils.GetUserHomeDir())
 
 	// 释放资源文件
-	if !sysAdmin.IsAdmin() {
+	if isClient {
 		_, _ = utils.SaveFile(utils.GetUserHomeDir("geoip.metadb"), GeoIp)
 		_, _ = utils.SaveFile(utils.GetUserHomeDir("GeoSite.dat"), GeoSite)
 		_, _ = utils.SaveFile(utils.GetUserHomeDir("ASN.mmdb"), ASN)

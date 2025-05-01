@@ -1,4 +1,5 @@
 import {defineStore} from 'pinia';
+import {defaultPersist} from "@/types/persist";
 
 export const useSettingStore = defineStore('setting', {
     state: () => ({
@@ -33,5 +34,5 @@ export const useSettingStore = defineStore('setting', {
             this.bindAddress = bindAddress;
         },
     },
-    persist: true,
+    persist: defaultPersist,
 });

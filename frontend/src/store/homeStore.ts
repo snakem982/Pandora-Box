@@ -1,4 +1,5 @@
 import {defineStore} from 'pinia';
+import {defaultPersist} from "@/types/persist";
 
 export const useHomeStore = defineStore('home', {
     state: () => ({
@@ -33,5 +34,5 @@ export const useHomeStore = defineStore('home', {
             this.ip = ip;
         },
     },
-    persist: true,
+    persist: defaultPersist
 });
