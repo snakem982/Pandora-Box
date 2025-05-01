@@ -131,8 +131,12 @@ void setupKeyMonitor() {
 // --- 支持区域拖拽窗口 ---
 void beginDrag(void* window) {
     NSWindow *nswindow = (__bridge NSWindow *)window;
+    [nswindow makeKeyAndOrderFront:nil]; // 确保窗口已激活
+
     NSEvent *event = [NSApp currentEvent];
-    [nswindow performWindowDragWithEvent:event];
+    if (event.type == NSEventTypeLeftMouseDown) {
+        [nswindow performWindowDragWithEvent:event];
+    }
 }
 
 // --- 设置窗口最小尺寸 ---
