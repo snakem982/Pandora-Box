@@ -83,7 +83,7 @@ const mini = () => {
     </el-space>
 
     <el-tooltip
-        :content="$t('mini')"
+        :content="$t('minus')"
         placement="left">
       <span class="minus" @click="mini">
           <el-icon>

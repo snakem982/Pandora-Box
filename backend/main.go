@@ -26,11 +26,6 @@ func main() {
 	// 解析命令行参数
 	flag.Parse()
 
-	// 保持单例
-	if utils.NotSingleton("pandora-box.pid") {
-		os.Exit(1)
-	}
-
 	// 加载后端，成功发送数据
 	if *background {
 		// 保持单例
@@ -52,12 +47,22 @@ func main() {
 		return
 	}
 
+	// 保持单例
+	if utils.NotSingleton("pandora-box.pid") {
+		os.Exit(1)
+	}
+
 	// 获取网页地址
 	var url string
 	if *debug {
 		port, secret := pandora.StartCore("")
 		url = fmt.Sprintf("http://localhost:1420/?port=%d&secret=%s", port, secret)
 	} else {
+		// 初始化工作目录
+		pandora.Init()
+		pandora.Release()
+
+		// 启动api
 		url = window.TryAdmin()
 	}
 

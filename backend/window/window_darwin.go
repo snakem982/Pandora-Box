@@ -174,10 +174,12 @@ void activateSelf() {
 void hideWindow() {
 	[globalWindow orderOut:nil];
 	[NSApp hide:nil];
+	[NSApp setActivationPolicy:NSApplicationActivationPolicyAccessory];
 }
 
 // --- 显示窗口 ---
 void showWindow() {
+	[NSApp setActivationPolicy:NSApplicationActivationPolicyRegular];
     NSRunningApplication *app = [NSRunningApplication currentApplication];
 
     if ([NSApp isHidden]) {
@@ -215,7 +217,6 @@ import (
 	_ "embed"
 	"errors"
 	"fmt"
-	"github.com/snakem982/pandora-box"
 	sys "github.com/snakem982/pandora-box/pkg/sys/admin"
 	webview "github.com/webview/webview_go"
 	"os"
@@ -343,9 +344,6 @@ func TryAdmin() string {
 	if err != nil {
 		_ = RunAsNoAdmin(exePath, "-back=true", "-addr="+server)
 	}
-
-	// 释放
-	pandora.Release()
 
 	// 获取端口加载页面
 	var port interface{}
