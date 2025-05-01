@@ -27,9 +27,9 @@ func Init(isClient bool) {
 	C.SetHomeDir(utils.GetUserHomeDir())
 
 	// 设置日志输出目录
-	logName := "api.log"
+	logName := "px-server.log"
 	if isClient {
-		logName = "client.log"
+		logName = "px-client.log"
 	}
 	logFilePath := utils.GetUserHomeDir("logs", logName)
 	f, err := utils.CreateFileForAppend(logFilePath)
@@ -53,7 +53,7 @@ func Init(isClient bool) {
 	}
 
 	// 输出日志
-	log.Infoln("[CacheDB] initialized")
+	log.Infoln("[CacheDB] initialized,isClient %v", isClient)
 	log.Infoln("[HomePath] is %s", utils.GetUserHomeDir())
 
 	// 释放资源文件
@@ -61,10 +61,11 @@ func Init(isClient bool) {
 		_, _ = utils.SaveFile(utils.GetUserHomeDir("geoip.metadb"), GeoIp)
 		_, _ = utils.SaveFile(utils.GetUserHomeDir("GeoSite.dat"), GeoSite)
 		_, _ = utils.SaveFile(utils.GetUserHomeDir("ASN.mmdb"), ASN)
+
+		GeoIp = nil
+		GeoSite = nil
+		ASN = nil
 	}
-	GeoIp = nil
-	GeoSite = nil
-	ASN = nil
 }
 
 var NowConfig *config.Config

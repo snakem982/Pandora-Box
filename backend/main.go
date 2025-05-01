@@ -29,7 +29,7 @@ func main() {
 	// 加载后端，成功发送数据
 	if *background {
 		// 保持单例
-		if utils.NotSingleton("pandora.pid") {
+		if utils.NotSingleton("px-server.pid") {
 			os.Exit(1)
 		}
 
@@ -48,7 +48,7 @@ func main() {
 	}
 
 	// 保持单例
-	if utils.NotSingleton("pandora-box.pid") {
+	if utils.NotSingleton("px-client.pid") {
 		os.Exit(1)
 	}
 
@@ -59,6 +59,8 @@ func main() {
 		url = fmt.Sprintf("http://localhost:1420/?port=%d&secret=%s", port, secret)
 	} else {
 		// 初始化工作目录
+		pandora.Init(false)
+		pandora.Release()
 		pandora.Init(true)
 
 		// 启动api
