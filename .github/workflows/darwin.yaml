@@ -1,0 +1,92 @@
+name: Build macOS App
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    strategy:
+      matrix:
+        arch: [amd64, arm64]
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set Up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'lts'
+
+      - name: Build Frontend
+        run: |
+          cd frontend
+          npm install
+          npm run build
+
+      - name: Set Up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.24'
+
+      - name: Build Go Backend for ${{ matrix.arch }}
+        run: |
+          cd backend
+          GOARCH=${{ matrix.arch }} GOOS=darwin go build -tags=with_gvisor -trimpath -ldflags "-s -w" -o Pandora-Box-${{ matrix.arch }} main.go
+
+      - name: Create macOS App Bundle
+        run: |
+          mkdir -p Pandora-Box-${{ matrix.arch }}.app/Contents/MacOS
+          mkdir -p Pandora-Box-${{ matrix.arch }}.app/Contents/Resources
+          mv backend/Pandora-Box-${{ matrix.arch }} Pandora-Box-${{ matrix.arch }}.app/Contents/MacOS/
+          echo '<?xml version="1.0" encoding="UTF-8"?>' > Pandora-Box-${{ matrix.arch }}.app/Contents/Info.plist
+          echo '<plist version="1.0">' >> Pandora-Box-${{ matrix.arch }}.app/Contents/Info.plist
+          echo '<dict>' >> Pandora-Box-${{ matrix.arch }}.app/Contents/Info.plist
+          echo '  <key>CFBundleExecutable</key>' >> Pandora-Box-${{ matrix.arch }}.app/Contents/Info.plist
+          echo '  <string>Pandora-Box-${{ matrix.arch }}</string>' >> Pandora-Box-${{ matrix.arch }}.app/Contents/Info.plist
+          echo '  <key>CFBundleIconFile</key>' >> Pandora-Box-${{ matrix.arch }}.app/Contents/Info.plist
+          echo '  <string>appicon.icns</string>' >> Pandora-Box-${{ matrix.arch }}.app/Contents/Info.plist
+          echo '</dict>' >> Pandora-Box-${{ matrix.arch }}.app/Contents/Info.plist
+          echo '</plist>' >> Pandora-Box-${{ matrix.arch }}.app/Contents/Info.plist
+
+      - name: Convert PNG to ICNS
+        run: |
+          mkdir iconset
+          sips -z 16 16 script/appicon.png --out iconset/icon_16x16.png
+          sips -z 32 32 script/appicon.png --out iconset/icon_32x32.png
+          sips -z 128 128 script/appicon.png --out iconset/icon_128x128.png
+          sips -z 256 256 script/appicon.png --out iconset/icon_256x256.png
+          sips -z 512 512 script/appicon.png --out iconset/icon_512x512.png
+          iconutil -c icns -o appicon.icns iconset
+          rm -r iconset
+          mv appicon.icns Pandora-Box-${{ matrix.arch }}.app/Contents/Resources/
+
+      - name: Archive App Folder
+        run: zip -r Pandora-Box-${{ matrix.arch }}.app.zip Pandora-Box-${{ matrix.arch }}.app
+
+      - name: Create DMG
+        run: |
+          hdiutil create -volname Pandora-Box-${{ matrix.arch }} -srcfolder Pandora-Box-${{ matrix.arch }}.app -format UDZO -o Pandora-Box-${{ matrix.arch }}.dmg
+
+      - name: Upload Artifacts (.app and .dmg)
+        uses: actions/upload-artifact@v4
+        with:
+          name: Pandora-Box-${{ matrix.arch }}
+          path: |
+            Pandora-Box-${{ matrix.arch }}.dmg
+            Pandora-Box-${{ matrix.arch }}.app.zip
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v1.0.${{ github.run_number }}  # 版本号自动递增
+          name: Pandora-Box Release ${{ github.run_number }}
+          draft: false
+          prerelease: true
+          files: |
+            Pandora-Box-${{ matrix.arch }}.dmg
+            Pandora-Box-${{ matrix.arch }}.app.zip
+
+
