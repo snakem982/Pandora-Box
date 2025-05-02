@@ -90,32 +90,34 @@ jobs:
 
       - name: Convert PNG to ICNS
         run: |
+          # 创建 iconset 文件夹
           mkdir appicon.iconset
-      
-          # 使用 ImageMagick 生成所有尺寸
-          magick script/appicon.png -resize 16x16 appicon.iconset/icon_16x16.png
-          magick script/appicon.png -resize 32x32 appicon.iconset/icon_16x16@2x.png
-          magick script/appicon.png -resize 32x32 appicon.iconset/icon_32x32.png
-          magick script/appicon.png -resize 64x64 appicon.iconset/icon_32x32@2x.png
-          magick script/appicon.png -resize 128x128 appicon.iconset/icon_128x128.png
-          magick script/appicon.png -resize 256x256 appicon.iconset/icon_128x128@2x.png
-          magick script/appicon.png -resize 256x256 appicon.iconset/icon_256x256.png
-          magick script/appicon.png -resize 512x512 appicon.iconset/icon_256x256@2x.png
-          magick script/appicon.png -resize 512x512 appicon.iconset/icon_512x512.png
-          magick script/appicon.png -resize 1024x1024 appicon.iconset/icon_512x512@2x.png
-      
-          # 确保文件格式正确
-          file appicon.iconset/icon_512x512.png
-          file appicon.iconset/icon_512x512@2x.png
-      
-          # 生成 .icns 图标
-          iconutil -c icns -o appicon.icns appicon.iconset -v
-      
-          # 清理 iconset 目录
+          
+          # 给原始图标添加透明内边距，居中缩放到安全区域（大约 392x392）
+          magick script/appicon.png -resize 392x392 -gravity center -background none -extent 512x512 script/appicon-padded.png
+          
+          # 生成各尺寸 PNG 图标（来自 padded 图标）
+          magick script/appicon-padded.png -resize 16x16    appicon.iconset/icon_16x16.png
+          magick script/appicon-padded.png -resize 32x32    appicon.iconset/icon_16x16@2x.png
+          magick script/appicon-padded.png -resize 32x32    appicon.iconset/icon_32x32.png
+          magick script/appicon-padded.png -resize 64x64    appicon.iconset/icon_32x32@2x.png
+          magick script/appicon-padded.png -resize 128x128  appicon.iconset/icon_128x128.png
+          magick script/appicon-padded.png -resize 256x256  appicon.iconset/icon_128x128@2x.png
+          magick script/appicon-padded.png -resize 256x256  appicon.iconset/icon_256x256.png
+          magick script/appicon-padded.png -resize 512x512  appicon.iconset/icon_256x256@2x.png
+          magick script/appicon-padded.png -resize 512x512  appicon.iconset/icon_512x512.png
+          magick script/appicon-padded.png -resize 1024x1024 appicon.iconset/icon_512x512@2x.png
+          
+          # 生成 .icns 文件
+          iconutil -c icns -o appicon.icns appicon.iconset
+          
+          # 清理临时文件
           rm -r appicon.iconset
-      
-          # 移动到 macOS app 资源目录
-          mv appicon.icns Pandora-Box-${{ matrix.arch }}.app/Contents/Resources/
+          rm script/appicon-padded.png
+          
+          # 移动 .icns 到 App Bundle 资源目录
+          mv appicon.icns Pandora-Box.app/Contents/Resources/
+
 
       - name: Archive App Folder
         run: zip -r Pandora-Box-${{ matrix.arch }}.app.zip Pandora-Box.app
