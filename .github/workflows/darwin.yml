@@ -54,18 +54,36 @@ jobs:
 
       - name: Create macOS App Bundle
         run: |
-          mkdir -p Pandora-Box-${{ matrix.arch }}.app/Contents/MacOS
-          mkdir -p Pandora-Box-${{ matrix.arch }}.app/Contents/Resources
-          mv backend/Pandora-Box-${{ matrix.arch }} Pandora-Box-${{ matrix.arch }}.app/Contents/MacOS/
-          echo '<?xml version="1.0" encoding="UTF-8"?>' > Pandora-Box-${{ matrix.arch }}.app/Contents/Info.plist
-          echo '<plist version="1.0">' >> Pandora-Box-${{ matrix.arch }}.app/Contents/Info.plist
-          echo '<dict>' >> Pandora-Box-${{ matrix.arch }}.app/Contents/Info.plist
-          echo '  <key>CFBundleExecutable</key>' >> Pandora-Box-${{ matrix.arch }}.app/Contents/Info.plist
-          echo '  <string>Pandora-Box-${{ matrix.arch }}</string>' >> Pandora-Box-${{ matrix.arch }}.app/Contents/Info.plist
-          echo '  <key>CFBundleIconFile</key>' >> Pandora-Box-${{ matrix.arch }}.app/Contents/Info.plist
-          echo '  <string>appicon.icns</string>' >> Pandora-Box-${{ matrix.arch }}.app/Contents/Info.plist
-          echo '</dict>' >> Pandora-Box-${{ matrix.arch }}.app/Contents/Info.plist
-          echo '</plist>' >> Pandora-Box-${{ matrix.arch }}.app/Contents/Info.plist
+          APP_NAME=Pandora-Box
+          APP_DIR="${APP_NAME}.app"
+          
+          mkdir -p "$APP_DIR/Contents/MacOS"
+          mkdir -p "$APP_DIR/Contents/Resources"
+          
+          # 移动构建的二进制到 App Bundle 中
+          mv backend/${APP_NAME}-${{ matrix.arch }} "$APP_DIR/Contents/MacOS/${APP_NAME}"
+          
+          # 写入 Info.plist
+          cat > "$APP_DIR/Contents/Info.plist" <<EOF
+            <?xml version="1.0" encoding="UTF-8"?>
+            <plist version="1.0">
+            <dict>
+            <key>CFBundleExecutable</key>
+            <string>${APP_NAME}</string>
+            <key>CFBundleIconFile</key>
+            <string>appicon.icns</string>
+            <key>CFBundleIdentifier</key>
+            <string>com.example.${APP_NAME}</string>
+            <key>CFBundleName</key>
+            <string>${APP_NAME}</string>
+            <key>CFBundleVersion</key>
+            <string>${{ env.VERSION }}</string>
+            <key>CFBundlePackageType</key>
+            <string>APPL</string>
+            </dict>
+            </plist>
+            EOF
+
 
       - name: Install ImageMagick
         run: brew install imagemagick
@@ -100,7 +118,7 @@ jobs:
           mv appicon.icns Pandora-Box-${{ matrix.arch }}.app/Contents/Resources/
 
       - name: Archive App Folder
-        run: zip -r Pandora-Box-${{ matrix.arch }}.app.zip Pandora-Box-${{ matrix.arch }}.app
+        run: zip -r Pandora-Box-${{ matrix.arch }}.app.zip Pandora-Box.app
 
       - name: Create DMG
         run: |
@@ -108,7 +126,7 @@ jobs:
           rm -f Pandora-Box-${{ matrix.arch }}.dmg
           
           hdiutil create -volname Pandora-Box-${{ matrix.arch }} \
-            -srcfolder Pandora-Box-${{ matrix.arch }}.app \
+            -srcfolder Pandora-Box.app \
             -format UDZO \
             -o Pandora-Box-${{ matrix.arch }}.dmg
 
