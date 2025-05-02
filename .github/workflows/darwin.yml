@@ -60,24 +60,29 @@ jobs:
 
       - name: Convert PNG to ICNS
         run: |
-          mkdir iconset
+          mkdir appicon.iconset
+      
           # 使用 ImageMagick 生成所有尺寸
-          magick script/appicon.png -resize 16x16 iconset/icon_16x16.png
-          magick script/appicon.png -resize 32x32 iconset/icon_16x16@2x.png
-          magick script/appicon.png -resize 32x32 iconset/icon_32x32.png
-          magick script/appicon.png -resize 64x64 iconset/icon_32x32@2x.png
-          magick script/appicon.png -resize 128x128 iconset/icon_128x128.png
-          magick script/appicon.png -resize 256x256 iconset/icon_128x128@2x.png
-          magick script/appicon.png -resize 256x256 iconset/icon_256x256.png
-          magick script/appicon.png -resize 512x512 iconset/icon_256x256@2x.png
-          magick script/appicon.png -resize 512x512 iconset/icon_512x512.png
-          magick script/appicon.png -resize 1024x1024 iconset/icon_512x512@2x.png
+          magick script/appicon.png -resize 16x16 appicon.iconset/icon_16x16.png
+          magick script/appicon.png -resize 32x32 appicon.iconset/icon_16x16@2x.png
+          magick script/appicon.png -resize 32x32 appicon.iconset/icon_32x32.png
+          magick script/appicon.png -resize 64x64 appicon.iconset/icon_32x32@2x.png
+          magick script/appicon.png -resize 128x128 appicon.iconset/icon_128x128.png
+          magick script/appicon.png -resize 256x256 appicon.iconset/icon_128x128@2x.png
+          magick script/appicon.png -resize 256x256 appicon.iconset/icon_256x256.png
+          magick script/appicon.png -resize 512x512 appicon.iconset/icon_256x256@2x.png
+          magick script/appicon.png -resize 512x512 appicon.iconset/icon_512x512.png
+          magick script/appicon.png -resize 1024x1024 appicon.iconset/icon_512x512@2x.png
+      
+          # 确保文件格式正确
+          file appicon.iconset/icon_512x512.png
+          file appicon.iconset/icon_512x512@2x.png
       
           # 生成 .icns 图标
-          iconutil -c icns -o appicon.icns iconset
+          iconutil -c icns -o appicon.icns appicon.iconset -v
       
           # 清理 iconset 目录
-          rm -r iconset
+          rm -r appicon.iconset
       
           # 移动到 macOS app 资源目录
           mv appicon.icns Pandora-Box-${{ matrix.arch }}.app/Contents/Resources/
