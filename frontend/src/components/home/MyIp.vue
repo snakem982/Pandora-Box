@@ -62,14 +62,6 @@ async function getIpInfo(hide: boolean = true) {
     ipInfo.value = data;
     homeStore.setIp(data)
 
-    // 检测是否运行在管理员模式下
-    const res = await api.getAdmin();
-    if (res.data) {
-      admin.value = "on"
-    } else {
-      admin.value = "off"
-    }
-
   } catch (e) {
     if (hide) {
       // 隐藏错误提示
@@ -107,6 +99,14 @@ onMounted(async () => {
   port.value = configs['mixed-port'];
   // 获取ip
   await getIpInfo(true)
+
+  // 检测是否运行在管理员模式下
+  const res = await api.getAdmin();
+  if (res.data) {
+    admin.value = "on"
+  } else {
+    admin.value = "off"
+  }
 })
 
 
