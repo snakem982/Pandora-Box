@@ -48,6 +48,7 @@ proxy-groups:
       - 🇰🇷 韩国自动
       - 🇸🇬 狮城自动
       - 台湾自动
+    include-all-proxies: true
 
   - name: ♻️ 自动选择
     type: url-test
