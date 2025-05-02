@@ -36,15 +36,25 @@
     "bg": "url('/images/handle.jpg')"
   },
   {
-    "id": "galaxy",
-    "bg": "url('/images/galaxy.jpg')"
+    "id": "comics",
+    "bg": [
+      "https://www.loliapi.com/acg/pc/?a=1"
+    ],
+    "rand": true
   },
   {
     "id": "game",
-    "bg": "url('https://via.assets.so/game.jpg?w=1920&h=1080')"
+    "bg": [
+      "https://via.assets.so/game.jpg?w=1920&h=1080"
+    ],
+    "rand": true
   },
   {
     "id": "random",
-    "bg": "url('https://bing.img.run/rand.php')"
+    "bg": [
+      "https://bing.img.run/rand.php?a=1",
+      "https://picsum.photos/1920/1080?a=1"
+    ],
+    "rand": true
   }
 ]

@@ -50,16 +50,20 @@ const cancelHide = () => {
   clearTimeout(hideTimeout);
 };
 
+// 获取随机元素
+function getRandom(arr: any[]) {
+  if (arr.length === 1) return arr[0];
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
 // 切换背景
 const changeBackground = (item: any) => {
-  if (item.id !== "random") {
-    menuStore.setBackground(item.bg)
-  } else {
-    let url = "url('https://bing.img.run/rand.php?date=" + Date.now() + "')";
-    if (Math.random() < 0.5) {
-      url = "url('https://picsum.photos/1920/1080?date=" + Date.now() + "')";
-    }
+  if (item["rand"]) {
+    let url = getRandom(item.bg);
+    url = "url('" + url + "&date=" + Date.now() + "')"
     menuStore.setBackground(url)
+  } else {
+    menuStore.setBackground(item.bg)
   }
 }
 
