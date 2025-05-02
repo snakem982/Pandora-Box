@@ -7,6 +7,7 @@ export const useProxiesStore = defineStore('proxies', {
         isSort: false,
         isVertical: false,
         active: '',
+        now: "",
     }),
     actions: {
         setHide(isHide: boolean) {
@@ -20,6 +21,9 @@ export const useProxiesStore = defineStore('proxies', {
         },
         setActive(active: string) {
             this.active = active;
+        },
+        setNow(now: string) {
+            this.now = now;
         },
     },
     persist: defaultPersist,

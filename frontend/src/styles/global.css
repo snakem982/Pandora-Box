@@ -35,3 +35,18 @@ input {
     unicode-range: U+1F1E6-1F1FF, U+1F3F4, U+E0062-E0063, U+E0065, U+E0067,
     U+E006C, U+E006E, U+E0073-E0074, U+E0077, U+E007F;
 }
+
+.toLow {
+    color: #39ff14;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5), 0 0 2px rgba(50, 255, 50, 0.8);
+}
+
+.toMiddle {
+    color: #ffd700;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5), 0 0 2px rgba(255, 215, 0, 0.8);
+}
+
+.toHigh {
+    color: #ff4500;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5), 0 0 2px rgba(255, 69, 0, 0.8);
+}

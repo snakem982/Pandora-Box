@@ -222,6 +222,10 @@ watch(() => webStore.fProfile, async () => {
   updateButtonVisibility();
 })
 
+watch(() => proxiesStore.now, async () => {
+  await nodes();
+})
+
 </script>
 
 <template>
@@ -513,21 +517,6 @@ watch(() => webStore.fProfile, async () => {
 
 .toHidden {
   display: none;
-}
-
-.toLow {
-  color: #39ff14;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5), 0 0 2px rgba(50, 255, 50, 0.8);
-}
-
-.toMiddle {
-  color: #ffd700;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5), 0 0 2px rgba(255, 215, 0, 0.8);
-}
-
-.toHigh {
-  color: #ff4500;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5), 0 0 2px rgba(255, 69, 0, 0.8);
 }
 
 .dropdown {

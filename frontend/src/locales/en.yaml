@@ -47,6 +47,7 @@ copy:
 switch:
   ing: Switching...
   success: Switch success
+search: Search proxy
 
 drag:
   hear: Drag the profile here to import

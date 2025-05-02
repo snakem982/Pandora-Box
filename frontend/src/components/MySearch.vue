@@ -1,9 +1,19 @@
 <script lang="ts" setup>
-import {ref} from 'vue';
 import {useRouter} from "vue-router";
+import {debounce} from "lodash";
+import createApi from "@/api";
+import {useProxiesStore} from "@/store/proxiesStore";
+
+// 获取当前 Vue 实例的 proxy 对象
+const {proxy} = getCurrentInstance()!;
+const api = createApi(proxy);
+
+// 当前组件使用store
+const proxiesStore = useProxiesStore();
 
 // 搜索值
 const searchValue = ref('');
+const searchList = ref([]);
 
 // 清空搜索
 const clearSearch = () => {
@@ -13,12 +23,43 @@ const clearSearch = () => {
 // 控制下拉菜单的显示状态
 const isDropdownVisible = ref(false);
 
-// 搜索逻辑
-watch(searchValue, (newValue) => {
-  if (newValue) {
+// 防抖
+const debouncedSearch = debounce((keyword) => {
+  const lowerKeyword = keyword.toLowerCase();
+
+  // 获取前可用节点
+  const promise = api.getProxies(proxiesStore.active, true, true)
+  promise.then(arr => {
+    if (arr && arr.length === 0) return;
+    const result = [];
+    arr.some(item => {
+      if (item.name.toLowerCase().includes(lowerKeyword)) {
+        result.push(item);
+      }
+
+      // 找到 10 个后，提前终止遍历
+      return result.length >= 10;
+    });
+    if (result.length === 0) return;
+    searchList.value = result;
     isDropdownVisible.value = true;
+  })
+
+}, 300);
+
+watch(searchValue, (keyword) => {
+  if (keyword.trim().length == 0) {
+    isDropdownVisible.value = false;
+    return
   }
-})
+
+  debouncedSearch(keyword.trim());
+});
+
+// 组件销毁时，取消防抖任务
+onUnmounted(() => {
+  debouncedSearch.cancel();
+});
 
 // 添加延时隐藏下拉菜单
 const hideDropdown = () => {
@@ -41,6 +82,21 @@ onMounted(() => {
 const mini = () => {
   if (window["pxHide"]) window["pxHide"]()
 }
+
+// 设置代理
+async function changeProxy(now: any, name: any) {
+  if (now) {
+    return;
+  }
+  try {
+    await api.setProxy(proxiesStore.active, {name});
+    proxiesStore.setNow(name)
+    searchValue.value = '';
+  } catch (error) {
+    console.error(error);
+  }
+}
+
 </script>
 
 <template>
@@ -69,12 +125,13 @@ const mini = () => {
           autocapitalize="off"
           autocomplete="off"
           spellcheck="false"
-          placeholder="搜索节点"
+          :placeholder="$t('search')"
           v-model="searchValue"
           @blur="hideDropdown"
       />
 
       <span class="clear"
+            v-show="searchValue.trim().length > 0"
             @click="clearSearch">
       <el-icon>
         <icon-mdi-close/>
@@ -97,15 +154,12 @@ const mini = () => {
         id="dropdown"
         :style="{ display: isDropdownVisible ? 'block' : 'none' }">
       <ul>
-        <li class="group">A</li>
-        <li>Alice</li>
-        <li>Adam</li>
-        <li class="group">B</li>
-        <li>Bob</li>
-        <li>Betty</li>
-        <li class="group">C</li>
-        <li>Charlie</li>
-        <li>Chloe</li>
+        <!--        <li class="group">A</li>-->
+        <!--        <li>Alice</li>-->
+        <li v-for="item in searchList" @click="changeProxy(item['now'], item['name'])">
+          <span class="sName"> {{ item.name }} </span>
+          <span :class="'sDelay ' + item['toClass']">{{ item.delay }} ms</span>
+        </li>
       </ul>
     </div>
   </div>
@@ -166,7 +220,6 @@ const mini = () => {
   color: var(--text-color);
   cursor: pointer;
   display: block;
-
 }
 
 .minus {
@@ -181,7 +234,7 @@ const mini = () => {
   position: absolute; /* 确保定位基于父容器 */
   margin-top: 8px;
   transform: translateX(66px); /* 调整偏移量，与输入框左边对齐 */
-  width: 250px; /* 与输入框宽度一致 */
+  width: 235px; /* 与输入框宽度一致 */
   border-radius: 5px;
   background-color: rgba(0, 0, 0, 0.8); /* 背景透明 */
   z-index: 9999; /* 确保下拉框显示在最上层 */
@@ -205,11 +258,25 @@ const mini = () => {
 }
 
 .dropdown ul li {
-  padding: 10px;
+  padding: 10px 15px;
   cursor: pointer;
 }
 
 .dropdown ul li:hover {
   background-color: rgba(255, 255, 255, 0.1); /* 鼠标悬停时背景微亮 */
 }
+
+.sName {
+  display: inline-block;
+  max-width: 135px;
+  font-weight: bold;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sDelay {
+  float: right;
+}
+
 </style>

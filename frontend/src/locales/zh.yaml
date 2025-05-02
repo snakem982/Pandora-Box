@@ -47,6 +47,7 @@ copy:
 switch:
   ing: 切换中。。。
   success: 切换成功
+search: 搜索节点
 
 drag:
   hear: 拖拽配置文件到这里导入
