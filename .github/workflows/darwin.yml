@@ -4,9 +4,12 @@ on:
   push:
     branches:
       - v3-alpha
+    tags:
+      - 'v*'
 
 jobs:
   build:
+    permissions: write-all
     runs-on: macos-latest
 
     strategy:
@@ -16,6 +19,13 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+
+      - name: Set version from latest tag
+        run: echo "VERSION=$(git describe --tags --abbrev=0)" >> "$GITHUB_ENV"
+
+      - name: Build macOS package
+        run: |
+          echo "Building Pandora-Box version $VERSION"
 
       - name: Set Up Node.js
         uses: actions/setup-node@v4
@@ -105,12 +115,15 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: v1.0.${{ github.run_number }}  # 版本号自动递增
-          name: Pandora-Box Release ${{ github.run_number }}
+          tag_name: ${{ env.VERSION }}
+          name: Pandora-Box Release ${{ env.VERSION }}
           draft: false
           prerelease: true
           files: |
             Pandora-Box-${{ matrix.arch }}.dmg
             Pandora-Box-${{ matrix.arch }}.app.zip
-
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          permissions:
+            contents: write
 
