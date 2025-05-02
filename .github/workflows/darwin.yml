@@ -2,8 +2,6 @@ name: Build macOS App
 
 on:
   push:
-    branches:
-      - v3-alpha
     tags:
       - 'v*'
 
@@ -120,7 +118,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ env.VERSION }}
-          name: Pandora-Box Release ${{ env.VERSION }}
+          name: ${{ env.VERSION }}-alpha
           draft: false
           prerelease: true
           files: |
