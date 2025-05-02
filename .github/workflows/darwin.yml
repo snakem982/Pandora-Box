@@ -1,7 +1,9 @@
 name: Build macOS App
 
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - v3-alpha
 
 jobs:
   build:
