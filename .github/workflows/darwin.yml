@@ -62,16 +62,16 @@ jobs:
         run: |
           mkdir iconset
           # 使用 ImageMagick 生成所有尺寸
-          convert script/appicon.png -resize 16x16 iconset/icon_16x16.png
-          convert script/appicon.png -resize 32x32 iconset/icon_16x16@2x.png
-          convert script/appicon.png -resize 32x32 iconset/icon_32x32.png
-          convert script/appicon.png -resize 64x64 iconset/icon_32x32@2x.png
-          convert script/appicon.png -resize 128x128 iconset/icon_128x128.png
-          convert script/appicon.png -resize 256x256 iconset/icon_128x128@2x.png
-          convert script/appicon.png -resize 256x256 iconset/icon_256x256.png
-          convert script/appicon.png -resize 512x512 iconset/icon_256x256@2x.png
-          convert script/appicon.png -resize 512x512 iconset/icon_512x512.png
-          convert script/appicon.png -resize 1024x1024 iconset/icon_512x512@2x.png
+          magick script/appicon.png -resize 16x16 iconset/icon_16x16.png
+          magick script/appicon.png -resize 32x32 iconset/icon_16x16@2x.png
+          magick script/appicon.png -resize 32x32 iconset/icon_32x32.png
+          magick script/appicon.png -resize 64x64 iconset/icon_32x32@2x.png
+          magick script/appicon.png -resize 128x128 iconset/icon_128x128.png
+          magick script/appicon.png -resize 256x256 iconset/icon_128x128@2x.png
+          magick script/appicon.png -resize 256x256 iconset/icon_256x256.png
+          magick script/appicon.png -resize 512x512 iconset/icon_256x256@2x.png
+          magick script/appicon.png -resize 512x512 iconset/icon_512x512.png
+          magick script/appicon.png -resize 1024x1024 iconset/icon_512x512@2x.png
       
           # 生成 .icns 图标
           iconutil -c icns -o appicon.icns iconset
