@@ -51,6 +51,8 @@ proxy-groups:
 
   - name: ♻️ 自动选择
     type: url-test
+    url: https://www.google.com/blank.html
+    interval: 600
     tolerance: 50
     include-all-proxies: true
 
@@ -60,36 +62,48 @@ proxy-groups:
 
   - name: 🇺🇸 美国自动
     type: url-test
+    url: https://www.google.com/blank.html
+    interval: 600
     tolerance: 80
     include-all-proxies: true
     filter: "(?i)美|us|unitedstates|united states"
 
   - name: 🇭🇰 香港自动
     type: url-test
+    url: https://www.google.com/blank.html
+    interval: 600
     tolerance: 50
     include-all-proxies: true
     filter: "(?i)港|hk|hongkong|hong kong"
 
   - name: 🇸🇬 狮城自动
     type: url-test
-    tolerance: 80
+    url: https://www.google.com/blank.html
+    interval: 600
+    tolerance: 50
     include-all-proxies: true
     filter: "(?i)(新|sg|singapore)"
 
   - name: 🇯🇵 日本自动
     type: url-test
+    url: https://www.google.com/blank.html
+    interval: 600
     tolerance: 50
     include-all-proxies: true
     filter: "(?i)日|jp|japan"
 
   - name: 🇰🇷 韩国自动
     type: url-test
+    url: https://www.google.com/blank.html
+    interval: 600
     tolerance: 50
     include-all-proxies: true
     filter: "(?i)韩|kr|korea"
 
   - name: 台湾自动
     type: url-test
+    url: https://www.google.com/blank.html
+    interval: 600
     tolerance: 50
     include-all-proxies: true
     filter: "(?i)台|tw|taiwan"
