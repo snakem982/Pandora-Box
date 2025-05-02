@@ -85,6 +85,7 @@ home:
     runtime: 运行时间
     startup: 开机自启
     service: 运行模式
+    admin: 管理权限
     port: 代理端口
     version: Pandora-Box
     day: 天

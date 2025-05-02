@@ -61,6 +61,15 @@ async function getIpInfo(hide: boolean = true) {
     // 绑定数据
     ipInfo.value = data;
     homeStore.setIp(data)
+
+    // 检测是否运行在管理员模式下
+    const res = await api.getAdmin();
+    if (res.data) {
+      admin.value = "on"
+    } else {
+      admin.value = "off"
+    }
+
   } catch (e) {
     if (hide) {
       // 隐藏错误提示
@@ -75,6 +84,7 @@ async function getIpInfo(hide: boolean = true) {
 
 // 页面变量
 const time = ref("");
+const admin = ref("off");
 const version = ref("");
 const port = ref("");
 const ipInfo = ref({
@@ -150,8 +160,8 @@ onMounted(async () => {
           <li><strong>{{ $t('home.system.runtime') }} : </strong>
             {{ time }}
           </li>
-          <li><strong>{{ $t('home.system.startup') }} : </strong> 关闭</li>
-          <li><strong>{{ $t('home.system.service') }} : </strong> 普通模式</li>
+          <li><strong>{{ $t('home.system.startup') }} : </strong> {{ $t('off') }}</li>
+          <li><strong>{{ $t('home.system.admin') }} : </strong> {{ $t(admin) }}</li>
           <li><strong>{{ $t('home.system.port') }} : </strong>
             {{ port }}
           </li>

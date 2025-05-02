@@ -85,6 +85,7 @@ home:
     runtime: Runtime
     startup: Boot Startup
     service: Service Mode
+    admin: Admin
     port: Mixed-Port
     version: Pandora-Box
     day: Day
