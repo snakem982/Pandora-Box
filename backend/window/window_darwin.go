@@ -148,7 +148,7 @@ NSWindow *nswindow = (__bridge NSWindow *)window;
 void activateSelf() {
     NSRunningApplication *app = [NSRunningApplication currentApplication];
     if (![app isActive]) {
-        [app activateWithOptions:(NSApplicationActivateIgnoringOtherApps | NSApplicationActivateAllWindows)];
+        [app activateWithOptions:NSApplicationActivateAllWindows];
     }
 
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -195,7 +195,7 @@ void showWindow() {
             [globalWindow orderOut:nil]; // 隐藏一下避免残留
             [globalWindow makeKeyAndOrderFront:nil];
         }
-        [app activateWithOptions:(NSApplicationActivateIgnoringOtherApps | NSApplicationActivateAllWindows)];
+        [app activateWithOptions:NSApplicationActivateAllWindows];
     } else {
         if (globalWindow && ![globalWindow isVisible]) {
             [globalWindow makeKeyAndOrderFront:nil];
