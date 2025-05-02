@@ -46,9 +46,13 @@ jobs:
 
       - name: Build Go Backend for ${{ matrix.arch }}
         run: |
+          export MACOSX_DEPLOYMENT_TARGET=10.15
           cd backend
           go mod tidy
-          CGO_ENABLED=1 GOARCH=${{ matrix.arch }} GOOS=darwin go build -tags=with_gvisor -trimpath -ldflags "-s -w" -o Pandora-Box-${{ matrix.arch }} main.go
+          CGO_ENABLED=1 GOARCH=${{ matrix.arch }} GOOS=darwin \
+            go build -tags=with_gvisor -trimpath \
+            -ldflags "-s -w -extldflags=-mmacosx-version-min=10.15" \
+            -o Pandora-Box-${{ matrix.arch }} main.go
 
       - name: Create macOS App Bundle
         run: |
