@@ -161,7 +161,7 @@ rule:
     model: 选择一个模版
     m1: 默认分组
     m2: 多国别
-    m3: 流媒体
+    m3: 全分组
     reset: 重置
     test: 测试
     test-success: 测试成功

@@ -161,7 +161,7 @@ rule:
     model: Choose a template
     m1: Default
     m2: Multi-national
-    m3: Streaming
+    m3: Multi-full
     reset: Reset
     test: Test
     test-success : Test success
