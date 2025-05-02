@@ -104,7 +104,14 @@ jobs:
 
       - name: Create DMG
         run: |
-          hdiutil create -volname Pandora-Box-${{ matrix.arch }} -srcfolder Pandora-Box-${{ matrix.arch }}.app -format UDZO -o Pandora-Box-${{ matrix.arch }}.dmg
+          # 避免资源占用失败
+          rm -f Pandora-Box-${{ matrix.arch }}.dmg
+          
+          hdiutil create -volname Pandora-Box-${{ matrix.arch }} \
+            -srcfolder Pandora-Box-${{ matrix.arch }}.app \
+            -format UDZO \
+            -o Pandora-Box-${{ matrix.arch }}.dmg
+
 
       - name: Upload Artifacts (.app and .dmg)
         uses: actions/upload-artifact@v4
