@@ -222,6 +222,7 @@ import (
 	"errors"
 	"fmt"
 	sys "github.com/snakem982/pandora-box/pkg/sys/admin"
+	"github.com/snakem982/pandora-box/pkg/utils"
 	webview "github.com/webview/webview_go"
 	"os"
 	"os/exec"
@@ -253,6 +254,8 @@ func Init(w webview.WebView) {
 	_ = w.Bind("pxOpen", Open)
 	// 隐藏窗口
 	_ = w.Bind("pxHide", HideWindow)
+	// 打开配置目录
+	_ = w.Bind("pxConfigDir", openConfigDir)
 
 	go func() {
 		time.Sleep(1 * time.Second)
@@ -362,4 +365,8 @@ func TryAdmin() string {
 	}
 
 	return fmt.Sprintf("http://%s/index.html?port=%v&secret=%v", server, port, secret)
+}
+
+func openConfigDir() {
+	_ = Open(utils.GetUserHomeDir())
 }

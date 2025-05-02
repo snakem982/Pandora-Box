@@ -46,6 +46,20 @@ watch(() => settingStore.ipv6, (newValue) => {
   });
 });
 
+// 打开配置目录
+function pxConfigDir(){
+  if(window["pxConfigDir"]){
+    window["pxConfigDir"]()
+  }
+}
+
+// 检查更新
+function checkUpdate(){
+  const url = "https://github.com/snakem982/Pandora-Box/releases"
+  if(window["pxOpen"]){
+    window["pxOpen"](url)
+  }
+}
 
 </script>
 
@@ -123,25 +137,25 @@ watch(() => settingStore.ipv6, (newValue) => {
         </div>
         <hr/>
         <ul class="info-list">
-          <li>
-            <strong>{{ $t('setting.px.startup') }} :</strong>
-            <el-switch
-                disabled
-                v-model="settingStore.startup"
-                class="set-switch"
-            />
-          </li>
+<!--          <li>-->
+<!--            <strong>{{ $t('setting.px.startup') }} :</strong>-->
+<!--            <el-switch-->
+<!--                disabled-->
+<!--                v-model="settingStore.startup"-->
+<!--                class="set-switch"-->
+<!--            />-->
+<!--          </li>-->
           <li style="height: 30px">
             <strong>{{ $t('setting.px.dir') }} :</strong>
-            <el-button style="margin-left: 10px">
+            <el-button @click="pxConfigDir" style="margin-left: 10px">
               {{ $t('setting.px.open') }}
             </el-button>
-            <el-button>{{ $t('setting.px.export') }}</el-button>
-            <el-button>{{ $t('setting.px.import') }}</el-button>
+<!--            <el-button>{{ $t('setting.px.export') }}</el-button>-->
+<!--            <el-button>{{ $t('setting.px.import') }}</el-button>-->
           </li>
           <li style="height: 30px">
             <strong>{{ $t('setting.px.update') }} :</strong>
-            <el-button style="margin-left: 10px">{{ $t('setting.px.check') }}</el-button>
+            <el-button @click="checkUpdate" style="margin-left: 10px">{{ $t('setting.px.check') }}</el-button>
           </li>
         </ul>
       </div>

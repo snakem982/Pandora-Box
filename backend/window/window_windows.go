@@ -156,6 +156,7 @@ import (
 	"errors"
 	"fmt"
 	sys "github.com/snakem982/pandora-box/pkg/sys/admin"
+	"github.com/snakem982/pandora-box/pkg/utils"
 	"os"
 	"os/exec"
 	"pandora-box/static"
@@ -218,6 +219,8 @@ func Init(w webview.WebView) {
 	_ = w.Bind("pxClipboard", GetClipboard)
 	// 打开地址
 	_ = w.Bind("pxOpen", Open)
+	// 打开配置目录
+	_ = w.Bind("pxConfigDir", openConfigDir)
 }
 
 // SetDockIconBytes 设置任务栏图标
@@ -365,4 +368,10 @@ func TryAdmin() string {
 	}
 
 	return fmt.Sprintf("http://%s/index.html?port=%v&secret=%v", server, port, secret)
+}
+
+func openConfigDir() {
+	c := exec.Command(`cmd`, `/c`, `explorer`, utils.GetUserHomeDir())
+	c.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
+	_ = c.Start()
 }
