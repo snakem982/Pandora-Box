@@ -122,15 +122,27 @@ jobs:
       - name: Archive App Folder
         run: zip -r Pandora-Box-${{ matrix.arch }}.app.zip Pandora-Box.app
 
-      - name: Create DMG
+      - name: Install create-dmg
+        run: brew install create-dmg
+
+      - name: Create DMG with Drag-to-Applications
         run: |
-          # 避免资源占用失败
-          rm -f Pandora-Box-${{ matrix.arch }}.dmg
+          # 创建临时目录并拷贝 .app 进去
+          mkdir dmg-source
+          cp -R Pandora-Box.app dmg-source/
           
-          hdiutil create -volname Pandora-Box-${{ matrix.arch }} \
-            -srcfolder Pandora-Box.app \
-            -format UDZO \
-            -o Pandora-Box-${{ matrix.arch }}.dmg
+          # 使用 create-dmg 创建带 Applications 拖动功能的 DMG
+          create-dmg \
+            --volname "Pandora-Box-${{ matrix.arch }}" \
+            --window-size 500 300 \
+            --icon-size 100 \
+            --icon "Pandora-Box.app" 100 100 \
+            --app-drop-link 375 100 \
+            Pandora-Box-${{ matrix.arch }}.dmg \
+            dmg-source
+          
+          # 清理临时目录
+          rm -rf dmg-source
 
 
       - name: Upload Artifacts (.app and .dmg)
