@@ -6,8 +6,10 @@ import (
 	"github.com/metacubex/mihomo/log"
 	"github.com/snakem982/pandora-box/api/handlers"
 	"github.com/snakem982/pandora-box/internal"
+	"github.com/snakem982/pandora-box/internal/job"
 	"github.com/snakem982/pandora-box/pkg/cache"
 	"github.com/snakem982/pandora-box/pkg/constant"
+	"github.com/snakem982/pandora-box/pkg/cron"
 	"github.com/snakem982/pandora-box/pkg/utils"
 	"time"
 )
@@ -70,6 +72,13 @@ func StartCore(server string, isClient bool) (port int, secret string) {
 			}
 		}
 	}
+
+	// 定时更新订阅
+	if !isClient {
+		job.RefreshJob()
+	}
+	// 开启定时任务
+	go cron.Start()
 
 	return port, secret
 }

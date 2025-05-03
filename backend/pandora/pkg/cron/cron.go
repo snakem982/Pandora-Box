@@ -27,7 +27,7 @@ func GetInstance() *Cron {
 }
 
 // AddTask 添加任务
-func AddTask(interval uint64, task func()) {
+func AddTask(interval interface{}, task func()) {
 	cron := GetInstance()
 	job, err := cron.scheduler.Every(interval).Do(task)
 	if err != nil {
