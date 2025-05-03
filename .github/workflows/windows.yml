@@ -92,7 +92,7 @@ jobs:
         run: |
           cd backend
           go build -tags=with_gvisor -trimpath `
-            -ldflags "-s -w" `
+            -ldflags "-s -w -H=windowsgui" `
             -o "Pandora-Box.exe" main.go
           
           if ($?) {
@@ -124,7 +124,7 @@ jobs:
         shell: pwsh
         run: |
           if (Test-Path "backend\Pandora-Box.exe") {
-            Compress-Archive -Path backend\Pandora-Box.exe -DestinationPath "Pandora-Box-${{ matrix.arch }}.exe.zip"
+            Compress-Archive -Path backend\Pandora-Box.exe -DestinationPath "windows-${{ matrix.arch }}.zip"
             Write-Host "Executable compressed successfully."
           } else {
             Write-Error "Executable file not found for compression."
@@ -134,8 +134,8 @@ jobs:
       - name: Upload Artifacts (Compressed Executable)
         uses: actions/upload-artifact@v4
         with:
-          name: Pandora-Box-${{ matrix.arch }}.exe.zip
-          path: Pandora-Box-${{ matrix.arch }}.exe.zip
+          name: windows-${{ matrix.arch }}.zip
+          path: windows-${{ matrix.arch }}.zip
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
@@ -145,6 +145,6 @@ jobs:
           draft: false
           prerelease: true
           files: |
-            Pandora-Box-${{ matrix.arch }}.exe.zip
+            windows-${{ matrix.arch }}.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

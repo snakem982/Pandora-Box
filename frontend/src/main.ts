@@ -123,15 +123,15 @@ async function bootstrap() {
 
             const cleanup = () => {
                 el.removeEventListener('mousedown', startDrag);
-                document.removeEventListener('mouseup', endDrag);
-                document.removeEventListener('mouseleave', endDrag);
+                el.removeEventListener('mouseup', endDrag);
+                el.removeEventListener('mouseleave', endDrag);
             };
 
             // 确保不重复绑定
             cleanup();
             el.addEventListener('mousedown', startDrag);
-            document.addEventListener('mouseup', endDrag);
-            document.addEventListener('mouseleave', endDrag);
+            el.addEventListener('mouseup', endDrag);
+            el.addEventListener('mouseleave', endDrag);
 
             el._cleanup = cleanup;
         },

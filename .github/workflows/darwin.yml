@@ -2,8 +2,8 @@ name: Build macOS App
 
 on:
   push:
-#    branches:
-#      - v3-alpha
+    branches:
+      - v3-alpha
     tags:
       - 'v*'
 
@@ -128,7 +128,7 @@ jobs:
 
 
       - name: Archive App Folder
-        run: zip -r Pandora-Box-${{ matrix.arch }}.app.zip Pandora-Box.app
+        run: zip -r macos-${{ matrix.arch }}.zip Pandora-Box.app
 
       - name: Install create-dmg
         run: brew install create-dmg
@@ -146,7 +146,8 @@ jobs:
             --icon-size 100 \
             --icon "Pandora-Box.app" 100 100 \
             --app-drop-link 375 100 \
-            Pandora-Box-${{ matrix.arch }}.dmg \
+            --volicon "Pandora-Box.app/Contents/Resources/appicon.icns" \
+            macos-${{ matrix.arch }}.dmg \
             dmg-source
           
           # 清理临时目录
@@ -156,10 +157,10 @@ jobs:
       - name: Upload Artifacts (.app and .dmg)
         uses: actions/upload-artifact@v4
         with:
-          name: Pandora-Box-${{ matrix.arch }}
+          name: macos-${{ matrix.arch }}
           path: |
-            Pandora-Box-${{ matrix.arch }}.dmg
-            Pandora-Box-${{ matrix.arch }}.app.zip
+            macos-${{ matrix.arch }}.dmg
+            macos-${{ matrix.arch }}.zip
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
@@ -169,8 +170,8 @@ jobs:
           draft: false
           prerelease: true
           files: |
-            Pandora-Box-${{ matrix.arch }}.dmg
-            Pandora-Box-${{ matrix.arch }}.app.zip
+            macos-${{ matrix.arch }}.dmg
+            macos-${{ matrix.arch }}.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
