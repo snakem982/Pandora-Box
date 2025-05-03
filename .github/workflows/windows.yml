@@ -3,7 +3,7 @@ name: Build Go Project with MSVC
 on:
   push:
     branches:
-      - main
+      - v3-alpha
     tags:
       - 'v*'
 
