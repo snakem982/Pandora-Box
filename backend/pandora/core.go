@@ -5,8 +5,8 @@ import (
 	"github.com/metacubex/mihomo/hub/route"
 	"github.com/metacubex/mihomo/log"
 	"github.com/snakem982/pandora-box/api/handlers"
+	"github.com/snakem982/pandora-box/api/job"
 	"github.com/snakem982/pandora-box/internal"
-	"github.com/snakem982/pandora-box/internal/job"
 	"github.com/snakem982/pandora-box/pkg/cache"
 	"github.com/snakem982/pandora-box/pkg/constant"
 	"github.com/snakem982/pandora-box/pkg/cron"
@@ -75,6 +75,7 @@ func StartCore(server string, isClient bool) (port int, secret string) {
 
 	// 定时更新订阅
 	if !isClient {
+		job.LogJob("px-server.log")
 		job.RefreshJob()
 	}
 	// 开启定时任务

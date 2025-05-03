@@ -2,7 +2,6 @@ package internal
 
 import (
 	"github.com/metacubex/mihomo/tunnel"
-	"github.com/snakem982/pandora-box/internal/job"
 	"github.com/snakem982/pandora-box/pkg/constant"
 	sysProxy "github.com/snakem982/pandora-box/pkg/sys/proxy"
 	"io"
@@ -37,8 +36,6 @@ func Init(isClient bool) {
 	if err != nil {
 		return
 	}
-	// 添加定时清理日志
-	job.LogJob(logName)
 
 	// 组合一下即可，os.Stdout代表标准输出流
 	if runtime.GOOS != "windows" {

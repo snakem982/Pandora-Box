@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"github.com/snakem982/pandora-box/internal/job"
+	"github.com/snakem982/pandora-box/api/job"
 	"net/http"
 	"path/filepath"
 	"sort"

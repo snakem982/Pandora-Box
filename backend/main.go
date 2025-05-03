@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/metacubex/mihomo/hub/executor"
 	"github.com/snakem982/pandora-box"
+	"github.com/snakem982/pandora-box/api/job"
 	"github.com/snakem982/pandora-box/pkg/cron"
 	"github.com/snakem982/pandora-box/pkg/utils"
 	webview "github.com/webview/webview_go"
@@ -63,6 +64,9 @@ func main() {
 		pandora.Init(false)
 		pandora.Release()
 		pandora.Init(true)
+
+		// 开启定时任务
+		job.LogJob("px-client.log")
 		go cron.Start()
 
 		// 启动api

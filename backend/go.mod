@@ -34,6 +34,7 @@ require (
 	github.com/ericlagergren/subtle v0.0.0-20220507045147-890d697da010 // indirect
 	github.com/fsnotify/fsnotify v1.7.0 // indirect
 	github.com/gaukas/godicttls v0.0.4 // indirect
+	github.com/go-co-op/gocron v1.37.0 // indirect
 	github.com/go-ole/go-ole v1.3.0 // indirect
 	github.com/go-task/slim-sprig/v3 v3.0.0 // indirect
 	github.com/gobwas/httphead v0.1.0 // indirect
@@ -45,6 +46,7 @@ require (
 	github.com/google/btree v1.1.3 // indirect
 	github.com/google/go-cmp v0.7.0 // indirect
 	github.com/google/pprof v0.0.0-20240424215950-a892ee059fd6 // indirect
+	github.com/google/uuid v1.6.0 // indirect
 	github.com/hashicorp/yamux v0.1.2 // indirect
 	github.com/insomniacslk/dhcp v0.0.0-20250109001534-8abf58130905 // indirect
 	github.com/josharian/native v1.1.0 // indirect
@@ -84,6 +86,7 @@ require (
 	github.com/power-devops/perfstat v0.0.0-20210106213030-5aafc221ea8c // indirect
 	github.com/puzpuzpuz/xsync/v3 v3.5.1 // indirect
 	github.com/quic-go/qpack v0.4.0 // indirect
+	github.com/robfig/cron/v3 v3.0.1 // indirect
 	github.com/sagernet/cors v1.2.1 // indirect
 	github.com/sagernet/fswatch v0.1.1 // indirect
 	github.com/sagernet/netlink v0.0.0-20240612041022-b9a21c07ac6a // indirect
@@ -107,6 +110,7 @@ require (
 	github.com/yusufpapurcu/wmi v1.2.4 // indirect
 	gitlab.com/go-extension/aes-ccm v0.0.0-20230221065045-e58665ef23c7 // indirect
 	gitlab.com/yawning/bsaes.git v0.0.0-20190805113838-0a714cd429ec // indirect
+	go.uber.org/atomic v1.9.0 // indirect
 	go.uber.org/mock v0.4.0 // indirect
 	go4.org/netipx v0.0.0-20231129151722-fdeea329fbba // indirect
 	golang.org/x/crypto v0.36.0 // indirect
