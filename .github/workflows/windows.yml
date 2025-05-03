@@ -1,4 +1,4 @@
-name: Build Go Project with MSVC
+name: Build Go Project with MinGW
 
 on:
   push:
@@ -20,77 +20,58 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      # 安装 Visual Studio Build Tools 和必要组件
-      - name: Install Visual Studio Build Tools
-        shell: pwsh
+      # 安装 MinGW-w64 编译工具（支持 amd64 和 arm64）
+      - name: Install MinGW-w64
         run: |
-          # 设置临时目录及下载路径
-          $tempDir = "C:\temp"
-          if (!(Test-Path $tempDir)) {
-              New-Item -ItemType Directory -Path $tempDir | Out-Null
-          }
-          $installerPath = "$tempDir\vs_installer.exe"
+          # 下载 MinGW-w64 安装包
+          $installerPath = "$env:USERPROFILE\mingw_installer.exe"
+          Invoke-WebRequest -Uri https://sourceforge.net/projects/mingw-w64/files/latest/download -OutFile $installerPath
 
-          Write-Host "Downloading Visual Studio Installer..."
-          # 下载 Visual Studio Installer，增加重试机制
-          Invoke-WebRequest -Uri "https://aka.ms/vs/17/release/vs_installer.exe" -OutFile $installerPath -MaximumRetryCount 3 -RetryIntervalSec 5
-          
-          # 检查文件是否下载成功，并打印调试信息
+          # 检查安装文件并执行
           if (Test-Path $installerPath) {
-              $fileInfo = Get-Item $installerPath
-              Write-Host "File Size: $($fileInfo.Length) bytes"
-              Write-Host "Last Modified: $($fileInfo.LastWriteTime)"
-          
-              # 解除从网络下载导致的锁定
-              Unblock-File -Path $installerPath
-              Write-Host "VS Installer downloaded and unblocked. Starting installation..."
-              Start-Process -FilePath $installerPath -ArgumentList '--quiet', '--wait', '--norestart', '--includeRecommended' -NoNewWindow -Wait
+            Write-Host "MinGW Installer downloaded successfully."
+            Start-Process -FilePath $installerPath -ArgumentList "/SILENT" -NoNewWindow -Wait
           } else {
-              Write-Error "VS Installer download failed."
-              exit 1
-          }
-
-      # 初始化 MSVC 环境
-      - name: Setup MSVC Environment
-        shell: pwsh
-        run: |
-          if (Test-Path "C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\Common7\Tools\VsDevCmd.bat") {
-            & "C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\Common7\Tools\VsDevCmd.bat"
-            echo "MSVC environment setup complete"
-          } else {
-            Write-Error "Failed to find VsDevCmd.bat, MSVC environment setup failed."
+            Write-Error "MinGW Installer download failed."
             exit 1
           }
+
+      # 设置 MinGW 编译环境
+      - name: Setup MinGW Environment
+        shell: pwsh
+        run: |
+          if ($env:GOARCH -eq "amd64") {
+            # 设置为 MinGW-w64 的 GCC 编译器（用于 amd64）
+            $env:CC = "x86_64-w64-mingw32-gcc"
+            $env:CXX = "x86_64-w64-mingw32-g++"
+          } elseif ($env:GOARCH -eq "arm64") {
+            # 设置为 MinGW-w64 的 ARM64 GCC 编译器（用于 arm64）
+            $env:CC = "aarch64-w64-mingw32-gcc"
+            $env:CXX = "aarch64-w64-mingw32-g++"
+          }
+          
+          # 设置 Go 构建环境
+          $env:CGO_ENABLED = "1"
+          $env:GOOS = "windows"
+          echo "MinGW environment setup complete for $($env:GOARCH)"
 
       # 设置 Go 环境
       - name: Set Up Go
         uses: actions/setup-go@v5
         with:
-          go-version: '1.24.1'
+          go-version: '1.24.1'  # 设置 Go 版本
 
-      # 安装依赖
+      # 安装 Go 项目依赖
       - name: Install Dependencies
         run: |
           cd backend
           go mod tidy
 
-      # 使用 MSVC 编译 Go 项目
+      # 使用 MinGW 编译 Go 项目
       - name: Build Go Backend for ${{ matrix.arch }}
         shell: pwsh
         run: |
           cd backend
-          $env:GOARCH = "${{ matrix.arch }}"
-          $env:GOOS = "windows"
-          $env:CGO_ENABLED = "1"
-          $env:CC = "cl"    # 设置使用 MSVC 编译器 cl.exe
-          $env:CXX = "cl"   # 设置 C++ 编译器为 cl.exe
-          
-          # 输出环境变量以便调试
-          echo "GOARCH: $env:GOARCH"
-          echo "GOOS: $env:GOOS"
-          echo "CGO_ENABLED: $env:CGO_ENABLED"
-          
-          # 编译项目
           go build -tags=with_gvisor -trimpath `
             -ldflags "-s -w -H=windowsgui" `
             -o "Pandora-Box-${{ matrix.arch }}.exe" main.go
