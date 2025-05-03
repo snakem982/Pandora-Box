@@ -14,7 +14,7 @@ jobs:
 
     strategy:
       matrix:
-        arch: [amd64]
+        arch: [amd64, arm64]  # 支持 amd64 和 arm64 两个架构
 
     steps:
       - name: Checkout Repository
@@ -26,7 +26,6 @@ jobs:
           $TAG = "alpha-20250503-0224"
           Write-Host "VERSION=$TAG"
           "VERSION=$TAG" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
-
 
       - name: Build Windows package
         shell: pwsh
@@ -44,19 +43,11 @@ jobs:
           npm install
           npm run build
 
-      - name: Download MinGW archive
-        run: curl -LO https://github.com/niXman/mingw-builds-binaries/releases/download/13.2.0-rt_v11-rev0/x86_64-13.2.0-release-posix-seh-ucrt-rt_v11-rev0.7z
+      - name: Install Clang (LLVM)
+        shell: pwsh
+        run: choco install llvm -y
 
-      - name: Extract MinGW
-        run: 7z x x86_64-13.2.0-release-posix-seh-ucrt-rt_v11-rev0.7z -oC:\mingw
-
-      - name: Add MinGW to PATH
-        run: echo "C:\mingw\bin" | Out-File -Append $env:GITHUB_PATH
-
-      - name: Verify GCC installation
-        run: gcc --version
-
-      - name: Set Up Go
+      - name: Set Go environment
         uses: actions/setup-go@v5
         with:
           go-version-file: ./backend/go.mod
@@ -70,6 +61,15 @@ jobs:
         run: |
           cd backend
           go mod tidy
+          
+          # 动态设置 CC（Clang 编译器）
+          if [ "${{ matrix.arch }}" == "arm64" ]; then
+            export CC="clang --target=arm64-windows"
+          else
+            export CC="clang --target=x86_64-windows"
+          fi
+
+          # 构建 Go 项目
           CGO_ENABLED=1 GOARCH=${{ matrix.arch }} GOOS=windows \
             go build -tags=with_gvisor -trimpath \
             -ldflags "-s -w -H=windowsgui" \
