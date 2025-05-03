@@ -78,11 +78,11 @@ jobs:
               <key>CFBundleIconFile</key>
               <string>appicon.icns</string>
               <key>CFBundleIdentifier</key>
-              <string>us.snakem982.${APP_NAME}</string>
+              <string>us.snakem982.px</string>
               <key>CFBundleName</key>
               <string>${APP_NAME}</string>
               <key>CFBundleVersion</key>
-              <string>${VERSION}</string>
+              <string>v1.0.1-alpha</string>
               <key>CFBundlePackageType</key>
               <string>APPL</string>
               <key>NSHumanReadableCopyright</key>
@@ -164,8 +164,8 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: v1.0.1-${{ env.VERSION }}
-          name: v1.0.1-${{ env.VERSION }}
+          tag_name: v1.0.1-alpha
+          name: v1.0.1-alpha
           draft: false
           prerelease: true
           files: |
