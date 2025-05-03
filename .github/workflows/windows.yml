@@ -44,9 +44,17 @@ jobs:
           npm install
           npm run build
 
-      - name: Install MinGW
-        shell: pwsh
-        run: choco install mingw -y
+      - name: Download MinGW archive
+        run: curl -LO https://github.com/niXman/mingw-builds-binaries/releases/download/13.2.0-rt_v11-rev0/x86_64-13.2.0-release-posix-seh-ucrt-rt_v11-rev0.7z
+
+      - name: Extract MinGW
+        run: 7z x x86_64-13.2.0-release-posix-seh-ucrt-rt_v11-rev0.7z -oC:\mingw
+
+      - name: Add MinGW to PATH
+        run: echo "C:\mingw\bin" | Out-File -Append $env:GITHUB_PATH
+
+      - name: Verify GCC installation
+        run: gcc --version
 
       - name: Set Up Go
         uses: actions/setup-go@v5
