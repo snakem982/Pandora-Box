@@ -106,6 +106,7 @@ async function bootstrap() {
             let isDragging = false;
 
             const startDrag = (event: any) => {
+                // 如果拖拽元素内部按下且鼠标左键按下
                 if (event.target === el && event.buttons === 1) {
                     isDragging = true;
                     document.body.style.cursor = 'move';
@@ -115,25 +116,24 @@ async function bootstrap() {
                 }
             };
 
-
             const endDrag = () => {
-                isDragging = false;
-                document.body.style.cursor = '';
+                if (isDragging) {
+                    isDragging = false;
+                    document.body.style.cursor = '';
+                }
             };
 
-            const cleanup = () => {
-                el.removeEventListener('mousedown', startDrag);
-                el.removeEventListener('mouseup', endDrag);
-                el.removeEventListener('mouseleave', endDrag);
-            };
-
-            // 确保不重复绑定
-            cleanup();
+            // 绑定 mousedown 在元素上
             el.addEventListener('mousedown', startDrag);
-            el.addEventListener('mouseup', endDrag);
-            el.addEventListener('mouseleave', endDrag);
+            // 绑定 mouseup 在全局，这样能确保捕捉到鼠标在任意位置释放的事件
+            document.addEventListener('mouseup', endDrag);
+            // 如果需要也可以在 document 上绑定 mousemove 来处理拖拽逻辑
 
-            el._cleanup = cleanup;
+            // 存储 cleanup 函数，方便在组件卸载时移除绑定监听器
+            el._cleanup = () => {
+                el.removeEventListener('mousedown', startDrag);
+                document.removeEventListener('mouseup', endDrag);
+            };
         },
         unmounted(el) {
             if (el._cleanup) {
@@ -141,6 +141,7 @@ async function bootstrap() {
             }
         }
     });
+
 
 }
 
