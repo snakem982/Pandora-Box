@@ -62,8 +62,8 @@ jobs:
             $mingwPath = "$env:USERPROFILE\scoop\apps\mingw\current\bin"
             $env:PATH = "$mingwPath;$env:PATH"
             # 这里直接使用 gcc/g++，因为 mingw 安装后一般将交叉编译工具放入 PATH 中
-            $env:CC = "gcc"
-            $env:CXX = "g++"
+            $env:CC = "x86_64-w64-mingw32-gcc"
+            $env:CXX = "x86_64-w64-mingw32-g++"
           } elseif ($env:GOARCH -eq "arm64") {
             # 如需构建 arm64，请确认是否从 Scoop 安装了 arm64 版本的 mingw，
             # 或者使用其它安装方式，这里做示例处理，路径可能需要调整
@@ -93,7 +93,7 @@ jobs:
           cd backend
           go build -tags=with_gvisor -trimpath `
             -ldflags "-s -w" `
-            -o "Pandora-Box-${{ matrix.arch }}.exe" main.go
+            -o "Pandora-Box.exe" main.go
           
           if ($?) {
             Write-Host "Build completed successfully."
@@ -101,12 +101,30 @@ jobs:
             Write-Error "Go build failed."
             exit 1
           }
+          
+      - name: Install ImageMagick
+        shell: pwsh
+        run: choco install imagemagick -y
+
+      - name: Convert PNG to ICO
+        shell: pwsh
+        run: magick convert script/appicon.png -resize 256x256 appicon.ico
+
+      - name: Install rcedit
+        shell: pwsh
+        run: choco install rcedit -y
+
+      - name: Embed Icon with rcedit
+        shell: pwsh
+        run: |
+          # 对 Go 编译生成的 exe 文件嵌入 ICO 图标
+          rcedit.exe backend\Pandora-Box.exe --set-icon appicon.ico
 
       - name: Compress Executable
         shell: pwsh
         run: |
-          if (Test-Path "backend\Pandora-Box-${{ matrix.arch }}.exe") {
-            Compress-Archive -Path backend\Pandora-Box-${{ matrix.arch }}.exe -DestinationPath "Pandora-Box-${{ matrix.arch }}.zip"
+          if (Test-Path "backend\Pandora-Box.exe") {
+            Compress-Archive -Path backend\Pandora-Box.exe -DestinationPath "Pandora-Box-${{ matrix.arch }}.exe.zip"
             Write-Host "Executable compressed successfully."
           } else {
             Write-Error "Executable file not found for compression."
@@ -117,7 +135,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: Pandora-Box-${{ matrix.arch }}.exe.zip
-          path: Pandora-Box-${{ matrix.arch }}.zip
+          path: Pandora-Box-${{ matrix.arch }}.exe.zip
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
@@ -127,6 +145,6 @@ jobs:
           draft: false
           prerelease: true
           files: |
-            Pandora-Box-${{ matrix.arch }}.zip
+            Pandora-Box-${{ matrix.arch }}.exe.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

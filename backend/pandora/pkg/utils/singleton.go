@@ -11,6 +11,11 @@ var fileLock *flock.Flock
 // Returns true if another instance is already running.
 func NotSingleton(name string) bool {
 	lockFile := GetUserHomeDir("pid", name)
+	file, err := CreateFile(lockFile)
+	if err == nil && file != nil {
+		_ = file.Close()
+	}
+
 	fileLock = flock.New(lockFile)
 
 	locked, err := fileLock.TryLock()
