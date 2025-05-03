@@ -2,8 +2,8 @@ name: Build macOS App
 
 on:
   push:
-    branches:
-      - v3-alpha
+#    branches:
+#      - v3-alpha
     tags:
       - 'v*'
 

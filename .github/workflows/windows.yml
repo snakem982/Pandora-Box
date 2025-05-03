@@ -1,0 +1,112 @@
+name: Build Windows App
+
+on:
+  push:
+    branches:
+      - v3-alpha
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    permissions: write-all
+    runs-on: windows-latest
+
+    strategy:
+      matrix:
+        arch: [amd64, arm64]
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set version dynamically
+        shell: pwsh
+        run: |
+          # 尝试获取最近的 tag，如果没有则生成一个 alpha 版本号
+          $TAG = git describe --tags --abbrev=0 2>$null
+          if (-not $TAG) {
+            $TAG = "alpha-{0}" -f (Get-Date -Format "yyyyMMdd-HHmm")
+          }
+          Write-Output "VERSION=$TAG" | Out-File -FilePath $env:GITHUB_ENV -Append
+
+      - name: Build Windows package
+        shell: pwsh
+        run: Write-Host "Building Pandora-Box version $env:VERSION"
+
+      - name: Set Up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'latest'
+
+      - name: Build Frontend
+        shell: pwsh
+        run: |
+          cd frontend
+          npm install
+          npm run build
+
+      - name: Install MinGW
+        shell: pwsh
+        run: choco install mingw -y
+
+      - name: Set Up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: ./backend/go.mod
+
+      - name: Display Go Version
+        shell: pwsh
+        run: go version
+
+      - name: Build Go Backend for ${{ matrix.arch }}
+        shell: bash
+        run: |
+          cd backend
+          go mod tidy
+          CGO_ENABLED=1 GOARCH=${{ matrix.arch }} GOOS=windows \
+            go build -tags=with_gvisor -trimpath \
+            -ldflags "-s -w -H=windowsgui" \
+            -o Pandora-Box-${{ matrix.arch }}.exe main.go
+
+      - name: Install ImageMagick
+        shell: pwsh
+        run: choco install imagemagick -y
+
+      - name: Convert PNG to ICO
+        shell: pwsh
+        run: magick convert script/appicon.png -resize 256x256 appicon.ico
+
+      - name: Install rcedit
+        shell: pwsh
+        run: choco install rcedit -y
+
+      - name: Embed Icon with rcedit
+        shell: pwsh
+        run: |
+          # 对 Go 编译生成的 exe 文件嵌入 ICO 图标
+          rcedit.exe backend\Pandora-Box-${{ matrix.arch }}.exe --set-icon appicon.ico
+
+      - name: Archive Executable
+        shell: pwsh
+        run: |
+          # 压缩嵌入图标后的 exe 文件，生成独立的 Zip 包
+          Compress-Archive -Path backend\Pandora-Box-${{ matrix.arch }}.exe -DestinationPath Pandora-Box-${{ matrix.arch }}.exe.zip
+
+      - name: Upload Artifacts (Compressed Executable)
+        uses: actions/upload-artifact@v4
+        with:
+          name: Pandora-Box-${{ matrix.arch }}.exe.zip
+          path: Pandora-Box-${{ matrix.arch }}.exe.zip
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v1.0.1-alpha
+          name: v1.0.1-alpha
+          draft: false
+          prerelease: true
+          files: |
+            Pandora-Box-${{ matrix.arch }}.exe.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
