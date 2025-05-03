@@ -23,6 +23,8 @@ jobs:
       - name: Set version dynamically
         shell: pwsh
         run: |
+          $ErrorActionPreference = "Continue"
+          
           try {
             $TAG = & git describe --tags --abbrev=0
             if (-not $TAG) {
@@ -31,6 +33,7 @@ jobs:
           } catch {
             $TAG = "alpha-{0}" -f (Get-Date -Format "yyyyMMdd-HHmm")
           }
+          
           Write-Host "VERSION=$TAG"
           "VERSION=$TAG" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
 
