@@ -125,14 +125,16 @@ async function bootstrap() {
 
             // 绑定 mousedown 在元素上
             el.addEventListener('mousedown', startDrag);
-            // 绑定 mouseup 在全局，这样能确保捕捉到鼠标在任意位置释放的事件
-            document.addEventListener('mouseup', endDrag);
-            // 如果需要也可以在 document 上绑定 mousemove 来处理拖拽逻辑
+            window.addEventListener('mouseup', endDrag); // 改为 window
+            window.addEventListener('blur', endDrag);    // 避免 alt-tab 后无法恢复 cursor
+            window.addEventListener('mouseleave', endDrag); // 鼠标移出页面
 
             // 存储 cleanup 函数，方便在组件卸载时移除绑定监听器
             el._cleanup = () => {
                 el.removeEventListener('mousedown', startDrag);
-                document.removeEventListener('mouseup', endDrag);
+                window.removeEventListener('mouseup', endDrag);
+                window.removeEventListener('blur', endDrag);
+                window.removeEventListener('mouseleave', endDrag);
             };
         },
         unmounted(el) {
