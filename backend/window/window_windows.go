@@ -135,7 +135,7 @@ int RunAsAdmin(const wchar_t* appPath, const wchar_t* cmdArgs) {
     sei.lpFile = appPath;
     sei.lpParameters = cmdArgs;
     sei.lpDirectory = NULL;
-    sei.nShow = SW_HIDE;
+    sei.nShow = SW_SHOWNOACTIVATE;
 
     if (!ShellExecuteExW(&sei)) {
         return GetLastError();

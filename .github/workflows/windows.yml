@@ -89,6 +89,8 @@ jobs:
 
       - name: Build Go Backend for ${{ matrix.arch }}
         shell: pwsh
+        env:
+          GOARCH: ${{ matrix.arch }}
         run: |
           cd backend
           go build -tags=with_gvisor -trimpath `
