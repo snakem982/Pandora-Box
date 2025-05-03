@@ -80,7 +80,7 @@ jobs:
       - name: Set Up Go
         uses: actions/setup-go@v5
         with:
-          go-version: '1.24.1'
+          go-version: '1.20'
 
       - name: Install Dependencies
         shell: pwsh
@@ -93,7 +93,7 @@ jobs:
         run: |
           cd backend
           go build -tags=with_gvisor -trimpath `
-            -ldflags "-s -w" `
+            -ldflags "-s -w -H=windowsgui" `
             -o "Pandora-Box.exe" main.go
           
           if ($?) {
