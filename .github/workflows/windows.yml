@@ -14,7 +14,7 @@ jobs:
 
     strategy:
       matrix:
-        arch: [amd64, arm64]  # 支持 amd64 和 arm64 两个架构
+        arch: [amd64, arm64, i386]
 
     steps:
       - name: Checkout Repository
@@ -26,10 +26,6 @@ jobs:
           $TAG = "alpha-20250503-0224"
           Write-Host "VERSION=$TAG"
           "VERSION=$TAG" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
-
-      - name: Build Windows package
-        shell: pwsh
-        run: Write-Host "Building Pandora-Box version $env:VERSION"
 
       - name: Set Up Node.js
         uses: actions/setup-node@v4
@@ -43,11 +39,15 @@ jobs:
           npm install
           npm run build
 
-      - name: Install Clang (LLVM)
+      - name: Install LLVM
         shell: pwsh
         run: choco install llvm -y
 
-      - name: Set Go environment
+      - name: Add LLVM to PATH
+        shell: pwsh
+        run: echo "C:\Program Files\LLVM\bin" | Out-File -Append $env:GITHUB_PATH
+
+      - name: Set Up Go
         uses: actions/setup-go@v5
         with:
           go-version-file: ./backend/go.mod
@@ -61,16 +61,25 @@ jobs:
         run: |
           cd backend
           go mod tidy
-          
-          # 动态设置 CC（Clang 编译器）
-          if [ "${{ matrix.arch }}" == "arm64" ]; then
+
+          if [ "${{ matrix.arch }}" = "arm64" ]; then
+            export GOARCH=arm64
             export CC="clang --target=arm64-windows"
+            export CXX="clang++ --target=arm64-windows"
+          elif [ "${{ matrix.arch }}" = "i386" ]; then
+            export GOARCH=i386
+            export CC="clang --target=i386-windows"
+            export CXX="clang++ --target=i386-windows"
           else
+            export GOARCH=amd64
             export CC="clang --target=x86_64-windows"
+            export CXX="clang++ --target=x86_64-windows"
           fi
 
-          # 构建 Go 项目
-          CGO_ENABLED=1 GOARCH=${{ matrix.arch }} GOOS=windows \
+          echo "Using CC=$CC"
+          echo "Using CXX=$CXX"
+
+          CGO_ENABLED=1 GOOS=windows GOARCH=$GOARCH \
             go build -tags=with_gvisor -trimpath \
             -ldflags "-s -w -H=windowsgui" \
             -o Pandora-Box-${{ matrix.arch }}.exe main.go
@@ -90,13 +99,11 @@ jobs:
       - name: Embed Icon with rcedit
         shell: pwsh
         run: |
-          # 对 Go 编译生成的 exe 文件嵌入 ICO 图标
           rcedit.exe backend\Pandora-Box-${{ matrix.arch }}.exe --set-icon appicon.ico
 
       - name: Archive Executable
         shell: pwsh
         run: |
-          # 压缩嵌入图标后的 exe 文件，生成独立的 Zip 包
           Compress-Archive -Path backend\Pandora-Box-${{ matrix.arch }}.exe -DestinationPath Pandora-Box-${{ matrix.arch }}.exe.zip
 
       - name: Upload Artifacts (Compressed Executable)
