@@ -22,25 +22,38 @@ jobs:
 
       # 安装 Visual Studio Build Tools 和必要组件
       - name: Install Visual Studio Build Tools
+        shell: pwsh
         run: |
-          # 下载 Visual Studio Installer
-          $installerPath = "$env:USERPROFILE\vs_installer.exe"
-          Invoke-WebRequest -Uri https://aka.ms/vs/17/release/vs_installer.exe -OutFile $installerPath
+          # 设置临时目录及下载路径
+          $tempDir = "C:\temp"
+          if (!(Test-Path $tempDir)) {
+              New-Item -ItemType Directory -Path $tempDir | Out-Null
+          }
+          $installerPath = "$tempDir\vs_installer.exe"
+
+          Write-Host "Downloading Visual Studio Installer..."
+          # 下载 Visual Studio Installer，增加重试机制
+          Invoke-WebRequest -Uri "https://aka.ms/vs/17/release/vs_installer.exe" -OutFile $installerPath -MaximumRetryCount 3 -RetryIntervalSec 5
           
-          # 确保文件存在并执行安装
+          # 检查文件是否下载成功，并打印调试信息
           if (Test-Path $installerPath) {
-            Write-Host "VS Installer downloaded successfully."
-            Start-Process -FilePath $installerPath -ArgumentList '--quiet', '--wait', '--norestart', '--includeRecommended' -NoNewWindow -Wait
+              $fileInfo = Get-Item $installerPath
+              Write-Host "File Size: $($fileInfo.Length) bytes"
+              Write-Host "Last Modified: $($fileInfo.LastWriteTime)"
+          
+              # 解除从网络下载导致的锁定
+              Unblock-File -Path $installerPath
+              Write-Host "VS Installer downloaded and unblocked. Starting installation..."
+              Start-Process -FilePath $installerPath -ArgumentList '--quiet', '--wait', '--norestart', '--includeRecommended' -NoNewWindow -Wait
           } else {
-            Write-Error "VS Installer download failed."
-            exit 1
+              Write-Error "VS Installer download failed."
+              exit 1
           }
 
       # 初始化 MSVC 环境
       - name: Setup MSVC Environment
         shell: pwsh
         run: |
-          # 执行 MSVC 环境初始化脚本，确保 cl.exe 可以在环境中找到
           if (Test-Path "C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\Common7\Tools\VsDevCmd.bat") {
             & "C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\Common7\Tools\VsDevCmd.bat"
             echo "MSVC environment setup complete"
@@ -53,7 +66,7 @@ jobs:
       - name: Set Up Go
         uses: actions/setup-go@v5
         with:
-          go-version: '1.24.1'  # 设置 Go 版本
+          go-version: '1.24.1'
 
       # 安装依赖
       - name: Install Dependencies
@@ -69,10 +82,10 @@ jobs:
           $env:GOARCH = "${{ matrix.arch }}"
           $env:GOOS = "windows"
           $env:CGO_ENABLED = "1"
-          $env:CC = "cl"  # 设置使用 MSVC 编译器 cl.exe
-          $env:CXX = "cl" # 设置 C++ 编译器为 cl.exe
+          $env:CC = "cl"    # 设置使用 MSVC 编译器 cl.exe
+          $env:CXX = "cl"   # 设置 C++ 编译器为 cl.exe
           
-          # 输出环境变量调试信息，确保正确设置
+          # 输出环境变量以便调试
           echo "GOARCH: $env:GOARCH"
           echo "GOOS: $env:GOOS"
           echo "CGO_ENABLED: $env:CGO_ENABLED"
