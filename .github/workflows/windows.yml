@@ -1,106 +1,78 @@
-name: Build Windows App
+name: Build Go Project with MSVC
 
 on:
   push:
     branches:
-      - v3-alpha
+      - main
     tags:
       - 'v*'
 
 jobs:
   build:
-    permissions: write-all
     runs-on: windows-latest
-
     strategy:
       matrix:
-        arch: [amd64, arm64]
+        arch: [amd64, arm64, 386]  # 支持不同架构的编译
 
     steps:
+      # 检出代码
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Set static version
+      # 安装并设置 Visual Studio 构建工具
+      - name: Install Visual Studio Build Tools
+        uses: actions/setup-msvc@v1
+        with:
+          vs-version: '2022'  # 使用 Visual Studio 2022，按需选择版本
+
+      # 初始化 MSVC 环境
+      - name: Setup MSVC Environment
         shell: pwsh
         run: |
-          $TAG = "alpha-20250503-0224"
-          Write-Host "VERSION=$TAG"
-          "VERSION=$TAG" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          # 执行 MSVC 环境初始化脚本，确保 cl.exe 可以在环境中找到
+          & "C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\Common7\Tools\VsDevCmd.bat"
+          echo "MSVC environment setup complete"
 
-      - name: Build Windows package
-        shell: pwsh
-        run: Write-Host "Building Pandora-Box version $env:VERSION"
-
-      - name: Set Up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 'latest'
-
-      - name: Build Frontend
-        shell: pwsh
-        run: |
-          cd frontend
-          npm install
-          npm run build
-
-      - name: Set Up MSVC (cl.exe)
-        uses: ilammy/msvc-dev-cmd@v1
-        with:
-          arch: ${{ matrix.arch }}
-
+      # 设置 Go 环境
       - name: Set Up Go
         uses: actions/setup-go@v5
         with:
-          go-version-file: ./backend/go.mod
+          go-version: '1.20'  # 设置 Go 版本
 
-      - name: Display Go Version
-        shell: pwsh
-        run: go version
-
-      - name: Build Go Backend for ${{ matrix.arch }}
-        shell: pwsh
-        env:
-          CC: cl
-          CXX: cl
+      # 安装依赖
+      - name: Install Dependencies
         run: |
           cd backend
           go mod tidy
+
+      # 使用 MSVC 编译 Go 项目
+      - name: Build Go Backend for ${{ matrix.arch }}
+        shell: pwsh
+        run: |
+          cd backend
           $env:GOARCH = "${{ matrix.arch }}"
           $env:GOOS = "windows"
           $env:CGO_ENABLED = "1"
+          $env:CC = "cl"  # 设置使用 MSVC 编译器 cl.exe
+          $env:CXX = "cl" # 设置 C++ 编译器为 cl.exe
           go build -tags=with_gvisor -trimpath `
             -ldflags "-s -w -H=windowsgui" `
             -o "Pandora-Box-${{ matrix.arch }}.exe" main.go
 
-
-      - name: Install ImageMagick
-        shell: pwsh
-        run: choco install imagemagick -y
-
-      - name: Convert PNG to ICO
-        shell: pwsh
-        run: magick convert script/appicon.png -resize 256x256 appicon.ico
-
-      - name: Install rcedit
-        shell: pwsh
-        run: choco install rcedit -y
-
-      - name: Embed Icon with rcedit
+      # 将生成的可执行文件进行压缩
+      - name: Compress Executable
         shell: pwsh
         run: |
-          rcedit.exe backend\Pandora-Box-${{ matrix.arch }}.exe --set-icon appicon.ico
+          Compress-Archive -Path backend\Pandora-Box-${{ matrix.arch }}.exe -DestinationPath Pandora-Box-${{ matrix.arch }}.zip
 
-      - name: Archive Executable
-        shell: pwsh
-        run: |
-          Compress-Archive -Path backend\Pandora-Box-${{ matrix.arch }}.exe -DestinationPath Pandora-Box-${{ matrix.arch }}.exe.zip
-
+      # 上传构建产物
       - name: Upload Artifacts (Compressed Executable)
         uses: actions/upload-artifact@v4
         with:
           name: Pandora-Box-${{ matrix.arch }}.exe.zip
-          path: Pandora-Box-${{ matrix.arch }}.exe.zip
+          path: Pandora-Box-${{ matrix.arch }}.zip
 
+      # 创建 GitHub Release
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
@@ -109,6 +81,6 @@ jobs:
           draft: false
           prerelease: true
           files: |
-            Pandora-Box-${{ matrix.arch }}.exe.zip
+            Pandora-Box-${{ matrix.arch }}.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
