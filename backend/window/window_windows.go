@@ -138,7 +138,7 @@ int RunAsAdmin(const wchar_t* appPath, const wchar_t* cmdArgs) {
 
 	// 设置程序所在目录作为工作目录
     wchar_t dir[MAX_PATH];
-    wcscpy_s(dir, MAX_PATH, appPath)
+    wcscpy_s(dir, MAX_PATH, appPath);
     PathRemoveFileSpecW(dir);
     sei.lpDirectory = dir;
 
