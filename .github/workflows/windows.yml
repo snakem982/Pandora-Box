@@ -20,20 +20,10 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Set version dynamically
+      - name: Set static version
         shell: pwsh
         run: |
-          $ErrorActionPreference = "Continue"
-          
-          try {
-            $TAG = & git describe --tags --abbrev=0
-            if (-not $TAG) {
-              throw "No tag found"
-            }
-          } catch {
-            $TAG = "alpha-{0}" -f (Get-Date -Format "yyyyMMdd-HHmm")
-          }
-          
+          $TAG = "alpha-20250503-0224"
           Write-Host "VERSION=$TAG"
           "VERSION=$TAG" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
 
