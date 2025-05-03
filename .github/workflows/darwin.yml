@@ -85,6 +85,8 @@ jobs:
               <string>${VERSION}</string>
               <key>CFBundlePackageType</key>
               <string>APPL</string>
+              <key>NSHumanReadableCopyright</key>
+              <string>Copyright © 2025 snakem982</string>
             </dict>
           </plist>
           EOF
