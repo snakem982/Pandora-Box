@@ -13,61 +13,69 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix:
-        arch: [amd64, arm64]  # 支持不同架构的编译
+        arch: [amd64, arm64]  # 如果 arm64 构建有可用的 mingw 工具链，否则可只使用 amd64
 
     steps:
-      # 检出代码
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      # 安装 MinGW-w64 编译工具（支持 amd64 和 arm64）
-      - name: Install MinGW-w64
-        run: |
-          # 下载 MinGW-w64 安装包
-          $installerPath = "$env:USERPROFILE\mingw_installer.exe"
-          Invoke-WebRequest -Uri https://sourceforge.net/projects/mingw-w64/files/latest/download -OutFile $installerPath
-
-          # 检查安装文件并执行
-          if (Test-Path $installerPath) {
-            Write-Host "MinGW Installer downloaded successfully."
-            Start-Process -FilePath $installerPath -ArgumentList "/SILENT" -NoNewWindow -Wait
-          } else {
-            Write-Error "MinGW Installer download failed."
-            exit 1
-          }
-
-      # 设置 MinGW 编译环境
-      - name: Setup MinGW Environment
+      # 安装 Scoop 和 MinGW
+      - name: Install Scoop and MinGW
         shell: pwsh
         run: |
+          # 设置执行策略
+          Set-ExecutionPolicy RemoteSigned -Scope CurrentUser -Force
+
+          # 如果 Scoop 未安装，则安装 Scoop
+          if (-not (Get-Command scoop -ErrorAction SilentlyContinue)) {
+            iwr -useb get.scoop.sh | iex
+          }
+
+          # 添加主 bucket（如果还没添加的话）
+          scoop bucket add main
+
+          # 安装 mingw（注意：这里默认安装的 mingw-w64 工具链一般适用于 amd64，
+          # 如果需要 arm64 版本，请确认 Scoop 中是否有相应包，或者调整包名称）
+          scoop install mingw
+
+          Write-Host "Scoop and MinGW installed successfully."
+
+      # 设置 MinGW 编译环境（根据不同架构调整编译器和环境变量）
+      - name: Setup MinGW Environment
+        shell: pwsh
+        env:
+          GOARCH: ${{ matrix.arch }}
+        run: |
           if ($env:GOARCH -eq "amd64") {
-            # 设置为 MinGW-w64 的 GCC 编译器（用于 amd64）
-            $env:CC = "x86_64-w64-mingw32-gcc"
-            $env:CXX = "x86_64-w64-mingw32-g++"
+            # 假设 Scoop 安装的 mingw 默认路径为：
+            $mingwPath = "$env:USERPROFILE\scoop\apps\mingw\current\bin"
+            $env:PATH = "$mingwPath;$env:PATH"
+            # 这里直接使用 gcc/g++，因为 mingw 安装后一般将交叉编译工具放入 PATH 中
+            $env:CC = "gcc"
+            $env:CXX = "g++"
           } elseif ($env:GOARCH -eq "arm64") {
-            # 设置为 MinGW-w64 的 ARM64 GCC 编译器（用于 arm64）
+            # 如需构建 arm64，请确认是否从 Scoop 安装了 arm64 版本的 mingw，
+            # 或者使用其它安装方式，这里做示例处理，路径可能需要调整
+            $mingwPath = "$env:USERPROFILE\scoop\apps\mingw\current\bin"
+            $env:PATH = "$mingwPath;$env:PATH"
             $env:CC = "aarch64-w64-mingw32-gcc"
             $env:CXX = "aarch64-w64-mingw32-g++"
           }
-          
-          # 设置 Go 构建环境
+          # 设置 Go 的交叉编译环境变量
           $env:CGO_ENABLED = "1"
           $env:GOOS = "windows"
-          echo "MinGW environment setup complete for $($env:GOARCH)"
+          Write-Host "MinGW environment setup complete for $($env:GOARCH)"
 
-      # 设置 Go 环境
       - name: Set Up Go
         uses: actions/setup-go@v5
         with:
-          go-version: '1.24.1'  # 设置 Go 版本
+          go-version: '1.24.1'
 
-      # 安装 Go 项目依赖
       - name: Install Dependencies
         run: |
           cd backend
           go mod tidy
 
-      # 使用 MinGW 编译 Go 项目
       - name: Build Go Backend for ${{ matrix.arch }}
         shell: pwsh
         run: |
@@ -83,7 +91,6 @@ jobs:
             exit 1
           }
 
-      # 将生成的可执行文件进行压缩
       - name: Compress Executable
         shell: pwsh
         run: |
@@ -95,14 +102,12 @@ jobs:
             exit 1
           }
 
-      # 上传构建产物
       - name: Upload Artifacts (Compressed Executable)
         uses: actions/upload-artifact@v4
         with:
           name: Pandora-Box-${{ matrix.arch }}.exe.zip
           path: Pandora-Box-${{ matrix.arch }}.zip
 
-      # 创建 GitHub Release
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
