@@ -92,7 +92,7 @@ jobs:
         run: |
           cd backend
           go build -tags=with_gvisor -trimpath `
-            -ldflags "-s -w -H=windowsgui" `
+            -ldflags "-s -w" `
             -o "Pandora-Box-${{ matrix.arch }}.exe" main.go
           
           if ($?) {
