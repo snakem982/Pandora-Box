@@ -89,9 +89,6 @@ jobs:
 
       - name: Build Go Backend for ${{ matrix.arch }}
         shell: pwsh
-        env:
-          GOARCH: ${{ matrix.arch }}
-          GOFLAGS: "-tags=webview"
         run: |
           cd backend
           go build -tags=with_gvisor -trimpath `
