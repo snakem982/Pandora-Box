@@ -70,24 +70,25 @@ jobs:
           
           # 写入 Info.plist
           cat > "$APP_DIR/Contents/Info.plist" <<EOF
-            <?xml version="1.0" encoding="UTF-8"?>
-            <plist version="1.0">
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
             <dict>
-            <key>CFBundleExecutable</key>
-            <string>${APP_NAME}</string>
-            <key>CFBundleIconFile</key>
-            <string>appicon.icns</string>
-            <key>CFBundleIdentifier</key>
-            <string>com.example.${APP_NAME}</string>
-            <key>CFBundleName</key>
-            <string>${APP_NAME}</string>
-            <key>CFBundleVersion</key>
-            <string>${{ env.VERSION }}</string>
-            <key>CFBundlePackageType</key>
-            <string>APPL</string>
+              <key>CFBundleExecutable</key>
+              <string>${APP_NAME}</string>
+              <key>CFBundleIconFile</key>
+              <string>appicon.icns</string>
+              <key>CFBundleIdentifier</key>
+              <string>us.snakem982.${APP_NAME}</string>
+              <key>CFBundleName</key>
+              <string>${APP_NAME}</string>
+              <key>CFBundleVersion</key>
+              <string>${VERSION}</string>
+              <key>CFBundlePackageType</key>
+              <string>APPL</string>
             </dict>
-            </plist>
-            EOF
+          </plist>
+          EOF
+
 
 
       - name: Install ImageMagick
