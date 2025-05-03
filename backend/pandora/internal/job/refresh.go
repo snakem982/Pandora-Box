@@ -2,7 +2,6 @@ package job
 
 import (
 	"github.com/metacubex/mihomo/log"
-	"github.com/snakem982/pandora-box/api/handlers"
 	"github.com/snakem982/pandora-box/api/models"
 	"github.com/snakem982/pandora-box/internal"
 	"github.com/snakem982/pandora-box/pkg/cache"
@@ -56,10 +55,20 @@ func doRefresh() {
 				if title != "" {
 					profile.Title = title
 				}
-				handlers.UpdateDb(profile, 1)
+				UpdateDb(profile, 1)
 			} else {
 				log.Errorln("[Refresh] Sub=%s, URL = %s, Resolve Error:%v", title, sub, err)
 			}
 		}()
 	}
+}
+
+// UpdateDb 更新数据库
+func UpdateDb(profile *models.Profile, kind int) {
+	profile.Type = kind
+	profile.SetUpdateTime()
+	if kind == 2 {
+		profile.Content = ""
+	}
+	_ = cache.Put(profile.Id, *profile)
 }

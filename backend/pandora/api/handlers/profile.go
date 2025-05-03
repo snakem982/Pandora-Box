@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"github.com/snakem982/pandora-box/internal/job"
 	"net/http"
 	"path/filepath"
 	"sort"
@@ -46,16 +47,6 @@ func profileRouter() http.Handler {
 func ErrorResponse(w http.ResponseWriter, r *http.Request, err error) {
 	render.Status(r, http.StatusBadRequest)
 	render.JSON(w, r, route.HTTPError{Message: err.Error()})
-}
-
-// UpdateDb 更新数据库
-func UpdateDb(profile *models.Profile, kind int) {
-	profile.Type = kind
-	profile.SetUpdateTime()
-	if kind == 2 {
-		profile.Content = ""
-	}
-	_ = cache.Put(profile.Id, *profile)
 }
 
 func getProfile(w http.ResponseWriter, r *http.Request) {
@@ -110,7 +101,7 @@ func addFromFile(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// 更新数据库
-	UpdateDb(profile, 2)
+	job.UpdateDb(profile, 2)
 
 	render.NoContent(w, r)
 }
@@ -135,7 +126,7 @@ func addFromWeb(w http.ResponseWriter, r *http.Request) {
 		if profile.Title == "" {
 			profile.Title = "Local-" + utils.GetDateTime()
 		}
-		UpdateDb(profile, 2)
+		job.UpdateDb(profile, 2)
 		ps = append(ps, profile)
 		render.JSON(w, r, ps)
 		return
@@ -164,7 +155,7 @@ func addFromWeb(w http.ResponseWriter, r *http.Request) {
 		if err == nil {
 			// 进行请求头解析
 			internal.ParseHeaders(res.Headers, sub, subProfile)
-			UpdateDb(subProfile, 1)
+			job.UpdateDb(subProfile, 1)
 			ps = append(ps, subProfile)
 			ok = true
 		} else {
@@ -207,7 +198,7 @@ func refreshProfile(w http.ResponseWriter, r *http.Request) {
 		if title != "" {
 			profile.Title = title
 		}
-		UpdateDb(profile, 1)
+		job.UpdateDb(profile, 1)
 
 		// 如果配置正在使用中  进行配置更新
 		if profile.Selected {
