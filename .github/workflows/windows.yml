@@ -81,8 +81,10 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version: '1.24.1'
+          architecture: '${{ matrix.arch }}'
 
       - name: Install Dependencies
+        shell: pwsh
         run: |
           cd backend
           go mod tidy
