@@ -8,6 +8,7 @@ import (
 	"github.com/snakem982/pandora-box/pkg/constant"
 	"github.com/snakem982/pandora-box/pkg/cron"
 	"github.com/snakem982/pandora-box/pkg/utils"
+	"strconv"
 	"time"
 )
 
@@ -26,13 +27,24 @@ func doRefresh() {
 	// 过滤远程订阅
 	var filteredProfiles []models.Profile
 	for _, profile := range profiles {
-		if profile.Type == 1 {
+		if profile.Type == 1 && profile.Interval != "" {
 			filteredProfiles = append(filteredProfiles, profile)
 		}
 	}
 
 	// 进行更新逻辑
 	for _, fp := range filteredProfiles {
+		// 获取更新间隔
+		interval, err := strconv.Atoi(fp.Interval)
+		if err != nil {
+			continue
+		}
+		// 计算上次更新时间到现在时间的间隔
+		duration := time.Now().Sub(fp.GetUpdateTime())
+		if int(duration.Hours()) < interval {
+			continue
+		}
+		// 进行更新
 		profile := &fp
 		go func() {
 			// 标题
