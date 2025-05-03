@@ -14,7 +14,7 @@ jobs:
 
     strategy:
       matrix:
-        arch: [amd64, arm64, i386]
+        arch: [amd64, arm64]
 
     steps:
       - name: Checkout Repository
@@ -66,10 +66,6 @@ jobs:
             export GOARCH=arm64
             export CC="clang --target=arm64-windows"
             export CXX="clang++ --target=arm64-windows"
-          elif [ "${{ matrix.arch }}" = "i386" ]; then
-            export GOARCH=i386
-            export CC="clang --target=i386-windows"
-            export CXX="clang++ --target=i386-windows"
           else
             export GOARCH=amd64
             export CC="clang --target=x86_64-windows"
