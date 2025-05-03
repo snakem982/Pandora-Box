@@ -12,7 +12,7 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix:
-        arch: [amd64, arm64, 386]  # 支持不同架构的编译
+        arch: [amd64, arm64, i386]  # 支持不同架构的编译
 
     steps:
       # 检出代码
