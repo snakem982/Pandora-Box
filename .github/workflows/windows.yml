@@ -12,18 +12,19 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix:
-        arch: [amd64, arm64]
+        arch: [amd64, arm64]  # 支持不同架构的编译
 
     steps:
       # 检出代码
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      # 安装并设置 Visual Studio 构建工具
+      # 安装 Visual Studio 构建工具和必要的组件
       - name: Install Visual Studio Build Tools
-        uses: actions/setup-msvc@v1
-        with:
-          vs-version: '2022'  # 使用 Visual Studio 2022，按需选择版本
+        run: |
+          # 安装 Visual Studio 2022 Build Tools，包含 MSVC 编译器
+          Invoke-WebRequest -Uri https://aka.ms/vs/17/release/vs_installer.exe -OutFile vs_installer.exe
+          Start-Process -FilePath .\vs_installer.exe -ArgumentList '--quiet', '--wait', '--norestart', '--includeRecommended' -NoNewWindow -Wait
 
       # 初始化 MSVC 环境
       - name: Setup MSVC Environment
@@ -37,7 +38,7 @@ jobs:
       - name: Set Up Go
         uses: actions/setup-go@v5
         with:
-          go-version: '1.20'  # 设置 Go 版本
+          go-version: '1.24.1'  # 设置 Go 版本
 
       # 安装依赖
       - name: Install Dependencies
