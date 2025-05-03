@@ -23,12 +23,13 @@ jobs:
       - name: Set version dynamically
         shell: pwsh
         run: |
-          # 尝试获取最近的 tag，如果没有则生成一个 alpha 版本号
-          $TAG = git describe --tags --abbrev=0 2>$null
+          # 通过 & 调用 git 命令获取最新的 tag，如果没有则生成一个 alpha 版本号
+          $TAG = & git describe --tags --abbrev=0 2>$null
           if (-not $TAG) {
             $TAG = "alpha-{0}" -f (Get-Date -Format "yyyyMMdd-HHmm")
           }
-          Write-Output "VERSION=$TAG" | Out-File -FilePath $env:GITHUB_ENV -Append
+          Write-Host "VERSION=$TAG"
+          Add-Content -Path $env:GITHUB_ENV -Value "VERSION=$TAG"
 
       - name: Build Windows package
         shell: pwsh
