@@ -58,17 +58,20 @@ jobs:
         run: go version
 
       - name: Build Go Backend for ${{ matrix.arch }}
-        shell: bash
+        shell: pwsh
         env:
           CC: cl
           CXX: cl
         run: |
           cd backend
           go mod tidy
-          CGO_ENABLED=1 GOARCH=${{ matrix.arch }} GOOS=windows \
-            go build -tags=with_gvisor -trimpath \
-            -ldflags "-s -w -H=windowsgui" \
-            -o Pandora-Box-${{ matrix.arch }}.exe main.go
+          $env:GOARCH = "${{ matrix.arch }}"
+          $env:GOOS = "windows"
+          $env:CGO_ENABLED = "1"
+          go build -tags=with_gvisor -trimpath `
+            -ldflags "-s -w -H=windowsgui" `
+            -o "Pandora-Box-${{ matrix.arch }}.exe" main.go
+
 
       - name: Install ImageMagick
         shell: pwsh
