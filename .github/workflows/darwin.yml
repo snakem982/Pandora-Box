@@ -164,8 +164,8 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: ${{ env.VERSION }}
-          name: ${{ env.VERSION }}-alpha
+          tag_name: v1.0.1-${{ env.VERSION }}
+          name: v1.0.1-${{ env.VERSION }}
           draft: false
           prerelease: true
           files: |
