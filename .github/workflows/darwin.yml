@@ -2,6 +2,8 @@ name: Build macOS App
 
 on:
   push:
+    branches:
+      - v3-alpha
     tags:
       - 'v*'
 
@@ -18,8 +20,11 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Set version from latest tag
-        run: echo "VERSION=$(git describe --tags --abbrev=0)" >> "$GITHUB_ENV"
+      - name: Set version dynamically
+        run: |
+          VERSION=$(git describe --tags --abbrev=0 2>/dev/null || echo "alpha-$(date +%Y%m%d-%H%M)")
+          echo "VERSION=$VERSION" >> "$GITHUB_ENV"
+
 
       - name: Build macOS package
         run: |
