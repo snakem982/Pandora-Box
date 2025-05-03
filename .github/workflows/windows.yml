@@ -27,6 +27,15 @@ jobs:
           Write-Host "VERSION=$TAG"
           "VERSION=$TAG" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
 
+      - name: Setup MSVC Environment
+        uses: ilammy/msvc-dev-cmd@v1
+
+      - name: Set compiler to clang-cl (MSVC-compatible)
+        shell: bash
+        run: |
+          echo "CC=clang-cl" >> $GITHUB_ENV
+          echo "CXX=clang-cl" >> $GITHUB_ENV
+
       - name: Set Up Node.js
         uses: actions/setup-node@v4
         with:
@@ -38,14 +47,6 @@ jobs:
           cd frontend
           npm install
           npm run build
-
-      - name: Install LLVM
-        shell: pwsh
-        run: choco install llvm -y
-
-      - name: Add LLVM to PATH
-        shell: pwsh
-        run: echo "C:\Program Files\LLVM\bin" | Out-File -Append $env:GITHUB_PATH
 
       - name: Set Up Go
         uses: actions/setup-go@v5
@@ -61,21 +62,7 @@ jobs:
         run: |
           cd backend
           go mod tidy
-
-          if [ "${{ matrix.arch }}" = "arm64" ]; then
-            export GOARCH=arm64
-            export CC="clang --target=arm64-windows"
-            export CXX="clang++ --target=arm64-windows"
-          else
-            export GOARCH=amd64
-            export CC="clang --target=x86_64-windows"
-            export CXX="clang++ --target=x86_64-windows"
-          fi
-
-          echo "Using CC=$CC"
-          echo "Using CXX=$CXX"
-
-          CGO_ENABLED=1 GOOS=windows GOARCH=$GOARCH \
+          CGO_ENABLED=1 GOOS=windows GOARCH=${{ matrix.arch }} \
             go build -tags=with_gvisor -trimpath \
             -ldflags "-s -w -H=windowsgui" \
             -o Pandora-Box-${{ matrix.arch }}.exe main.go
