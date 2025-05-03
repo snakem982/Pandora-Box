@@ -20,20 +20,34 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      # 安装 Visual Studio 构建工具和必要的组件
+      # 安装 Visual Studio Build Tools 和必要组件
       - name: Install Visual Studio Build Tools
         run: |
-          # 安装 Visual Studio 2022 Build Tools，包含 MSVC 编译器
-          Invoke-WebRequest -Uri https://aka.ms/vs/17/release/vs_installer.exe -OutFile vs_installer.exe
-          Start-Process -FilePath .\vs_installer.exe -ArgumentList '--quiet', '--wait', '--norestart', '--includeRecommended' -NoNewWindow -Wait
+          # 下载 Visual Studio Installer
+          $installerPath = "$env:USERPROFILE\vs_installer.exe"
+          Invoke-WebRequest -Uri https://aka.ms/vs/17/release/vs_installer.exe -OutFile $installerPath
+          
+          # 确保文件存在并执行安装
+          if (Test-Path $installerPath) {
+            Write-Host "VS Installer downloaded successfully."
+            Start-Process -FilePath $installerPath -ArgumentList '--quiet', '--wait', '--norestart', '--includeRecommended' -NoNewWindow -Wait
+          } else {
+            Write-Error "VS Installer download failed."
+            exit 1
+          }
 
       # 初始化 MSVC 环境
       - name: Setup MSVC Environment
         shell: pwsh
         run: |
           # 执行 MSVC 环境初始化脚本，确保 cl.exe 可以在环境中找到
-          & "C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\Common7\Tools\VsDevCmd.bat"
-          echo "MSVC environment setup complete"
+          if (Test-Path "C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\Common7\Tools\VsDevCmd.bat") {
+            & "C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\Common7\Tools\VsDevCmd.bat"
+            echo "MSVC environment setup complete"
+          } else {
+            Write-Error "Failed to find VsDevCmd.bat, MSVC environment setup failed."
+            exit 1
+          }
 
       # 设置 Go 环境
       - name: Set Up Go
@@ -57,15 +71,35 @@ jobs:
           $env:CGO_ENABLED = "1"
           $env:CC = "cl"  # 设置使用 MSVC 编译器 cl.exe
           $env:CXX = "cl" # 设置 C++ 编译器为 cl.exe
+          
+          # 输出环境变量调试信息，确保正确设置
+          echo "GOARCH: $env:GOARCH"
+          echo "GOOS: $env:GOOS"
+          echo "CGO_ENABLED: $env:CGO_ENABLED"
+          
+          # 编译项目
           go build -tags=with_gvisor -trimpath `
             -ldflags "-s -w -H=windowsgui" `
             -o "Pandora-Box-${{ matrix.arch }}.exe" main.go
+          
+          if ($?) {
+            Write-Host "Build completed successfully."
+          } else {
+            Write-Error "Go build failed."
+            exit 1
+          }
 
       # 将生成的可执行文件进行压缩
       - name: Compress Executable
         shell: pwsh
         run: |
-          Compress-Archive -Path backend\Pandora-Box-${{ matrix.arch }}.exe -DestinationPath Pandora-Box-${{ matrix.arch }}.zip
+          if (Test-Path "backend\Pandora-Box-${{ matrix.arch }}.exe") {
+            Compress-Archive -Path backend\Pandora-Box-${{ matrix.arch }}.exe -DestinationPath "Pandora-Box-${{ matrix.arch }}.zip"
+            Write-Host "Executable compressed successfully."
+          } else {
+            Write-Error "Executable file not found for compression."
+            exit 1
+          }
 
       # 上传构建产物
       - name: Upload Artifacts (Compressed Executable)
