@@ -13,7 +13,7 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix:
-        arch: [amd64]  # 如果 arm64 构建有可用的 mingw 工具链，否则可只使用 amd64
+        arch: [ amd64,arm64 ]  # 如果 arm64 构建有可用的 mingw 工具链，否则可只使用 amd64
 
     steps:
       - name: Checkout Repository
@@ -80,7 +80,7 @@ jobs:
       - name: Set Up Go
         uses: actions/setup-go@v5
         with:
-          go-version: '1.20'
+          go-version: '1.24'
 
       - name: Install Dependencies
         shell: pwsh
@@ -102,7 +102,7 @@ jobs:
             Write-Error "Go build failed."
             exit 1
           }
-          
+
       - name: Install ImageMagick
         shell: pwsh
         run: choco install imagemagick -y
