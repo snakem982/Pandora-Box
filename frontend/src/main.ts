@@ -109,7 +109,6 @@ async function bootstrap() {
                 // 如果拖拽元素内部按下且鼠标左键按下
                 if (event.target === el && event.buttons === 1) {
                     isDragging = true;
-                    document.body.style.cursor = 'move';
                     if (window['pxDrag']) {
                         window['pxDrag']();
                     }
@@ -119,23 +118,22 @@ async function bootstrap() {
             const endDrag = () => {
                 if (isDragging) {
                     isDragging = false;
-                    document.body.style.cursor = '';
                 }
             };
 
-            // 绑定 mousedown 在元素上
-            el.addEventListener('mousedown', startDrag);
-            window.addEventListener('mouseup', endDrag); // 改为 window
-            window.addEventListener('blur', endDrag);    // 避免 alt-tab 后无法恢复 cursor
-            window.addEventListener('mouseleave', endDrag); // 鼠标移出页面
-
-            // 存储 cleanup 函数，方便在组件卸载时移除绑定监听器
-            el._cleanup = () => {
+            const cleanup = () => {
                 el.removeEventListener('mousedown', startDrag);
-                window.removeEventListener('mouseup', endDrag);
-                window.removeEventListener('blur', endDrag);
-                window.removeEventListener('mouseleave', endDrag);
+                el.removeEventListener('mouseup', endDrag);
+                el.removeEventListener('mouseleave', endDrag);
             };
+
+            // 确保不重复绑定
+            cleanup();
+            el.addEventListener('mousedown', startDrag);
+            el.addEventListener('mouseup', endDrag);
+            el.addEventListener('mouseleave', endDrag);
+
+            el._cleanup = cleanup;
         },
         unmounted(el) {
             if (el._cleanup) {

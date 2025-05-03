@@ -6,7 +6,6 @@ package window
 #include <windows.h>
 #include <shellapi.h>
 #include <stdlib.h>
-#include <shlwapi.h>
 
 static WNDPROC originalWndProc;
 static HWND globalHWND = NULL;
@@ -135,14 +134,8 @@ int RunAsAdmin(const wchar_t* appPath, const wchar_t* cmdArgs) {
     sei.lpVerb = L"runas";
     sei.lpFile = appPath;
     sei.lpParameters = cmdArgs;
-
-	// 设置程序所在目录作为工作目录
-    wchar_t dir[MAX_PATH];
-    wcscpy_s(dir, MAX_PATH, appPath);
-    PathRemoveFileSpecW(dir);
-    sei.lpDirectory = dir;
-
-    sei.nShow = SW_SHOWNORMAL;
+    sei.lpDirectory = NULL;
+    sei.nShow = SW_HIDE;
 
     if (!ShellExecuteExW(&sei)) {
         return GetLastError();
