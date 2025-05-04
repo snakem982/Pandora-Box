@@ -5,11 +5,20 @@ import (
 	"github.com/snakem982/pandora-box/pkg/cron"
 	"github.com/snakem982/pandora-box/pkg/utils"
 	"os"
+	"sync"
 	"time"
 )
 
+var logLock sync.Mutex
+
 func LogJob(name string) {
 	cron.AddTask(5*time.Minute, func() {
+		if logLock.TryLock() {
+			defer logLock.Unlock()
+		} else {
+			return
+		}
+
 		// 日志路径
 		filePath := utils.GetUserHomeDir("logs", name)
 		// 获取文件信息

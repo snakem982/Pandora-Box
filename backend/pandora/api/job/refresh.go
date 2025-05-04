@@ -9,14 +9,25 @@ import (
 	"github.com/snakem982/pandora-box/pkg/cron"
 	"github.com/snakem982/pandora-box/pkg/utils"
 	"strconv"
+	"sync"
 	"time"
 )
+
+var refreshLock sync.Mutex
 
 func RefreshJob() {
 	cron.AddTask(30*time.Minute, doRefresh)
 }
 
 func doRefresh() {
+	if refreshLock.TryLock() {
+		defer refreshLock.Unlock()
+	} else {
+		return
+	}
+
+	log.Infoln("refresh job start")
+
 	// 获取需要更新的订阅
 	var profiles []models.Profile
 	_ = cache.GetList(constant.PrefixProfile, &profiles)
@@ -32,20 +43,27 @@ func doRefresh() {
 		}
 	}
 
+	log.Infoln("refresh job find %d profiles", len(filteredProfiles))
+
 	// 进行更新逻辑
 	for _, fp := range filteredProfiles {
+		// 获取指针
+		profile := &fp
+
 		// 获取更新间隔
-		interval, err := strconv.Atoi(fp.Interval)
+		interval, err := strconv.Atoi(profile.Interval)
 		if err != nil {
 			continue
 		}
 		// 计算上次更新时间到现在时间的间隔
-		duration := time.Now().Sub(fp.GetUpdateTime())
+		duration := time.Now().Sub(profile.GetUpdateTime())
 		if int(duration.Hours()) < interval {
 			continue
 		}
+
+		log.Infoln("refresh job profile %v need fresh", profile.Title)
+
 		// 进行更新
-		profile := &fp
 		go func() {
 			// 标题
 			title := profile.Title
@@ -68,6 +86,8 @@ func doRefresh() {
 					profile.Title = title
 				}
 				UpdateDb(profile, 1)
+
+				log.Infoln("refresh job profile %v fresh success", profile.Title)
 			} else {
 				log.Errorln("[Refresh] Sub=%s, URL = %s, Resolve Error:%v", title, sub, err)
 			}

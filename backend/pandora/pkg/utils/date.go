@@ -1,8 +1,6 @@
 package utils
 
 import (
-	"os"
-	"strings"
 	"time"
 )
 
@@ -21,17 +19,4 @@ func ParseDateTime(dateTimeStr string) (time.Time, error) {
 	}
 
 	return parsedTime, nil
-}
-
-func IsChineseLocale() bool {
-	// 检查可能相关的几个环境变量
-	envVars := []string{"LC_ALL", "LC_MESSAGES", "LANG"}
-
-	for _, env := range envVars {
-		val := os.Getenv(env)
-		if strings.HasPrefix(val, "zh") {
-			return true
-		}
-	}
-	return false
 }
