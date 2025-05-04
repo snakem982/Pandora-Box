@@ -217,6 +217,6 @@ func SwitchProfile() {
 	}
 
 	if haveSelected {
-		StartCore(profile)
+		go StartCore(profile)
 	}
 }
