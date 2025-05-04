@@ -16,17 +16,17 @@ import (
 var refreshLock sync.Mutex
 
 func RefreshJob() {
-	cron.AddTask(30*time.Minute, doRefresh)
+	cron.AddTask(30*time.Minute, DoRefresh)
 }
 
-func doRefresh() {
+func DoRefresh() {
 	if refreshLock.TryLock() {
 		defer refreshLock.Unlock()
 	} else {
 		return
 	}
 
-	log.Infoln("refresh job start")
+	log.Infoln("[Refresh] job start")
 
 	// 获取需要更新的订阅
 	var profiles []models.Profile
@@ -38,60 +38,60 @@ func doRefresh() {
 	// 过滤远程订阅
 	var filteredProfiles []models.Profile
 	for _, profile := range profiles {
-		if profile.Type == 1 && profile.Interval != "" {
-			filteredProfiles = append(filteredProfiles, profile)
+		if profile.Type != 1 || profile.Interval == "" {
+			continue
 		}
-	}
-
-	log.Infoln("refresh job find %d profiles", len(filteredProfiles))
-
-	// 进行更新逻辑
-	for _, fp := range filteredProfiles {
-		// 获取指针
-		profile := &fp
 
 		// 获取更新间隔
 		interval, err := strconv.Atoi(profile.Interval)
 		if err != nil {
 			continue
 		}
+
 		// 计算上次更新时间到现在时间的间隔
-		duration := time.Now().Sub(profile.GetUpdateTime())
-		if int(duration.Hours()) < interval {
+		diff := utils.GetHourDiff(profile.GetUpdateTime())
+		if diff < interval {
 			continue
 		}
 
-		log.Infoln("refresh job profile %v need fresh", profile.Title)
+		filteredProfiles = append(filteredProfiles, profile)
+	}
+
+	log.Infoln("[Refresh] job find %d profile need fresh", len(filteredProfiles))
+
+	// 进行更新逻辑
+	for _, fp := range filteredProfiles {
+		// 获取指针
+		profile := &fp
+
+		log.Infoln("[Refresh] job profile %v fresh start", profile.Title)
 
 		// 进行更新
-		go func() {
-			// 标题
-			title := profile.Title
+		title := profile.Title
 
-			// 发送请求
-			sub := profile.Content
-			headers := map[string]string{}
-			res, err := utils.FastGet(sub, headers, internal.GetProxyUrl())
-			if err != nil {
-				log.Errorln("[Refresh] Sub=%s, URL = %s, Request Error:%v", title, sub, err)
-				return
+		// 发送请求
+		sub := profile.Content
+		headers := map[string]string{}
+		res, err := utils.FastGet(sub, headers, internal.GetProxyUrl())
+		if err != nil {
+			log.Errorln("[Refresh] Sub=%s, URL = %s, Request Error:%v", title, sub, err)
+			continue
+		}
+
+		// 解析存盘
+		err = internal.Resolve(res.Body, profile, true)
+		if err == nil {
+			// 进行请求头解析
+			internal.ParseHeaders(res.Headers, sub, profile)
+			if title != "" {
+				profile.Title = title
 			}
+			UpdateDb(profile, 1)
 
-			// 解析存盘
-			err = internal.Resolve(res.Body, profile, true)
-			if err == nil {
-				// 进行请求头解析
-				internal.ParseHeaders(res.Headers, sub, profile)
-				if title != "" {
-					profile.Title = title
-				}
-				UpdateDb(profile, 1)
-
-				log.Infoln("refresh job profile %v fresh success", profile.Title)
-			} else {
-				log.Errorln("[Refresh] Sub=%s, URL = %s, Resolve Error:%v", title, sub, err)
-			}
-		}()
+			log.Infoln("[Refresh] job profile %v fresh success", profile.Title)
+		} else {
+			log.Errorln("[Refresh] Sub=%s, URL = %s, Resolve Error:%v", title, sub, err)
+		}
 	}
 }
 
