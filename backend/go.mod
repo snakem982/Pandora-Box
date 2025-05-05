@@ -127,6 +127,6 @@ require (
 )
 
 replace (
-	github.com/metacubex/mihomo => github.com/snakem982/mihomo v1.0.40-moshen
+	github.com/metacubex/mihomo => github.com/snakem982/mihomo v1.0.41-moshen
 	github.com/snakem982/pandora-box => ./pandora
 )
