@@ -14,14 +14,15 @@ rules:
   global-switch: 已经切换为 全局 模式
   direct-switch: 已经切换为 直连 模式
 
-no-profile-warning: 请添加配置文件后再执行该操作
+no-profile-warning: 请添加配置文件后再开启Tun
+select-profile-warning: 请选择配置文件后再开启Tun
 proxy-switch: 代理
 proxy-switch-on: 代理已开启
 proxy-switch-off: 代理已关闭
 tun-switch: 虚拟网卡
 tun-switch-on: 虚拟网卡已开启
 tun-switch-off: 虚拟网卡已关闭
-tun-warning: 该功能需要管理员权限
+tun-warning: 开启Tun需要管理员权限
 
 sec-nav:
   rule: 规则

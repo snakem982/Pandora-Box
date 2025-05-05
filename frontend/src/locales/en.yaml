@@ -14,14 +14,15 @@ rules:
   global-switch: Switched to Global mode
   direct-switch: Switched to Direct mode
 
-no-profile-warning: Please add the profile before performing this operation
+no-profile-warning: Please add the profile and then open Tun
+select-profile-warning: Please select the profile and then open Tun
 proxy-switch: Proxy
 proxy-switch-on: Proxy is ON
 proxy-switch-off: Proxy is OFF
 tun-switch: Tun
 tun-switch-on: Tun is ON
 tun-switch-off: Tun is OFF
-tun-warning: This feature requires administrator privileges
+tun-warning: The tun mode requires administrator privileges
 
 sec-nav:
   rule: Rule

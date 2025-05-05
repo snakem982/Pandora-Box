@@ -55,7 +55,7 @@ func StartCore(server string, isClient bool) (port int, secret string) {
 	log.Infoln("Routing startup completed")
 
 	// 开启mihomo
-	internal.SwitchProfile()
+	internal.SwitchProfile(false)
 
 	// 进行回调
 	if server != "" {

@@ -221,7 +221,7 @@ func switchTemplate(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// 进行配置切换
-	internal.SwitchProfile()
+	internal.SwitchProfile(true)
 
 	render.NoContent(w, r)
 }

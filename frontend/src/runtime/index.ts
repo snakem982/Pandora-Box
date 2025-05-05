@@ -8,7 +8,6 @@ export const Events = {
     },
     // 只收webview的消息
     On: (name: string, callback: (...args: any[]) => void) => {
-        console.log('on');
         window["px_" + name] = callback;
     },
 };

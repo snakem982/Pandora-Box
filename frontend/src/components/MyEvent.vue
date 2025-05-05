@@ -75,7 +75,6 @@ onMounted(async () => {
   const res = await api.getMihomo()
   menuStore.setRule(res.mode)
   menuStore.setProxy(res.proxy)
-  menuStore.setTun(res.tun)
 
   settingStore.setPort(res.port)
   settingStore.setBindAddress(res.bindAddress)
@@ -106,11 +105,13 @@ onMounted(async () => {
   // 检测是否运行在管理员模式下
   const admin = await api.getAdmin();
   if (admin.data) {
-    // 发送虚拟网卡数据
-    Events.Emit({
-      name: "tun",
-      data: menuStore.tun
-    })
+    // 恢复虚拟网卡
+    if (res.tun) {
+      Events.Emit({
+        name: "switchTun",
+        data: res.tun
+      })
+    }
   } else {
     menuStore.tun = false
     // 同步 mihomo 配置

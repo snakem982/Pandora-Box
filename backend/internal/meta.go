@@ -72,7 +72,7 @@ var NowConfig *config.Config
 var StartLock = sync.Mutex{}
 
 // StartCore 函数用于启动核心功能
-func StartCore(profile models.Profile) {
+func StartCore(profile models.Profile, reload bool) {
 	StartLock.Lock()
 	defer StartLock.Unlock()
 
@@ -130,7 +130,6 @@ func StartCore(profile models.Profile) {
 		}
 	}
 	rawCfg.Mode = tunnel.ModeMapping[mi.Mode]
-	rawCfg.Tun.Enable = mi.Tun
 	rawCfg.AllowLan = true
 	rawCfg.MixedPort = mi.Port
 	rawCfg.BindAddress = mi.BindAddress
@@ -161,7 +160,14 @@ func StartCore(profile models.Profile) {
 	}
 
 	// 应用配置
-	go executor.ApplyConfig(NowConfig, true)
+	// 初次加载不能开启tun,不然在windows上会崩
+	if reload {
+		NowConfig.General.Tun.Enable = mi.Tun
+		go executor.ApplyConfig(NowConfig, false)
+	} else {
+		NowConfig.General.Tun.Enable = false
+		executor.ApplyConfig(NowConfig, true)
+	}
 
 	// 代理开启
 	if mi.Proxy {
@@ -205,7 +211,7 @@ func getTemplate(profile models.Profile) (bool, []byte) {
 }
 
 // SwitchProfile 切换配置
-func SwitchProfile() {
+func SwitchProfile(reload bool) {
 	// 应用配置
 	var profile models.Profile
 
@@ -226,6 +232,11 @@ func SwitchProfile() {
 	}
 
 	if haveSelected {
-		StartCore(profile)
+		StartCore(profile, reload)
+	} else {
+		profile = profiles[0]
+		profile.Selected = true
+		_ = cache.Put(profile.Id, profile)
+		StartCore(profile, reload)
 	}
 }

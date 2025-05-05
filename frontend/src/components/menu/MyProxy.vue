@@ -18,6 +18,24 @@ const api = createApi(proxy);
 // 国际化
 const {t} = useI18n();
 
+async function selected() {
+  const list = await api.getProfileList()
+  if (!list || list.length == 0) {
+    pWarning(t("no-profile-warning"));
+    return false
+  }
+
+  for (let profile of list) {
+    if (profile['selected']) {
+      return true
+    }
+  }
+
+  pWarning(t("select-profile-warning"));
+  return false
+}
+
+
 // 代理开关
 async function doSwitch() {
   let ok = false
@@ -26,9 +44,8 @@ async function doSwitch() {
   if (!menuStore.proxy) {
     try {
       // 添加配置后执行
-      const list = await api.getProfileList()
-      if (!list || list.length == 0) {
-        pWarning(t("no-profile-warning"));
+      const select = await selected()
+      if (!select) {
         return
       }
       // 检测端口是否被占用
@@ -83,9 +100,8 @@ async function tunSwitch() {
   }
 
   // 添加配置后执行
-  const list = await api.getProfileList()
-  if (!list || list.length == 0) {
-    pWarning(t("no-profile-warning"));
+  const select = await selected()
+  if (!select) {
     return
   }
 

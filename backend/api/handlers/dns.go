@@ -65,7 +65,7 @@ func updateDNS(w http.ResponseWriter, r *http.Request) {
 	var mi models.Mihomo
 	_ = cache.Get(constant.Mihomo, &mi)
 	if mi.Dns {
-		internal.SwitchProfile()
+		internal.SwitchProfile(true)
 	}
 
 	render.NoContent(w, r)
@@ -86,7 +86,7 @@ func switchDNS(w http.ResponseWriter, r *http.Request) {
 	_ = cache.Get(constant.Mihomo, &mi)
 	mi.Dns = req.Enable
 	_ = cache.Put(constant.Mihomo, mi)
-	internal.SwitchProfile()
+	internal.SwitchProfile(true)
 
 	render.NoContent(w, r)
 }
