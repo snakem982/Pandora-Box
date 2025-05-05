@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"github.com/metacubex/mihomo/hub/executor"
+	"github.com/metacubex/mihomo/log"
 	"github.com/snakem982/pandora-box/api/job"
 	"github.com/snakem982/pandora-box/pandora"
 	"github.com/snakem982/pandora-box/pkg/cron"
@@ -42,6 +43,7 @@ func main() {
 		signal.Notify(termSign, syscall.SIGINT, syscall.SIGTERM)
 		select {
 		case <-termSign:
+			log.Warnln("received termination signal")
 			executor.Shutdown()
 			utils.UnlockSingleton()
 			pandora.Release()
