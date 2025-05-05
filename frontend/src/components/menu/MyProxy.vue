@@ -79,9 +79,6 @@ async function tunSwitch() {
   // 检测通过执行后续操作
   menuStore.setTun(!menuStore.tun);
   if (menuStore.tun) {
-    // 先关闭一下再开，会切换更快
-    await api.updateConfigs({tun: {enable: false}})
-
     api.updateConfigs({
       tun: {
         enable: true,
