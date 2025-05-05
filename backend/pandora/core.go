@@ -75,6 +75,12 @@ func StartCore(server string, isClient bool) (port int, secret string) {
 
 	// 定时更新订阅
 	if !isClient {
+		url := fmt.Sprintf("http://%s:%d/wait", host, port)
+		headers := map[string]string{
+			"Authorization": fmt.Sprintf("Bearer %s", secret),
+		}
+		_, _, _ = utils.SendGet(url, headers, "")
+
 		job.LogJob("px-server.log")
 		job.RefreshJob()
 	}

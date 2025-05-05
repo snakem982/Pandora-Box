@@ -118,6 +118,8 @@ const switchTemplate = async () => {
       tList = await api.getTemplateList();
       pSuccess(t('rule.group.switch.success'))
 
+      await api.waitRunning()
+
       proxiesStore.active = ""
       api.getRules().then((res) => {
         menuStore.setRuleNum(res.length);
