@@ -231,12 +231,11 @@ func SwitchProfile(reload bool) {
 		}
 	}
 
-	if haveSelected {
-		StartCore(profile, reload)
-	} else {
+	if !haveSelected {
 		profile = profiles[0]
 		profile.Selected = true
 		_ = cache.Put(profile.Id, profile)
-		StartCore(profile, reload)
 	}
+
+	StartCore(profile, reload)
 }
