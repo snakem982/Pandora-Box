@@ -2,6 +2,7 @@
 
 import MySimpleInput from "@/components/MySimpleInput.vue";
 import createApi from "@/api";
+import {useWebStore} from "@/store/webStore";
 
 
 // 获取当前 Vue 实例的 proxy 对象 和 api
@@ -67,6 +68,17 @@ function handleInputChange(value: any) {
   paginatedData.value = filterData.value.slice(0, itemsPerPage);
 }
 
+// 监控配置切换
+const webStore = useWebStore();
+watch(() => webStore.fProfile, async () => {
+  await api.waitRunning()
+  api.getRules().then((res) => {
+    allData.value = res;
+    filterData.value = res;
+    // 初始化分页数据
+    paginatedData.value = allData.value.slice(0, itemsPerPage);
+  });
+})
 
 </script>
 

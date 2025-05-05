@@ -25,6 +25,12 @@ async function doSwitch() {
   // 检测通过执行后续操作
   if (!menuStore.proxy) {
     try {
+      // 添加配置后执行
+      const list = await api.getProfileList()
+      if (!list || list.length == 0) {
+        pWarning(t("no-profile-warning"));
+        return
+      }
       // 检测端口是否被占用
       await api.checkAddressPort({
         "bindAddress": settingStore.bindAddress,
@@ -73,6 +79,13 @@ async function tunSwitch() {
   const admin = await api.getAdmin();
   if (!admin.data) {
     pWarning(t("tun-warning"));
+    return
+  }
+
+  // 添加配置后执行
+  const list = await api.getProfileList()
+  if (!list || list.length == 0) {
+    pWarning(t("no-profile-warning"));
     return
   }
 

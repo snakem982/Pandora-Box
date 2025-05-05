@@ -7,8 +7,8 @@ export const useWebStore = defineStore('web', {
         secret: 'Y8IUaPeFLTRvsrdf2mUJkLMBuphVZRE5',         // 默认密钥
         logs: [],         // 日志
         dnd: false,         // 拖拽显示
-        dProfile: [],         // 传输文件
-        fProfile: {}, // 更新profile
+        dProfile: [],         // 传输文件 拖拽添加文件用
+        fProfile: {}, // 更新profile 配置切换用
     }),
     getters: {
         // 确保使用 state 参数引用正确

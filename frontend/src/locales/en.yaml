@@ -14,6 +14,7 @@ rules:
   global-switch: Switched to Global mode
   direct-switch: Switched to Direct mode
 
+no-profile-warning: Please add the profile before performing this operation
 proxy-switch: Proxy
 proxy-switch-on: Proxy is ON
 proxy-switch-off: Proxy is OFF

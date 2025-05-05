@@ -109,6 +109,8 @@ func StartCore(profile models.Profile) {
 	rawCfg.RedirPort = 0
 	rawCfg.ExternalController = ""
 	rawCfg.GeodataMode = false
+	rawCfg.Tun.AutoRoute = true
+	rawCfg.Tun.AutoDetectInterface = true
 	rawCfg.Tun.Device = "Pandora"
 	rawCfg.UnifiedDelay = true
 
