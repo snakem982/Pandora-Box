@@ -10,6 +10,7 @@ import (
 	"github.com/metacubex/mihomo/config"
 	"github.com/metacubex/mihomo/log"
 	"github.com/snakem982/pandora-box/api/models"
+	"github.com/snakem982/pandora-box/api/proxy"
 	"github.com/snakem982/pandora-box/pkg/cache"
 	"github.com/snakem982/pandora-box/pkg/constant"
 	"github.com/snakem982/pandora-box/pkg/utils"
@@ -244,7 +245,7 @@ func Worker(url string, proxies *[]map[string]any, headers map[string]string, de
 	}()
 
 	// 并发Get请求
-	resp, err = utils.FastGet(url, headers, GetProxyUrl())
+	resp, err = utils.FastGet(url, headers, proxy.GetProxyUrl())
 	if err != nil {
 		return
 	}

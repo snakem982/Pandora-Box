@@ -8,9 +8,9 @@ import (
 	"github.com/snakem982/pandora-box/api/models"
 	sys "github.com/snakem982/pandora-box/pkg/sys/proxy"
 	"github.com/snakem982/pandora-box/pkg/utils"
+	"github.com/snakem982/pandora-box/static"
+	"github.com/snakem982/pandora-box/window"
 	webview "github.com/webview/webview_go"
-	"pandora-box/static"
-	"pandora-box/window"
 	"sync"
 )
 

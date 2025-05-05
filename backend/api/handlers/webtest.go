@@ -3,6 +3,7 @@ package handlers
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/snakem982/pandora-box/api/proxy"
 	"net/http"
 	"time"
 
@@ -130,7 +131,7 @@ func delayWebTest(w http.ResponseWriter, r *http.Request) {
 			}()
 			// 获取当前时间
 			start := time.Now()
-			code, err := utils.SendHead(url, internal.GetProxyUrl())
+			code, err := utils.SendHead(url, proxy.GetProxyUrl())
 			// 获取以毫秒为单位的执行时间
 			elapsed := time.Since(start).Milliseconds()
 			if err != nil {
@@ -164,7 +165,7 @@ func getWebTestIp(w http.ResponseWriter, r *http.Request) {
 		"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3",
 		"Accept":     "application/json",
 	}
-	body, _, err := utils.SendGet(req.Url, headers, internal.GetProxyUrl())
+	body, _, err := utils.SendGet(req.Url, headers, proxy.GetProxyUrl())
 	if err != nil {
 		ErrorResponse(w, r, err)
 		return

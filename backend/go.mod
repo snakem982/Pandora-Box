@@ -1,4 +1,4 @@
-module pandora-box
+module github.com/snakem982/pandora-box
 
 go 1.24.1
 
@@ -6,11 +6,18 @@ require (
 	github.com/energye/systray v1.0.2
 	github.com/go-chi/chi/v5 v5.2.1
 	github.com/go-chi/render v1.0.3
+	github.com/go-co-op/gocron v1.37.0
+	github.com/gobwas/ws v1.4.0
+	github.com/gofrs/flock v0.12.1
+	github.com/metacubex/bbolt v0.0.0-20240822011022-aed6d4850399
 	github.com/metacubex/mihomo v1.19.5
 	github.com/nicksnyder/go-i18n/v2 v2.6.0
+	github.com/panjf2000/ants/v2 v2.11.3
 	github.com/sagernet/sing v0.5.2
-	github.com/snakem982/pandora-box v0.0.0
+	github.com/sirupsen/logrus v1.9.3
 	github.com/webview/webview_go v0.0.0-20240831120633-6173450d4dd6
+	golang.org/x/net v0.38.0
+	golang.org/x/sys v0.32.0
 	golang.org/x/text v0.23.0
 	gopkg.in/yaml.v3 v3.0.1
 )
@@ -34,14 +41,11 @@ require (
 	github.com/ericlagergren/subtle v0.0.0-20220507045147-890d697da010 // indirect
 	github.com/fsnotify/fsnotify v1.9.0 // indirect
 	github.com/gaukas/godicttls v0.0.4 // indirect
-	github.com/go-co-op/gocron v1.37.0 // indirect
 	github.com/go-ole/go-ole v1.3.0 // indirect
 	github.com/go-task/slim-sprig/v3 v3.0.0 // indirect
 	github.com/gobwas/httphead v0.1.0 // indirect
 	github.com/gobwas/pool v0.2.1 // indirect
-	github.com/gobwas/ws v1.4.0 // indirect
 	github.com/godbus/dbus/v5 v5.0.4 // indirect
-	github.com/gofrs/flock v0.12.1 // indirect
 	github.com/gofrs/uuid/v5 v5.3.2 // indirect
 	github.com/google/btree v1.1.3 // indirect
 	github.com/google/go-cmp v0.7.0 // indirect
@@ -59,7 +63,6 @@ require (
 	github.com/mdlayher/socket v0.4.1 // indirect
 	github.com/metacubex/amneziawg-go v0.0.0-20240922133038-fdf3a4d5a4ab // indirect
 	github.com/metacubex/bart v0.19.0 // indirect
-	github.com/metacubex/bbolt v0.0.0-20240822011022-aed6d4850399 // indirect
 	github.com/metacubex/chacha v0.1.2 // indirect
 	github.com/metacubex/fswatch v0.1.1 // indirect
 	github.com/metacubex/gopacket v1.1.20-0.20230608035415-7e2f98a3e759 // indirect
@@ -86,7 +89,6 @@ require (
 	github.com/onsi/ginkgo/v2 v2.19.0 // indirect
 	github.com/openacid/low v0.1.21 // indirect
 	github.com/oschwald/maxminddb-golang v1.12.0 // indirect
-	github.com/panjf2000/ants/v2 v2.11.3 // indirect
 	github.com/pierrec/lz4/v4 v4.1.14 // indirect
 	github.com/power-devops/perfstat v0.0.0-20210106213030-5aafc221ea8c // indirect
 	github.com/puzpuzpuz/xsync/v3 v3.5.1 // indirect
@@ -99,7 +101,6 @@ require (
 	github.com/sina-ghaderi/poly1305 v0.0.0-20220724002748-c5926b03988b // indirect
 	github.com/sina-ghaderi/rabaead v0.0.0-20220730151906-ab6e06b96e8c // indirect
 	github.com/sina-ghaderi/rabbitio v0.0.0-20220730151941-9ce26f4f872e // indirect
-	github.com/sirupsen/logrus v1.9.3 // indirect
 	github.com/tevino/abool v0.0.0-20220530134649-2bfc934cb23c // indirect
 	github.com/tklauser/go-sysconf v0.3.12 // indirect
 	github.com/tklauser/numcpus v0.6.1 // indirect
@@ -117,16 +118,11 @@ require (
 	golang.org/x/crypto v0.36.0 // indirect
 	golang.org/x/exp v0.0.0-20250305212735-054e65f0b394 // indirect
 	golang.org/x/mod v0.24.0 // indirect
-	golang.org/x/net v0.38.0 // indirect
 	golang.org/x/sync v0.12.0 // indirect
-	golang.org/x/sys v0.32.0 // indirect
 	golang.org/x/time v0.7.0 // indirect
 	golang.org/x/tools v0.31.0 // indirect
 	google.golang.org/protobuf v1.34.2 // indirect
 	lukechampine.com/blake3 v1.3.0 // indirect
 )
 
-replace (
-	github.com/metacubex/mihomo => github.com/snakem982/mihomo v1.0.42-moshen
-	github.com/snakem982/pandora-box => ./pandora
-)
+replace github.com/metacubex/mihomo => github.com/snakem982/mihomo v1.0.42-moshen

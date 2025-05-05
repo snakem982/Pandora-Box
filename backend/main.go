@@ -4,15 +4,15 @@ import (
 	"flag"
 	"fmt"
 	"github.com/metacubex/mihomo/hub/executor"
-	"github.com/snakem982/pandora-box"
 	"github.com/snakem982/pandora-box/api/job"
+	"github.com/snakem982/pandora-box/pandora"
 	"github.com/snakem982/pandora-box/pkg/cron"
 	"github.com/snakem982/pandora-box/pkg/utils"
+	"github.com/snakem982/pandora-box/traymenu"
+	"github.com/snakem982/pandora-box/window"
 	webview "github.com/webview/webview_go"
 	"os"
 	"os/signal"
-	"pandora-box/traymenu"
-	"pandora-box/window"
 	"syscall"
 )
 

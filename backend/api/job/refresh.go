@@ -3,6 +3,7 @@ package job
 import (
 	"github.com/metacubex/mihomo/log"
 	"github.com/snakem982/pandora-box/api/models"
+	"github.com/snakem982/pandora-box/api/proxy"
 	"github.com/snakem982/pandora-box/internal"
 	"github.com/snakem982/pandora-box/pkg/cache"
 	"github.com/snakem982/pandora-box/pkg/constant"
@@ -72,7 +73,7 @@ func DoRefresh() {
 		// 发送请求
 		sub := profile.Content
 		headers := map[string]string{}
-		res, err := utils.FastGet(sub, headers, internal.GetProxyUrl())
+		res, err := utils.FastGet(sub, headers, proxy.GetProxyUrl())
 		if err != nil {
 			log.Errorln("[Refresh] Sub=%s, URL = %s, Request Error:%v", title, sub, err)
 			continue
