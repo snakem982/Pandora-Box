@@ -3,11 +3,11 @@ package job
 import (
 	"github.com/metacubex/mihomo/log"
 	"github.com/snakem982/pandora-box/api/models"
-	"github.com/snakem982/pandora-box/api/proxy"
 	"github.com/snakem982/pandora-box/internal"
 	"github.com/snakem982/pandora-box/pkg/cache"
 	"github.com/snakem982/pandora-box/pkg/constant"
 	"github.com/snakem982/pandora-box/pkg/cron"
+	"github.com/snakem982/pandora-box/pkg/proxy"
 	"github.com/snakem982/pandora-box/pkg/utils"
 	"strconv"
 	"sync"

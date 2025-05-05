@@ -2,7 +2,7 @@ package handlers
 
 import (
 	"github.com/snakem982/pandora-box/api/job"
-	"github.com/snakem982/pandora-box/api/proxy"
+	"github.com/snakem982/pandora-box/pkg/proxy"
 	"net/http"
 	"path/filepath"
 	"sort"

@@ -3,7 +3,7 @@ package handlers
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/snakem982/pandora-box/api/proxy"
+	"github.com/snakem982/pandora-box/pkg/proxy"
 	"net/http"
 	"time"
 
