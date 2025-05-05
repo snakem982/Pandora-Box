@@ -97,8 +97,8 @@ const saveTemplate = async () => {
       if (now.selected) {
         await api.switchTemplate(now);
         proxiesStore.active = ""
-        api.getRules().then((res) => {
-          menuStore.setRuleNum(res.length);
+        api.getRuleNum().then((res) => {
+          menuStore.setRuleNum(res);
         });
       }
       pSuccess(t('rule.success'))
@@ -116,13 +116,13 @@ const switchTemplate = async () => {
     try {
       await api.switchTemplate(now);
       tList = await api.getTemplateList();
-      pSuccess(t('rule.group.switch.success'))
 
       await api.waitRunning()
+      pSuccess(t('rule.group.switch.success'))
 
       proxiesStore.active = ""
-      api.getRules().then((res) => {
-        menuStore.setRuleNum(res.length);
+      api.getRuleNum().then((res) => {
+        menuStore.setRuleNum(res);
       });
     } catch (e) {
       if (e['message']) {

@@ -1,6 +1,7 @@
 package internal
 
 import (
+	"github.com/metacubex/mihomo/hub/executor"
 	"github.com/metacubex/mihomo/tunnel"
 	"github.com/snakem982/pandora-box/pkg/constant"
 	sysProxy "github.com/snakem982/pandora-box/pkg/sys/proxy"
@@ -13,7 +14,6 @@ import (
 
 	"github.com/metacubex/mihomo/config"
 	C "github.com/metacubex/mihomo/constant"
-	"github.com/metacubex/mihomo/hub/executor"
 	"github.com/metacubex/mihomo/log"
 	plog "github.com/sirupsen/logrus"
 	"github.com/snakem982/pandora-box/api/models"
@@ -71,7 +71,7 @@ func Init(isClient bool) {
 var NowConfig *config.Config
 var StartLock = sync.Mutex{}
 
-// StartCore 函数用于启动核心功能，接收两个参数：profile和reload，分别为配置文件和是否自动reload的标志位
+// StartCore 函数用于启动核心功能
 func StartCore(profile models.Profile) {
 	StartLock.Lock()
 	defer StartLock.Unlock()
@@ -135,6 +135,9 @@ func StartCore(profile models.Profile) {
 	rawCfg.Tun.Stack = C.StackTypeMapping[strings.ToLower(mi.Stack)]
 	rawCfg.IPv6 = mi.Ipv6
 
+	// 保存规则数
+	_ = cache.Put("Rule_No", len(rawCfg.Rule))
+
 	// 解析配置文件2
 	NowConfig, _ = config.ParseRawConfig(rawCfg)
 
@@ -152,7 +155,7 @@ func StartCore(profile models.Profile) {
 	}
 
 	// 应用配置
-	executor.ApplyConfig(NowConfig, true)
+	go executor.ApplyConfig(NowConfig, true)
 
 	// 代理开启
 	if mi.Proxy {
@@ -217,6 +220,6 @@ func SwitchProfile() {
 	}
 
 	if haveSelected {
-		go StartCore(profile)
+		StartCore(profile)
 	}
 }

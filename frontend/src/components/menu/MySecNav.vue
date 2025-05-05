@@ -49,8 +49,8 @@ onMounted(() => {
   const logTraffic = webStore.wsUrl + "/logs?token=" + webStore.secret;
   logConn = new WS(logTraffic, null, onLog);
 
-  api.getRules().then((res) => {
-    menuStore.setRuleNum(res.length);
+  api.getRuleNum().then((res) => {
+    menuStore.setRuleNum(res);
   });
 });
 </script>

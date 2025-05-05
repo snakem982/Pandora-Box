@@ -158,8 +158,8 @@ async function switchProfile(data: any) {
       data['selected'] = true
       setHeaderShow(data)
 
-      api.getRules().then((res) => {
-        menuStore.setRuleNum(res.length);
+      api.getRuleNum().then((res) => {
+        menuStore.setRuleNum(res);
       });
 
       Events.Emit({

@@ -1,9 +1,15 @@
 // 获取规则列表
-
 const getRules = (proxy: any) =>
     async function () {
         const data = await proxy.$http.get("/rules");
         return data["rules"];
+    };
+
+// 获取规则数
+const getRuleNum = (proxy: any) =>
+    async function () {
+        const data = await proxy.$http.get("/rule/num");
+        return data["data"];
     };
 
 // 获取 ignore
@@ -63,6 +69,7 @@ const switchTemplate = (proxy: any) =>
 export default function createRuleApi(proxy: any) {
     return {
         getRules: getRules(proxy),
+        getRuleNum: getRuleNum(proxy),
         getIgnore: getIgnore(proxy),
         updateIgnore: updateIgnore(proxy),
         getTemplateList: getTemplateList(proxy),

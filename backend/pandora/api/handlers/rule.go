@@ -37,6 +37,9 @@ func ruleRouter() chi.Router {
 	r.Post("/test", testTemplate)
 	r.Post("/switch", switchTemplate)
 
+	// 忽略的域名
+	r.Get("/num", getNum)
+
 	return r
 }
 
@@ -221,4 +224,14 @@ func switchTemplate(w http.ResponseWriter, r *http.Request) {
 	internal.SwitchProfile()
 
 	render.NoContent(w, r)
+}
+
+func getNum(w http.ResponseWriter, r *http.Request) {
+	var num int
+	_ = cache.Get("Rule_No", &num)
+	res := struct {
+		Data int `json:"data"`
+	}{num}
+
+	render.JSON(w, r, res)
 }

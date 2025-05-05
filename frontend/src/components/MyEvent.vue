@@ -46,8 +46,8 @@ Events.On("switchProfiles", async (ev: any) => {
 
       await api.waitRunning()
 
-      api.getRules().then((res) => {
-        menuStore.setRuleNum(res.length);
+      api.getRuleNum().then((res) => {
+        menuStore.setRuleNum(res);
       });
 
       webStore.fProfile = data
