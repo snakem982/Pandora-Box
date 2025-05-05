@@ -108,7 +108,6 @@ func StartCore(profile models.Profile) {
 	rawCfg.TProxyPort = 0
 	rawCfg.RedirPort = 0
 	rawCfg.ExternalController = ""
-	rawCfg.GeodataMode = false
 	rawCfg.Tun.DNSHijack = []string{"any:53"}
 	rawCfg.Tun.AutoRoute = true
 	rawCfg.Tun.AutoDetectInterface = true
@@ -142,7 +141,11 @@ func StartCore(profile models.Profile) {
 	_ = cache.Put("Rule_No", len(rawCfg.Rule))
 
 	// 解析配置文件2
-	NowConfig, _ = config.ParseRawConfig(rawCfg)
+	NowConfig, err = config.ParseRawConfig(rawCfg)
+	if err != nil {
+		log.Errorln("ParseRawConfig error: %v", err)
+		return
+	}
 
 	// 覆盖dns
 	if mi.Dns {
@@ -158,7 +161,7 @@ func StartCore(profile models.Profile) {
 	}
 
 	// 应用配置
-	executor.ApplyConfig(NowConfig, true)
+	go executor.ApplyConfig(NowConfig, true)
 
 	// 代理开启
 	if mi.Proxy {
