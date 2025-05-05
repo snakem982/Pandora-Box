@@ -109,6 +109,7 @@ func StartCore(profile models.Profile) {
 	rawCfg.RedirPort = 0
 	rawCfg.ExternalController = ""
 	rawCfg.GeodataMode = false
+	rawCfg.Tun.DNSHijack = []string{"any:53"}
 	rawCfg.Tun.AutoRoute = true
 	rawCfg.Tun.AutoDetectInterface = true
 	rawCfg.Tun.Device = "Pandora"
@@ -157,7 +158,7 @@ func StartCore(profile models.Profile) {
 	}
 
 	// 应用配置
-	go executor.ApplyConfig(NowConfig, true)
+	executor.ApplyConfig(NowConfig, true)
 
 	// 代理开启
 	if mi.Proxy {
