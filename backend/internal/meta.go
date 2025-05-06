@@ -177,9 +177,13 @@ func startCore(profile models.Profile, reload bool) {
 		NowConfig.General.Tun.Enable = false
 
 		// 激活配置
-		executor.ApplyConfig(NowConfig, true)
-		url := fmt.Sprintf("http://%s:%d", mi.BindAddress, mi.Port)
-		_, _, _ = utils.SendGet("https://www.google.com", map[string]string{}, url)
+		if runtime.GOOS == "windows" {
+			executor.ApplyConfig(NowConfig, true)
+			url := fmt.Sprintf("http://%s:%d", mi.BindAddress, mi.Port)
+			_, _, _ = utils.SendGet("https://www.google.com", map[string]string{}, url)
+		} else {
+			go executor.ApplyConfig(NowConfig, true)
+		}
 	}
 
 	// 代理开启
