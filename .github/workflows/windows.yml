@@ -97,11 +97,13 @@ jobs:
         run: magick convert script/appicon.png -resize 256x256 appicon.ico
 
       - name: Install rsrc
+        shell: pwsh
         run: go install github.com/akavel/rsrc@latest
 
       - name: Generate rsrc.syso from manifest
+        shell: pwsh
         run: |
-          ${env:GOPATH}\bin\rsrc.exe -ico appicon.ico -manifest script\Pandora-Box.exe.manifest -o backend\rsrc.syso
+          rsrc.exe -ico appicon.ico -manifest script\Pandora-Box.exe.manifest -o backend\rsrc.syso
 
       - name: Build Go Backend for ${{ matrix.arch }}
         shell: pwsh
