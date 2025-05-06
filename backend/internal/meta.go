@@ -1,6 +1,7 @@
 package internal
 
 import (
+	"fmt"
 	"github.com/metacubex/mihomo/hub/executor"
 	"github.com/metacubex/mihomo/tunnel"
 	"github.com/snakem982/pandora-box/pkg/constant"
@@ -173,7 +174,12 @@ func startCore(profile models.Profile, reload bool) {
 		// 初次加载不能开启tun,不然在windows上会崩
 		NowConfig.General.Tun.Enable = false
 	}
-	go executor.ApplyConfig(NowConfig, !reload)
+	go func() {
+		// 激活配置
+		executor.ApplyConfig(NowConfig, !reload)
+		url := fmt.Sprintf("http://%s:%d", mi.BindAddress, mi.Port)
+		_, _, _ = utils.SendGet("https://www.google.com", map[string]string{}, url)
+	}()
 
 	// 代理开启
 	if mi.Proxy {
