@@ -71,8 +71,8 @@ func Init(isClient bool) {
 var NowConfig *config.Config
 var StartLock = sync.Mutex{}
 
-// StartCore 函数用于启动核心功能
-func StartCore(profile models.Profile, reload bool) {
+// startCore 函数用于启动核心功能
+func startCore(profile models.Profile, reload bool) {
 	StartLock.Lock()
 	defer StartLock.Unlock()
 
@@ -160,19 +160,27 @@ func StartCore(profile models.Profile, reload bool) {
 	}
 
 	// 应用配置
-	// 初次加载不能开启tun,不然在windows上会崩
 	if reload {
 		NowConfig.General.Tun.Enable = mi.Tun
-		go executor.ApplyConfig(NowConfig, false)
 	} else {
+		// 检测端口占用
+		err = utils.IsPortAvailable(mi.BindAddress, mi.Port)
+		if err != nil {
+			log.Errorln("IsPortAvailable error: %v", err)
+			mi.Port, _ = utils.GetRandomPort(mi.BindAddress)
+			NowConfig.General.MixedPort = mi.Port
+		}
+		// 初次加载不能开启tun,不然在windows上会崩
 		NowConfig.General.Tun.Enable = false
-		executor.ApplyConfig(NowConfig, true)
 	}
+	go executor.ApplyConfig(NowConfig, !reload)
 
 	// 代理开启
 	if mi.Proxy {
 		_ = sysProxy.EnableProxy(mi.BindAddress, mi.Port)
 	}
+	// 存储配置
+	_ = cache.Put(constant.Mihomo, mi)
 }
 
 // 获取统一规则分组模板
@@ -237,5 +245,5 @@ func SwitchProfile(reload bool) {
 		_ = cache.Put(profile.Id, profile)
 	}
 
-	StartCore(profile, reload)
+	startCore(profile, reload)
 }

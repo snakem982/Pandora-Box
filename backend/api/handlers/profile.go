@@ -203,7 +203,7 @@ func refreshProfile(w http.ResponseWriter, r *http.Request) {
 
 		// 如果配置正在使用中  进行配置更新
 		if profile.Selected {
-			internal.StartCore(*profile, true)
+			internal.SwitchProfile(true)
 		}
 	} else {
 		ErrorResponse(w, r, err)
@@ -268,7 +268,7 @@ func switchProfile(w http.ResponseWriter, r *http.Request) {
 	profile.Selected = true
 	_ = cache.Put(profile.Id, profile)
 
-	internal.StartCore(profile, true)
+	internal.SwitchProfile(true)
 
 	render.NoContent(w, r)
 }

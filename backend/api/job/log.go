@@ -12,7 +12,7 @@ import (
 var logLock sync.Mutex
 
 func LogJob(name string) {
-	cron.AddTask(5*time.Minute, func() {
+	cron.AddTask(name, 15*time.Minute, func() {
 		if logLock.TryLock() {
 			defer logLock.Unlock()
 		} else {

@@ -18,6 +18,10 @@ const api = createApi(proxy);
 // 国际化
 const {t} = useI18n();
 
+// 页面使用参数
+const tunOn = ref(false)
+
+
 async function selected() {
   const list = await api.getProfileList()
   if (!list || list.length == 0) {
@@ -106,7 +110,7 @@ async function tunSwitch() {
   }
 
   // 检测通过执行后续操作
-  menuStore.setTun(!menuStore.tun);
+  menuStore.setTun(!tunOn.value);
   if (menuStore.tun) {
     api.updateConfigs({
       tun: {
@@ -114,6 +118,7 @@ async function tunSwitch() {
         stack: settingStore.stack,
       },
     }).then(() => {
+      tunOn.value = true;
       pSuccess(t("tun-switch-on"));
 
       // 同步 mihomo 配置
@@ -128,6 +133,7 @@ async function tunSwitch() {
         enable: false,
       },
     }).then(() => {
+      tunOn.value = false;
       pWarning(t("tun-switch-off"));
 
       // 同步 mihomo 配置
@@ -142,6 +148,15 @@ async function tunSwitch() {
 Events.On("switchTun", async () => {
   await tunSwitch()
 });
+
+
+onMounted(async () => {
+  if (menuStore.tun) {
+    await api.waitRunning()
+    await tunSwitch()
+  }
+})
+
 
 </script>
 
@@ -162,7 +177,7 @@ Events.On("switchTun", async () => {
       <span class="switch-label">
         {{ $t("tun-switch") }}
       </span>
-      <div :class="['switch', { 'switch-on': menuStore.tun }]" @click="tunSwitch">
+      <div :class="['switch', { 'switch-on': tunOn }]" @click="tunSwitch">
         <div class="switch-circle"></div>
       </div>
     </div>

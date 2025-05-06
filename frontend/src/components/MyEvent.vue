@@ -8,7 +8,6 @@ import {useI18n} from "vue-i18n";
 import {pError, pLoad, pSuccess} from "@/util/pLoad";
 import {useSettingStore} from "@/store/settingStore";
 import {useWebStore} from "@/store/webStore";
-import {pUpdateMihomo} from "@/util/mihomo";
 
 // i18n
 const {t} = useI18n();
@@ -101,22 +100,6 @@ onMounted(async () => {
     name: "proxy",
     data: menuStore.proxy
   })
-
-  // 检测是否运行在管理员模式下
-  const admin = await api.getAdmin();
-  if (admin.data) {
-    // 恢复虚拟网卡
-    if (res.tun) {
-      Events.Emit({
-        name: "switchTun",
-        data: res.tun
-      })
-    }
-  } else {
-    menuStore.tun = false
-    // 同步 mihomo 配置
-    pUpdateMihomo(menuStore, settingStore, api)
-  }
 })
 
 </script>

@@ -17,7 +17,7 @@ import (
 var refreshLock sync.Mutex
 
 func RefreshJob() {
-	cron.AddTask(30*time.Minute, DoRefresh)
+	cron.AddTask("Refresh", 30*time.Minute, DoRefresh)
 }
 
 func DoRefresh() {

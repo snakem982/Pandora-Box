@@ -27,14 +27,14 @@ func GetInstance() *Cron {
 }
 
 // AddTask 添加任务
-func AddTask(interval interface{}, task func()) {
+func AddTask(name string, interval interface{}, task func()) {
 	cron := GetInstance()
-	job, err := cron.scheduler.Every(interval).Do(task)
+	_, err := cron.scheduler.Every(interval).Do(task)
 	if err != nil {
-		log.Infoln("添加任务失败: %v", err)
+		log.Infoln("添加任务 %s 失败: %v", name, err)
 		return
 	}
-	log.Infoln("任务已成功添加: %v", job)
+	log.Infoln("已成功添加任务: %s", name)
 }
 
 // Start 启动调度器
