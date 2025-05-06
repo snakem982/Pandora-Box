@@ -88,12 +88,20 @@ jobs:
           cd backend
           go mod tidy
 
+      - name: Install ImageMagick
+        shell: pwsh
+        run: choco install imagemagick -y
+
+      - name: Convert PNG to ICO
+        shell: pwsh
+        run: magick convert script/appicon.png -resize 256x256 appicon.ico
+
       - name: Install rsrc
         run: go install github.com/akavel/rsrc@latest
 
       - name: Generate rsrc.syso from manifest
         run: |
-          ${env:GOPATH}\bin\rsrc.exe -manifest script\Pandora-Box.exe.manifest -o backend\rsrc.syso
+          ${env:GOPATH}\bin\rsrc.exe -ico appicon.ico -manifest script\Pandora-Box.exe.manifest -o backend\rsrc.syso
 
       - name: Build Go Backend for ${{ matrix.arch }}
         shell: pwsh
@@ -109,24 +117,6 @@ jobs:
             Write-Error "Go build failed."
             exit 1
           }
-
-      - name: Install ImageMagick
-        shell: pwsh
-        run: choco install imagemagick -y
-
-      - name: Convert PNG to ICO
-        shell: pwsh
-        run: magick convert script/appicon.png -resize 256x256 appicon.ico
-
-      - name: Install rcedit
-        shell: pwsh
-        run: choco install rcedit -y
-
-      - name: Embed Icon with rcedit
-        shell: pwsh
-        run: |
-          # 对 Go 编译生成的 exe 文件嵌入 ICO 图标
-          rcedit.exe backend\Pandora-Box.exe --set-icon appicon.ico
 
       - name: Compress Executable
         shell: pwsh
