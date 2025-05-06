@@ -163,6 +163,7 @@ func startCore(profile models.Profile, reload bool) {
 	// 应用配置
 	if reload {
 		NowConfig.General.Tun.Enable = mi.Tun
+		go executor.ApplyConfig(NowConfig, false)
 	} else {
 		// 检测端口占用
 		err = utils.IsPortAvailable(mi.BindAddress, mi.Port)
@@ -171,15 +172,15 @@ func startCore(profile models.Profile, reload bool) {
 			mi.Port, _ = utils.GetRandomPort(mi.BindAddress)
 			NowConfig.General.MixedPort = mi.Port
 		}
+
 		// 初次加载不能开启tun,不然在windows上会崩
 		NowConfig.General.Tun.Enable = false
-	}
-	go func() {
+
 		// 激活配置
-		executor.ApplyConfig(NowConfig, !reload)
+		executor.ApplyConfig(NowConfig, true)
 		url := fmt.Sprintf("http://%s:%d", mi.BindAddress, mi.Port)
 		_, _, _ = utils.SendGet("https://www.google.com", map[string]string{}, url)
-	}()
+	}
 
 	// 代理开启
 	if mi.Proxy {
