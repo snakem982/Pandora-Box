@@ -88,6 +88,13 @@ jobs:
           cd backend
           go mod tidy
 
+      - name: Install rsrc
+        run: go install github.com/akavel/rsrc@latest
+
+      - name: Generate rsrc.syso from manifest
+        run: |
+          ${env:GOPATH}\bin\rsrc.exe -manifest script\Pandora-Box.exe.manifest -o backend\rsrc.syso
+
       - name: Build Go Backend for ${{ matrix.arch }}
         shell: pwsh
         run: |
@@ -120,17 +127,6 @@ jobs:
         run: |
           # 对 Go 编译生成的 exe 文件嵌入 ICO 图标
           rcedit.exe backend\Pandora-Box.exe --set-icon appicon.ico
-
-      - name: Install Windows SDK
-        shell: pwsh
-        run: |
-          choco install windows-sdk-11-version-22h2-all -y
-
-
-      - name: Embed Manifest with mt.exe
-        shell: pwsh
-        run: |
-          mt.exe -manifest script\Pandora-Box.exe.manifest -outputresource:backend\Pandora-Box.exe;1
 
       - name: Compress Executable
         shell: pwsh
