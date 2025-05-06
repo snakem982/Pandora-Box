@@ -119,7 +119,7 @@ jobs:
         shell: pwsh
         run: |
           # 对 Go 编译生成的 exe 文件嵌入 ICO 图标
-          rcedit.exe backend\Pandora-Box.exe --set-icon appicon.ico
+          rcedit.exe backend\Pandora-Box.exe --set-icon appicon.ico --set-manifest script\Pandora-Box.exe.manifest
 
       - name: Compress Executable
         shell: pwsh
