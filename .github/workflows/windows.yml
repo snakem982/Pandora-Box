@@ -111,7 +111,7 @@ jobs:
           cd backend
           go build -tags=with_gvisor -trimpath `
             -ldflags "-s -w -H=windowsgui" `
-            -o "Pandora-Box.exe" main.go
+            -o "Pandora-Box.exe"
           
           if ($?) {
             Write-Host "Build completed successfully."
