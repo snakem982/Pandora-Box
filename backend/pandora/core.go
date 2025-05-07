@@ -11,6 +11,8 @@ import (
 	"github.com/snakem982/pandora-box/pkg/constant"
 	"github.com/snakem982/pandora-box/pkg/cron"
 	"github.com/snakem982/pandora-box/pkg/utils"
+	"strconv"
+	"strings"
 	"time"
 )
 
@@ -33,16 +35,6 @@ func StartCore(server string, isClient bool) (port int, secret string) {
 	route.Register(handlers.Mihomo)
 	route.Register(handlers.Pandora)
 
-	// 设置地址
-	host := "127.0.0.1"
-
-	// 获取端口
-	if utils.IsPortAvailable(host, 9686) == nil {
-		port = 9686
-	} else {
-		port, _ = utils.GetRandomPort(host)
-	}
-
 	// 获取密钥
 	_ = cache.Get(constant.SecretKey, &secret)
 	if secret == "" {
@@ -50,8 +42,11 @@ func StartCore(server string, isClient bool) (port int, secret string) {
 		_ = cache.Put(constant.SecretKey, secret)
 	}
 
-	cors := route.Cors{AllowOrigins: []string{"*"}, AllowPrivateNetwork: true}
-	route.StartByPandoraBox(host, port, secret, cors)
+	// 启动api
+	apiAddr := route.StartByPandora(false, secret)
+	split := strings.Split(apiAddr, ":")
+	host := split[0]
+	port, _ = strconv.Atoi(split[1])
 	log.Infoln("Routing startup completed")
 
 	// 开启mihomo

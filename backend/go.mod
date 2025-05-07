@@ -10,10 +10,10 @@ require (
 	github.com/gobwas/ws v1.4.0
 	github.com/gofrs/flock v0.12.1
 	github.com/metacubex/bbolt v0.0.0-20240822011022-aed6d4850399
-	github.com/metacubex/mihomo v1.19.5
+	github.com/metacubex/mihomo v1.19.4
 	github.com/nicksnyder/go-i18n/v2 v2.6.0
 	github.com/panjf2000/ants/v2 v2.11.3
-	github.com/sagernet/sing v0.6.9
+	github.com/sagernet/sing v0.6.2
 	github.com/sirupsen/logrus v1.9.3
 	github.com/webview/webview_go v0.0.0-20240831120633-6173450d4dd6
 	golang.org/x/net v0.39.0
@@ -63,25 +63,20 @@ require (
 	github.com/mdlayher/socket v0.5.1 // indirect
 	github.com/metacubex/amneziawg-go v0.0.0-20240922133038-fdf3a4d5a4ab // indirect
 	github.com/metacubex/bart v0.19.0 // indirect
-	github.com/metacubex/chacha v0.1.2 // indirect
-	github.com/metacubex/fswatch v0.1.1 // indirect
+	github.com/metacubex/chacha v0.1.1 // indirect
 	github.com/metacubex/gopacket v1.1.20-0.20230608035415-7e2f98a3e759 // indirect
 	github.com/metacubex/gvisor v0.0.0-20250324165734-5857f47bd43b // indirect
-	github.com/metacubex/nftables v0.0.0-20250503052935-30a69ab87793 // indirect
-	github.com/metacubex/quic-go v0.51.1-0.20250423035655-e3948b36ce14 // indirect
+	github.com/metacubex/quic-go v0.49.1-0.20250212162123-c135a4412996 // indirect
 	github.com/metacubex/randv2 v0.2.0 // indirect
-	github.com/metacubex/sing v0.5.3-0.20250504031621-1f99e54c15b7 // indirect
-	github.com/metacubex/sing-mux v0.3.2 // indirect
-	github.com/metacubex/sing-quic v0.0.0-20250504033022-12115d157edc // indirect
-	github.com/metacubex/sing-shadowsocks v0.2.9 // indirect
-	github.com/metacubex/sing-shadowsocks2 v0.2.3 // indirect
-	github.com/metacubex/sing-shadowtls v0.0.0-20250503063515-5d9f966d17a2 // indirect
-	github.com/metacubex/sing-tun v0.4.6-0.20250503065609-efb9f0beb6f6 // indirect
-	github.com/metacubex/sing-vmess v0.2.1 // indirect
-	github.com/metacubex/sing-wireguard v0.0.0-20250503063753-2dc62acc626f // indirect
-	github.com/metacubex/smux v0.0.0-20250503055512-501391591dee // indirect
-	github.com/metacubex/tfo-go v0.0.0-20250503140532-decbcfccbfdf // indirect
-	github.com/metacubex/utls v1.7.0-alpha.2 // indirect
+	github.com/metacubex/reality v0.0.0-20250219003814-74e8d7850629 // indirect
+	github.com/metacubex/sing-quic v0.0.0-20250404030904-b2cc8aab562c // indirect
+	github.com/metacubex/sing-shadowsocks v0.2.8 // indirect
+	github.com/metacubex/sing-shadowsocks2 v0.2.2 // indirect
+	github.com/metacubex/sing-tun v0.4.6-0.20250408111348-d1d90a8d694b // indirect
+	github.com/metacubex/sing-vmess v0.1.14-0.20250228002636-abc39e113b82 // indirect
+	github.com/metacubex/sing-wireguard v0.0.0-20241126021510-0827d417b589 // indirect
+	github.com/metacubex/tfo-go v0.0.0-20241231083714-66613d49c422 // indirect
+	github.com/metacubex/utls v1.6.8-alpha.4 // indirect
 	github.com/metacubex/wireguard-go v0.0.0-20240922131502-c182e7471181 // indirect
 	github.com/miekg/dns v1.1.65 // indirect
 	github.com/mroth/weightedrand/v2 v2.1.0 // indirect
@@ -93,9 +88,15 @@ require (
 	github.com/power-devops/perfstat v0.0.0-20240221224432-82ca36839d55 // indirect
 	github.com/puzpuzpuz/xsync/v3 v3.5.1 // indirect
 	github.com/quic-go/qpack v0.5.1 // indirect
+	github.com/quic-go/qtls-go1-20 v0.4.1 // indirect
 	github.com/robfig/cron/v3 v3.0.1 // indirect
 	github.com/sagernet/cors v1.2.1 // indirect
+	github.com/sagernet/fswatch v0.1.1 // indirect
 	github.com/sagernet/netlink v0.0.0-20240916134442-83396419aa8b // indirect
+	github.com/sagernet/nftables v0.3.0-beta.4 // indirect
+	github.com/sagernet/sing-mux v0.2.1 // indirect
+	github.com/sagernet/sing-shadowtls v0.1.5 // indirect
+	github.com/sagernet/smux v0.0.0-20231208180855-7041f6ea79e7 // indirect
 	github.com/samber/lo v1.50.0 // indirect
 	github.com/shirou/gopsutil/v4 v4.25.4 // indirect
 	github.com/sina-ghaderi/poly1305 v0.0.0-20220724002748-c5926b03988b // indirect
@@ -126,4 +127,7 @@ require (
 	lukechampine.com/blake3 v1.4.0 // indirect
 )
 
-replace github.com/metacubex/mihomo => github.com/snakem982/mihomo v1.0.42-moshen
+replace (
+	github.com/metacubex/mihomo => github.com/snakem982/mihomo v1.0.33-moshen
+	github.com/sagernet/sing => github.com/metacubex/sing v0.0.0-20250228041610-d94509dc612a
+)
