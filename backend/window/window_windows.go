@@ -349,8 +349,9 @@ func TryAdmin() string {
 	// 尝试提权
 	exePath, _ := os.Executable()
 	tip := "Pandora-Box 需要授权才能使用 TUN 模式。[Pandora-Box requires authorization to enable TUN.]"
+	out := utils.GetUserHomeDir("logs", "px-admin.log")
 	err := RunAsAdmin("Pandora-Box", tip, exePath,
-		"-back=true", "-addr="+server)
+		"-back=true", "-addr="+server, ">", out)
 
 	// 提权失败，普通运行
 	if err != nil {
