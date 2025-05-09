@@ -6,10 +6,12 @@ import {Events} from "@/runtime";
 import {pError, pLoad, pSuccess, pWarning} from "@/util/pLoad";
 import {useSettingStore} from "@/store/settingStore";
 import {pUpdateMihomo} from "@/util/mihomo";
+import {useHomeStore} from "@/store/homeStore";
 
 // 使用store
 const menuStore = useMenuStore();
 const settingStore = useSettingStore();
+const homeStore = useHomeStore();
 
 // 获取当前 Vue 实例的 proxy 对象
 const {proxy} = getCurrentInstance()!;
@@ -151,7 +153,7 @@ Events.On("switchTun", async () => {
 
 
 onMounted(async () => {
-  if (menuStore.tun) {
+  if (homeStore.os != "Windows" && menuStore.tun) {
     await api.waitRunning()
     await tunSwitch()
   }

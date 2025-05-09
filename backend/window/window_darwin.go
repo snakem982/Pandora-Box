@@ -256,6 +256,8 @@ func Init(w webview.WebView) {
 	_ = w.Bind("pxHide", HideWindow)
 	// 打开配置目录
 	_ = w.Bind("pxConfigDir", openConfigDir)
+	// 获取系统
+	_ = w.Bind("pxOs", geOs)
 
 	go func() {
 		time.Sleep(1 * time.Second)
@@ -369,4 +371,8 @@ func TryAdmin() string {
 
 func openConfigDir() {
 	_ = Open(utils.GetUserHomeDir())
+}
+
+func geOs() string {
+	return "MacOS"
 }

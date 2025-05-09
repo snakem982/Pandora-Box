@@ -83,21 +83,13 @@ async function bootstrap() {
     // 设置起始时间 和 操作系统类型
     const homeStore = useHomeStore();
 
-    function getOSFromUserAgent() {
-        const userAgent = navigator.userAgent.toLowerCase();
-
-        if (userAgent.includes("win")) {
-            return "Windows";
-        } else if (userAgent.includes("mac")) {
-            return "MacOS";
-        } else if (userAgent.includes("linux")) {
-            return "Linux";
-        } else {
-            return "Unknown OS";
-        }
+    // 获取系统类型
+    if (window['pxOs']) {
+        const os = await window['pxOs']();
+        homeStore.setOS(os);
     }
 
-    homeStore.setOS(getOSFromUserAgent());
+    // 设置软件开始时间
     homeStore.setStartTime(Date.now());
 
     // 绑定拖拽指令

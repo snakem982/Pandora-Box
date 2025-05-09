@@ -221,6 +221,8 @@ func Init(w webview.WebView) {
 	_ = w.Bind("pxOpen", Open)
 	// 打开配置目录
 	_ = w.Bind("pxConfigDir", openConfigDir)
+	// 获取系统
+	_ = w.Bind("pxOs", geOs)
 }
 
 // SetDockIconBytes 设置任务栏图标
@@ -374,4 +376,8 @@ func openConfigDir() {
 	c := exec.Command(`cmd`, `/c`, `explorer`, utils.GetUserHomeDir())
 	c.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
 	_ = c.Start()
+}
+
+func geOs() string {
+	return "Windows"
 }
