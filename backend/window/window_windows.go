@@ -4,57 +4,131 @@ package window
 #cgo windows CFLAGS: -DUNICODE
 #cgo windows LDFLAGS: -lole32 -lgdi32 -luser32
 #include <windows.h>
+#include <windowsx.h> // For GET_X_LPARAM, GET_Y_LPARAM
 #include <shellapi.h>
 #include <stdlib.h>
 
 static WNDPROC originalWndProc;
 static HWND globalHWND = NULL;
+const int BORDER_WIDTH = 5; // Width of the draggable resize border
 
-// 自定义窗口过程，拦截关闭按钮和调整大小
+// 自定义窗口过程
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
-    if (uMsg == WM_CLOSE) {
-        ShowWindow(hwnd, SW_MINIMIZE); // 关闭按钮改成最小化
-        return 0;
-    }
+    switch (uMsg) {
+        case WM_CLOSE:
+            ShowWindow(hwnd, SW_MINIMIZE); // 关闭按钮改成最小化
+            return 0;
 
-    if (uMsg == WM_SIZE) {
-        // 可以在这里处理窗口大小变化后的操作
-        int width = LOWORD(lParam);
-        int height = HIWORD(lParam);
-        // 可以在此处添加额外的逻辑，例如更新 UI 或其他操作
-    }
+        case WM_NCCALCSIZE:
+            // Prevents the standard frame from being drawn when wParam is TRUE
+            if (wParam == TRUE) {
+                 // If you want to preserve some client area, adjust the NCCALCSIZE_PARAMS structure pointed to by lParam.
+                 // For a completely custom frame, returning 0 tells Windows that the client area occupies the entire window.
+                return 0;
+            }
+            break;
 
+        case WM_NCHITTEST: {
+            // Get the point coordinates for the hit test.
+            POINT ptMouse = { GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam) };
+
+            // Get the window rectangle.
+            RECT rcWindow;
+            GetWindowRect(hwnd, &rcWindow);
+
+            // Get the client rectangle.
+            RECT rcClient;
+            GetClientRect(hwnd, &rcClient);
+            // Convert client rectangle to screen coordinates
+            ClientToScreen(hwnd, (POINT*)&rcClient.left);
+            ClientToScreen(hwnd, (POINT*)&rcClient.right);
+
+
+            // Determine if the cursor is on the resize border.
+            // The BORDER_WIDTH defines how thick the resize handles are.
+            BOOL onLeft = ptMouse.x >= rcWindow.left && ptMouse.x < rcWindow.left + BORDER_WIDTH;
+            BOOL onRight = ptMouse.x < rcWindow.right && ptMouse.x >= rcWindow.right - BORDER_WIDTH;
+            BOOL onTop = ptMouse.y >= rcWindow.top && ptMouse.y < rcWindow.top + BORDER_WIDTH;
+            BOOL onBottom = ptMouse.y < rcWindow.bottom && ptMouse.y >= rcWindow.bottom - BORDER_WIDTH;
+
+            if (onTop && onLeft) return HTTOPLEFT;
+            if (onTop && onRight) return HTTOPRIGHT;
+            if (onBottom && onLeft) return HTBOTTOMLEFT;
+            if (onBottom && onRight) return HTBOTTOMRIGHT;
+            if (onLeft) return HTLEFT;
+            if (onRight) return HTRIGHT;
+            if (onTop) return HTTOP;
+            if (onBottom) return HTBOTTOM;
+
+            // If the cursor is within the client area (but not on the borders we defined),
+            // and you want the main content area to be draggable like a caption,
+            // you can return HTCAPTION.
+            // This example assumes the drag is initiated by a specific UI element via `beginDrag`.
+            // If you want the whole window (or a part of it) to be draggable, return HTCAPTION here.
+            // For instance, if ptMouse is within rcClient after adjusting for borders:
+            // if (ptMouse.x > rcWindow.left + BORDER_WIDTH && ptMouse.x < rcWindow.right - BORDER_WIDTH &&
+            //     ptMouse.y > rcWindow.top + BORDER_WIDTH && ptMouse.y < rcClient.bottom - BORDER_WIDTH) // Assuming client area for caption
+            // {
+            //      // If you have a specific draggable region (e.g., a custom title bar)
+            //      // you'd check if ptMouse is within that region's coordinates.
+            //      // For now, let's assume beginDrag handles caption dragging.
+            // }
+
+
+            // If not on our custom borders or specific drag regions,
+            // let the default procedure handle it, or return HTCLIENT for client area.
+            // For a simple borderless window where dragging is handled by beginDrag,
+            // and resizing by the borders above, areas not hit by borders should be client.
+            // However, to make the window draggable from anywhere *not* a resize border:
+            // This might be too broad if you have interactive elements.
+            // A common pattern is to have a specific area (like a custom title bar) return HTCAPTION.
+            // For now, we will rely on your existing `pxDrag` bind for dragging.
+            // If no resize handle is hit, let the default processing occur, which might return HTCLIENT.
+            LRESULT hit = CallWindowProc(originalWndProc, hwnd, uMsg, wParam, lParam);
+            if (hit == HTCLIENT) {
+                 // If you want the general client area (not resize borders) to be draggable, return HTCAPTION.
+                 // This is a common approach for custom title bars.
+                 // For example, if your "pxDrag" is bound to the entire window body:
+                 // return HTCAPTION;
+            }
+            // Otherwise, return what the original proc decided or HTNOWHERE
+            return hit == HTCLIENT ? HTNOWHERE : hit; // Or HTCLIENT if you don't want to make the whole client area HTCAPTION
+        }
+
+        case WM_SIZE: {
+            // 可以在这里处理窗口大小变化后的操作
+            // int width = LOWORD(lParam);
+            // int height = HIWORD(lParam);
+            // InvalidateRect(hwnd, NULL, TRUE); // May be useful to force repaint
+            break;
+        }
+    }
     return CallWindowProc(originalWndProc, hwnd, uMsg, wParam, lParam);
 }
 
 void setupWindow(HWND hwnd) {
-	// 保存全局 hwnd
-	globalHWND = hwnd;
-    // 保存原始的 WndProc
+    globalHWND = hwnd;
     originalWndProc = (WNDPROC)SetWindowLongPtr(hwnd, GWLP_WNDPROC, (LONG_PTR)WindowProc);
 
-    // 取当前窗口样式
     LONG style = GetWindowLong(hwnd, GWL_STYLE);
+    // Remove caption, sysmenu, standard minimize/maximize buttons, and standard border.
+    // We are removing WS_THICKFRAME as well, as we'll handle resizing via WM_NCHITTEST.
+    style &= ~(WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_BORDER | WS_THICKFRAME);
+    // Ensure it's a popup window if it's top-level, or child if it's meant to be embedded.
+    // WS_POPUP is common for this kind of custom window.
+    // style |= WS_POPUP; // If it's a top-level window. Often set during CreateWindowEx.
 
-    // 移除标题栏、系统菜单、最小化按钮、最大化按钮
-    style &= ~(WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_BORDER);
-
-    // 允许调整窗口大小（保持可调整大小的边框）
-    style |= WS_THICKFRAME;
-
-    // 设置新的窗口样式
     SetWindowLong(hwnd, GWL_STYLE, style);
 
-    // 获取窗口的客户区域（客户端区域）
-    RECT rect;
-    GetClientRect(hwnd, &rect);
-    int clientWidth = rect.right - rect.left;
-    int clientHeight = rect.bottom - rect.top;
-
-    // 重新调整窗口尺寸，确保不出现白边
-    SetWindowPos(hwnd, NULL, 0, 0, clientWidth, clientHeight, SWP_NOMOVE | SWP_NOZORDER | SWP_FRAMECHANGED);
+    // Adjust window size. For a borderless window (no WS_THICKFRAME, no WS_CAPTION),
+    // the client area is the window area.
+    // The initial size is set by webview.SetSize().
+    // We might need to force a redraw or recalculation of styles.
+    SetWindowPos(hwnd, NULL, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED | SWP_SHOWWINDOW);
+    // The call to SetWindowPos with SWP_FRAMECHANGED is important to make the system recognize style changes.
+    // SWP_NOMOVE and SWP_NOSIZE ensure we don't change position/size here,
+    // relying on initial SetSize or subsequent resize operations.
 }
-
 
 // 设置任务栏图标
 void setTaskbarIcon(HWND hwnd, void* data, int length) {
@@ -62,10 +136,12 @@ void setTaskbarIcon(HWND hwnd, void* data, int length) {
     if (hIcon != NULL) {
         SendMessage(hwnd, WM_SETICON, ICON_BIG, (LPARAM)hIcon);
         SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)hIcon);
+        DestroyIcon(hIcon); // Important to destroy the icon handle after setting it
     }
 }
 
 // --- 支持区域拖拽窗口 ---
+// This function is called from Go via w.Bind("pxDrag", ...)
 void beginDrag(HWND hwnd) {
     ReleaseCapture();
     SendMessage(hwnd, WM_NCLBUTTONDOWN, HTCAPTION, 0);
@@ -74,7 +150,7 @@ void beginDrag(HWND hwnd) {
 // 显示窗口
 void showWindow() {
     if (globalHWND != NULL) {
-        ShowWindow(globalHWND, SW_RESTORE); // 从最小化或最大化恢复
+        ShowWindow(globalHWND, SW_RESTORE);
         SetForegroundWindow(globalHWND);
     }
 }
@@ -90,32 +166,25 @@ char* getClipboardText() {
     if (!OpenClipboard(NULL)) {
         return NULL;
     }
-
     HANDLE hData = GetClipboardData(CF_UNICODETEXT);
     if (hData == NULL) {
         CloseClipboard();
         return NULL;
     }
-
     wchar_t* wText = (wchar_t*)GlobalLock(hData);
     if (wText == NULL) {
         CloseClipboard();
         return NULL;
     }
-
-    // 计算需要的缓冲区大小
     int len = lstrlenW(wText);
     int size = WideCharToMultiByte(CP_UTF8, 0, wText, len, NULL, 0, NULL, NULL);
-
     char* buffer = (char*)malloc(size + 1);
     if (buffer != NULL) {
         WideCharToMultiByte(CP_UTF8, 0, wText, len, buffer, size, NULL, NULL);
-        buffer[size] = '\0'; // Null-terminate
+        buffer[size] = '\0';
     }
-
     GlobalUnlock(hData);
     CloseClipboard();
-
     return buffer;
 }
 
@@ -135,19 +204,15 @@ int RunAsAdmin(const wchar_t* appPath, const wchar_t* cmdArgs) {
     sei.lpFile = appPath;
     sei.lpParameters = cmdArgs;
     sei.lpDirectory = NULL;
-    sei.nShow = SW_HIDE;
-
+    sei.nShow = SW_HIDE; // Consider SW_SHOW if you want to see the UAC prompt clearly
     if (!ShellExecuteExW(&sei)) {
         return GetLastError();
     }
-
-	if (sei.hProcess) {
-		CloseHandle(sei.hProcess);
-	}
-
+    if (sei.hProcess) {
+        CloseHandle(sei.hProcess);
+    }
     return 0;
 }
-
 */
 import "C"
 
