@@ -204,6 +204,9 @@ func SetDockIconBytes(w webview.WebView, icon []byte) {
 	}
 }
 
+// RefreshMenu 刷新菜单（空实现，兼容接口）
+func RefreshMenu(lang string) {}
+
 // Drag 支持拖拽窗口（stub 实现，真正拖拽需要较为复杂的 X11 交互）
 func Drag(w webview.WebView) {
 	if w.Window() != nil {
