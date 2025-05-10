@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"context"
 	"crypto/tls"
 	"fmt"
 	"golang.org/x/net/html"
@@ -151,8 +152,11 @@ func FastGet(requestURL string, headers map[string]string, proxyURL string) (*Re
 // 创建正则表达式
 var headPattern = `204|blank|generate|gstatic`
 
-// SendHead 发送 Head 请求
+// SendHead 发送 Head 请求，并保证整个请求不会超过 8 秒
 func SendHead(requestURL string, proxyURL string) (int, error) {
+	// 创建一个带有 8 秒超时的上下文
+	ctx, cancel := context.WithTimeout(context.Background(), 8*time.Second)
+	defer cancel()
 
 	// 设置代理地址
 	proxy, err := url.Parse(proxyURL) // 替换为你的代理地址
@@ -160,24 +164,25 @@ func SendHead(requestURL string, proxyURL string) (int, error) {
 		return 500, fmt.Errorf("解析代理路径失败: %v", err)
 	}
 
-	// 创建Transport并设置代理
+	// 创建 Transport 并设置代理
 	transport := &http.Transport{
 		Proxy: http.ProxyURL(proxy),
 	}
 
-	// 创建HTTP客户端并设置Transport
+	// 创建 HTTP 客户端，并在 context 中执行请求
 	client := &http.Client{
 		Transport: transport,
-		Timeout:   8 * time.Second,
 	}
 
-	// 创建请求
+	// 确定请求方法
 	re, _ := regexp.Compile(headPattern)
 	method := "GET"
 	if re.MatchString(requestURL) {
 		method = "HEAD"
 	}
-	req, err := http.NewRequest(method, requestURL, nil)
+
+	// 创建请求，并绑定到超时上下文
+	req, err := http.NewRequestWithContext(ctx, method, requestURL, nil)
 	if err != nil {
 		return 500, fmt.Errorf("创建请求失败: %v", err)
 	}
@@ -191,12 +196,9 @@ func SendHead(requestURL string, proxyURL string) (int, error) {
 		return 500, fmt.Errorf("发送请求失败: %v", err)
 	}
 	defer func(Body io.ReadCloser) {
-		err := Body.Close()
-		if err != nil {
-
-		}
+		_ = Body.Close()
 	}(resp.Body)
 
-	// 打印响应状态码
+	// 返回响应状态码
 	return resp.StatusCode, nil
 }
