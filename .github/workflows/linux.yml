@@ -1,0 +1,93 @@
+name: Build Linux App
+
+on:
+  push:
+    branches:
+      - v3-alpha
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    permissions: write-all
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        arch: [ amd64, arm64 ]  # 适配 x86_64 和 ARM64 架构
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set Up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'latest'
+
+      - name: Build Frontend
+        run: |
+          cd frontend
+          npm install
+          npm run build
+
+      - name: Install Dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y build-essential imagemagick \
+             libx11-dev xclip xsel
+
+      - name: Set Up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.24'
+
+      - name: Install Go Dependencies
+        run: |
+          cd backend
+          go mod tidy
+
+      - name: Build Go Backend for ${{ matrix.arch }}
+        env:
+          GOARCH: ${{ matrix.arch }}
+          CGO_ENABLED: 1
+          GOOS: linux
+        run: |
+          cd backend
+          go build -tags=with_gvisor -trimpath \
+            -ldflags "-s -w" \
+            -o "Pandora-Box"
+
+          if [ $? -eq 0 ]; then
+            echo "Build completed successfully."
+          else
+            echo "Go build failed."
+            exit 1
+          fi
+
+      - name: Compress Executable
+        run: |
+          if [ -f "backend/Pandora-Box" ]; then
+            tar -czvf "linux-${{ matrix.arch }}.tar.gz" -C backend Pandora-Box
+            echo "Executable compressed successfully."
+          else
+            echo "Executable file not found for compression."
+            exit 1
+          fi
+
+      - name: Upload Artifacts (Compressed Executable)
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-${{ matrix.arch }}.tar.gz
+          path: linux-${{ matrix.arch }}.tar.gz
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v1.0.1-alpha
+          name: v1.0.1-alpha
+          draft: false
+          prerelease: true
+          files: |
+            linux-${{ matrix.arch }}.tar.gz
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
