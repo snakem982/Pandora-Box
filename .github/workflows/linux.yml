@@ -53,7 +53,7 @@ jobs:
           GOOS: linux
         run: |
           cd backend
-          go build -tags=with_gvisor,webkit2_41 -trimpath \
+          go build -tags=with_gvisor,webview.backend.gtk3_webkitgtk401 -trimpath \
             -ldflags "-s -w" \
             -o "Pandora-Box"
 
