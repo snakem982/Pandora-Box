@@ -37,7 +37,7 @@ void setupWindow(HWND hwnd) {
     LONG style = GetWindowLong(hwnd, GWL_STYLE);
 
     // 移除标题栏、系统菜单、最小化按钮、最大化按钮
-    style &= ~(WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX | WS_MAXIMIZEBOX);
+    style &= ~(WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_BORDER);
 
     // 允许调整窗口大小（保持可调整大小的边框）
     style |= WS_THICKFRAME;
