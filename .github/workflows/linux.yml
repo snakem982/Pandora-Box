@@ -34,7 +34,7 @@ jobs:
         run: |
           sudo apt update
           sudo apt install -y build-essential imagemagick \
-             libx11-dev xclip xsel
+             libx11-dev libgtk-3-dev libwebkit2gtk-4.0-dev xclip xsel
 
       - name: Set Up Go
         uses: actions/setup-go@v5
