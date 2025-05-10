@@ -11,6 +11,7 @@ import (
 	"github.com/snakem982/pandora-box/static"
 	"github.com/snakem982/pandora-box/window"
 	webview "github.com/webview/webview_go"
+	"runtime"
 	"sync"
 )
 
@@ -40,7 +41,11 @@ var profilesMenuItem = make(map[string]*systray.MenuItem)
 var modes = []string{"rule", "global", "direct"}
 
 func onReady(w webview.WebView) {
-	systray.SetIcon(TrayIcon)
+	if runtime.GOOS != "linux" {
+		systray.SetIcon(TrayIcon)
+	} else {
+		systray.SetTitle("Px")
+	}
 	systray.SetTooltip("Pandora-Box")
 	systray.SetOnClick(func(menu systray.IMenu) {
 		_ = menu.ShowMenu()
