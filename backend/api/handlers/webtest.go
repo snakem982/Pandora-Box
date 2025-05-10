@@ -121,8 +121,9 @@ func delayWebTest(w http.ResponseWriter, r *http.Request) {
 	pool := utils.NewTimeoutPoolWithDefaults()
 	pool.WaitCount(len(list))
 	for i, web := range list {
+		list[i].Delay = -1
 		url := web.TestUrl
-		pool.Submit(func(done chan struct{}) {
+		pool.SubmitWithTimeout(func(done chan struct{}) {
 			defer func() {
 				if err := recover(); err != nil {
 					log.Errorln("Delay测试失败 URL= %s, 错误: %v", url, err)
@@ -135,14 +136,12 @@ func delayWebTest(w http.ResponseWriter, r *http.Request) {
 			// 获取以毫秒为单位的执行时间
 			elapsed := time.Since(start).Milliseconds()
 			if err != nil {
-				list[i].Delay = -1
+				return
 			}
 			if code != 404 && code != 500 && code != 0 {
 				list[i].Delay = int(elapsed)
-			} else {
-				list[i].Delay = -1
 			}
-		})
+		}, 9*time.Second)
 	}
 	pool.StartAndWait()
 
