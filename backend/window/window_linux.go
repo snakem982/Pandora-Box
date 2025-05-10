@@ -163,8 +163,8 @@ func Init(w webview.WebView) {
 	w.SetSize(1100, 760, webview.HintNone)
 
 	// 调用 C 函数配置窗口（如移除装饰）
-	C.setupWindow(getNativeWindow(w))
-	SetDockIconBytes(w, Icon)
+	//C.setupWindow(getNativeWindow(w))
+	//SetDockIconBytes(w, Icon)
 
 	_ = w.Bind("pxDrag", func() {
 		Drag(w)
@@ -189,7 +189,7 @@ func Init(w webview.WebView) {
 		go exec.Command("xdotool", "windowactivate", "--sync", fmt.Sprintf("%d", w.Window()), "key", "F11").Run()
 	})
 
-	_ = w.Bind("pxShowBar", func() {})
+	//_ = w.Bind("pxShowBar", func() {})
 
 	_ = w.Bind("pxClipboard", GetClipboard)
 	_ = w.Bind("pxOpen", Open)
