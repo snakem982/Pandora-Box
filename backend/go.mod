@@ -127,3 +127,4 @@ require (
 )
 
 replace github.com/metacubex/mihomo => github.com/snakem982/mihomo v1.0.43-moshen
+replace github.com/webview/webview_go => github.com/snakem982/webview_go v0.0.1
