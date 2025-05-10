@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        arch: [ amd64, arm64 ]  # 适配 x86_64 和 ARM64 架构
+        arch: [ amd64 ]  # 适配 x86_64 和 ARM64 架构
 
     steps:
       - name: Checkout Repository
