@@ -34,7 +34,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y build-essential imagemagick \
-             libx11-dev libgtk-3-dev libwebkit2gtk-4.1-dev
+             libx11-dev libgtk-3-dev libwebkit2gtk-4.0-dev pkg-config
 
       - name: Set Up Go
         uses: actions/setup-go@v5
@@ -53,7 +53,7 @@ jobs:
           GOOS: linux
         run: |
           cd backend
-          go build -tags=with_gvisor -trimpath \
+          go build -tags=with_gvisor,webkit2_40 -trimpath \
             -ldflags "-s -w" \
             -o "Pandora-Box"
 
