@@ -7,11 +7,14 @@ import {VitePlugin} from '@electron-forge/plugin-vite';
 import {FusesPlugin} from '@electron-forge/plugin-fuses';
 import {FuseV1Options, FuseVersion} from '@electron/fuses';
 
+const isWindows = process.platform === 'win32';
+const extraResource = isWindows ? ['src-go/px.exe'] : ['src-go/px'];
+
 const config: ForgeConfig = {
     packagerConfig: {
         asar: true,
         icon: 'build/appicon',
-        extraResource: 'src-go/px',
+        extraResource,
     },
     rebuildConfig: {},
     makers: [new MakerSquirrel({}), new MakerZIP({}, ['darwin']), new MakerRpm({}), new MakerDeb({})],

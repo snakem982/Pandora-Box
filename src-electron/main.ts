@@ -70,6 +70,7 @@ const createWindow = () => {
             contextIsolation: true,
         },
         titleBarStyle: 'hiddenInset',
+        hideMenuBar: true,
     });
 
     const isDev = !app.isPackaged;  // 判断是否在开发模式
