@@ -1,0 +1,60 @@
+[
+  {
+    "id": "default",
+    "bg": "linear-gradient(to bottom, #434343, #000000)"
+  },
+  {
+    "id": "azure",
+    "bg": "url('./images/quang.jpg')"
+  },
+  {
+    "id": "carbon",
+    "bg": "url('./images/leon.jpg')"
+  },
+  {
+    "id": "harbor",
+    "bg": "url('./images/harbor.jpg')"
+  },
+  {
+    "id": "cuke",
+    "bg": "url('./images/gua.jpg')"
+  },
+  {
+    "id": "sea",
+    "bg": "url('./images/sea.jpg')"
+  },
+  {
+    "id": "women",
+    "bg": "url('./images/women.jpg')"
+  },
+  {
+    "id": "stars",
+    "bg": "url('./images/stars.jpg')"
+  },
+  {
+    "id": "handle",
+    "bg": "url('./images/handle.jpg')"
+  },
+  {
+    "id": "comics",
+    "bg": [
+      "https://www.loliapi.com/acg/pc/?a=1"
+    ],
+    "rand": true
+  },
+  {
+    "id": "game",
+    "bg": [
+      "https://via.assets.so/game.jpg?w=1920&h=1080"
+    ],
+    "rand": true
+  },
+  {
+    "id": "random",
+    "bg": [
+      "https://bing.img.run/rand.php?a=1",
+      "https://picsum.photos/1920/1080?a=1"
+    ],
+    "rand": true
+  }
+]
