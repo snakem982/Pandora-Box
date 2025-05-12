@@ -70,8 +70,10 @@ const createWindow = () => {
             contextIsolation: true,
         },
         titleBarStyle: 'hiddenInset',
-        autoHideMenuBar: true,
     });
+
+    // 隐藏菜单栏
+    mainWindow.setMenu(null);
 
     const isDev = !app.isPackaged;  // 判断是否在开发模式
 
