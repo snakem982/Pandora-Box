@@ -10,22 +10,23 @@ import {FuseV1Options, FuseVersion} from '@electron/fuses';
 const isWindows = process.platform === 'win32';
 const extraResource = isWindows ? ['src-go/px.exe'] : ['src-go/px'];
 
-// 根据平台选择图标文件路径
-const iconPath =
-    process.platform === 'win32'
-        ? 'build/appicon.ico'
-        : process.platform === 'darwin'
-            ? 'build/appicon.icns'
-            : 'build/appicon.png';
-
 const config: ForgeConfig = {
     packagerConfig: {
         asar: true,
-        icon: iconPath,
+        icon: 'build/appicon',
         extraResource,
     },
     rebuildConfig: {},
-    makers: [new MakerSquirrel({}), new MakerZIP({}, ['darwin']), new MakerRpm({}), new MakerDeb({})],
+    makers: [
+        new MakerSquirrel({}),
+        new MakerZIP({}, ['darwin']),
+        new MakerRpm({
+            options: {icon: 'build/appicon.png'}
+        }),
+        new MakerDeb({
+            options: {icon: 'build/appicon.png'}
+        })
+    ],
     plugins: [
         new VitePlugin({
             // `build` can specify multiple entry builds, which can be Main process, Preload scripts, Worker process, etc.
