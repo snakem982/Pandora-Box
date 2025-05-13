@@ -50,7 +50,7 @@ jobs:
       - name: Build Frontend for ${{ matrix.arch }}
         shell: pwsh
         run: |
-          npm run package
+          npm run make
 
       - name: Compress Executable
         shell: pwsh
