@@ -1,4 +1,4 @@
-import {app, BrowserWindow, ipcMain, Menu} from 'electron';
+import {app, BrowserWindow, ipcMain, Menu, nativeImage, Tray} from 'electron';
 import path from 'node:path';
 import {spawn} from 'child_process';
 import {startServer, storeInfo} from "./server";
@@ -6,6 +6,9 @@ import Store from 'electron-store';
 
 // 是否在开发模式
 const isDev = !app.isPackaged;
+
+// 托盘
+let tray: Electron.CrossProcessExports.Tray;
 
 function initStore(home: string) {
     const store = new Store({
@@ -115,7 +118,7 @@ createMenu([
     }
 ]);
 
-
+// 窗口
 let mainWindow: BrowserWindow;
 const createWindow = () => {
     mainWindow = new BrowserWindow({
@@ -187,8 +190,16 @@ if (!gotTheLock) {
     startServer(resolveReady, startBackend)
 
     app.whenReady().then(async () => {
+        // 设置托盘
+        const trayImage = nativeImage.createFromPath(path.join(__dirname, 'tray.png')).resize({width: 16, height: 16});
+        tray = new Tray(trayImage);
+        tray.setToolTip('Pandora-Box');
+
+        // 等待后端启动
         await waitForReady;
         initStore(storeInfo.home())
+
+        // 启动UI
         console.log('准备就绪，启动窗口，port=', storeInfo.port(), ' secret=', storeInfo.secret());
         createWindow();
     });
