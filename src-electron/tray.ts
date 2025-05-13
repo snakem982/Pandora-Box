@@ -136,6 +136,7 @@ export function initTray(browserWindow: BrowserWindow): void {
     }
     tray = new Tray(trayImage);
     tray.setToolTip('Pandora-Box');
+    tray.setContextMenu(Menu.buildFromTemplate(createTrayMenu()))
 }
 
 
