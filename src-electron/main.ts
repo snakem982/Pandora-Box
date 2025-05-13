@@ -120,17 +120,20 @@ createMenu([
 
 // 窗口
 let mainWindow: BrowserWindow;
+// 屏蔽安全警告
+process.env["ELECTRON_DISABLE_SECURITY_WARNINGS"] = "true";
 const createWindow = () => {
     mainWindow = new BrowserWindow({
         width: 1100,
         height: 760,
         minWidth: 960,
         minHeight: 660,
+        center: true,
         webPreferences: {
-            sandbox: false,
-            disableBlinkFeatures: "Autofill",
             preload: path.join(__dirname, 'preload.js'),
             contextIsolation: true,
+            webSecurity: false,
+            nodeIntegrationInWorker: true
         },
         titleBarStyle: 'hiddenInset',
     });
@@ -204,3 +207,16 @@ if (!gotTheLock) {
         createWindow();
     });
 }
+
+let currentMenu: any
+ipcMain.on('update-tray', (event, newMenu) => {
+    if (tray) {
+        // 释放旧菜单对象
+        if (currentMenu) {
+            currentMenu = null;
+        }
+        // 更新菜单
+        currentMenu = Menu.buildFromTemplate(newMenu);
+        tray.setContextMenu(currentMenu);
+    }
+});
