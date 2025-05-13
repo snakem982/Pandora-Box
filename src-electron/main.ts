@@ -1,8 +1,11 @@
-import {app, BrowserWindow, ipcMain} from 'electron';
+import {app, BrowserWindow, ipcMain, Menu} from 'electron';
 import path from 'node:path';
 import {spawn} from 'child_process';
 import {startServer, storeInfo} from "./server";
 import Store from 'electron-store';
+
+// 是否在开发模式
+const isDev = !app.isPackaged;
 
 function initStore(home: string) {
     const store = new Store({
@@ -23,7 +26,6 @@ function initStore(home: string) {
 
 function getBackendPath() {
     const execName = 'px';
-    const isDev = !app.isPackaged;
 
     return isDev
         ? path.join(__dirname, '../../src-go', execName)
@@ -56,6 +58,64 @@ ipcMain.on('quit-app', () => {
 });
 
 
+// 处理菜单
+const createMenu = (menuTemplate: any) => {
+    if (process.platform === 'darwin') {
+        if (isDev) {
+            menuTemplate.push(
+                {
+                    label: 'View',
+                    submenu: [
+                        {
+                            label: 'Open Developer Tools',
+                            accelerator: 'CmdOrCtrl+Shift+I',
+                            click: () => {
+                                // 获取当前聚焦的窗口
+                                const win = BrowserWindow.getFocusedWindow();
+                                if (win) win.webContents.openDevTools();
+                            }
+                        }
+                    ]
+                }
+            )
+        }
+        const menu = Menu.buildFromTemplate(menuTemplate);
+        Menu.setApplicationMenu(menu);
+    }
+};
+
+ipcMain.on('update-menu', (event, menuTemplate) => {
+    createMenu(menuTemplate);
+});
+
+createMenu([
+    {
+        label: 'Pandora-Box', submenu: [
+            {
+                label: 'Quit', accelerator: 'Cmd+Q', click: () => {
+                    isQuiting = true;
+                    app.quit();
+                }
+            }
+        ]
+    },
+    {
+        label: 'Edit',
+        submenu: [
+            {label: 'Undo', role: 'undo'},
+            {label: 'Redo', role: 'redo'},
+            {type: 'separator'},
+            {label: 'Cut', role: 'cut'},
+            {label: 'Copy', role: 'copy'},
+            {label: 'Paste', role: 'paste'},
+            {label: 'Delete', role: 'delete'},
+            {type: 'separator'},
+            {label: 'Select All', role: 'selectAll'}
+        ]
+    }
+]);
+
+
 let mainWindow: BrowserWindow;
 const createWindow = () => {
     mainWindow = new BrowserWindow({
@@ -74,8 +134,6 @@ const createWindow = () => {
 
     // 隐藏菜单栏
     mainWindow.setMenu(null);
-
-    const isDev = !app.isPackaged;  // 判断是否在开发模式
 
     if (isDev) {
         const filePath = `http://localhost:5173?port=${storeInfo.port()}&secret=${storeInfo.secret()}`;
