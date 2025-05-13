@@ -117,7 +117,7 @@ async function getProfileList() {
 
     Events.Emit({
       name: "profiles",
-      data: list
+      data: toRaw(list)
     })
 
   }
@@ -162,7 +162,7 @@ async function switchProfile(data: any) {
 
       Events.Emit({
         name: "profiles",
-        data: profiles
+        data: toRaw(profiles)
       })
 
       pSuccess(t('profiles.switch.success'))
@@ -277,7 +277,7 @@ async function saveUpdateProfile() {
 
   Events.Emit({
     name: "profiles",
-    data: profiles
+    data: toRaw(profiles)
   })
 }
 
@@ -293,7 +293,7 @@ async function deleteProfile(data: any, index: any) {
     profiles.splice(index, 1)
     Events.Emit({
       name: "profiles",
-      data: profiles
+      data: toRaw(profiles)
     })
   } catch (e) {
     if (e['message']) {
@@ -309,7 +309,7 @@ function sendOrder(data: any) {
   if (wsOrder) {
     Events.Emit({
       name: "profiles",
-      data: data
+      data: toRaw(data)
     })
     wsOrder.send(JSON.stringify(data))
   }

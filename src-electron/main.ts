@@ -1,14 +1,13 @@
-import {app, BrowserWindow, ipcMain, Menu, nativeImage, Tray} from 'electron';
+import {app, BrowserWindow, ipcMain} from 'electron';
 import path from 'node:path';
 import {spawn} from 'child_process';
 import {startServer, storeInfo} from "./server";
 import Store from 'electron-store';
+import {initTray, quitApp} from "./tray";
 
 // 是否在开发模式
 const isDev = !app.isPackaged;
 
-// 托盘
-let tray: Electron.CrossProcessExports.Tray;
 
 function initStore(home: string) {
     const store = new Store({
@@ -54,69 +53,6 @@ function startBackend(addr: string) {
     backend.on('exit', (code) => console.log('Backend exited with code:', code));
 }
 
-let isQuiting = false;
-ipcMain.on('quit-app', () => {
-    isQuiting = true;
-    app.quit();
-});
-
-
-// 处理菜单
-const createMenu = (menuTemplate: any) => {
-    if (process.platform === 'darwin') {
-        if (isDev) {
-            menuTemplate.push(
-                {
-                    label: 'View',
-                    submenu: [
-                        {
-                            label: 'Open Developer Tools',
-                            accelerator: 'CmdOrCtrl+Shift+I',
-                            click: () => {
-                                // 获取当前聚焦的窗口
-                                const win = BrowserWindow.getFocusedWindow();
-                                if (win) win.webContents.openDevTools();
-                            }
-                        }
-                    ]
-                }
-            )
-        }
-        const menu = Menu.buildFromTemplate(menuTemplate);
-        Menu.setApplicationMenu(menu);
-    }
-};
-
-ipcMain.on('update-menu', (event, menuTemplate) => {
-    createMenu(menuTemplate);
-});
-
-createMenu([
-    {
-        label: 'Pandora-Box', submenu: [
-            {
-                label: 'Quit', accelerator: 'Cmd+Q', click: () => {
-                    isQuiting = true;
-                    app.quit();
-                }
-            }
-        ]
-    },
-    {
-        label: 'Edit',
-        submenu: [
-            {label: 'Undo', role: 'undo'},
-            {label: 'Redo', role: 'redo'},
-            {type: 'separator'},
-            {label: 'Cut', role: 'cut'},
-            {label: 'Copy', role: 'copy'},
-            {label: 'Paste', role: 'paste'},
-            {label: 'Delete', role: 'delete'},
-            {type: 'separator'},
-            {label: 'Select All', role: 'selectAll'}
-        ]
-    }
-]);
 
 // 窗口
 let mainWindow: BrowserWindow;
@@ -138,6 +74,9 @@ const createWindow = () => {
         titleBarStyle: 'hiddenInset',
     });
 
+    // 加载托盘
+    initTray(mainWindow)
+
     // 隐藏菜单栏
     mainWindow.setMenu(null);
 
@@ -149,13 +88,6 @@ const createWindow = () => {
         console.log('准备就绪，加载窗口，url=', filePath);
         mainWindow.loadURL(filePath);
     }
-
-    mainWindow.on('close', (event) => {
-        if (!isQuiting) {
-            event.preventDefault();
-            mainWindow.hide();
-        }
-    });
 };
 
 app.on('activate', () => {
@@ -180,8 +112,7 @@ const waitForReady = new Promise<void>((resolve) => {
 // 单例模式
 const gotTheLock = app.requestSingleInstanceLock();
 if (!gotTheLock) {
-    isQuiting = true;
-    app.quit();
+    quitApp()
 } else {
     app.on('second-instance', () => {
         if (mainWindow) {
@@ -193,11 +124,6 @@ if (!gotTheLock) {
     startServer(resolveReady, startBackend)
 
     app.whenReady().then(async () => {
-        // 设置托盘
-        const trayImage = nativeImage.createFromPath(path.join(__dirname, 'tray.png')).resize({width: 16, height: 16});
-        tray = new Tray(trayImage);
-        tray.setToolTip('Pandora-Box');
-
         // 等待后端启动
         await waitForReady;
         initStore(storeInfo.home())
@@ -207,16 +133,3 @@ if (!gotTheLock) {
         createWindow();
     });
 }
-
-let currentMenu: any
-ipcMain.on('update-tray', (event, newMenu) => {
-    if (tray) {
-        // 释放旧菜单对象
-        if (currentMenu) {
-            currentMenu = null;
-        }
-        // 更新菜单
-        currentMenu = Menu.buildFromTemplate(newMenu);
-        tray.setContextMenu(currentMenu);
-    }
-});

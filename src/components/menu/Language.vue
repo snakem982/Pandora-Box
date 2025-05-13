@@ -23,7 +23,7 @@ import {Events} from "@/runtime"
 const menuStore = useMenuStore()
 
 // 国际化
-const {locale} = useI18n();
+const {locale, t} = useI18n();
 
 // 下拉框
 const isDropdownVisible = ref(false);
@@ -47,24 +47,43 @@ const cancelHide = () => {
   clearTimeout(hideTimeout);
 };
 
+// tray 翻译id
+const trayMenuId = [
+  'tray.show',
+  'tray.rule',
+  'tray.global',
+  'tray.direct',
+  'tray.profiles',
+  'tray.proxy',
+  'tray.tun',
+  'tray.quit'
+]
+
+// 发送 tray 翻译
+function sendTranslation() {
+  const translate: any = {}
+  trayMenuId.forEach(item => {
+    translate[item] = t(item)
+  })
+  Events.Emit({
+    name: "translate",
+    data: translate
+  })
+}
+
+
 // 切换语言
 const changeLang = (value: any) => {
   locale.value = value
   menuStore.setLanguage(value)
-  Events.Emit({
-    name: "translate",
-    data: value
-  })
+  sendTranslation()
 }
 
 onMounted(() => {
   // 设置语言
   if (menuStore.language) {
     locale.value = menuStore.language
-    Events.Emit({
-      name: "translate",
-      data: menuStore.language
-    })
+    sendTranslation()
   }
 })
 </script>

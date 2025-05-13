@@ -209,3 +209,13 @@ bg:
   comics: Comics
   game: Game
   random: Random
+
+tray:
+  show: Show window
+  rule: Rule
+  global: Global
+  direct: Direct
+  profiles: Profiles
+  proxy: Proxy
+  tun: TUN
+  quit: Quit

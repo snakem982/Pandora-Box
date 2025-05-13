@@ -3,6 +3,12 @@
 import {clipboard, contextBridge, ipcRenderer, shell} from 'electron';
 import os from 'os';
 
+// tray相关
+contextBridge.exposeInMainWorld('pxTray', {
+    on: (name, callback) => ipcRenderer.on('px_' + name, (_event, value) => callback(value)),
+    emit: (name, value) => ipcRenderer.send('px_' + name, value)
+})
+
 // 缓存接口
 contextBridge.exposeInMainWorld('pxStore', {
     get: (key) => ipcRenderer.invoke('store:get', key),
@@ -31,6 +37,3 @@ contextBridge.exposeInMainWorld('pxClipboard', () => clipboard.readText());
 
 // 打开外部URL地址
 contextBridge.exposeInMainWorld('pxOpen', (url: string) => shell.openExternal(url));
-
-// 退出app
-contextBridge.exposeInMainWorld('px_close', () => ipcRenderer.send('quit-app'));

@@ -210,5 +210,16 @@ bg:
   game: 游戏
   random: 随机
 
+tray:
+  show: 显示窗口
+  rule: 规则
+  global: 全局
+  direct: 直连
+  profiles: 订阅
+  proxy: 系统代理
+  tun: Tun模式
+  quit: 退出
+
+
 
 

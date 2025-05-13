@@ -24,6 +24,7 @@ export function pSuccess(msg: any) {
     ElMessage({
         message: msg,
         type: "success",
+        grouping: true
     });
 }
 
@@ -32,6 +33,7 @@ export function pError(msg: any) {
         message: msg,
         type: "error",
         duration: 5000,
+        grouping: true
     });
 }
 
