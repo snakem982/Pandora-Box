@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/metacubex/mihomo/hub/executor"
 	"github.com/metacubex/mihomo/log"
+	"github.com/snakem982/pandora-box/pkg/cache"
 	"github.com/snakem982/pandora-box/pkg/cron"
 	sys "github.com/snakem982/pandora-box/pkg/sys/proxy"
 	"github.com/snakem982/pandora-box/pkg/utils"
@@ -71,6 +72,7 @@ func AliveJob(name string, server string) {
 }
 
 func exit() {
+	cache.Close()
 	utils.UnlockSingleton()
 	executor.Shutdown()
 	sys.DisableProxy()
