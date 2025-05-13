@@ -10,10 +10,18 @@ import {FuseV1Options, FuseVersion} from '@electron/fuses';
 const isWindows = process.platform === 'win32';
 const extraResource = isWindows ? ['src-go/px.exe'] : ['src-go/px'];
 
+// 根据平台选择图标文件路径
+const iconPath =
+    process.platform === 'win32'
+        ? 'build/appicon.ico'
+        : process.platform === 'darwin'
+            ? 'build/appicon.icns'
+            : 'build/appicon.png';
+
 const config: ForgeConfig = {
     packagerConfig: {
         asar: true,
-        icon: 'build/appicon',
+        icon: iconPath,
         extraResource,
     },
     rebuildConfig: {},

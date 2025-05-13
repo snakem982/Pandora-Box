@@ -55,13 +55,8 @@ jobs:
       - name: Compress Executable
         shell: pwsh
         run: |
-          Compress-Archive -Path out\* -DestinationPath "linux-${{ matrix.arch }}.zip"
-
-      - name: Upload Artifacts (Compressed Executable)
-        uses: actions/upload-artifact@v4
-        with:
-          name: linux-${{ matrix.arch }}.zip
-          path: linux-${{ matrix.arch }}.zip
+          Compress-Archive -Path out\make\deb\* -DestinationPath "linux-${{ matrix.arch }}-deb.zip"
+          Compress-Archive -Path out\make\rpm\* -DestinationPath "linux-${{ matrix.arch }}-rpm.zip"
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
@@ -71,6 +66,7 @@ jobs:
           draft: false
           prerelease: true
           files: |
-            linux-${{ matrix.arch }}.zip
+            linux-${{ matrix.arch }}-deb.zip
+            linux-${{ matrix.arch }}-rpm.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
