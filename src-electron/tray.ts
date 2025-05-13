@@ -172,7 +172,6 @@ onWindow("profiles", function (profiles) {
     const key = 'tray.profiles'
     const pList = []
     for (let profile of profiles) {
-        console.log("profile=======", profile)
         pList.push({label: profile.title, type: 'radio', checked: !!profile.selected})
     }
     trayMap.get(key).submenu = pList
