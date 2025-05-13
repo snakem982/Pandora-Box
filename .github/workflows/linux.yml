@@ -1,16 +1,16 @@
-name: Build Windows App
+name: Build Linux App
 
 on:
   push:
-#    branches:
-#      - v3
+    branches:
+      - v3
     tags:
       - 'v*'
 
 jobs:
   build:
     permissions: write-all
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         arch: [ amd64,arm64 ]
@@ -45,7 +45,7 @@ jobs:
           GOARCH: ${{ matrix.arch }}
         run: |
           cd src-go
-          go build -tags=with_gvisor -trimpath -ldflags "-s -w" -o px.exe
+          go build -tags=with_gvisor -trimpath -ldflags "-s -w" -o px
 
       - name: Build Frontend for ${{ matrix.arch }}
         shell: pwsh
@@ -55,13 +55,13 @@ jobs:
       - name: Compress Executable
         shell: pwsh
         run: |
-          Compress-Archive -Path out\* -DestinationPath "windows-${{ matrix.arch }}.zip"
+          Compress-Archive -Path out\* -DestinationPath "linux-${{ matrix.arch }}.zip"
 
       - name: Upload Artifacts (Compressed Executable)
         uses: actions/upload-artifact@v4
         with:
-          name: windows-${{ matrix.arch }}.zip
-          path: windows-${{ matrix.arch }}.zip
+          name: linux-${{ matrix.arch }}.zip
+          path: linux-${{ matrix.arch }}.zip
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
@@ -71,6 +71,6 @@ jobs:
           draft: false
           prerelease: true
           files: |
-            windows-${{ matrix.arch }}.zip
+            linux-${{ matrix.arch }}.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
