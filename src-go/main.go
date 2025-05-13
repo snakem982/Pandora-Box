@@ -5,6 +5,7 @@ import (
 	"github.com/metacubex/mihomo/hub/executor"
 	"github.com/metacubex/mihomo/log"
 	"github.com/snakem982/pandora-box/pandora"
+	sys "github.com/snakem982/pandora-box/pkg/sys/proxy"
 	"github.com/snakem982/pandora-box/pkg/utils"
 	"os"
 	"os/signal"
@@ -39,9 +40,10 @@ func main() {
 	select {
 	case <-termSign:
 		log.Warnln("received termination signal")
-		executor.Shutdown()
-		utils.UnlockSingleton()
 		pandora.Release()
+		utils.UnlockSingleton()
+		executor.Shutdown()
+		sys.DisableProxy()
 	}
 
 }
