@@ -117,7 +117,7 @@ async function getProfileList() {
 
     Events.Emit({
       name: "profiles",
-      data: toRaw(list)
+      data: list
     })
 
   }

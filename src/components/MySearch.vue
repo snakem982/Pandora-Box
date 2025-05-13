@@ -3,6 +3,7 @@ import {useRouter} from "vue-router";
 import {debounce} from "lodash";
 import createApi from "@/api";
 import {useProxiesStore} from "@/store/proxiesStore";
+import {Events} from "@/runtime";
 
 // 获取当前 Vue 实例的 proxy 对象
 const {proxy} = getCurrentInstance()!;
@@ -78,9 +79,9 @@ onMounted(() => {
   }
 });
 
-// 最小化
+// 最小化到托盘
 const mini = () => {
-  if (window["pxHide"]) window["pxHide"]()
+  Events.Emit({name: "hide", data: true});
 }
 
 // 设置代理

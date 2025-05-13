@@ -75,8 +75,14 @@ let currentMenu: any
 // 当前窗口
 let mainWindow: BrowserWindow
 
+// 显示窗口
+function showWindow() {
+    mainWindow.show();
+    app.dock?.show();
+}
+
 const trayMap = new Map();
-trayMap.set('tray.show', {id: 'tray.show', label: '显示窗口', type: 'normal', click: () => mainWindow.show()});
+trayMap.set('tray.show', {id: 'tray.show', label: '显示窗口', type: 'normal', click: showWindow});
 trayMap.set('tray.rule', {id: 'tray.rule', label: '规则', type: 'radio', checked: true});
 trayMap.set('tray.global', {id: 'tray.global', label: '全局', type: 'radio', checked: false});
 trayMap.set('tray.direct', {id: 'tray.direct', label: '直连', type: 'radio', checked: false});
@@ -122,7 +128,12 @@ export function initTray(browserWindow: BrowserWindow): void {
     });
 
     // 初始化tray
-    const trayImage = nativeImage.createFromPath(path.join(__dirname, 'tray.png')).resize({width: 16, height: 16});
+    let trayImage: any;
+    if (process.platform === 'darwin') {
+        trayImage = nativeImage.createFromPath(path.join(__dirname, 'tray.png')).resize({width: 16, height: 16});
+    } else {
+        trayImage = nativeImage.createFromPath(path.join(__dirname, 'tray.png')).resize({width: 32, height: 32});
+    }
     tray = new Tray(trayImage);
     tray.setToolTip('Pandora-Box');
 }
@@ -177,6 +188,10 @@ onWindow("profiles", function (profiles) {
     trayMap.get(key).submenu = pList
     currentMenu = Menu.buildFromTemplate(createTrayMenu());
     tray.setContextMenu(currentMenu);
+})
+onWindow("hide", function () {
+    mainWindow.hide();
+    app.dock?.hide()
 })
 
 
