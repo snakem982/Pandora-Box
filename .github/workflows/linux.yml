@@ -55,8 +55,8 @@ jobs:
       - name: Compress Executable
         shell: pwsh
         run: |
-          Compress-Archive -Path out\make\deb\* -DestinationPath "linux-${{ matrix.arch }}-deb.zip"
-          Compress-Archive -Path out\make\rpm\* -DestinationPath "linux-${{ matrix.arch }}-rpm.zip"
+          Compress-Archive -Path out\make\deb\x64\* -DestinationPath "linux-${{ matrix.arch }}-deb.zip"
+          Compress-Archive -Path out\make\rpm\x64\* -DestinationPath "linux-${{ matrix.arch }}-rpm.zip"
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1

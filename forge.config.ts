@@ -1,6 +1,6 @@
 import type {ForgeConfig} from '@electron-forge/shared-types';
 import {MakerSquirrel} from '@electron-forge/maker-squirrel';
-import {MakerZIP} from '@electron-forge/maker-zip';
+import {MakerDMG} from '@electron-forge/maker-dmg';
 import {MakerDeb} from '@electron-forge/maker-deb';
 import {MakerRpm} from '@electron-forge/maker-rpm';
 import {VitePlugin} from '@electron-forge/plugin-vite';
@@ -18,13 +18,25 @@ const config: ForgeConfig = {
     },
     rebuildConfig: {},
     makers: [
-        new MakerSquirrel({}),
-        new MakerZIP({}, ['darwin']),
+        new MakerSquirrel({
+            authors: 'snakem982',
+            description: 'A Simple Mihomo GUI'
+        }),
+        new MakerDMG({
+            icon: 'build/appicon.icns',
+        }),
         new MakerRpm({
-            options: {icon: 'build/appicon.png'}
+            options: {
+                icon: 'build/appicon.png',
+                homepage: 'https://github.com/snakem982/Pandora-Box',
+            }
         }),
         new MakerDeb({
-            options: {icon: 'build/appicon.png'}
+            options: {
+                icon: 'build/appicon.png',
+                maintainer: 'snakem982',
+                homepage: 'https://github.com/snakem982/Pandora-Box',
+            }
         })
     ],
     plugins: [
