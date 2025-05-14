@@ -53,7 +53,7 @@ function tryRunAsAdmin(executable: string, args: string[], callback: (success: b
     switch (process.platform) {
         case 'darwin': {
             // macOS 使用 AppleScript 提权
-            const tip = "Pandora-Box 需要授权才能使用 TUN 模式。\n[Pandora-Box requires authorization to enable TUN.]";
+            const tip = "Px 需要授权才能使用 TUN 模式。\n[Px requires authorization to enable TUN.]";
             const command = `${[executable, ...args].map(escapeShell).join(' ')}`;
             // 使用 `with prompt` 来直接在授权对话框中显示提示信息
             const script = `
