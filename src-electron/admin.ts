@@ -78,20 +78,67 @@ function tryRunAsAdmin(executable: string, args: string[], callback: (success: b
         }
 
         case 'linux': {
-            // Linux 使用 pkexec 或 sudo 提权
-            const tryMethods = ['/usr/bin/pkexec', '/usr/bin/gksudo', '/usr/bin/kdesudo', 'sudo'];
-            for (const method of tryMethods) {
-                if (fs.existsSync(method)) {
-                    const elevated = spawn(method, [executable, ...args], {
-                        stdio: 'inherit',
-                    });
-                    elevated.on('exit', (code) => callback(code === 0));
-                    elevated.on('error', () => callback(false));
-                    break;
+            // Linux: 提权方式依次尝试 pkexec → gksudo → kdesudo → sudo
+            const env = {
+                ...process.env,
+                PATH: process.env.PATH || "/usr/bin:/bin:/usr/sbin:/sbin",
+                DISPLAY: process.env.DISPLAY,
+                XAUTHORITY: process.env.XAUTHORITY,
+            };
+
+            const methods = [
+                '/usr/bin/pkexec',
+                '/usr/bin/gksudo',
+                '/usr/bin/kdesudo',
+                '/usr/bin/sudo',
+                'pkexec',
+                'gksudo',
+                'kdesudo',
+                'sudo'
+            ];
+
+            let tried = false;
+
+            (function tryNext(index = 0) {
+                if (index >= methods.length) {
+                    console.error("No available elevation method succeeded.");
+                    callback(false);
+                    return;
                 }
-            }
+
+                const method = methods[index];
+                if (!fs.existsSync(method) && !method.includes('/')) {
+                    // Skip fallback names like 'sudo' if not full path
+                    return tryNext(index + 1);
+                }
+
+                console.log(`Trying to elevate with: ${method}`);
+                tried = true;
+
+                const elevated = spawn(method, [executable, ...args], {
+                    env,
+                    stdio: 'inherit',
+                });
+
+                elevated.on('error', (err) => {
+                    console.error(`Error using ${method}:`, err);
+                    tryNext(index + 1);
+                });
+
+                elevated.on('exit', (code, signal) => {
+                    if (code === 0) {
+                        console.log(`${method} succeeded`);
+                        callback(true);
+                    } else {
+                        console.warn(`${method} exited with code ${code} or signal ${signal}`);
+                        tryNext(index + 1);
+                    }
+                });
+            })();
+
             break;
         }
+
 
         default:
             console.error('不支持的平台:', process.platform);
