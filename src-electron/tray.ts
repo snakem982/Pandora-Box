@@ -278,7 +278,7 @@ onWindow("close", function () {
     app.quit()
 })
 onWindow("max", function () {
-    mainWindow.isMaximized() ? mainWindow.restore() : mainWindow.maximize()
+    mainWindow.isMaximized() ? mainWindow.unmaximize() : mainWindow.maximize()
 })
 onWindow("min", function () {
     mainWindow.minimize()

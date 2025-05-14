@@ -8,7 +8,7 @@
         <span>–</span>
       </div>
       <div class="button maximize" @click="toggleMaximize">
-        <span v-if="!isMaximized">+</span>
+        <span v-if="!isMaximized">□</span>
         <span v-else>↘︎</span>
       </div>
     </div>
@@ -37,6 +37,7 @@ function pxMinimize() {
 }
 
 function toggleMaximize() {
+  isMaximized.value = !isMaximized.value;
   Events.Emit({name: "max", data: true});
 }
 </script>
