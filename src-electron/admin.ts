@@ -79,10 +79,17 @@ function tryRunAsAdmin(executable: string, args: string[], callback: (success: b
 
         case 'linux': {
             // Linux 使用 pkexec 或 sudo 提权
-            const cmd = fs.existsSync('/usr/bin/pkexec') ? 'pkexec' : 'sudo';
-            const elevated = spawn(cmd, [executable, ...args]);
-            elevated.on('exit', (code) => callback(code === 0));
-            elevated.on('error', () => callback(false));
+            const tryMethods = ['/usr/bin/pkexec', '/usr/bin/gksudo', '/usr/bin/kdesudo', 'sudo'];
+            for (const method of tryMethods) {
+                if (fs.existsSync(method)) {
+                    const elevated = spawn(method, [executable, ...args], {
+                        stdio: 'inherit',
+                    });
+                    elevated.on('exit', (code) => callback(code === 0));
+                    elevated.on('error', () => callback(false));
+                    break;
+                }
+            }
             break;
         }
 
