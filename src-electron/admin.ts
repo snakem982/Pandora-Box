@@ -21,7 +21,7 @@ export function startBackend(addr: string) {
 
     // 只在 Windows 和 Linux 平台上弹出提权提示，macOS 也需要显示提权提示
     if (process.platform !== 'darwin') {
-        const tip = "Pandora-Box 需要授权才能使用 TUN 模式。\n[Pandora-Box requires authorization to enable TUN.]";
+        const tip = "Px 需要授权才能使用 TUN 模式。\n[Px requires authorization to enable TUN.]";
         const confirmed = dialog.showMessageBoxSync({
             type: 'info',
             buttons: ['继续', '取消'],
