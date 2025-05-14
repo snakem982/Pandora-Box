@@ -23,7 +23,6 @@ const createMenu = (menuTemplate: any) => {
                     submenu: [
                         {
                             label: 'Open Developer Tools',
-                            accelerator: 'CmdOrCtrl+Shift+I',
                             click: () => {
                                 // 获取当前聚焦的窗口
                                 const win = BrowserWindow.getFocusedWindow();
@@ -32,7 +31,6 @@ const createMenu = (menuTemplate: any) => {
                         },
                         {
                             label: 'Reload',
-                            accelerator: 'CmdOrCtrl+R',
                             click: () => {
                                 const win = BrowserWindow.getFocusedWindow();
                                 if (win) win.webContents.reload();
@@ -40,7 +38,6 @@ const createMenu = (menuTemplate: any) => {
                         },
                         {
                             label: 'Force Reload',
-                            accelerator: 'CmdOrCtrl+Shift+R',
                             click: () => {
                                 const win = BrowserWindow.getFocusedWindow();
                                 if (win) win.webContents.reloadIgnoringCache();

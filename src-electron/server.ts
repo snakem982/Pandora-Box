@@ -1,5 +1,6 @@
 import express from "express";
 import path from "path";
+import log from './log';
 
 const app = express();
 
@@ -34,9 +35,9 @@ app.get("/pxStore", (req, res) => {
     storedSecret = secret as string;
     storedHome = home ? decodeURIComponent(home as string) : "";
 
-    console.log("已获取 port:", storedPort);
-    console.log("已获取 secret:", storedSecret);
-    console.log("已获取 home:", storedHome);
+    log.info("已获取 port:", storedPort);
+    log.info("已获取 secret:", storedSecret);
+    log.info("已获取 home:", storedHome);
     res.status(200).send("ok");
 
     if (goFlag) {

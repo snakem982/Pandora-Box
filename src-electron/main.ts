@@ -4,6 +4,7 @@ import {startServer, storeInfo} from "./server";
 import Store from 'electron-store';
 import {initTray, quitApp} from "./tray";
 import {startBackend} from "./admin";
+import log from './log';
 
 // 是否在开发模式
 const isDev = !app.isPackaged;
@@ -22,7 +23,7 @@ function initStore(home: string) {
         store.set(key, value);
     });
 
-    console.log("数据库初始化完成")
+    log.info("数据库初始化完成")
 }
 
 // 主窗口
@@ -97,7 +98,7 @@ if (!gotTheLock) {
         initStore(storeInfo.home())
 
         // 启动UI
-        console.log('准备就绪，启动窗口，port=', storeInfo.port(), ' secret=', storeInfo.secret());
+        log.info('准备就绪，启动窗口，port=', storeInfo.port(), ' secret=', storeInfo.secret());
         createWindow();
     });
 }

@@ -2,6 +2,7 @@ import path from "node:path";
 import {spawn} from "child_process";
 import {app, dialog} from "electron";
 import fs from "node:fs";
+import log from './log';
 
 // 是否在开发模式
 const isDev = !app.isPackaged;
@@ -14,36 +15,80 @@ function getBackendPath() {
         : path.join(process.resourcesPath, execName);
 }
 
+// 检查是否有管理员权限
+function checkAdminRights(callback: any) {
+    const platform = process.platform;
+
+    if (platform === 'win32') {
+        // Windows 上检查管理员权限
+        const command = spawn('net', ['session']);
+
+        command.on('error', (error) => {
+            callback(false);  // 如果运行时出错，认为没有管理员权限
+        });
+
+        command.on('exit', (code) => {
+            if (code === 0) {
+                callback(true);   // 如果退出码为 0，表示有管理员权限
+            } else {
+                callback(false);  // 否则没有管理员权限
+            }
+        });
+
+    } else if (platform === 'darwin' || platform === 'linux') {
+        // macOS 或 Linux 上检查是否为 root 用户
+        if (process.getuid && process.getuid() === 0) {
+            callback(true);  // 有管理员权限
+        } else {
+            callback(false); // 没有管理员权限
+        }
+    } else {
+        // 其他平台默认认为没有管理员权限
+        callback(false);
+    }
+}
+
 // 开启后端
 export function startBackend(addr: string) {
     const backendPath = getBackendPath();
     const args = ['-addr=' + addr];
 
-    // 只在 Windows 和 Linux 平台上弹出提权提示，macOS 也需要显示提权提示
-    if (process.platform !== 'darwin') {
-        const tip = "Px 需要授权才能使用 TUN 模式。\n[Px requires authorization to enable TUN.]";
-        const confirmed = dialog.showMessageBoxSync({
-            type: 'info',
-            buttons: ['继续', '取消'],
-            defaultId: 0,
-            cancelId: 1,
-            title: 'Pandora-Box',
-            message: tip,
-        });
+    // 检查管理权限
+    checkAdminRights((isAdmin: boolean) => {
+        if (isAdmin) {
+            log.info('有管理员权限');
 
-        if (confirmed === 1) {
-            // 用户取消提权 → 普通模式启动
-            console.log('用户取消了提权，使用普通权限启动');
             startNormally(backendPath, args);
-            return;
-        }
-    }
+        } else {
+            log.info('没有管理员权限');
 
-    // 尝试以管理员权限运行，失败则降级
-    tryRunAsAdmin(backendPath, args, (success) => {
-        if (!success) {
-            console.log('管理员权限启动失败，使用普通模式启动');
-            startNormally(backendPath, args);
+            // 只在 Windows 和 Linux 平台上弹出提权提示，macOS 也需要显示提权提示
+            if (process.platform !== 'darwin') {
+                const tip = "Px 需要授权才能使用 TUN 模式。\n[Px requires authorization to enable TUN.]";
+                const confirmed = dialog.showMessageBoxSync({
+                    type: 'info',
+                    buttons: ['继续', '取消'],
+                    defaultId: 0,
+                    cancelId: 1,
+                    title: 'Pandora-Box',
+                    message: tip,
+                });
+
+                if (confirmed === 1) {
+                    // 用户取消提权 → 普通模式启动
+                    log.info('用户取消了提权，使用普通权限启动');
+                    startNormally(backendPath, args);
+                    return;
+                }
+            }
+
+            // 尝试以管理员权限运行，失败则降级
+            tryRunAsAdmin(backendPath, args, (success) => {
+                if (!success) {
+                    log.info('管理员权限启动失败，使用普通模式启动');
+                    startNormally(backendPath, args);
+                }
+            });
         }
     });
 }
@@ -101,7 +146,7 @@ function tryRunAsAdmin(executable: string, args: string[], callback: (success: b
 
             (function tryNext(index = 0) {
                 if (index >= methods.length) {
-                    console.error("No available elevation method succeeded.");
+                    log.error("No available elevation method succeeded.");
                     callback(false);
                     return;
                 }
@@ -112,7 +157,7 @@ function tryRunAsAdmin(executable: string, args: string[], callback: (success: b
                     return tryNext(index + 1);
                 }
 
-                console.log(`Trying to elevate with: ${method}`);
+                log.info(`Trying to elevate with: ${method}`);
                 tried = true;
 
                 const elevated = spawn(method, [executable, ...args], {
@@ -121,16 +166,16 @@ function tryRunAsAdmin(executable: string, args: string[], callback: (success: b
                 });
 
                 elevated.on('error', (err) => {
-                    console.error(`Error using ${method}:`, err);
+                    log.error(`Error using ${method}:`, err);
                     tryNext(index + 1);
                 });
 
                 elevated.on('exit', (code, signal) => {
                     if (code === 0) {
-                        console.log(`${method} succeeded`);
+                        log.info(`${method} succeeded`);
                         callback(true);
                     } else {
-                        console.warn(`${method} exited with code ${code} or signal ${signal}`);
+                        log.warn(`${method} exited with code ${code} or signal ${signal}`);
                         tryNext(index + 1);
                     }
                 });
@@ -141,7 +186,7 @@ function tryRunAsAdmin(executable: string, args: string[], callback: (success: b
 
 
         default:
-            console.error('不支持的平台:', process.platform);
+            log.error('不支持的平台:', process.platform);
             callback(false);
     }
 }
@@ -152,15 +197,15 @@ function startNormally(executable: string, args: string[]) {
     });
 
     backend.stdout.on('data', (data) => {
-        // console.log(`[backend stdout]: ${data}`);
+        // log.info(`[backend stdout]: ${data}`);
     });
 
     backend.stderr.on('data', (data) => {
-        console.error(`[backend stderr]: ${data}`);
+        log.error(`[backend stderr]: ${data}`);
     });
 
-    backend.on('error', (err) => console.error('Backend error:', err));
-    backend.on('exit', (code) => console.log('Backend exited with code:', code));
+    backend.on('error', (err) => log.error('Backend error:', err));
+    backend.on('exit', (code) => log.info('Backend exited with code:', code));
 }
 
 function escapeShell(cmd: string): string {
