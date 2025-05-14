@@ -66,12 +66,12 @@ function tryRunAsAdmin(executable: string, args: string[], callback: (success: b
         }
 
         case 'win32': {
-            // Windows 使用 PowerShell 提权
+            // Windows 使用 PowerShell 提权并隐藏窗口
             const psArgs = [
                 '-Command',
-                `Start-Process -FilePath '${executable}' -ArgumentList '${args.join(' ')}' -Verb RunAs`
+                `Start-Process -FilePath '${executable}' -ArgumentList '${args.join(' ')}' -Verb RunAs -WindowStyle Hidden`
             ];
-            const ps = spawn('powershell.exe', psArgs, {windowsHide: true});
+            const ps = spawn('powershell.exe', psArgs);
             ps.on('exit', (code) => callback(code === 0));
             ps.on('error', () => callback(false));
             break;
