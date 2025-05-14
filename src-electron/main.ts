@@ -8,7 +8,7 @@ import {startBackend} from "./admin";
 // 是否在开发模式
 const isDev = !app.isPackaged;
 
-
+// 初始化数据库
 function initStore(home: string) {
     const store = new Store({
         cwd: path.join(home, 'px-electron.db')
@@ -25,9 +25,7 @@ function initStore(home: string) {
     console.log("数据库初始化完成")
 }
 
-
-
-// 窗口
+// 主窗口
 let mainWindow: BrowserWindow;
 // 屏蔽安全警告
 process.env["ELECTRON_DISABLE_SECURITY_WARNINGS"] = "true";
@@ -63,19 +61,6 @@ const createWindow = () => {
     }
 };
 
-app.on('activate', () => {
-    if (mainWindow && !mainWindow.isVisible()) {
-        mainWindow.show();
-    }
-});
-
-app.on('window-all-closed', () => {
-    if (process.platform !== 'darwin') {
-        app.quit();
-    }
-});
-
-
 // 等待 backend 传来的 port 和 secret
 let resolveReady: () => void;
 const waitForReady = new Promise<void>((resolve) => {
@@ -87,13 +72,23 @@ const gotTheLock = app.requestSingleInstanceLock();
 if (!gotTheLock) {
     quitApp()
 } else {
+    // 试图启动第二个应用实例
     app.on('second-instance', () => {
         if (mainWindow) {
-            if (mainWindow.isMinimized()) mainWindow.restore();
+            mainWindow.show();
+            app.dock?.show();
             mainWindow.focus();
         }
     });
 
+    // 监听应用被激活
+    app.on('activate', () => {
+        if (mainWindow && !mainWindow.isVisible()) {
+            mainWindow.show();
+        }
+    });
+
+    // 启动前端静态服务
     startServer(resolveReady, startBackend)
 
     app.whenReady().then(async () => {
