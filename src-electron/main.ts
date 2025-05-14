@@ -43,7 +43,11 @@ const createWindow = () => {
             webSecurity: false,
             nodeIntegrationInWorker: true
         },
-        titleBarStyle: 'hiddenInset',
+        // expose window controls in Windows/Linux
+        ...(process.platform !== 'darwin' ? {
+            titleBarStyle: 'hidden',
+            titleBarOverlay: true
+        } : {titleBarStyle: 'hiddenInset'})
     });
 
     // 加载托盘

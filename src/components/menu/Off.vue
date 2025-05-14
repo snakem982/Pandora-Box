@@ -46,7 +46,7 @@ const cancelHide = () => {
 
 // 退出
 const quit = () => {
-  Events.Emit({name: "close", data: true})
+  Events.Emit({name: "quit", data: true})
 }
 
 </script>

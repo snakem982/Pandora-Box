@@ -37,3 +37,8 @@ contextBridge.exposeInMainWorld('pxClipboard', () => clipboard.readText());
 
 // 打开外部URL地址
 contextBridge.exposeInMainWorld('pxOpen', (url: string) => shell.openExternal(url));
+
+// 控制标题栏
+// if (process.platform !== 'darwin') {
+//     contextBridge.exposeInMainWorld('pxShowBar', () => console.log('pxShowBar'));
+// }

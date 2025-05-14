@@ -1,5 +1,5 @@
 <template>
-  <div id="titleBar"  v-if="isWindows">
+  <div id="titleBar" v-if="isWindows">
     <div id="window-controls">
       <div class="button close" @click="pxClose">
         <span>×</span>
@@ -16,28 +16,28 @@
 </template>
 
 <script setup lang="ts">
+import {Events} from "@/runtime";
+
 const isMaximized = ref(false)
 const isWindows = ref(false)
 
 onMounted(() => {
+  // @ts-ignore
   if (window["pxShowBar"]) {
     isWindows.value = true;
   }
 })
 
 function pxClose() {
-  if (window["pxClose"]) window["pxClose"]()
+  Events.Emit({name: "close", data: true});
 }
 
 function pxMinimize() {
-  if (window["pxMinimize"]) window["pxMinimize"]()
+  Events.Emit({name: "min", data: true});
 }
 
 function toggleMaximize() {
-  if (window["pxToggleMaximize"]) {
-    window["pxToggleMaximize"]()
-    isMaximized.value = !isMaximized.value
-  }
+  Events.Emit({name: "max", data: true});
 }
 </script>
 

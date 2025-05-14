@@ -224,7 +224,6 @@ function emitWindow(name: string, ...value: any[]) {
 
 
 // 监听消息
-onWindow("close", quitApp)
 onWindow("translate", function (trayOptions) {
     for (const [key, value] of Object.entries(trayOptions)) {
         trayMap.get(key).label = value
@@ -268,9 +267,21 @@ onWindow("profiles", function (profiles) {
     currentMenu = Menu.buildFromTemplate(createTrayMenu());
     tray.setContextMenu(currentMenu);
 })
+
+// 窗口控制
+onWindow("quit", quitApp)
 onWindow("hide", function () {
     mainWindow.hide();
     app.dock?.hide()
+})
+onWindow("close", function () {
+    app.quit()
+})
+onWindow("max", function () {
+    mainWindow.isMaximized() ? mainWindow.restore() : mainWindow.maximize()
+})
+onWindow("min", function () {
+    mainWindow.minimize()
 })
 
 
