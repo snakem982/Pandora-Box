@@ -2,8 +2,8 @@ name: Build Linux App
 
 on:
   push:
-#    branches:
-#      - v3
+    branches:
+      - v3
     tags:
       - 'v*'
 
@@ -38,6 +38,12 @@ jobs:
         run: |
           cd src-go
           go mod tidy
+
+      - name: Get Latest Geo
+        run: |
+          wget -O src-go/internal/em/geoip.metadb https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geoip.metadb
+          wget -O src-go/internal/em/GeoSite.dat https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geosite.dat
+          wget -O src-go/internal/em/GeoLite2-ASN.mmdb https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/GeoLite2-ASN.mmdb
 
       - name: Build Backend for ${{ matrix.arch }}
         shell: pwsh
