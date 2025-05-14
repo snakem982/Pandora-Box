@@ -50,13 +50,10 @@ jobs:
       - name: Build Frontend for ${{ matrix.arch }}
         shell: pwsh
         run: |
-          # 将传入的 matrix.arch 保存到变量中
           $arch = "${{ matrix.arch }}"
-          # 如果是 amd64，则转换为 x64，Electron Forge 才能识别
           if ($arch -eq "amd64") {
             $arch = "x64"
           }
-          # 输出转换结果供调试用（可选）
           Write-Host "Using arch: $arch"
           npm run make -- --arch=$arch
 
@@ -64,8 +61,12 @@ jobs:
       - name: Compress Executable
         shell: pwsh
         run: |
-          Compress-Archive -Path out\make\deb\x64\* -DestinationPath "linux-${{ matrix.arch }}-deb.zip"
-          Compress-Archive -Path out\make\rpm\x64\* -DestinationPath "linux-${{ matrix.arch }}-rpm.zip"
+          $arch = "${{ matrix.arch }}"
+          if ($arch -eq "amd64") {
+            $arch = "x64"
+          }
+          Compress-Archive -Path out\make\deb\$arch\* -DestinationPath "linux-${{ matrix.arch }}-deb.zip"
+          Compress-Archive -Path out\make\rpm\$arch\* -DestinationPath "linux-${{ matrix.arch }}-rpm.zip"
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
