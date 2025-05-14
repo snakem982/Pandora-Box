@@ -47,11 +47,6 @@ jobs:
           cd src-go
           go build -tags=with_gvisor -trimpath -ldflags "-s -w" -o px.exe
 
-      - name: Install Wixtoolset
-        shell: pwsh
-        run: |
-          choco install wixtoolset  --version=3.14.0 -y
-
       - name: Build Frontend for ${{ matrix.arch }}
         shell: pwsh
         run: |
