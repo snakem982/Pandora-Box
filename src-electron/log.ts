@@ -38,5 +38,8 @@ export default {
     },
     getLogFilePath: () => {
         return logFilePath;
+    },
+    getHomeDir: () => {
+        return path.join(userHomeDir, 'Pandora-Box-V3');
     }
 };

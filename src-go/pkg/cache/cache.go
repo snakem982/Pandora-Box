@@ -15,11 +15,8 @@ import (
 var BName = []byte("Pandora-Box")
 var BDb *bbolt.DB
 
-func GetDBInstance(isClient bool) *bbolt.DB {
+func GetDBInstance() *bbolt.DB {
 	path := utils.GetUserHomeDir(constant.DefaultServerDB)
-	if isClient {
-		path = utils.GetUserHomeDir(constant.DefaultClientDB)
-	}
 
 	var err error
 	BDb, err = bbolt.Open(path, os.ModePerm, nil)

@@ -22,15 +22,12 @@ import (
 )
 
 // Init meta 启动前的初始化
-func Init(isClient bool) {
+func Init() {
 	// 设置工作目录
 	C.SetHomeDir(utils.GetUserHomeDir())
 
 	// 设置日志输出目录
 	logName := "px-server.log"
-	if isClient {
-		logName = "px-client.log"
-	}
 	logFilePath := utils.GetUserHomeDir("logs", logName)
 	f, err := utils.CreateFileForAppend(logFilePath)
 	if err != nil {
@@ -47,13 +44,13 @@ func Init(isClient bool) {
 	}
 
 	// 设置cache db
-	db := cache.GetDBInstance(isClient)
+	db := cache.GetDBInstance()
 	if db == nil {
 		os.Exit(1)
 	}
 
 	// 输出日志
-	log.Infoln("[CacheDB] initialized,isClient %v", isClient)
+	log.Infoln("[CacheDB] initialized")
 	log.Infoln("[HomePath] is %s", utils.GetUserHomeDir())
 
 	// 释放资源文件

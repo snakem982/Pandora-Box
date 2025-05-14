@@ -6,7 +6,6 @@ const app = express();
 
 let storedPort: string | undefined;
 let storedSecret: string | undefined;
-let storedHome: string | undefined;
 let listenAddr: string | undefined;
 let goFlag: Function;
 
@@ -33,11 +32,9 @@ app.get("/pxStore", (req, res) => {
 
     storedPort = port as string;
     storedSecret = secret as string;
-    storedHome = home ? decodeURIComponent(home as string) : "";
 
     log.info("已获取 port:", storedPort);
     log.info("已获取 secret:", storedSecret);
-    log.info("已获取 home:", storedHome);
     res.status(200).send("ok");
 
     if (goFlag) {
@@ -65,6 +62,5 @@ export const startServer = (c1: Function, c2: Function) => {
 export const storeInfo = {
     port: () => storedPort,
     secret: () => storedSecret,
-    home: () => storedHome,
     listenAddr: () => listenAddr,
 }

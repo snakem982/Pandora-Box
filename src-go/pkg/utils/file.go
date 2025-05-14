@@ -7,7 +7,17 @@ import (
 	"os"
 	"os/user"
 	"path/filepath"
+	"sync"
 )
+
+var HomeDir string
+var once sync.Once
+
+func InitHomeDir(homeDir string) {
+	once.Do(func() {
+		HomeDir = homeDir
+	})
+}
 
 // FileExists 检查文件是否存在
 func FileExists(filePath string) bool {
@@ -121,6 +131,10 @@ func ReadFile(filePath string) (string, error) {
 
 // GetUserHomeDir 获取当前用户的根目录
 func GetUserHomeDir(paths ...string) string {
+	if HomeDir != "" {
+		return filepath.Join(append([]string{HomeDir}, paths...)...)
+	}
+
 	// 尝试使用 os.UserHomeDir（Go 1.12+ 提供的函数）
 	if home, err := os.UserHomeDir(); err == nil {
 		return filepath.Join(append([]string{home, constant.DefaultWorkDir}, paths...)...)

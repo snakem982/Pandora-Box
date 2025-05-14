@@ -51,7 +51,7 @@ function checkAdminRights(callback: any) {
 // 开启后端
 export function startBackend(addr: string) {
     const backendPath = getBackendPath();
-    const args = ['-addr=' + addr];
+    const args = ['-addr=' + addr, '-home=' + encodeURIComponent(log.getHomeDir())];
 
     // 检查管理权限
     checkAdminRights((isAdmin: boolean) => {
@@ -105,6 +105,7 @@ function tryRunAsAdmin(executable: string, args: string[], callback: (success: b
                 do shell script "${command}" with administrator privileges with prompt "${tip}"
             `;
             const osa = spawn('osascript', ['-e', script]);
+            log.info("[Admin] 启动px命令行：", osa.spawnargs);
             osa.on('exit', (code) => callback(code === 0));
             osa.on('error', () => callback(false));
             break;
@@ -117,6 +118,7 @@ function tryRunAsAdmin(executable: string, args: string[], callback: (success: b
                 `Start-Process -FilePath '${executable}' -ArgumentList '${args.join(' ')}' -Verb RunAs -WindowStyle Hidden`
             ];
             const ps = spawn('powershell.exe', psArgs);
+            log.info("[Admin] 启动px命令行：", ps.spawnargs);
             ps.on('exit', (code) => callback(code === 0));
             ps.on('error', () => callback(false));
             break;
@@ -164,6 +166,7 @@ function tryRunAsAdmin(executable: string, args: string[], callback: (success: b
                     env,
                     stdio: 'inherit',
                 });
+                log.info("[Admin] 启动px命令行：", elevated.spawnargs);
 
                 elevated.on('error', (err) => {
                     log.error(`Error using ${method}:`, err);
@@ -195,6 +198,8 @@ function startNormally(executable: string, args: string[]) {
     const backend = spawn(executable, args, {
         stdio: ['ignore', 'pipe', 'pipe']
     });
+
+    log.info("[Normal] 启动px命令行：", backend.spawnargs);
 
     backend.stdout.on('data', (data) => {
         // log.info(`[backend stdout]: ${data}`);

@@ -11,12 +11,11 @@ import (
 	"github.com/snakem982/pandora-box/pkg/constant"
 	"github.com/snakem982/pandora-box/pkg/cron"
 	"github.com/snakem982/pandora-box/pkg/utils"
-	"net/url"
 	"time"
 )
 
-func Init(isClient bool) {
-	internal.Init(isClient)
+func Init() {
+	internal.Init()
 }
 
 func Release() {
@@ -58,8 +57,7 @@ func StartCore(server string, isClient bool) (port int, secret string) {
 
 	// 进行回调
 	if server != "" {
-		encodedHome := url.QueryEscape(utils.GetUserHomeDir())
-		callbackUrl := fmt.Sprintf("http://%s/pxStore?port=%v&secret=%v&home=%v", server, port, secret, encodedHome)
+		callbackUrl := fmt.Sprintf("http://%s/pxStore?port=%v&secret=%v", server, port, secret)
 		for {
 			log.Infoln("向地址发送数据：%s", callbackUrl)
 			body, _, err := utils.SendGet(callbackUrl, map[string]string{}, "")

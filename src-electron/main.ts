@@ -95,7 +95,7 @@ if (!gotTheLock) {
 
         // 等待后端启动后初始化前端数据库
         await waitForReady;
-        initStore(storeInfo.home())
+        initStore(log.getHomeDir())
 
         // 启动UI
         log.info('准备就绪，启动窗口，port=', storeInfo.port(), ' secret=', storeInfo.secret());
