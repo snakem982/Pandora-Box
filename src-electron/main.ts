@@ -88,11 +88,11 @@ if (!gotTheLock) {
         }
     });
 
-    // 启动前端静态服务
-    startServer(resolveReady, startBackend)
-
     app.whenReady().then(async () => {
-        // 等待后端启动
+        // 启动前端静态服务
+        startServer(resolveReady, startBackend)
+
+        // 等待后端启动后初始化前端数据库
         await waitForReady;
         initStore(storeInfo.home())
 
