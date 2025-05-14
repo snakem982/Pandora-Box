@@ -47,6 +47,11 @@ jobs:
           cd src-go
           go build -tags=with_gvisor -trimpath -ldflags "-s -w" -o px.exe
 
+      - name: Install Wixtoolset
+        shell: pwsh
+        run: |
+          choco install wixtoolset  --version=3.14.0 -y
+
       - name: Build Frontend for ${{ matrix.arch }}
         shell: pwsh
         run: |
@@ -65,7 +70,7 @@ jobs:
             $arch = "x64"
           }
           Compress-Archive -Path out\Pandora-Box*\* -DestinationPath "windows-${{ matrix.arch }}-app.zip"
-          Compress-Archive -Path out\make\squirrel.windows\$arch\*.exe -DestinationPath "windows-${{ matrix.arch }}-setup.zip"
+          Compress-Archive -Path out\make\* -DestinationPath "windows-${{ matrix.arch }}-msi.zip"
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
@@ -76,6 +81,6 @@ jobs:
           prerelease: true
           files: |
             windows-${{ matrix.arch }}-app.zip
-            windows-${{ matrix.arch }}-setup.zip
+            windows-${{ matrix.arch }}-msi.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

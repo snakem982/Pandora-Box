@@ -1,5 +1,5 @@
 import type {ForgeConfig} from '@electron-forge/shared-types';
-import {MakerSquirrel} from '@electron-forge/maker-squirrel';
+import {MakerWix} from '@electron-forge/maker-wix';
 import {MakerDMG} from '@electron-forge/maker-dmg';
 import {MakerDeb} from '@electron-forge/maker-deb';
 import {MakerRpm} from '@electron-forge/maker-rpm';
@@ -21,9 +21,10 @@ const config: ForgeConfig = {
     },
     rebuildConfig: {},
     makers: [
-        new MakerSquirrel({
-            authors: 'snakem982',
-            description: 'A Simple Mihomo GUI'
+        new MakerWix({
+            manufacturer: 'snakem982',
+            description: 'A Simple Mihomo GUI',
+            icon: 'build/appicon.ico'
         }),
         new MakerDMG({
             icon: 'build/appicon.icns',
