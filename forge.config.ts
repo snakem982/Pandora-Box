@@ -15,6 +15,9 @@ const config: ForgeConfig = {
         asar: true,
         icon: 'build/appicon',
         extraResource,
+        extendInfo: {
+            LSMinimumSystemVersion: "10.13.0"
+        }
     },
     rebuildConfig: {},
     makers: [

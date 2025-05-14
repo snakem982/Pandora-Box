@@ -56,7 +56,7 @@ jobs:
         shell: pwsh
         run: |
           Compress-Archive -Path out\make\* -DestinationPath "macos-${{ matrix.arch }}-dmg.zip"
-          Compress-Archive -Path out\Pandora-Box-darwin-x64\* -DestinationPath "macos-${{ matrix.arch }}-app.zip"
+          Compress-Archive -Path out\Pandora-Box*\* -DestinationPath "macos-${{ matrix.arch }}-app.zip"
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
