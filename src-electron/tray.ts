@@ -29,6 +29,22 @@ const createMenu = (menuTemplate: any) => {
                                 const win = BrowserWindow.getFocusedWindow();
                                 if (win) win.webContents.openDevTools();
                             }
+                        },
+                        {
+                            label: 'Reload',
+                            accelerator: 'CmdOrCtrl+R',
+                            click: () => {
+                                const win = BrowserWindow.getFocusedWindow();
+                                if (win) win.webContents.reload();
+                            }
+                        },
+                        {
+                            label: 'Force Reload',
+                            accelerator: 'CmdOrCtrl+Shift+R',
+                            click: () => {
+                                const win = BrowserWindow.getFocusedWindow();
+                                if (win) win.webContents.reloadIgnoringCache();
+                            }
                         }
                     ]
                 }
@@ -81,14 +97,67 @@ function showWindow() {
     app.dock?.show();
 }
 
-const trayMap = new Map();
-trayMap.set('tray.show', {id: 'tray.show', label: '显示窗口', type: 'normal', click: showWindow});
-trayMap.set('tray.rule', {id: 'tray.rule', label: '规则', type: 'radio', checked: true});
-trayMap.set('tray.global', {id: 'tray.global', label: '全局', type: 'radio', checked: false});
-trayMap.set('tray.direct', {id: 'tray.direct', label: '直连', type: 'radio', checked: false});
+// 切换规则
+function switchMode(menuItem, mode) {
+    if (!menuItem.checked) {
+        menuItem.checked = true
+        return
+    }
+    emitWindow("switchMode", mode);
+}
+
+// 切换配置
+function switchProfiles(menuItem, profile) {
+    if (!menuItem.checked) {
+        menuItem.checked = true
+        return
+    }
+    emitWindow("switchProfiles", profile);
+}
+
+const trayMap: Map<any, any> = new Map();
+trayMap.set('tray.show', {
+    id: 'tray.show',
+    label: '显示窗口',
+    type: 'normal',
+    click: showWindow
+});
+trayMap.set('tray.rule', {
+    id: 'tray.rule',
+    label: '规则',
+    type: 'checkbox',
+    checked: false,
+    click: (menuItem) => switchMode(menuItem, 'rule')
+});
+trayMap.set('tray.global', {
+    id: 'tray.global',
+    label: '全局',
+    type: 'checkbox',
+    checked: false,
+    click: (menuItem) => switchMode(menuItem, 'global')
+});
+trayMap.set('tray.direct', {
+    id: 'tray.direct',
+    label: '直连',
+    type: 'checkbox',
+    checked: false,
+    click: (menuItem) => switchMode(menuItem, 'direct')
+});
 trayMap.set('tray.profiles', {id: 'tray.profiles', label: '订阅', submenu: []});
-trayMap.set('tray.proxy', {id: 'tray.proxy', label: '系统代理', type: 'checkbox', checked: false});
-trayMap.set('tray.tun', {id: 'tray.tun', label: 'Tun模式', type: 'checkbox', checked: false});
+trayMap.set('tray.proxy', {
+    id: 'tray.proxy',
+    label: '系统代理',
+    type: 'checkbox',
+    checked: false,
+    click: () => emitWindow("switchProxy")
+});
+trayMap.set('tray.tun', {
+    id: 'tray.tun',
+    label: 'Tun模式',
+    type: 'checkbox',
+    checked: false,
+    click: () => emitWindow("switchTun")
+});
 trayMap.set('tray.quit', {id: 'tray.quit', label: '退出', type: 'normal', click: quitApp});
 
 const createTrayMenu = () => [
@@ -150,13 +219,14 @@ function onWindow(name, cb) {
 }
 
 // 发送消息到浏览器
-function emitWindow(name, value) {
+function emitWindow(name: string, ...value: any[]) {
     if (mainWindow) {
-        mainWindow.webContents.send('px_' + name, value)
+        mainWindow.webContents.send('px_' + name, ...value);
     }
 }
 
-// 监听请求
+
+// 监听消息
 onWindow("close", quitApp)
 onWindow("translate", function (trayOptions) {
     for (const [key, value] of Object.entries(trayOptions)) {
@@ -166,6 +236,12 @@ onWindow("translate", function (trayOptions) {
     tray.setContextMenu(currentMenu);
 })
 onWindow("mode", function (value) {
+    currentMenu.getMenuItemById('tray.rule').checked = false;
+    currentMenu.getMenuItemById('tray.global').checked = false;
+    currentMenu.getMenuItemById('tray.direct').checked = false;
+    trayMap.get('tray.rule').checked = false;
+    trayMap.get('tray.global').checked = false;
+    trayMap.get('tray.direct').checked = false;
     const key = 'tray.' + value
     currentMenu.getMenuItemById(key).checked = true;
     trayMap.get(key).checked = true
@@ -184,7 +260,12 @@ onWindow("profiles", function (profiles) {
     const key = 'tray.profiles'
     const pList = []
     for (let profile of profiles) {
-        pList.push({label: profile.title, type: 'radio', checked: !!profile.selected})
+        pList.push({
+            label: profile.title,
+            type: 'checkbox',
+            checked: !!profile.selected,
+            click: (menuItem) => switchProfiles(menuItem, profile)
+        })
     }
     trayMap.get(key).submenu = pList
     currentMenu = Menu.buildFromTemplate(createTrayMenu());

@@ -102,12 +102,14 @@ async function tunSwitch() {
   const admin = await api.getAdmin();
   if (!admin.data) {
     pWarning(t("tun-warning"));
+    Events.Emit({name: "tun", data: false});
     return
   }
 
   // 添加配置后执行
   const select = await selected()
   if (!select) {
+    Events.Emit({name: "tun", data: false});
     return
   }
 

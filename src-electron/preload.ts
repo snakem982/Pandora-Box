@@ -5,8 +5,8 @@ import os from 'os';
 
 // tray相关
 contextBridge.exposeInMainWorld('pxTray', {
-    on: (name, callback) => ipcRenderer.on('px_' + name, (_event, value) => callback(value)),
-    emit: (name, value) => ipcRenderer.send('px_' + name, value)
+    on: (name, callback) => ipcRenderer.on('px_' + name, (_event, ...value: any[]) => callback(...value)),
+    emit: (name: string, ...value: any[]) => ipcRenderer.send('px_' + name, ...value)
 })
 
 // 缓存接口

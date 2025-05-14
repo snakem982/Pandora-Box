@@ -24,7 +24,8 @@ const webStore = useWebStore();
 
 // 模式切换
 Events.On("switchMode", (ev: any) => {
-  menuStore.rule = ev[0];
+  console.log("switchMode=====", ev);
+  menuStore.rule = ev;
 });
 watch(
     () => menuStore.rule,
@@ -36,7 +37,7 @@ watch(
 
 // 配置切换
 Events.On("switchProfiles", async (ev: any) => {
-  const data = ev[0];
+  const data = ev;
 
   await pLoad(t('profiles.switch.ing'), async () => {
     try {
