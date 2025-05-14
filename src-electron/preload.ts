@@ -39,6 +39,6 @@ contextBridge.exposeInMainWorld('pxClipboard', () => clipboard.readText());
 contextBridge.exposeInMainWorld('pxOpen', (url: string) => shell.openExternal(url));
 
 // 控制标题栏
-// if (process.platform !== 'darwin') {
-//     contextBridge.exposeInMainWorld('pxShowBar', () => console.log('pxShowBar'));
-// }
+if (process.platform !== 'darwin') {
+    contextBridge.exposeInMainWorld('pxShowBar', () => console.log('pxShowBar'));
+}

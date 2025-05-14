@@ -45,8 +45,7 @@ const createWindow = () => {
         },
         // expose window controls in Windows/Linux
         ...(process.platform !== 'darwin' ? {
-            titleBarStyle: 'hidden',
-            titleBarOverlay: true
+            titleBarStyle: 'hidden'
         } : {titleBarStyle: 'hiddenInset'})
     });
 
