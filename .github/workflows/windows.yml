@@ -55,8 +55,7 @@ jobs:
             $arch = "x64"
           }
           Write-Host "Using arch: $arch"
-          npm run make -- --arch=$arch
-
+          npx electron-forge make --arch=$arch
 
       - name: Compress Executable
         shell: pwsh
@@ -65,7 +64,7 @@ jobs:
           if ($arch -eq "amd64") {
             $arch = "x64"
           }
-          Compress-Archive -Path out\Pandora-Box-win32-$arch\* -DestinationPath "windows-${{ matrix.arch }}-app.zip"
+          Compress-Archive -Path out\Pandora-Box*\* -DestinationPath "windows-${{ matrix.arch }}-app.zip"
           Compress-Archive -Path out\make\squirrel.windows\$arch\*.exe -DestinationPath "windows-${{ matrix.arch }}-setup.zip"
 
       - name: Create GitHub Release
