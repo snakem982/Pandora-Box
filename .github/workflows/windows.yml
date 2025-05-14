@@ -65,7 +65,7 @@ jobs:
             $arch = "x64"
           }
           Compress-Archive -Path out\Pandora-Box*\* -DestinationPath "windows-${{ matrix.arch }}-app.zip"
-          Compress-Archive -Path out\make\* -DestinationPath "windows-${{ matrix.arch }}-msi.zip"
+          Compress-Archive -Path out\make\wix\$arch\* -DestinationPath "windows-${{ matrix.arch }}-msi.zip"
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
