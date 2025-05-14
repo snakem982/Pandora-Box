@@ -1,9 +1,9 @@
 import {app, BrowserWindow, ipcMain} from 'electron';
 import path from 'node:path';
-import {spawn} from 'child_process';
 import {startServer, storeInfo} from "./server";
 import Store from 'electron-store';
 import {initTray, quitApp} from "./tray";
+import {startBackend} from "./admin";
 
 // 是否在开发模式
 const isDev = !app.isPackaged;
@@ -25,33 +25,6 @@ function initStore(home: string) {
     console.log("数据库初始化完成")
 }
 
-
-function getBackendPath() {
-    const execName = 'px';
-
-    return isDev
-        ? path.join(__dirname, '../../src-go', execName)
-        : path.join(process.resourcesPath, execName);
-}
-
-function startBackend(addr: string) {
-    const backendPath = getBackendPath();
-
-    const backend = spawn(backendPath, ['-addr=' + addr], {
-        stdio: ['ignore', 'pipe', 'pipe']
-    });
-
-    backend.stdout.on('data', () => {
-        // console.log(`[backend stdout]: ${data}`);
-    });
-
-    backend.stderr.on('data', (data) => {
-        console.error(`[backend stderr]: ${data}`);
-    });
-
-    backend.on('error', (err) => console.error('Backend error:', err));
-    backend.on('exit', (code) => console.log('Backend exited with code:', code));
-}
 
 
 // 窗口

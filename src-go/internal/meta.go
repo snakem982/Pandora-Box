@@ -57,15 +57,13 @@ func Init(isClient bool) {
 	log.Infoln("[HomePath] is %s", utils.GetUserHomeDir())
 
 	// 释放资源文件
-	if isClient {
-		_, _ = utils.SaveFile(utils.GetUserHomeDir("geoip.metadb"), GeoIp)
-		_, _ = utils.SaveFile(utils.GetUserHomeDir("GeoSite.dat"), GeoSite)
-		_, _ = utils.SaveFile(utils.GetUserHomeDir("ASN.mmdb"), ASN)
+	_, _ = utils.SaveFile(utils.GetUserHomeDir("geoip.metadb"), GeoIp)
+	_, _ = utils.SaveFile(utils.GetUserHomeDir("GeoSite.dat"), GeoSite)
+	_, _ = utils.SaveFile(utils.GetUserHomeDir("ASN.mmdb"), ASN)
 
-		GeoIp = nil
-		GeoSite = nil
-		ASN = nil
-	}
+	GeoIp = nil
+	GeoSite = nil
+	ASN = nil
 }
 
 var NowConfig *config.Config
