@@ -47,8 +47,8 @@ jobs:
         shell: pwsh
         run: |
           git fetch --tags
-          VERSION=$(git describe --tags --abbrev=0)
-          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          $VERSION = git describe --tags --abbrev=0
+          Add-Content -Path $env:GITHUB_ENV -Value "VERSION=$VERSION"
 
       - name: Build Backend for ${{ matrix.arch }}
         shell: pwsh
