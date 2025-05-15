@@ -6,7 +6,7 @@ import (
 	"github.com/metacubex/mihomo/hub/executor"
 	"github.com/metacubex/mihomo/log"
 	"github.com/metacubex/mihomo/tunnel/statistic"
-	"github.com/snakem982/pandora-box/internal"
+	"github.com/snakem982/pandora-box/api"
 	sys "github.com/snakem982/pandora-box/pkg/sys/proxy"
 	"github.com/snakem982/pandora-box/pkg/utils"
 	"net/http"
@@ -33,7 +33,7 @@ func PandoraRouter() chi.Router {
 }
 
 func getPandoraVersion(w http.ResponseWriter, r *http.Request) {
-	render.JSON(w, r, render.M{"version": internal.PandoraVersion})
+	render.JSON(w, r, render.M{"version": api.Version})
 }
 
 func enableProxy(w http.ResponseWriter, r *http.Request) {

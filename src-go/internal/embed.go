@@ -23,9 +23,6 @@ var GeoSite []byte
 //go:embed em/GeoLite2-ASN.mmdb
 var ASN []byte
 
-//go:embed em/version.txt
-var PandoraVersion string
-
 //go:embed em/webtest.json
 var DefaultWebTest []byte
 

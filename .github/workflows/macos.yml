@@ -2,8 +2,6 @@ name: Build MacOS App
 
 on:
   push:
-    branches:
-      - v3
     tags:
       - 'v*'
 
@@ -45,13 +43,20 @@ jobs:
           wget -O src-go/internal/em/GeoSite.dat https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geosite.dat
           wget -O src-go/internal/em/GeoLite2-ASN.mmdb https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/GeoLite2-ASN.mmdb
 
+      - name: Get Tag Version
+        shell: pwsh
+        run: |
+          git fetch --tags
+          VERSION=$(git describe --tags --abbrev=0)
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+
       - name: Build Backend for ${{ matrix.arch }}
         shell: pwsh
         env:
           GOARCH: ${{ matrix.arch }}
         run: |
           cd src-go
-          go build -tags=with_gvisor -trimpath -ldflags "-s -w" -o px
+          go build -tags=with_gvisor -trimpath -ldflags "-s -w -X github.com/snakem982/pandora-box/api.Version=${VERSION}" -o px
 
       - name: Build Frontend for ${{ matrix.arch }}
         shell: pwsh
@@ -71,8 +76,8 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: v1.0.1-alpha
-          name: v1.0.1-alpha
+          tag_name: ${VERSION}
+          name: ${VERSION}
           draft: false
           prerelease: true
           files: |
