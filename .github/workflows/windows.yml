@@ -47,7 +47,7 @@ jobs:
 
       - name: Get Tag Version
         run: |
-          git fetch --tags
+          git fetch --tags --force
           VERSION=$(git describe --tags --abbrev=0)
           echo "VERSION=$VERSION" >> $GITHUB_ENV
 
