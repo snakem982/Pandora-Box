@@ -1,12 +1,12 @@
 <div align="center">
-<img src="build/appicon.png"  style="width:160px" />
+<img src="build/appicon.png"  style="width:160px">
 <h1>Pandora-Box</h1>
 <p>一个简易的 Mihomo 桌面客户端</p>
 </div>
 
-# 新版须知
+## 下载地址
 
-[下载APP体验版](https://github.com/snakem982/Pandora-Box/releases/tag/v1.0.1-alpha)
+[下载APP](https://github.com/snakem982/Pandora-Box/releases/latest)
 
 ## 功能特点
 
@@ -33,15 +33,10 @@
 ## 提示 Px 需要网络接入
 - 点击 允许 即可
 
-## macos 软件报错“损坏的文件”，处理办法
+## macos 常见问题汇总
+- [mac.md](doc/mac/mac.md)
 
-打开终端，输入以下命令，后面是app的具体路径，不知道？可以直接将app拖入终端即可看到路径
-
-```shell
-xattr -rd com.apple.quarantine Pandora-Box.app
-```
-
-## 新版的主要改进是什么
+## 新版的主要改进
 
 - 1、主要是界面改版，支持背景切换、语言切换、拖拽导入
 - 2、顶部搜索当前配置节点，进行快速切换
