@@ -7,11 +7,11 @@ on:
 
 jobs:
   build:
-    permissions: write-all
     runs-on: windows-latest
+    permissions: write-all
     strategy:
       matrix:
-        arch: [ amd64,arm64 ]
+        arch: [amd64, arm64]
 
     steps:
       - name: Checkout Repository
@@ -37,13 +37,12 @@ jobs:
           cd src-go
           go mod tidy
 
-      - name: Get Latest Geo
+      - name: Download Geo Files
         shell: pwsh
         run: |
-          choco install wget --no-progress
-          wget -O src-go/internal/em/geoip.metadb https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geoip.metadb
-          wget -O src-go/internal/em/GeoSite.dat https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geosite.dat
-          wget -O src-go/internal/em/GeoLite2-ASN.mmdb https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/GeoLite2-ASN.mmdb
+          Invoke-WebRequest -Uri https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geoip.metadb -OutFile src-go/internal/em/geoip.metadb
+          Invoke-WebRequest -Uri https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geosite.dat -OutFile src-go/internal/em/GeoSite.dat
+          Invoke-WebRequest -Uri https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/GeoLite2-ASN.mmdb -OutFile src-go/internal/em/GeoLite2-ASN.mmdb
 
       - name: Get Tag Version
         shell: bash
@@ -57,7 +56,9 @@ jobs:
           GOARCH: ${{ matrix.arch }}
         run: |
           cd src-go
-          go build -tags=with_gvisor -trimpath -ldflags "-s -w -X github.com/snakem982/pandora-box/api.Version=${VERSION}" -o px.exe
+          go build -tags=with_gvisor -trimpath `
+            -ldflags "-s -w -X github.com/snakem982/pandora-box/api.Version=$env:VERSION" `
+            -o px.exe
 
       - name: Build Frontend for ${{ matrix.arch }}
         shell: pwsh
@@ -69,7 +70,7 @@ jobs:
           Write-Host "Using arch: $arch"
           npx electron-forge make --arch=$arch
 
-      - name: Compress Executable
+      - name: Compress Executables
         shell: pwsh
         run: |
           $arch = "${{ matrix.arch }}"
@@ -82,8 +83,8 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: ${VERSION}
-          name: ${VERSION}
+          tag_name: ${{ env.VERSION }}
+          name: ${{ env.VERSION }}
           draft: false
           prerelease: false
           files: |

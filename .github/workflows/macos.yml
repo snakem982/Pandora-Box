@@ -7,11 +7,11 @@ on:
 
 jobs:
   build:
-    permissions: write-all
     runs-on: macos-latest
+    permissions: write-all
     strategy:
       matrix:
-        arch: [ amd64,arm64 ]
+        arch: [amd64, arm64]
 
     steps:
       - name: Checkout Repository
@@ -32,12 +32,11 @@ jobs:
           go-version: '1.24'
 
       - name: Install Backend Dependencies
-        shell: pwsh
         run: |
           cd src-go
           go mod tidy
 
-      - name: Get Latest Geo
+      - name: Get Latest Geo Data
         run: |
           wget -O src-go/internal/em/geoip.metadb https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geoip.metadb
           wget -O src-go/internal/em/GeoSite.dat https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geosite.dat
@@ -55,7 +54,9 @@ jobs:
           GOARCH: ${{ matrix.arch }}
         run: |
           cd src-go
-          go build -tags=with_gvisor -trimpath -ldflags "-s -w -X github.com/snakem982/pandora-box/api.Version=${VERSION}" -o px
+          go build -tags=with_gvisor -trimpath `
+            -ldflags "-s -w -X github.com/snakem982/pandora-box/api.Version=$env:VERSION" `
+            -o px
 
       - name: Build Frontend for ${{ matrix.arch }}
         shell: pwsh
@@ -75,8 +76,8 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: ${VERSION}
-          name: ${VERSION}
+          tag_name: ${{ env.VERSION }}
+          name: ${{ env.VERSION }}
           draft: false
           prerelease: false
           files: |
