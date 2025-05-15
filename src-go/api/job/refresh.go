@@ -10,6 +10,7 @@ import (
 	"github.com/snakem982/pandora-box/pkg/proxy"
 	"github.com/snakem982/pandora-box/pkg/utils"
 	"strconv"
+	"strings"
 	"sync"
 	"time"
 )
@@ -103,5 +104,20 @@ func UpdateDb(profile *models.Profile, kind int) {
 	if kind == 2 {
 		profile.Content = ""
 	}
+	checkTitle(profile)
 	_ = cache.Put(profile.Id, *profile)
+}
+
+func checkTitle(profile *models.Profile) {
+	profile.Title = strings.TrimSpace(profile.Title)
+	if profile.Title != "" {
+		return
+	}
+	if profile.Type == 1 {
+		profile.Title = "Sub-" + utils.GetDateTime()
+	} else if profile.Type == 2 {
+		profile.Title = "Local-" + utils.GetDateTime()
+	} else {
+
+	}
 }

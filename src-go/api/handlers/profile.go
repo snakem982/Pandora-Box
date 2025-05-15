@@ -124,9 +124,6 @@ func addFromWeb(w http.ResponseWriter, r *http.Request) {
 	// 解析存盘
 	err := internal.Resolve(profile.Content, profile, false)
 	if err == nil {
-		if profile.Title == "" {
-			profile.Title = "Local-" + utils.GetDateTime()
-		}
 		job.UpdateDb(profile, 2)
 		ps = append(ps, profile)
 		render.JSON(w, r, ps)
@@ -260,7 +257,6 @@ func switchProfile(w http.ResponseWriter, r *http.Request) {
 		if p.Selected {
 			p.Selected = false
 			_ = cache.Put(p.Id, p)
-			break
 		} else {
 			continue
 		}

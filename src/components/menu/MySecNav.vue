@@ -40,19 +40,48 @@ function onLog(ev: MessageEvent) {
   });
 }
 
+function aliveTest(conn: WS, cb: Function) {
+  setInterval(() => {
+    try {
+      if (conn.ws.readyState === WebSocket.OPEN) {
+        conn.ws.send("ping");
+      } else {
+        console.log("WebSocket 连接可能已断开");
+        if (cb) {
+          cb()
+        }
+      }
+    } catch (error) {
+      console.error("发送失败，WebSocket 可能已断开:", error);
+      if (cb) {
+        cb()
+      }
+    }
+  }, 10000);
+}
+
 let wsConn: WS;
 let logConn: WS;
 onMounted(() => {
   const urlTraffic = webStore.wsUrl + "/connections?token=" + webStore.secret;
   wsConn = new WS(urlTraffic, null, onConn);
+  aliveTest(wsConn, () => {
+    wsConn.close()
+    wsConn = new WS(urlTraffic, null, onConn);
+  })
 
   const logTraffic = webStore.wsUrl + "/logs?token=" + webStore.secret;
   logConn = new WS(logTraffic, null, onLog);
+  aliveTest(logConn, () => {
+    logConn.close()
+    logConn = new WS(logTraffic, null, onLog);
+  })
 
   api.getRuleNum().then((res) => {
     menuStore.setRuleNum(res);
   });
 });
+
 </script>
 
 <template>
@@ -97,17 +126,17 @@ onMounted(() => {
       </el-text>
     </div>
 
-<!--    <div-->
-<!--        :class="menuStore.menu == 'Crawl' ? 'nav-btn nav-btn-select' : 'nav-btn'"-->
-<!--        @click="changeMenu('Crawl', router)"-->
-<!--    >-->
-<!--      <el-text class="nav-text">-->
-<!--        <el-icon>-->
-<!--          <icon-mdi-spider-outline/>-->
-<!--        </el-icon>-->
-<!--        <span class="nav-info">{{ $t("sec-nav.crawl") }} · 530</span>-->
-<!--      </el-text>-->
-<!--    </div>-->
+    <!--    <div-->
+    <!--        :class="menuStore.menu == 'Crawl' ? 'nav-btn nav-btn-select' : 'nav-btn'"-->
+    <!--        @click="changeMenu('Crawl', router)"-->
+    <!--    >-->
+    <!--      <el-text class="nav-text">-->
+    <!--        <el-icon>-->
+    <!--          <icon-mdi-spider-outline/>-->
+    <!--        </el-icon>-->
+    <!--        <span class="nav-info">{{ $t("sec-nav.crawl") }} · 530</span>-->
+    <!--      </el-text>-->
+    <!--    </div>-->
   </div>
 </template>
 

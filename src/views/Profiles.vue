@@ -150,7 +150,6 @@ async function switchProfile(data: any) {
       for (let profile of profiles) {
         if (profile['selected']) {
           profile['selected'] = false
-          break
         }
       }
       data['selected'] = true
