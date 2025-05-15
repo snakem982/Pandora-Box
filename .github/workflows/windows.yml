@@ -46,8 +46,8 @@ jobs:
           wget -O src-go/internal/em/GeoLite2-ASN.mmdb https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/GeoLite2-ASN.mmdb
 
       - name: Get Tag Version
+        shell: bash
         run: |
-          git fetch --tags --force
           VERSION=$(git describe --tags --abbrev=0)
           echo "VERSION=$VERSION" >> $GITHUB_ENV
 
