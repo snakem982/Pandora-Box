@@ -86,7 +86,7 @@ jobs:
           tag_name: ${VERSION}
           name: ${VERSION}
           draft: false
-          prerelease: true
+          prerelease: false
           files: |
             windows-${{ matrix.arch }}-app.zip
             windows-${{ matrix.arch }}-msi.zip

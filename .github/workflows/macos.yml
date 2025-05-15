@@ -79,7 +79,7 @@ jobs:
           tag_name: ${VERSION}
           name: ${VERSION}
           draft: false
-          prerelease: true
+          prerelease: false
           files: |
             macos-${{ matrix.arch }}-dmg.zip
         env:

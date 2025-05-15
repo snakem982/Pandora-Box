@@ -85,7 +85,7 @@ jobs:
           tag_name: ${VERSION}
           name: ${VERSION}
           draft: false
-          prerelease: true
+          prerelease: false
           files: |
             linux-${{ matrix.arch }}-deb.zip
             linux-${{ matrix.arch }}-rpm.zip
