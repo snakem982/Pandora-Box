@@ -66,6 +66,9 @@ jobs:
             -ldflags "-s -w -X github.com/snakem982/pandora-box/api.Version=$env:VERSION" `
             -o px.exe
 
+      - name: Sync VERSION to package.json
+        run: node build/sync-version.js
+
       - name: Build Frontend for ${{ matrix.arch }}
         shell: pwsh
         run: |
