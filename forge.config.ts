@@ -9,6 +9,7 @@ import {FuseV1Options, FuseVersion} from '@electron/fuses';
 
 const isWindows = process.platform === 'win32';
 const extraResource = isWindows ? ['src-go/px.exe'] : ['src-go/px'];
+const arch = process.env.ARCH || process.arch;
 
 const config: ForgeConfig = {
     packagerConfig: {
@@ -31,6 +32,7 @@ const config: ForgeConfig = {
         }),
         new MakerDMG({
             icon: 'build/appicon.icns',
+            title: `Pandora-Box-${arch}`,  // dmg 挂载卷名称
         }),
         new MakerRpm({
             options: {
