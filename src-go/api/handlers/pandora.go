@@ -7,9 +7,11 @@ import (
 	"github.com/metacubex/mihomo/log"
 	"github.com/metacubex/mihomo/tunnel/statistic"
 	"github.com/snakem982/pandora-box/api"
+	"github.com/snakem982/pandora-box/api/job"
 	sys "github.com/snakem982/pandora-box/pkg/sys/proxy"
 	"github.com/snakem982/pandora-box/pkg/utils"
 	"net/http"
+	"os"
 )
 
 func Pandora(r chi.Router) {
@@ -28,6 +30,9 @@ func PandoraRouter() chi.Router {
 
 	// 配置目录
 	r.Get("/configDir", configDir)
+
+	// 退出px
+	r.Get("/exit", exitPx)
 
 	return r
 }
@@ -97,4 +102,10 @@ func checkAddressPort(w http.ResponseWriter, r *http.Request) {
 
 func configDir(w http.ResponseWriter, r *http.Request) {
 	render.PlainText(w, r, utils.GetUserHomeDir())
+}
+
+func exitPx(w http.ResponseWriter, r *http.Request) {
+	job.Exit(false)
+	render.PlainText(w, r, "ok")
+	os.Exit(0)
 }

@@ -8,10 +8,12 @@ const isDev = !app.isPackaged;
 
 // 退出app
 let isQuiting = false;
-export const quitApp = () => {
+export const doQuit = () => {
     isQuiting = true;
     app.quit();
 }
+const readyToQuit = () => emitWindow("readyToQuit");
+onWindow("doQuit", doQuit)
 
 // 处理菜单
 const createMenu = (menuTemplate: any) => {
@@ -60,7 +62,7 @@ const initMenu = () => createMenu([
     {
         label: 'Pandora-Box', submenu: [
             {
-                label: 'Quit', accelerator: 'Cmd+Q', click: quitApp
+                label: 'Quit', accelerator: 'Cmd+Q', click: readyToQuit
             }
         ]
     },
@@ -155,7 +157,7 @@ trayMap.set('tray.tun', {
     checked: false,
     click: () => emitWindow("switchTun")
 });
-trayMap.set('tray.quit', {id: 'tray.quit', label: '退出', type: 'normal', click: quitApp});
+trayMap.set('tray.quit', {id: 'tray.quit', label: '退出', type: 'normal', click: readyToQuit});
 
 const createTrayMenu = () => [
     trayMap.get('tray.show'),
@@ -269,7 +271,6 @@ onWindow("profiles", function (profiles) {
 })
 
 // 窗口控制
-onWindow("quit", quitApp)
 onWindow("hide", function () {
     mainWindow.hide();
     app.dock?.hide()

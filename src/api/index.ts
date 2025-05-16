@@ -53,5 +53,6 @@ export default function createApi(proxy: any) {
         disableProxy: createPandoraApi(proxy).disableProxy,
         checkAddressPort: createPandoraApi(proxy).checkAddressPort,
         configDir: createPandoraApi(proxy).configDir,
+        exit: createPandoraApi(proxy).exit,
     };
 }

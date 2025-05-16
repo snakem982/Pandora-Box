@@ -7,9 +7,7 @@ import (
 	"github.com/snakem982/pandora-box/pkg/cache"
 	"github.com/snakem982/pandora-box/pkg/constant"
 	sys "github.com/snakem982/pandora-box/pkg/sys/admin"
-	"github.com/snakem982/pandora-box/pkg/utils"
 	"net/http"
-	"os"
 )
 
 func Mihomo(r chi.Router) {
@@ -23,7 +21,6 @@ func MihomoRouter() chi.Router {
 	r.Put("/", updateMihomo)
 
 	r.Get("/admin", getAdmin)
-	r.Get("/exit", exitMihomo)
 
 	return r
 }
@@ -68,9 +65,4 @@ func getAdmin(w http.ResponseWriter, r *http.Request) {
 	}{sys.IsAdmin()}
 
 	render.JSON(w, r, admin)
-}
-
-func exitMihomo(w http.ResponseWriter, r *http.Request) {
-	utils.UnlockSingleton()
-	os.Exit(1)
 }

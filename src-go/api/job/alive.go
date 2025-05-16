@@ -50,7 +50,7 @@ func AliveJob(name string, server string) {
 		resp, err := client.Do(req)
 		if err != nil {
 			log.Infoln("[1]检测到父进程退出，准备退出...")
-			exit()
+			Exit(true)
 			return
 		}
 		defer func(Body io.ReadCloser) {
@@ -60,21 +60,23 @@ func AliveJob(name string, server string) {
 		body, err := io.ReadAll(resp.Body)
 		if err != nil {
 			log.Infoln("[2]检测到父进程退出，准备退出...")
-			exit()
+			Exit(true)
 			return
 		}
 
 		if string(body) != "alive" {
 			log.Infoln("[3]检测到父进程退出，准备退出...")
-			exit()
+			Exit(true)
 		}
 	})
 }
 
-func exit() {
+func Exit(needExit bool) {
 	cache.Close()
 	utils.UnlockSingleton()
 	executor.Shutdown()
 	sys.DisableProxy()
-	os.Exit(0)
+	if needExit {
+		os.Exit(0)
+	}
 }

@@ -18,9 +18,14 @@
 <script setup lang="ts">
 import {useI18n} from 'vue-i18n';
 import {Events} from "@/runtime";
+import createApi from "@/api";
 
 // 国际化
 const {t} = useI18n();
+
+// 获取当前 Vue 实例的 proxy 对象
+const {proxy} = getCurrentInstance()!;
+const api = createApi(proxy);
 
 // 下拉框
 const isDropdownVisible = ref(false);
@@ -46,8 +51,17 @@ const cancelHide = () => {
 
 // 退出
 const quit = () => {
-  Events.Emit({name: "quit", data: true})
+  api.exit().then(res => {
+    if (res && res === "ok") {
+      Events.Emit({name: "doQuit", data: true})
+    }
+  }).catch(() => {
+    Events.Emit({name: "doQuit", data: false})
+  })
 }
+
+// 监听准备退出
+onMounted(() => Events.On("readyToQuit", quit))
 
 </script>
 

@@ -2,7 +2,7 @@ import {app, BrowserWindow, ipcMain} from 'electron';
 import path from 'node:path';
 import {startServer, storeInfo} from "./server";
 import Store from 'electron-store';
-import {initTray, quitApp} from "./tray";
+import {doQuit, initTray} from "./tray";
 import {startBackend} from "./admin";
 import log from './log';
 
@@ -74,7 +74,7 @@ const waitForReady = new Promise<void>((resolve) => {
 // 单例模式
 const gotTheLock = app.requestSingleInstanceLock();
 if (!gotTheLock) {
-    quitApp()
+    doQuit()
 } else {
     // 试图启动第二个应用实例
     app.on('second-instance', () => {

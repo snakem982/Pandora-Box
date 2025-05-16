@@ -18,11 +18,17 @@ const configDir = (proxy: any) => async function () {
     return await proxy.$http.get('/pandora/configDir');
 }
 
+// 退出Px
+const exit = (proxy: any) => async function () {
+    return await proxy.$http.get('/pandora/exit');
+}
+
 export default function createPandoraApi(proxy: any) {
     return {
         enableProxy: enableProxy(proxy),
         disableProxy: disableProxy(proxy),
         checkAddressPort: checkAddressPort(proxy),
         configDir: configDir(proxy),
+        exit: exit(proxy),
     }
 }
