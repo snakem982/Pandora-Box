@@ -9,7 +9,7 @@ require (
 	github.com/gobwas/ws v1.4.0
 	github.com/gofrs/flock v0.12.1
 	github.com/metacubex/bbolt v0.0.0-20240822011022-aed6d4850399
-	github.com/metacubex/mihomo v1.19.6
+	github.com/metacubex/mihomo v1.19.8
 	github.com/panjf2000/ants/v2 v2.11.3
 	github.com/sirupsen/logrus v1.9.3
 	golang.org/x/net v0.40.0
@@ -75,7 +75,7 @@ require (
 	github.com/metacubex/sing-wireguard v0.0.0-20250503063753-2dc62acc626f // indirect
 	github.com/metacubex/smux v0.0.0-20250503055512-501391591dee // indirect
 	github.com/metacubex/tfo-go v0.0.0-20250503140532-decbcfccbfdf // indirect
-	github.com/metacubex/utls v1.7.0-alpha.3 // indirect
+	github.com/metacubex/utls v1.7.3 // indirect
 	github.com/metacubex/wireguard-go v0.0.0-20240922131502-c182e7471181 // indirect
 	github.com/miekg/dns v1.1.66 // indirect
 	github.com/mroth/weightedrand/v2 v2.1.0 // indirect
@@ -120,4 +120,4 @@ require (
 	lukechampine.com/blake3 v1.4.1 // indirect
 )
 
-replace github.com/metacubex/mihomo => github.com/snakem982/mihomo v1.0.44-moshen
+replace github.com/metacubex/mihomo => github.com/snakem982/mihomo v1.0.45-moshen
