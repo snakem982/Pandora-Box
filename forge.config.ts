@@ -24,7 +24,10 @@ const config: ForgeConfig = {
         new MakerWix({
             manufacturer: 'snakem982',
             description: 'A Simple Mihomo GUI',
-            icon: 'build/appicon.ico'
+            icon: 'build/appicon.ico',
+            ui: {
+                chooseDirectory: true // 允许用户选择安装目录
+            }
         }),
         new MakerDMG({
             icon: 'build/appicon.icns',
