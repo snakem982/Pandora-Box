@@ -47,6 +47,12 @@ jobs:
         run: |
           VERSION=$(git describe --tags --abbrev=0)
           echo "VERSION=$VERSION" >> $GITHUB_ENV
+          
+          if [[ "$VERSION" == *"-alpha" ]]; then
+            echo "prerelease=true" >> $GITHUB_ENV
+          else
+            echo "prerelease=false" >> $GITHUB_ENV
+          fi
 
       - name: Build Backend for ${{ matrix.arch }}
         shell: pwsh
@@ -79,7 +85,7 @@ jobs:
           tag_name: ${{ env.VERSION }}
           name: ${{ env.VERSION }}
           draft: false
-          prerelease: false
+          prerelease: ${{ env.prerelease }}
           files: |
             macos-${{ matrix.arch }}-dmg.zip
         env:
