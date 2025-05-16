@@ -33,7 +33,8 @@ import {useMenuStore} from "@/store/menuStore";
 const menuStore = useMenuStore();
 
 // 当前背景
-const currentBackground = ref("linear-gradient(to bottom, #434343, #000000)");
+const defaultBackground = "linear-gradient(to bottom, #434343, #000000)"
+const currentBackground = ref(defaultBackground);
 
 // 预加载背景
 function preloadBackgroundImage(bg: string) {
@@ -43,6 +44,10 @@ function preloadBackgroundImage(bg: string) {
     img.src = imgUrl;
     img.onload = () => {
       currentBackground.value = bg;
+    };
+    img.onerror = () => {
+      console.error(`Failed to load background image: ${imgUrl}`);
+      currentBackground.value = defaultBackground;
     };
   } else {
     currentBackground.value = bg; // 直接应用渐变背景
