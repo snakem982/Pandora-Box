@@ -82,6 +82,8 @@ func Resolve(content string, profile *models.Profile, refresh bool) error {
 	if utils.IsJSON(tempStr) {
 		sing, err := convert.ConvertsSingBox(tempBytes)
 		if err == nil {
+			// 提取正确配置的节点
+			sing = MapsToProxies(sing)
 			saveProfile(sing, profile)
 			return nil
 		}
@@ -93,6 +95,8 @@ func Resolve(content string, profile *models.Profile, refresh bool) error {
 	if utils.IsBase64(tempStr) {
 		v2ray, err := convert.ConvertsV2Ray(tempBytes)
 		if err == nil {
+			// 提取正确配置的节点
+			v2ray = MapsToProxies(v2ray)
 			saveProfile(v2ray, profile)
 			return nil
 		}
@@ -109,6 +113,8 @@ func Resolve(content string, profile *models.Profile, refresh bool) error {
 	if builder.Len() > 0 {
 		share, err := convert.ConvertsV2Ray([]byte(builder.String()))
 		if err == nil {
+			// 提取正确配置的节点
+			share = MapsToProxies(share)
 			saveProfile(share, profile)
 			return nil
 		}
