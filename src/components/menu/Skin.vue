@@ -70,7 +70,7 @@ const changeBackground = (item: any) => {
 const theme = ref(null);
 onMounted(async () => {
   try {
-    const response = await fetch("./json/theme.json");
+    const response = await fetch("/json/theme.json");
     theme.value = await response.json();
   } catch (error) {
     console.error("获取 JSON 失败", error);

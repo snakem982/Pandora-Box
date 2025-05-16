@@ -5,35 +5,35 @@
   },
   {
     "id": "azure",
-    "bg": "url('./images/quang.jpg')"
+    "bg": "url('/images/quang.jpg')"
   },
   {
     "id": "carbon",
-    "bg": "url('./images/leon.jpg')"
+    "bg": "url('/images/leon.jpg')"
   },
   {
     "id": "harbor",
-    "bg": "url('./images/harbor.jpg')"
+    "bg": "url('/images/harbor.jpg')"
   },
   {
     "id": "cuke",
-    "bg": "url('./images/gua.jpg')"
+    "bg": "url('/images/gua.jpg')"
   },
   {
     "id": "sea",
-    "bg": "url('./images/sea.jpg')"
+    "bg": "url('/images/sea.jpg')"
   },
   {
     "id": "women",
-    "bg": "url('./images/women.jpg')"
+    "bg": "url('/images/women.jpg')"
   },
   {
     "id": "stars",
-    "bg": "url('./images/stars.jpg')"
+    "bg": "url('/images/stars.jpg')"
   },
   {
     "id": "handle",
-    "bg": "url('./images/handle.jpg')"
+    "bg": "url('/images/handle.jpg')"
   },
   {
     "id": "comics",
