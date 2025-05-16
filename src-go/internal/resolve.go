@@ -2,6 +2,7 @@ package internal
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/metacubex/mihomo/adapter"
 	"github.com/metacubex/mihomo/common/convert"
@@ -30,7 +31,7 @@ func saveProfile(proxies []map[string]any, profile *models.Profile) {
 
 // MapsToProxies 将任意数量的 map[string]any 切片转换为任意数量的 map[string]any 切片，
 // 仅包含通过 adapter.ParseProxy 解析成功的元素。
-func MapsToProxies(ray []map[string]any) []map[string]any {
+func MapsToProxies(ray []map[string]any) ([]map[string]any, error) {
 	pool := utils.NewTimeoutPoolWithDefaults()
 	pool.WaitCount(len(ray))
 	mutex := sync.Mutex{}
@@ -61,7 +62,11 @@ func MapsToProxies(ray []map[string]any) []map[string]any {
 	}
 	pool.StartAndWait()
 
-	return proxies
+	if len(proxies) == 0 {
+		return proxies, errors.New("no nodes available, please check the profile")
+	}
+
+	return proxies, nil
 }
 
 // Resolve 解析内容，保存成 profile
@@ -83,7 +88,10 @@ func Resolve(content string, profile *models.Profile, refresh bool) error {
 		sing, err := convert.ConvertsSingBox(tempBytes)
 		if err == nil {
 			// 提取正确配置的节点
-			sing = MapsToProxies(sing)
+			sing, err = MapsToProxies(sing)
+			if err != nil {
+				return err
+			}
 			saveProfile(sing, profile)
 			return nil
 		}
@@ -96,7 +104,10 @@ func Resolve(content string, profile *models.Profile, refresh bool) error {
 		v2ray, err := convert.ConvertsV2Ray(tempBytes)
 		if err == nil {
 			// 提取正确配置的节点
-			v2ray = MapsToProxies(v2ray)
+			v2ray, err = MapsToProxies(v2ray)
+			if err != nil {
+				return err
+			}
 			saveProfile(v2ray, profile)
 			return nil
 		}
@@ -114,7 +125,10 @@ func Resolve(content string, profile *models.Profile, refresh bool) error {
 		share, err := convert.ConvertsV2Ray([]byte(builder.String()))
 		if err == nil {
 			// 提取正确配置的节点
-			share = MapsToProxies(share)
+			share, err = MapsToProxies(share)
+			if err != nil {
+				return err
+			}
 			saveProfile(share, profile)
 			return nil
 		}
@@ -128,8 +142,8 @@ func Resolve(content string, profile *models.Profile, refresh bool) error {
 		_, yamlError := config.ParseRawConfig(rawCfg)
 		if yamlError != nil {
 			// 配置校验失败，尝试提取可用节点
-			rails := MapsToProxies(rawCfg.Proxy)
-			if len(rails) == 0 {
+			rails, err1 := MapsToProxies(rawCfg.Proxy)
+			if err1 != nil {
 				return yamlError
 			} else {
 				saveProfile(rails, profile)
