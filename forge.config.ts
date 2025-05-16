@@ -27,7 +27,8 @@ const config: ForgeConfig = {
             description: 'A Simple Mihomo GUI',
             icon: 'build/appicon.ico',
             ui: {
-                chooseDirectory: true // 允许用户选择安装目录
+                chooseDirectory: true,
+                localizations: ["zh-CN", "en-US"],
             }
         }),
         new MakerDMG({
