@@ -164,6 +164,9 @@ async function switchProfile(data: any) {
         data: toRaw(profiles)
       })
 
+      // 关闭之前的连接
+      api.closeAllConnection()
+
       pSuccess(t('profiles.switch.success'))
     } catch (e) {
       if (e['message']) {
