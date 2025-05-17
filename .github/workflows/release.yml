@@ -137,12 +137,13 @@ jobs:
 
           > changelog.txt
           while IFS='|' read -r weight commit_hash message; do
-            git show -s --format="- %s (%an)" "$commit_hash" >> changelog.txt
+            git show -s --format="- %s" "$commit_hash" >> changelog.txt
           done < sorted_commits.txt
 
           cat changelog.txt
 
           echo "release_notes<<EOF" >> $GITHUB_ENV
+          echo "# What's Changed" >> $GITHUB_ENV
           cat changelog.txt >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
 
