@@ -34,7 +34,7 @@ const ipv6Regex = /^(([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}|(::[0-9a-fA-F]{1,4})
 
 
 // 保存监听地址
-const saveBind = () => {
+const saveBind = async () => {
   // 检测是否匹配 IPv4 或 IPv6
   if (!ipv4Regex.test(bind.value) && !ipv6Regex.test(bind.value)) {
     pError(t('setting.mihomo.bind-error'))
@@ -47,15 +47,36 @@ const saveBind = () => {
     return;
   }
 
+  // 检测地址是否可用，不可用直接报错
+  try {
+    await api.checkAddressPort({
+      "bindAddress": bind.value,
+      "port": settingStore.port,
+    })
+  } catch (e) {
+    if (e['message']) {
+      pError(e['message'])
+      return
+    }
+  }
+
   // 更新配置
   api.updateConfigs({
     "allow-lan": true,
-    "bind-address": settingStore.bindAddress,
-  }).then((res: any) => {
+    "bind-address": bind.value,
+  }).then(() => {
     settingStore.setBindAddress(bind.value);
     isEditing.value = false; // 退出编辑模式
     // 同步 mihomo 配置
     pUpdateMihomo(menuStore, settingStore, api)
+
+    if (menuStore.proxy) {
+      // 未被占用开启代理
+      api.enableProxy({
+        "bindAddress": settingStore.bindAddress,
+        "port": settingStore.port,
+      })
+    }
   });
 };
 
@@ -70,13 +91,6 @@ onMounted(() => {
   // 初始化端口值
   bind.value = settingStore.bindAddress;
 });
-
-// 更新端口值
-watch(() => settingStore.bindAddress, (newValue) => {
-  bind.value = newValue;
-});
-
-
 </script>
 
 <template>

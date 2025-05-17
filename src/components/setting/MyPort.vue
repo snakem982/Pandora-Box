@@ -84,13 +84,6 @@ onMounted(() => {
   // 初始化端口值
   port.value = settingStore.port;
 });
-
-// 更新端口值
-watch(() => settingStore.port, (newValue) => {
-  port.value = newValue;
-});
-
-
 </script>
 
 <template>
