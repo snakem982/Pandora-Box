@@ -2,7 +2,7 @@ import {app, BrowserWindow, ipcMain} from 'electron';
 import path from 'node:path';
 import {startServer, storeInfo} from "./server";
 import Store from 'electron-store';
-import {doQuit, initTray} from "./tray";
+import {doQuit, initTray, showWindow} from "./tray";
 import {startBackend} from "./admin";
 import log from './log';
 
@@ -77,22 +77,10 @@ if (!gotTheLock) {
     doQuit()
 } else {
     // 试图启动第二个应用实例
-    app.on('second-instance', () => {
-        if (mainWindow) {
-            mainWindow.show();
-            app.dock?.show();
-            mainWindow.focus();
-        }
-    });
+    app.on('second-instance', showWindow);
 
     // 监听应用被激活
-    app.on('activate', () => {
-        if (mainWindow && !mainWindow.isVisible()) {
-            mainWindow.show();
-            app.dock?.show();
-            mainWindow.focus();
-        }
-    });
+    app.on('activate', showWindow);
 
     app.whenReady().then(async () => {
         // 启动前端静态服务

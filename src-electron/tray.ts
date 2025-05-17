@@ -91,9 +91,12 @@ let currentMenu: any
 let mainWindow: BrowserWindow
 
 // 显示窗口
-function showWindow() {
-    mainWindow.show();
-    app.dock?.show();
+export function showWindow() {
+    if (mainWindow) {
+        mainWindow.show();
+        app.dock?.show();
+        mainWindow.focus();
+    }
 }
 
 // 切换规则
