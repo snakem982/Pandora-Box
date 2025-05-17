@@ -28,7 +28,6 @@ const config: ForgeConfig = {
             icon: 'build/appicon.ico',
             ui: {
                 chooseDirectory: true,
-                localizations: ["zh-CN", "en-US"],
             }
         }),
         new MakerDMG({
