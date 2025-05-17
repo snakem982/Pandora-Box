@@ -24,7 +24,8 @@ function checkAdminRights(callback: any) {
         const command = spawn('net', ['session']);
 
         command.on('error', (error) => {
-            callback(false);  // 如果运行时出错，认为没有管理员权限
+            log.info('net session :', error);
+            callback(false);
         });
 
         command.on('exit', (code) => {
@@ -201,7 +202,7 @@ function startNormally(executable: string, args: string[]) {
 
     log.info("[Normal] 启动px命令行：", backend.spawnargs);
 
-    backend.stdout.on('data', (data) => {
+    backend.stdout.on('data', () => {
         // log.info(`[backend stdout]: ${data}`);
     });
 
