@@ -223,7 +223,6 @@ let editForm = reactive<any>({})
 let editFormD = {}
 
 function updateProfile(data: any) {
-  console.log("======",data)
   editFormD = data
   editForm = reactive<any>({})
   Object.assign(editForm, data)
