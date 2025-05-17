@@ -220,10 +220,12 @@ function goHome(data: any) {
 // 修改配置
 const editFormVisible = ref(false)
 let editForm = reactive<any>({})
-let editFormD = reactive<any>({})
+let editFormD = {}
 
 function updateProfile(data: any) {
+  console.log("======",data)
   editFormD = data
+  editForm = reactive<any>({})
   Object.assign(editForm, data)
   editFormVisible.value = true
 }
