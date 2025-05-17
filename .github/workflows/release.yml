@@ -13,7 +13,8 @@ jobs:
   release:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
-    permissions: write-all
+    permissions:
+      contents: write
 
     steps:
       - name: Checkout Repository
@@ -39,19 +40,47 @@ jobs:
             https://api.github.com/repos/${{ github.repository }}/releases/latest | jq -r .tag_name)
           echo "PREV_TAG=$LATEST_TAG" >> $GITHUB_ENV
 
-      - name: Generate Changelog (unique commit titles, latest only)
+      - name: Generate Sorted & Deduplicated Changelog
         shell: bash
         run: |
           echo "Generating changelog between $PREV_TAG and $VERSION"
 
-          git log "$PREV_TAG..$VERSION" --pretty=format:"%s" | \
-            awk '!seen[$0]++' > titles.txt
+          # 定义类型优先级
+          declare -A type_order=(
+            [feat]=1
+            [fix]=2
+            [perf]=3
+            [improvement]=4
+            [refactor]=5
+            [style]=6
+            [chore]=7
+            [docs]=8
+            [revert]=9
+            [test]=10
+            [build]=11
+            [ci]=12
+          )
 
+          # 获取提交，时间倒序（tac是linux命令，Ubuntu有）
+          git log "$PREV_TAG..$VERSION" --pretty=format:"%H %s" --date-order | tac > all_commits.txt
+
+          # 按提交标题去重，只保留最新（利用awk）
+          awk '!seen[substr($0, index($0,$2))]++' all_commits.txt > unique_commits.txt
+
+          # 加权并排序
+          while IFS= read -r line; do
+            commit_hash=$(echo "$line" | cut -d' ' -f1)
+            message=$(echo "$line" | cut -d' ' -f2-)
+            type=$(echo "$message" | cut -d':' -f1)
+            weight=${type_order[$type]:-999}
+            echo "$weight|$commit_hash|$message"
+          done < unique_commits.txt | sort -t"|" -k1,1n > sorted_commits.txt
+
+          # 生成 changelog 内容
           > changelog.txt
-          while IFS= read -r title; do
-            commit_hash=$(git log "$PREV_TAG..$VERSION" --pretty=format:"%H %s" | grep -F "$title" | head -n 1 | cut -d' ' -f1)
+          while IFS='|' read -r weight commit_hash message; do
             git show -s --format="- %s (%an)" "$commit_hash" >> changelog.txt
-          done < titles.txt
+          done < sorted_commits.txt
 
           cat changelog.txt
 
@@ -59,7 +88,7 @@ jobs:
           cat changelog.txt >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
 
-      # 下载 Windows 平台产物
+      # 下载所有平台架构的构建产物
       - name: Download Windows amd64 Artifacts
         uses: actions/download-artifact@v4
         with:
@@ -72,7 +101,6 @@ jobs:
           name: windows-arm64
           path: artifacts/windows-arm64
 
-      # 下载 MacOS 平台产物
       - name: Download MacOS amd64 Artifacts
         uses: actions/download-artifact@v4
         with:
@@ -85,7 +113,6 @@ jobs:
           name: macos-arm64
           path: artifacts/macos-arm64
 
-      # 下载 Linux 平台产物
       - name: Download Linux amd64 Artifacts
         uses: actions/download-artifact@v4
         with:
