@@ -22,7 +22,6 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const core = require('@actions/core');
             const workflows = [
               "Build Windows App",
               "Build Linux App",
