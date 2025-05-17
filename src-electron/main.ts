@@ -89,6 +89,8 @@ if (!gotTheLock) {
     app.on('activate', () => {
         if (mainWindow && !mainWindow.isVisible()) {
             mainWindow.show();
+            app.dock?.show();
+            mainWindow.focus();
         }
     });
 
