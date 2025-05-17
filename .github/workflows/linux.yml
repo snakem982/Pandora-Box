@@ -47,6 +47,12 @@ jobs:
         run: |
           VERSION=$(git describe --tags --abbrev=0)
           echo "VERSION=$VERSION" >> $GITHUB_ENV
+          
+          if [[ "$VERSION" == *"-alpha" ]]; then
+            echo "prerelease=true" >> $GITHUB_ENV
+          else
+            echo "prerelease=false" >> $GITHUB_ENV
+          fi
 
       - name: Build Backend for ${{ matrix.arch }}
         shell: pwsh
@@ -82,10 +88,15 @@ jobs:
           Compress-Archive -Path out\make\deb\$arch\* -DestinationPath "linux-${{ matrix.arch }}-deb.zip"
           Compress-Archive -Path out\make\rpm\$arch\* -DestinationPath "linux-${{ matrix.arch }}-rpm.zip"
 
-      - name: Upload Build Artifacts
-        uses: actions/upload-artifact@v4
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
         with:
-          name: linux-${{ matrix.arch }}
-          path: |
+          tag_name: ${{ env.VERSION }}
+          name: ${{ env.VERSION }}
+          draft: false
+          prerelease: ${{ env.prerelease }}
+          files: |
             linux-${{ matrix.arch }}-deb.zip
             linux-${{ matrix.arch }}-rpm.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
