@@ -23,8 +23,7 @@ jobs:
           node-version: 'latest'
 
       - name: Install Frontend Dependencies
-        run: |
-          npm install
+        run: npm install
 
       - name: Set Up Go
         uses: actions/setup-go@v5
@@ -49,17 +48,12 @@ jobs:
         run: |
           VERSION=$(git describe --tags --abbrev=0)
           echo "VERSION=$VERSION" >> $GITHUB_ENV
-          
-          if [[ "$VERSION" == *"-alpha" ]]; then
-            echo "prerelease=true" >> $GITHUB_ENV
-          else
-            echo "prerelease=false" >> $GITHUB_ENV
-          fi
 
       - name: Build Backend for ${{ matrix.arch }}
         shell: pwsh
         env:
           GOARCH: ${{ matrix.arch }}
+          VERSION: ${{ env.VERSION }}
         run: |
           cd src-go
           go build -tags=with_gvisor -trimpath `
@@ -76,7 +70,6 @@ jobs:
           if ($arch -eq "amd64") {
             $arch = "x64"
           }
-          Write-Host "Using arch: $arch"
           npx electron-forge make --arch=$arch
 
       - name: Compress Executables
@@ -89,15 +82,10 @@ jobs:
           Compress-Archive -Path out\Pandora-Box*\* -DestinationPath "windows-${{ matrix.arch }}-app.zip"
           Compress-Archive -Path out\make\wix\$arch\* -DestinationPath "windows-${{ matrix.arch }}-msi.zip"
 
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v1
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v4
         with:
-          tag_name: ${{ env.VERSION }}
-          name: ${{ env.VERSION }}
-          draft: false
-          prerelease: ${{ env.prerelease }}
-          files: |
+          name: windows-${{ matrix.arch }}
+          path: |
             windows-${{ matrix.arch }}-app.zip
             windows-${{ matrix.arch }}-msi.zip
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

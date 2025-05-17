@@ -1,0 +1,120 @@
+name: Release App
+
+on:
+  workflow_run:
+    workflows:
+      - Build Windows App
+      - Build Linux App
+      - Build MacOS App
+    types:
+      - completed
+
+jobs:
+  release:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    permissions: write-all
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set Version
+        id: set_version
+        shell: bash
+        run: |
+          VERSION=$(git describe --tags --abbrev=0)
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          if [[ "$VERSION" == *"-alpha" ]]; then
+            echo "prerelease=true" >> $GITHUB_ENV
+          else
+            echo "prerelease=false" >> $GITHUB_ENV
+          fi
+
+      - name: Get Previous Release Tag (latest official release)
+        id: get_latest_release
+        shell: bash
+        run: |
+          LATEST_TAG=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            https://api.github.com/repos/${{ github.repository }}/releases/latest | jq -r .tag_name)
+          echo "PREV_TAG=$LATEST_TAG" >> $GITHUB_ENV
+
+      - name: Generate Changelog (unique commit titles, latest only)
+        shell: bash
+        run: |
+          echo "Generating changelog between $PREV_TAG and $VERSION"
+
+          git log "$PREV_TAG..$VERSION" --pretty=format:"%s" | \
+            awk '!seen[$0]++' > titles.txt
+
+          > changelog.txt
+          while IFS= read -r title; do
+            commit_hash=$(git log "$PREV_TAG..$VERSION" --pretty=format:"%H %s" | grep -F "$title" | head -n 1 | cut -d' ' -f1)
+            git show -s --format="- %s (%an)" "$commit_hash" >> changelog.txt
+          done < titles.txt
+
+          cat changelog.txt
+
+          echo "release_notes<<EOF" >> $GITHUB_ENV
+          cat changelog.txt >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+
+      # 下载 Windows 平台产物
+      - name: Download Windows amd64 Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: windows-amd64
+          path: artifacts/windows-amd64
+
+      - name: Download Windows arm64 Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: windows-arm64
+          path: artifacts/windows-arm64
+
+      # 下载 MacOS 平台产物
+      - name: Download MacOS amd64 Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: macos-amd64
+          path: artifacts/macos-amd64
+
+      - name: Download MacOS arm64 Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: macos-arm64
+          path: artifacts/macos-arm64
+
+      # 下载 Linux 平台产物
+      - name: Download Linux amd64 Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: linux-amd64
+          path: artifacts/linux-amd64
+
+      - name: Download Linux arm64 Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: linux-arm64
+          path: artifacts/linux-arm64
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ env.VERSION }}
+          name: ${{ env.VERSION }}
+          body: ${{ env.release_notes }}
+          prerelease: ${{ env.prerelease }}
+          files: |
+            artifacts/windows-amd64/windows-amd64-app.zip
+            artifacts/windows-amd64/windows-amd64-msi.zip
+            artifacts/windows-arm64/windows-arm64-app.zip
+            artifacts/windows-arm64/windows-arm64-msi.zip
+            artifacts/macos-amd64/macos-amd64-dmg.zip
+            artifacts/macos-arm64/macos-arm64-dmg.zip
+            artifacts/linux-amd64/linux-amd64-deb.zip
+            artifacts/linux-amd64/linux-amd64-rpm.zip
+            artifacts/linux-arm64/linux-arm64-deb.zip
+            artifacts/linux-arm64/linux-arm64-rpm.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
