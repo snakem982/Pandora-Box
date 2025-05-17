@@ -23,7 +23,6 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const core = require('@actions/core');
             const workflows = [
               "Build Windows App",
               "Build Linux App",
@@ -32,7 +31,7 @@ jobs:
             const owner = context.repo.owner;
             const repo = context.repo.repo;
             const branch = context.payload.workflow_run.head_branch;
-
+            
             for (const wfName of workflows) {
               const workflowsList = await github.rest.actions.listRepoWorkflows({ owner, repo });
               const wf = workflowsList.data.workflows.find(w => w.name === wfName);
@@ -61,6 +60,7 @@ jobs:
               }
             }
             core.setOutput('result', 'all_success');
+
 
       # 不再需要单独的退出步骤，因为下面步骤都会根据这个条件判断执行
 
