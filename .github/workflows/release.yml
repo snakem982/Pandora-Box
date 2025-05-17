@@ -13,8 +13,7 @@ jobs:
   release:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
+    permissions: write-all
 
     steps:
       - name: Check all required workflows success
@@ -23,6 +22,7 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
+            const core = require('@actions/core');
             const workflows = [
               "Build Windows App",
               "Build Linux App",
@@ -32,7 +32,10 @@ jobs:
             const repo = context.repo.repo;
             const branch = context.payload.workflow_run.head_branch;
             
+            core.info(`Checking workflows on branch: ${branch}`);
+            
             for (const wfName of workflows) {
+              core.info(`Checking workflow: ${wfName}`);
               const workflowsList = await github.rest.actions.listRepoWorkflows({ owner, repo });
               const wf = workflowsList.data.workflows.find(w => w.name === wfName);
               if (!wf) {
@@ -53,16 +56,22 @@ jobs:
                 return;
               }
               const latestRun = runs.data.workflow_runs[0];
+              core.info(`Latest run of ${wfName} conclusion: ${latestRun.conclusion}`);
               if (latestRun.conclusion !== 'success') {
-                core.info(`Latest run of ${wfName} conclusion: ${latestRun.conclusion}, skipping release`);
+                core.info(`Skipping release because ${wfName} latest run conclusion is ${latestRun.conclusion}`);
                 core.setOutput('result', 'incomplete');
                 return;
               }
             }
             core.setOutput('result', 'all_success');
+            core.info('All workflows succeeded');
 
 
       # 不再需要单独的退出步骤，因为下面步骤都会根据这个条件判断执行
+      - name: Debug result
+        run: |
+          echo "Workflow check result: ${{ steps.check_workflows.outputs.result }}"
+
 
       - name: Checkout Repository
         if: steps.check_workflows.outputs.result == 'all_success'
