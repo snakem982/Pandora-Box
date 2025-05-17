@@ -17,8 +17,58 @@ jobs:
       contents: write
 
     steps:
+      - name: Check all required workflows success
+        id: check_workflows
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const workflows = [
+              "Build Windows App",
+              "Build Linux App",
+              "Build MacOS App"
+            ];
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const branch = context.payload.workflow_run.head_branch;
+
+            for (const wfName of workflows) {
+              const workflowsList = await github.rest.actions.listRepoWorkflows({ owner, repo });
+              const wf = workflowsList.data.workflows.find(w => w.name === wfName);
+              if (!wf) {
+                core.setFailed(`Workflow '${wfName}' not found`);
+                return;
+              }
+              const runs = await github.rest.actions.listWorkflowRuns({
+                owner,
+                repo,
+                workflow_id: wf.id,
+                branch,
+                per_page: 1,
+                status: 'completed',
+              });
+              if (runs.data.total_count === 0) {
+                core.info(`No completed runs for ${wfName}`);
+                return;
+              }
+              const latestRun = runs.data.workflow_runs[0];
+              if (latestRun.conclusion !== 'success') {
+                core.info(`Latest run of ${wfName} conclusion: ${latestRun.conclusion}, skipping release`);
+                return;
+              }
+            }
+            return "all_success";
+
+      - name: Exit if not all workflows successful
+        if: steps.check_workflows.outputs.result != 'all_success'
+        run: |
+          echo "Not all workflows succeeded yet. Exiting."
+          exit 0
+
       - name: Checkout Repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Set Version
         id: set_version
@@ -45,7 +95,6 @@ jobs:
         run: |
           echo "Generating changelog between $PREV_TAG and $VERSION"
 
-          # 定义类型优先级
           declare -A type_order=(
             [feat]=1
             [fix]=2
@@ -61,13 +110,10 @@ jobs:
             [ci]=12
           )
 
-          # 获取提交，时间倒序（tac是linux命令，Ubuntu有）
           git log "$PREV_TAG..$VERSION" --pretty=format:"%H %s" --date-order | tac > all_commits.txt
 
-          # 按提交标题去重，只保留最新（利用awk）
           awk '!seen[substr($0, index($0,$2))]++' all_commits.txt > unique_commits.txt
 
-          # 加权并排序
           while IFS= read -r line; do
             commit_hash=$(echo "$line" | cut -d' ' -f1)
             message=$(echo "$line" | cut -d' ' -f2-)
@@ -76,7 +122,6 @@ jobs:
             echo "$weight|$commit_hash|$message"
           done < unique_commits.txt | sort -t"|" -k1,1n > sorted_commits.txt
 
-          # 生成 changelog 内容
           > changelog.txt
           while IFS='|' read -r weight commit_hash message; do
             git show -s --format="- %s (%an)" "$commit_hash" >> changelog.txt
@@ -88,7 +133,6 @@ jobs:
           cat changelog.txt >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
 
-      # 下载所有平台架构的构建产物
       - name: Download Windows amd64 Artifacts
         uses: actions/download-artifact@v4
         with:
