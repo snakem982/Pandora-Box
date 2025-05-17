@@ -24,7 +24,7 @@ app.get("/pxAlive", (req, res) => {
 // **存储 PX 后端的端口和密钥**
 // @ts-ignore
 app.get("/pxStore", (req, res) => {
-    const {port, secret, home} = req.query;
+    const {port, secret} = req.query;
 
     if (!port || !secret) {
         return res.status(400).json({error: "缺少参数 port 或 secret"});
