@@ -58,13 +58,14 @@ function getRandom(arr: any[]) {
 
 // 切换背景
 const changeBackground = (item: any) => {
-  if (item["rand"]) {
-    let url = getRandom(item.bg);
-    url = "url('" + url + "&date=" + Date.now() + "')"
-    menuStore.setBackground(url)
-  } else {
-    menuStore.setBackground(item.bg)
+  let url = item.bg;
+  if (Array.isArray(item.bg)) {
+    url = getRandom(item.bg);
+    if (item["rand"]) {
+      url = "url('" + url + "&date=" + Date.now() + "')"
+    }
   }
+  menuStore.setBackground(url)
 }
 
 const theme = ref(null);

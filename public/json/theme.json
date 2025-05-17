@@ -8,8 +8,12 @@
     "bg": "url('/images/quang.jpg')"
   },
   {
-    "id": "carbon",
-    "bg": "url('/images/leon.jpg')"
+    "id": "dog",
+    "bg": [
+      "url('/images/dog1.jpg')",
+      "url('/images/dog2.jpg')",
+      "url('/images/dog3.jpg')"
+    ]
   },
   {
     "id": "harbor",
@@ -21,15 +25,27 @@
   },
   {
     "id": "sea",
-    "bg": "url('/images/sea.jpg')"
+    "bg": [
+      "url('/images/sea1.jpg')",
+      "url('/images/sea2.jpg')"
+    ]
   },
   {
     "id": "women",
-    "bg": "url('/images/women.jpg')"
+    "bg": [
+      "url('/images/woman1.jpg')",
+      "url('/images/woman2.jpg')",
+      "url('/images/woman3.jpg')",
+      "url('/images/woman4.jpg')"
+    ]
   },
   {
     "id": "stars",
-    "bg": "url('/images/stars.jpg')"
+    "bg": [
+      "url('/images/star1.jpg')",
+      "url('/images/star2.jpg')",
+      "url('/images/star3.jpg')"
+    ]
   },
   {
     "id": "handle",
