@@ -10,6 +10,7 @@ export const useSettingStore = defineStore('setting', {
         ipv6: false,
         dns: false,
         startup: false,
+        auth: true
     }),
     actions: {
         setTestUrl(testUrl: any) {
@@ -32,6 +33,9 @@ export const useSettingStore = defineStore('setting', {
         },
         setBindAddress(bindAddress: any) {
             this.bindAddress = bindAddress;
+        },
+        setAuth(auth: any) {
+            this.auth = auth;
         },
     },
     persist: defaultPersist,

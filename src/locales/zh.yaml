@@ -44,6 +44,7 @@ mini: 最小化
 minus: 最小化到托盘
 save: 保存
 copy:
+  title: 复制
   success: 复制成功
   fail: 复制失败
 switch:
@@ -103,6 +104,7 @@ setting:
     bindAddress: 监听地址
     bind-error: 错误的地址
   px:
+    auth: 授权提示
     startup: 开机启动
     dir: 配置目录
     open: 打开

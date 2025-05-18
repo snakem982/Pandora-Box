@@ -1,30 +1,15 @@
 import {app, BrowserWindow, ipcMain} from 'electron';
 import path from 'node:path';
 import {startServer, storeInfo} from "./server";
-import Store from 'electron-store';
 import {doQuit, initTray, showWindow} from "./tray";
 import {startBackend} from "./admin";
 import log from './log';
+import {initStore} from "./store";
 
 // 是否在开发模式
 const isDev = !app.isPackaged;
 
-// 初始化数据库
-function initStore(home: string) {
-    const store = new Store({
-        cwd: path.join(home, 'px-electron.db')
-    });
 
-    ipcMain.handle('store:get', (event, key) => {
-        return store.get(key);
-    });
-
-    ipcMain.handle('store:set', (event, key, value) => {
-        store.set(key, value);
-    });
-
-    log.info("数据库初始化完成")
-}
 
 // 主窗口
 let mainWindow: BrowserWindow;
@@ -83,12 +68,14 @@ if (!gotTheLock) {
     app.on('activate', showWindow);
 
     app.whenReady().then(async () => {
+        // 初始化前端数据库
+        initStore(log.getHomeDir())
+
         // 启动前端静态服务
         startServer(resolveReady, startBackend)
 
-        // 等待后端启动后初始化前端数据库
+        // 等待后端启动
         await waitForReady;
-        initStore(log.getHomeDir())
 
         // 启动UI
         log.info('准备就绪，启动窗口，port=', storeInfo.port(), ' secret=', storeInfo.secret());

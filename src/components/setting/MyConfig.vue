@@ -108,7 +108,7 @@ function checkUpdate() {
             {{ webStore.baseUrl }}
             <el-button
                 @click="copy(webStore.baseUrl,t)">
-              复制
+              {{ $t('copy.title') }}
             </el-button>
           </li>
           <li style="height: 30px">
@@ -116,7 +116,7 @@ function checkUpdate() {
             {{ webStore.secret }}
             <el-button
                 @click="copy(webStore.secret,t)">
-              复制
+              {{ $t('copy.title') }}
             </el-button>
           </li>
         </ul>
@@ -143,6 +143,13 @@ function checkUpdate() {
           <!--                class="set-switch"-->
           <!--            />-->
           <!--          </li>-->
+          <li>
+            <strong>{{ $t('setting.px.auth') }} :</strong>
+            <el-switch
+                v-model="settingStore.auth"
+                class="set-switch"
+            />
+          </li>
           <li style="height: 30px">
             <strong>{{ $t('setting.px.dir') }} :</strong>
             <el-button @click="pxConfigDir" style="margin-left: 10px">

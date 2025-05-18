@@ -44,6 +44,7 @@ mini: Minus
 minus: Minus to tray
 save: Save
 copy:
+  title: Copy
   success: Copy success
   fail: Copy failed
 switch:
@@ -103,6 +104,7 @@ setting:
     bindAddress: Bind Address
     bind-error: Wrong address
   px:
+    auth: Auth Tip
     startup: Boot Startup
     dir: Config
     open: Open

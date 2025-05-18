@@ -3,6 +3,7 @@ import {spawn} from "child_process";
 import {app, dialog} from "electron";
 import fs from "node:fs";
 import log from './log';
+import {storeGet} from "./store";
 
 // 是否在开发模式
 const isDev = !app.isPackaged;
@@ -62,6 +63,17 @@ export function startBackend(addr: string) {
             startNormally(backendPath, args);
         } else {
             log.info('没有管理员权限');
+
+            // 判断是否关闭提权
+            const setting = storeGet("setting")
+            if (!!setting) {
+                const set = JSON.parse(setting as string);
+                if (set.hasOwnProperty("auth") && !set["auth"]) {
+                    log.info('关闭了提权提示');
+                    startNormally(backendPath, args);
+                    return;
+                }
+            }
 
             // 只在 Windows 和 Linux 平台上弹出提权提示，macOS 也需要显示提权提示
             if (process.platform !== 'darwin') {
