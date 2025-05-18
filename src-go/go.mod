@@ -66,7 +66,7 @@ require (
 	github.com/metacubex/randv2 v0.2.0 // indirect
 	github.com/metacubex/sing v0.5.3-0.20250504031621-1f99e54c15b7 // indirect
 	github.com/metacubex/sing-mux v0.3.2 // indirect
-	github.com/metacubex/sing-quic v0.0.0-20250511034158-b46e0e3e81b2 // indirect
+	github.com/metacubex/sing-quic v0.0.0-20250517090120-462e75d27336 // indirect
 	github.com/metacubex/sing-shadowsocks v0.2.9 // indirect
 	github.com/metacubex/sing-shadowsocks2 v0.2.3 // indirect
 	github.com/metacubex/sing-shadowtls v0.0.0-20250503063515-5d9f966d17a2 // indirect
@@ -120,4 +120,4 @@ require (
 	lukechampine.com/blake3 v1.4.1 // indirect
 )
 
-replace github.com/metacubex/mihomo => github.com/snakem982/mihomo v1.0.45-moshen
+replace github.com/metacubex/mihomo => github.com/snakem982/mihomo v1.0.46-moshen
