@@ -26,10 +26,15 @@ const toggleEditing = () => {
   isEditing.value = !isEditing.value;
 };
 
+// 检查端口值是否在有效范围内
+function isValidIntegerRegex(str: any) {
+  return /^[1-9]\d{0,4}$/.test(str) && Number(str) <= 65535;
+}
+
 // 保存端口值
 const savePort = async () => {
   // 检查端口值是否在有效范围内
-  if (port.value < 1 || port.value > 65535) {
+  if (!isValidIntegerRegex(port.value)) {
     pError(t('setting.mihomo.port-error'))
     return;
   }
