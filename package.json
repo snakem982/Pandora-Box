@@ -16,7 +16,7 @@
     "name": "snakem982",
     "email": "snakem982@gmail.com"
   },
-  "license": "MIT",
+  "license": "GPL-3.0",
   "devDependencies": {
     "@electron-forge/cli": "^7.8.1",
     "@electron-forge/maker-deb": "^7.8.1",
