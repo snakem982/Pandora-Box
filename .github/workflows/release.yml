@@ -107,7 +107,8 @@ jobs:
         shell: bash
         run: |
           echo "Generating changelog between $PREV_TAG and $VERSION"
-
+          
+          # 定义类型优先级
           declare -A type_order=(
             [feat]=1
             [fix]=2
@@ -122,11 +123,23 @@ jobs:
             [build]=11
             [ci]=12
           )
-
+          
+          # 获取所有提交，按时间顺序反转（老的在前）
           git log "$PREV_TAG..$VERSION" --pretty=format:"%H %s" --date-order | tac > all_commits.txt
-
-          awk '!seen[substr($0, index($0,$2))]++' all_commits.txt > unique_commits.txt
-
+          
+          # 使用 commit message 去重（只保留第一次出现的）
+          declare -A seen_messages
+          > unique_commits.txt
+          while IFS= read -r line; do
+            commit_hash=$(echo "$line" | cut -d' ' -f1)
+            message=$(echo "$line" | cut -d' ' -f2-)
+            if [[ -z "${seen_messages["$message"]}" ]]; then
+              seen_messages["$message"]=1
+              echo "$commit_hash $message" >> unique_commits.txt
+            fi
+          done < all_commits.txt
+          
+          # 对提交按 type_order 排序
           while IFS= read -r line; do
             commit_hash=$(echo "$line" | cut -d' ' -f1)
             message=$(echo "$line" | cut -d' ' -f2-)
@@ -134,18 +147,24 @@ jobs:
             weight=${type_order[$type]:-999}
             echo "$weight|$commit_hash|$message"
           done < unique_commits.txt | sort -t"|" -k1,1n > sorted_commits.txt
-
+          
+          # 生成最终 changelog.txt
           > changelog.txt
           while IFS='|' read -r weight commit_hash message; do
             git show -s --format="- %s" "$commit_hash" >> changelog.txt
           done < sorted_commits.txt
-
+          
+          # 输出 changelog 内容
           cat changelog.txt
+          
+          # 设置 GitHub 环境变量 release_notes
+          {
+            echo "release_notes<<EOF"
+            echo "# What's Changed"
+            cat changelog.txt
+            echo "EOF"
+          } >> $GITHUB_ENV
 
-          echo "release_notes<<EOF" >> $GITHUB_ENV
-          echo "# What's Changed" >> $GITHUB_ENV
-          cat changelog.txt >> $GITHUB_ENV
-          echo "EOF" >> $GITHUB_ENV
 
       - name: Create GitHub Release
         if: env.RESULT == 'all_success'

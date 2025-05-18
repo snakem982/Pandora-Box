@@ -63,6 +63,8 @@ jobs:
 
       - name: Build Frontend for ${{ matrix.arch }}
         shell: pwsh
+        env:
+          ARCH: ${{ matrix.arch }}
         run: |
           $arch = "${{ matrix.arch }}"
           if ($arch -eq "amd64") {
