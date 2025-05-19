@@ -42,9 +42,9 @@ func Deduplicate(proxies []map[string]any) []map[string]any {
 	seen := make(map[string]bool) // 存储已经出现过的 key 值
 	var result []map[string]any
 
-	for _, proxy := range proxies {
+	for _, p := range proxies {
 
-		proxyType, existType := proxy["type"].(string)
+		proxyType, existType := p["type"].(string)
 		if !existType {
 			continue
 		}
@@ -53,10 +53,10 @@ func Deduplicate(proxies []map[string]any) []map[string]any {
 			proxyId string
 			err     error
 		)
-		server := proxy["server"]
-		port := proxy["port"]
-		password := proxy["password"]
-		uuid := proxy["uuid"]
+		server := p["server"]
+		port := p["port"]
+		password := p["password"]
+		uuid := p["uuid"]
 		switch proxyType {
 		case "ss":
 			proxyId = fmt.Sprintf("%s|%v|%v|%v", "ss", server, port, password)
@@ -66,7 +66,7 @@ func Deduplicate(proxies []map[string]any) []map[string]any {
 
 			proxyId = fmt.Sprintf("%s|%v|%v|%v", "vmess", server, port, uuid)
 		case "vless":
-			flow, existFlow := proxy["flow"].(string)
+			flow, existFlow := p["flow"].(string)
 			if existFlow && flow != "" && flow != "xtls-rprx-vision" {
 				continue
 			}
@@ -74,26 +74,26 @@ func Deduplicate(proxies []map[string]any) []map[string]any {
 		case "trojan":
 			proxyId = fmt.Sprintf("%s|%v|%v|%v", "trojan", server, port, password)
 		case "hysteria":
-			authStr, exist := proxy["auth_str"]
+			authStr, exist := p["auth_str"]
 			if !exist {
-				authStr = proxy["auth-str"]
+				authStr = p["auth-str"]
 			}
 			proxyId = fmt.Sprintf("%s|%v|%v|%v", "hysteria", server, port, authStr)
 		case "hysteria2":
 			proxyId = fmt.Sprintf("%s|%v|%v|%v", "hysteria2", server, port, password)
 		case "wireguard":
-			authStr := proxy["private-key"]
+			authStr := p["private-key"]
 			proxyId = fmt.Sprintf("%s|%v|%v|%v", "wireguard", server, port, authStr)
 		case "tuic":
 			proxyId = fmt.Sprintf("%s|%v|%v|%v|%v", "tuic", server, port, uuid, password)
 		case "socks5":
-			username := proxy["username"]
+			username := p["username"]
 			proxyId = fmt.Sprintf("%s|%v|%v|%v|%v", "socks5", server, port, username, password)
 		case "mieru":
-			username := proxy["username"]
+			username := p["username"]
 			proxyId = fmt.Sprintf("%s|%v|%v|%v|%v", "mieru", server, port, username, password)
 		case "http":
-			username := proxy["username"]
+			username := p["username"]
 			proxyId = fmt.Sprintf("%s|%v|%v|%v|%v", "http", server, port, username, password)
 		case "anytls":
 			proxyId = fmt.Sprintf("%s|%v|%v|%v", "anytls", server, port, password)
@@ -108,7 +108,7 @@ func Deduplicate(proxies []map[string]any) []map[string]any {
 		// 如果 key 的值尚未出现，加入结果集
 		if !seen[proxyId] {
 			seen[proxyId] = true
-			result = append(result, proxy)
+			result = append(result, p)
 		}
 	}
 
@@ -277,7 +277,7 @@ func UrlTest(proxies []map[string]any, testUrl string) []map[string]any {
 
 	pool.WaitCount(len(proxies))
 	for _, p := range proxies {
-		proxy := p
+		pp := p
 		pool.SubmitWithTimeout(func(done chan struct{}) {
 			defer func() {
 				if e := recover(); e != nil {
@@ -286,17 +286,17 @@ func UrlTest(proxies []map[string]any, testUrl string) []map[string]any {
 				done <- struct{}{}
 			}()
 
-			switch proxy["type"] {
+			switch pp["type"] {
 			case "wireguard":
 				return
 			case "ss":
-				delete(proxy, "dialer-proxy")
+				delete(pp, "dialer-pp")
 			default:
-				delete(proxy, "dialer-proxy")
-				proxy["skip-cert-verify"] = true
+				delete(pp, "dialer-pp")
+				pp["skip-cert-verify"] = true
 			}
 
-			proxyAdapter, err := adapter.ParseProxy(proxy)
+			proxyAdapter, err := adapter.ParseProxy(pp)
 			if err != nil {
 				return
 			}
@@ -306,7 +306,7 @@ func UrlTest(proxies []map[string]any, testUrl string) []map[string]any {
 			pass := proxyAdapter.URLTestByPandora(ctx, url, expectedStatus)
 			if pass {
 				m.Lock()
-				result = append(result, proxy)
+				result = append(result, pp)
 				m.Unlock()
 			}
 		}, 5*time.Second)

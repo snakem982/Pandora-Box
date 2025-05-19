@@ -6,15 +6,16 @@
 
 ## 下载地址
 
-[下载APP](https://github.com/snakem982/Pandora-Box/releases/latest)
+[下载APP](https://github.com/snakem982/Pandora-Box/releases)
 
 ## 功能特点
 
 - 支持 本地 HTTP/HTTPS/SOCKS 代理
 - 支持 Vmess, Vless, Shadowsocks, Trojan, Tuic, Hysteria, Hysteria2, Wireguard, Mieru 协议
 - 支持 分享链接, 订阅链接, Base64格式，Yaml格式 的数据输入解析
-- 内置将节点和订阅转换为 Mihomo 配置
-- 自动添加极简规则分组以及防DNS泄露配置
+- 内置订阅转换，可将各种订阅转换为 mihomo 配置
+- 对无规则订阅自动添加极简规则分组
+- 开启DNS覆写可防止DNS泄露
 - 支持统一所有订阅的规则和分组
 - 支持Tun模式
 
@@ -29,6 +30,7 @@
 - 点击取消将以普通权限运行，不能开启Tun
 - 点击继续将以管理员权限运行，可以开启Tun
 - 按需选择即可
+- 不想每次打开软件提示授权，可在设置关闭
 
 ## 提示 Px 需要网络接入
 - 点击 允许 即可
