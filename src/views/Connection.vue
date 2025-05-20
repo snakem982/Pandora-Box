@@ -5,7 +5,7 @@ import {WS} from "@/util/ws";
 import {useWebStore} from "@/store/webStore";
 import {prettyBytes, rJoin} from "@/util/format";
 import {onBeforeRouteLeave} from "vue-router";
-import {formatDistance} from 'date-fns';
+import {formatDistance, Locale} from 'date-fns';
 import {enUS, zhCN} from 'date-fns/locale'
 import {useI18n} from "vue-i18n";
 import createApi from "@/api";
@@ -16,7 +16,7 @@ const api = createApi(proxy);
 
 // 获取 i18n
 const {t} = useI18n()
-const localeMap = {
+const localeMap: Record<string, Locale> = {
   '简体中文': zhCN,
   'English': enUS,
 };
