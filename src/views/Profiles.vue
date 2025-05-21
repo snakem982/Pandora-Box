@@ -10,6 +10,12 @@ import {Browser, Clipboard, Events} from "@/runtime"
 import {useWebStore} from "@/store/webStore";
 import {WS} from "@/util/ws";
 import {onBeforeRouteLeave} from "vue-router";
+import MyHr from "@/components/proxies/MyHr.vue";
+
+const distanceFromTop = ref(195)
+const upFromTop = function (distance: number) {
+  distanceFromTop.value = distance
+}
 
 // i18n
 const {t} = useI18n();
@@ -342,7 +348,7 @@ watch(() => webStore.dProfile, async (pList) => {
 </script>
 
 <template>
-  <MyLayout :top-height="150" :bottom-height="180">
+  <MyLayout :top-height="distanceFromTop-15" :bottom-height="distanceFromTop+25">
     <template #top>
       <MySearch></MySearch>
       <el-space class="space">
@@ -400,6 +406,8 @@ watch(() => webStore.dProfile, async (pList) => {
           <span>{{ $t('profiles.update') }} {{ headerShow.update }}</span>
         </template>
       </div>
+
+      <MyHr :update="upFromTop" v-show="false"></MyHr>
     </template>
     <template #bottom>
 
@@ -408,7 +416,7 @@ watch(() => webStore.dProfile, async (pList) => {
           @getData="sendOrder"
           :gap="15"
           :draggable="canDrag"
-          style="margin-left: 10px;width: 95%;"
+          style="margin-left: 10px;width: 95%;margin-top: 5px"
       >
         <template v-slot:VDC="{data,index}">
           <div

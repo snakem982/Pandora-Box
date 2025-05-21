@@ -40,7 +40,10 @@ add: Add
 edit: Edit
 quit: Quit
 theme: Theme
-mini: Minus
+mini: Minimize
+max: Maximize
+restore: Restore
+close: Close
 minus: Minus to tray
 save: Save
 copy:

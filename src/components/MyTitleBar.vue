@@ -1,17 +1,63 @@
 <template>
-  <div id="titleBar" v-if="isWindows">
-    <div id="window-controls">
-      <div class="button close" @click="pxClose">
-        <span>×</span>
-      </div>
-      <div class="button minimize" @click="pxMinimize">
-        <span>–</span>
-      </div>
-      <div class="button maximize" @click="toggleMaximize">
-        <span v-if="!isMaximized">□</span>
-        <span v-else>↘︎</span>
-      </div>
-    </div>
+  <div v-if="isWindows">
+    <el-tooltip
+        :content="$t('minus')"
+        placement="bottom">
+      <span class="bar" @click="minus2tray">
+          <el-icon>
+              <icon-mdi-card-minus-outline/>
+          </el-icon>
+      </span>
+    </el-tooltip>
+    <el-tooltip
+        :content="$t('mini')"
+        placement="bottom">
+      <span class="bar" @click="minus">
+          <el-icon>
+              <icon-mdi-minus/>
+          </el-icon>
+      </span>
+    </el-tooltip>
+    <el-tooltip
+        v-if="isMaximized"
+        :content="$t('restore')"
+        placement="bottom">
+      <span class="bar" @click="max">
+          <el-icon>
+              <icon-mdi-window-restore/>
+          </el-icon>
+      </span>
+    </el-tooltip>
+    <el-tooltip
+        v-else
+        :content="$t('max')"
+        placement="bottom">
+      <span class="bar" @click="max">
+          <el-icon>
+              <icon-mdi-window-maximize/>
+          </el-icon>
+      </span>
+    </el-tooltip>
+    <el-tooltip
+        :content="$t('close')"
+        placement="bottom">
+      <span class="" @click="close">
+          <el-icon>
+              <icon-mdi-window-close/>
+          </el-icon>
+      </span>
+    </el-tooltip>
+  </div>
+  <div v-else>
+    <el-tooltip
+        :content="$t('minus')"
+        placement="left">
+      <span class="" @click="minus2tray">
+          <el-icon>
+              <icon-mdi-card-minus-outline/>
+          </el-icon>
+      </span>
+    </el-tooltip>
   </div>
 </template>
 
@@ -28,85 +74,27 @@ onMounted(() => {
   }
 })
 
-function pxClose() {
+function close() {
   Events.Emit({name: "close", data: true});
 }
 
-function pxMinimize() {
+function minus() {
   Events.Emit({name: "min", data: true});
 }
 
-function toggleMaximize() {
+function max() {
   isMaximized.value = !isMaximized.value;
   Events.Emit({name: "max", data: true});
+}
+
+// 最小化到托盘
+function minus2tray() {
+  Events.Emit({name: "hide", data: true});
 }
 </script>
 
 <style scoped>
-#titleBar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100px;
-  height: 32px;
-  background: transparent;
-  z-index: 9999;
+.bar {
+  margin-right: 15px;
 }
-
-#window-controls {
-  display: flex;
-  align-items: center;
-  height: 100%;
-  padding-left: 12px;
-  gap: 8px;
-}
-
-.button {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  position: relative;
-  flex-shrink: 0;
-  overflow: hidden;
-  transition: background 0.3s ease, filter 0.2s ease;
-}
-
-.button span {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 10px;
-  font-weight: bold;
-  color: #000;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.2s ease;
-}
-
-.button.close {
-  background-color: #ff5f56;
-}
-
-.button.minimize {
-  background-color: #ffbd2e;
-}
-
-.button.maximize {
-  background-color: #27c93f;
-}
-
-#window-controls .button {
-  cursor: pointer;
-}
-
-.button:hover {
-  filter: brightness(1.2);
-}
-
-.button:hover span {
-  opacity: 1;
-  color: #0e0e0e;
-}
-
 </style>

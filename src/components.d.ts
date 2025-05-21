@@ -70,6 +70,7 @@ declare module 'vue' {
     IconMdiWindowClose: typeof import('~icons/mdi/window-close')['default']
     IconMdiWindowMaximize: typeof import('~icons/mdi/window-maximize')['default']
     IconMdiWindowMinimize: typeof import('~icons/mdi/window-minimize')['default']
+    IconMdiWindowRestore: typeof import('~icons/mdi/window-restore')['default']
     Language: typeof import('./components/menu/Language.vue')['default']
     MyBind: typeof import('./components/setting/MyBind.vue')['default']
     MyBottom: typeof import('./components/menu/MyBottom.vue')['default']

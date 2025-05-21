@@ -41,6 +41,9 @@ edit: 编辑
 quit: 退出
 theme: 主题
 mini: 最小化
+max: 最大化
+restore: 还原
+close: 关闭
 minus: 最小化到托盘
 save: 保存
 copy:

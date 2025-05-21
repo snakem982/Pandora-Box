@@ -3,7 +3,6 @@ import {useRouter} from "vue-router";
 import {debounce} from "lodash";
 import createApi from "@/api";
 import {useProxiesStore} from "@/store/proxiesStore";
-import {Events} from "@/runtime";
 
 // 获取当前 Vue 实例的 proxy 对象
 const {proxy} = getCurrentInstance()!;
@@ -73,16 +72,16 @@ const searchInputRef = ref<HTMLInputElement | null>(null);
 
 const router = useRouter()
 
+const isWindows = ref(false)
 onMounted(() => {
   if (searchInputRef.value) {
     searchInputRef.value.blur();
   }
+  // @ts-ignore
+  if (window["pxShowBar"]) {
+    isWindows.value = true;
+  }
 });
-
-// 最小化到托盘
-const mini = () => {
-  Events.Emit({name: "hide", data: true});
-}
 
 // 设置代理
 async function changeProxy(now: any, name: any) {
@@ -101,7 +100,7 @@ async function changeProxy(now: any, name: any) {
 </script>
 
 <template>
-  <div class="search-container">
+  <div :class="isWindows?'search-container win':'search-container'">
     <el-space @click.stop class="no-drag">
       <span class="back"
             @click="router.back()">
@@ -140,15 +139,7 @@ async function changeProxy(now: any, name: any) {
       </span>
     </el-space>
 
-    <el-tooltip
-        :content="$t('minus')"
-        placement="left">
-      <span class="minus no-drag" @click="mini">
-          <el-icon>
-              <icon-mdi-card-minus-outline/>
-          </el-icon>
-      </span>
-    </el-tooltip>
+    <MyTitleBar class="minus no-drag"></MyTitleBar>
 
     <div
         class="dropdown no-drag"
@@ -171,6 +162,10 @@ async function changeProxy(now: any, name: any) {
   padding-top: 25px;
   position: relative;
   -webkit-app-region: drag;
+}
+
+.win {
+  padding-top: 15px;
 }
 
 .no-drag {
@@ -229,9 +224,9 @@ async function changeProxy(now: any, name: any) {
 }
 
 .minus {
-  margin-right: 28px;
+  margin-right: 25px;
   float: right;
-  font-size: 16px;
+  font-size: 18px;
   color: var(--text-color);
   cursor: pointer;
 }

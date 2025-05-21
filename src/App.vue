@@ -4,11 +4,10 @@
        key="pandora-box-body"
   >
     <div class="left">
-      <div class="top-title">
+      <div :class="isWindows?'top-title win':'top-title'">
         <div class="top-icon"></div>
         <span class="top-title-text">Pandora-Box</span>
       </div>
-      <MyTitleBar/>
       <MyEvent/>
       <MyNav/>
       <MyRule/>
@@ -28,7 +27,6 @@
 <script setup lang="ts">
 import {onMounted, ref} from 'vue';
 import {useMenuStore} from "@/store/menuStore";
-
 
 const menuStore = useMenuStore();
 
@@ -54,9 +52,13 @@ function preloadBackgroundImage(bg: string) {
   }
 }
 
+const isWindows = ref(false)
 onMounted(() => {
   preloadBackgroundImage(menuStore.background);
-
+  // @ts-ignore
+  if (window["pxShowBar"]) {
+    isWindows.value = true;
+  }
 });
 
 watch(() => menuStore.background, (nextBackground) => {
@@ -99,9 +101,13 @@ watch(() => menuStore.background, (nextBackground) => {
 }
 
 .top-title {
-  margin-top: 40px;
-  margin-left: 20px;
+  padding-top: 40px;
+  padding-left: 23px;
   -webkit-app-region: drag;
+}
+
+.win {
+  padding-top: 35px;
 }
 
 .top-icon {
