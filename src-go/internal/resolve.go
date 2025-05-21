@@ -84,6 +84,7 @@ func Resolve(content string, profile *models.Profile, refresh bool) error {
 	}
 
 	// Sing解析
+	// 解析不到节点不退出 有可能是yaml 保存成json了 继续尝试yaml解析
 	if utils.IsJSON(tempStr) {
 		sing, err := convert.ConvertsSingBox(tempBytes)
 		if err == nil {
@@ -95,8 +96,6 @@ func Resolve(content string, profile *models.Profile, refresh bool) error {
 			saveProfile(sing, profile)
 			return nil
 		}
-
-		return err
 	}
 
 	// Base64解析
