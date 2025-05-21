@@ -103,6 +103,8 @@ func startCore(profile models.Profile, reload bool) {
 	rawCfg.TProxyPort = 0
 	rawCfg.RedirPort = 0
 	rawCfg.ExternalController = ""
+	rawCfg.ExternalUI = ""
+	rawCfg.ExternalUIURL = ""
 	rawCfg.Tun.DNSHijack = []string{"any:53"}
 	rawCfg.Tun.AutoRoute = true
 	rawCfg.Tun.AutoDetectInterface = true
