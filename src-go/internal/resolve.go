@@ -83,21 +83,6 @@ func Resolve(content string, profile *models.Profile, refresh bool) error {
 		profile.Path = "./profiles/" + profile.Id + ".yaml"
 	}
 
-	// Sing解析
-	// 解析不到节点不退出 有可能是yaml 保存成json了 继续尝试yaml解析
-	if utils.IsJSON(tempStr) {
-		sing, err := convert.ConvertsSingBox(tempBytes)
-		if err == nil {
-			// 提取正确配置的节点
-			sing, err = MapsToProxies(sing)
-			if err != nil {
-				return err
-			}
-			saveProfile(sing, profile)
-			return nil
-		}
-	}
-
 	// Base64解析
 	if utils.IsBase64(tempStr) {
 		v2ray, err := convert.ConvertsV2Ray(tempBytes)
@@ -133,6 +118,21 @@ func Resolve(content string, profile *models.Profile, refresh bool) error {
 		}
 
 		return err
+	}
+
+	// Sing解析
+	// 解析不到节点不退出 有可能是yaml 保存成json了 继续尝试yaml解析
+	if utils.IsJSON(tempStr) {
+		sing, err := convert.ConvertsSingBox(tempBytes)
+		if err == nil {
+			// 提取正确配置的节点
+			sing, err = MapsToProxies(sing)
+			if err != nil {
+				return err
+			}
+			saveProfile(sing, profile)
+			return nil
+		}
 	}
 
 	// Yaml解析
