@@ -115,6 +115,6 @@ watch(() => menuStore.background, (nextBackground) => {
 .top-title-text {
   position: absolute;
   margin-left: 40px;
-  margin-top: -25px;
+  margin-top: -22px;
 }
 </style>
