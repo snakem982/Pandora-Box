@@ -139,7 +139,7 @@ async function changeProxy(now: any, name: any) {
       </span>
     </el-space>
 
-    <MyTitleBar class="minus no-drag"></MyTitleBar>
+    <MyTitleBar :class="isWindows?'minus-win':'minus'"></MyTitleBar>
 
     <div
         class="dropdown no-drag"
@@ -229,6 +229,16 @@ async function changeProxy(now: any, name: any) {
   font-size: 18px;
   color: var(--text-color);
   cursor: pointer;
+  -webkit-app-region: no-drag;
+}
+
+.minus-win {
+  margin-right: 12px;
+  float: right;
+  font-size: 20px;
+  color: var(--text-color);
+  cursor: pointer;
+  -webkit-app-region: no-drag;
 }
 
 .dropdown {

@@ -107,7 +107,7 @@ watch(() => menuStore.background, (nextBackground) => {
 }
 
 .win {
-  padding-top: 35px;
+  padding-top: 32px;
 }
 
 .top-icon {
