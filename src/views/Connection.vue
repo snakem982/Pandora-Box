@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import MyHr from "@/components/proxies/MyHr.vue";
 import MySimpleInput from "@/components/MySimpleInput.vue";
 import {WS} from "@/util/ws";
 import {useWebStore} from "@/store/webStore";
@@ -24,11 +23,6 @@ const localeMap: Record<string, Locale> = {
 function fDate(start: any): string {
   const startTime = new Date(start);
   return formatDistance(new Date(), startTime, {locale: localeMap[t('language')]})
-}
-
-const distanceFromTop = ref(195)
-const upFromTop = function (distance: number) {
-  distanceFromTop.value = distance
 }
 
 const search = ref('')
@@ -98,12 +92,10 @@ function closeAll() {
     }
   }
 }
-
-
 </script>
 
 <template>
-  <MyLayout :top-height="distanceFromTop-15" :bottom-height="distanceFromTop+25">
+  <MyLayout>
     <template #top>
       <MySearch></MySearch>
       <el-space class="space">
@@ -111,7 +103,6 @@ function closeAll() {
           {{ $t('connections.title') }}
         </div>
       </el-space>
-      <MyHr :update="upFromTop" v-show="false"></MyHr>
     </template>
     <template #bottom>
       <div class="conn">
@@ -183,7 +174,7 @@ function closeAll() {
 .conn {
   width: 95%;
   margin-left: 10px;
-  margin-top: 5px;
+  margin-top: 2px;
 }
 
 .title {

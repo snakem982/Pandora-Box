@@ -1,16 +1,9 @@
 <script setup lang="ts">
 import MyConfig from "@/components/setting/MyConfig.vue";
-import MyHr from "@/components/proxies/MyHr.vue";
-
-const distanceFromTop = ref(140)
-const upFromTop = function (distance: number) {
-  distanceFromTop.value = distance
-}
-
 </script>
 
 <template>
-  <MyLayout :top-height="distanceFromTop-15" :bottom-height="distanceFromTop+25">
+  <MyLayout>
     <template #top>
       <MySearch></MySearch>
       <el-space class="space">
@@ -18,7 +11,6 @@ const upFromTop = function (distance: number) {
           {{ $t('setting.title') }}
         </div>
       </el-space>
-      <MyHr :update="upFromTop" v-show="false"></MyHr>
     </template>
     <template #bottom>
       <MyConfig></MyConfig>

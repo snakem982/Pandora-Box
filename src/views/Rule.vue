@@ -1,15 +1,10 @@
 <script setup lang="ts">
-import MyHr from "@/components/proxies/MyHr.vue";
+import MyHr from "@/components/MyHr.vue";
 import {useMenuStore} from "@/store/menuStore";
 import {useRouter} from "vue-router";
 
 const menuStore = useMenuStore()
 const router = useRouter()
-
-const distanceFromTop = ref(195)
-const upFromTop = function (distance: number) {
-  distanceFromTop.value = distance
-}
 
 const getActive = function (value: string): string {
   return menuStore.ruleMenu === value ? 'proxy-group-title proxy-group-title-select' : 'proxy-group-title';
@@ -21,7 +16,7 @@ const setActive = function (value: string) {
 </script>
 
 <template>
-  <MyLayout :top-height="distanceFromTop-15" :bottom-height="distanceFromTop+25">
+  <MyLayout hr-show>
     <template #top>
       <MySearch></MySearch>
       <el-space class="space">
@@ -59,8 +54,6 @@ const setActive = function (value: string) {
           </span>
         </button>
       </div>
-
-      <MyHr :update="upFromTop" style="margin-top: 10px"></MyHr>
     </template>
     <template #bottom>
       <router-view/>
@@ -81,7 +74,7 @@ const setActive = function (value: string) {
 
 .proxy-group {
   display: flex;
-  margin-top: 14px;
+  margin-top: 20px;
   margin-left: 10px;
   flex-wrap: wrap;
   gap: 10px;

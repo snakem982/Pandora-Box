@@ -9,12 +9,6 @@ import {useWebStore} from "@/store/webStore";
 
 const {t} = useI18n();
 
-// 计算顶部遮挡
-const distanceFromTop = ref(195);
-const upFromTop = function (distance: number) {
-  distanceFromTop.value = distance;
-};
-
 // 获取当前 Vue 实例的 proxy 对象
 const {proxy} = getCurrentInstance()!;
 const api = createApi(proxy);
@@ -229,10 +223,7 @@ watch(() => proxiesStore.now, async () => {
 </script>
 
 <template>
-  <MyLayout
-      :top-height="distanceFromTop - 15"
-      :bottom-height="distanceFromTop + 25"
-  >
+  <MyLayout hr-show>
     <template #top>
       <MySearch></MySearch>
       <el-space class="space">
@@ -343,9 +334,9 @@ watch(() => proxiesStore.now, async () => {
           <icon-mdi-arrow-expand-right/>
         </el-icon>
       </div>
-
-      <MyHr :update="upFromTop" style="margin-top: 10px"></MyHr>
     </template>
+
+
     <template #bottom>
       <div class="proxy-nodes">
         <div
@@ -413,12 +404,13 @@ watch(() => proxiesStore.now, async () => {
   align-items: center;
   width: 95%;
   margin-left: 10px;
+  min-height: 50px;
 }
 
 .proxy-group {
   display: flex;
   gap: 10px;
-  margin: 10px 0 3px 0;
+  margin: 12px 0 3px 0;
   overflow-x: hidden;
   scroll-behavior: smooth;
 }
@@ -467,7 +459,6 @@ watch(() => proxiesStore.now, async () => {
   padding: 0;
   color: var(--text-color);
   margin-left: 12px;
-  margin-top: 5px;
   width: 95%;
 }
 
@@ -523,7 +514,7 @@ watch(() => proxiesStore.now, async () => {
   position: relative;
   display: inline-block;
   width: 95%;
-  margin: 10px 10px 5px 10px;
+  margin: 12px 10px 5px 10px;
 }
 
 .dropdown-btn {

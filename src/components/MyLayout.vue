@@ -1,21 +1,35 @@
 <script setup lang="ts">
-defineProps({
-  topHeight: {
-    type: Number,
-    default: 65
-  },
-  bottomHeight: {
-    type: Number,
-    default: 95
-  },
+import MyHr from "@/components/MyHr.vue";
+
+const props = defineProps({
+  hrShow: {
+    type: Boolean,
+    default: false
+  }
 })
+
+const topHeight = ref(65)
+const bottomHeight = ref(95)
+
+// 调整顶部高度
+const upFromTop = function (distance: number) {
+  if (props.hrShow) {
+    topHeight.value = distance - 10;
+    bottomHeight.value = distance + 10;
+  } else {
+    topHeight.value = distance - 15;
+    bottomHeight.value = distance + 15;
+  }
+};
+
 </script>
 
 <template>
-  <div  class="top" :style="{ '--layout-top-height': topHeight + 'px' }">
+  <div class="top" :style="{ '--layout-top-height': topHeight + 'px' }">
     <slot name="top"></slot>
+    <MyHr :update="upFromTop" v-show="hrShow" style="margin-top: 10px"></MyHr>
   </div>
-  <div  class="bottom" :style="{ '--layout-bottom-height': bottomHeight + 'px' }">
+  <div class="bottom" :style="{ '--layout-bottom-height': bottomHeight + 'px' }">
     <slot name="bottom"></slot>
   </div>
 </template>

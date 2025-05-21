@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import MyHr from "@/components/proxies/MyHr.vue";
+import MyHr from "@/components/MyHr.vue";
 import MyEditor from "@/components/MyEditor.vue";
 import createApi from "@/api";
 import {pError, pSuccess} from "@/util/pLoad";

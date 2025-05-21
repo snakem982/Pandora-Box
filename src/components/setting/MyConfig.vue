@@ -64,7 +64,7 @@ function checkUpdate() {
 <template>
   <el-row :gutter="20" class="spark"
           style="margin-left: 0;
-          margin-top: 10px;
+          margin-top: 2px;
           margin-right: 0;">
     <el-col :span="24">
       <div class="box box1">

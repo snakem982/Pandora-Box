@@ -1,13 +1,6 @@
 <script setup lang="ts">
-import MyHr from "@/components/proxies/MyHr.vue";
 import MySimpleInput from "@/components/MySimpleInput.vue";
 import {useWebStore} from "@/store/webStore";
-
-// 调整顶部高度
-const distanceFromTop = ref(195);
-const upFromTop = function (distance: number) {
-  distanceFromTop.value = distance;
-};
 
 // 获取Store
 const webStore = useWebStore();
@@ -34,10 +27,7 @@ function filterData() {
 </script>
 
 <template>
-  <MyLayout
-      :top-height="distanceFromTop - 15"
-      :bottom-height="distanceFromTop + 25"
-  >
+  <MyLayout>
     <template #top>
       <MySearch></MySearch>
       <el-space class="space">
@@ -45,7 +35,6 @@ function filterData() {
           {{ $t("log.title") }}
         </div>
       </el-space>
-      <MyHr :update="upFromTop" v-show="false"></MyHr>
     </template>
     <template #bottom>
       <div class="conn">
@@ -83,7 +72,7 @@ function filterData() {
 .conn {
   width: 95%;
   margin-left: 10px;
-  margin-top: 5px;
+  margin-top: 2px;
 }
 
 .title {

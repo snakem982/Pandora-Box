@@ -126,7 +126,7 @@ watch(() => webStore.fProfile, async () => {
 }
 
 .search {
-  margin-top: 12px;
+  margin-top: 6px;
 }
 
 .content {

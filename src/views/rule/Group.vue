@@ -185,7 +185,7 @@ const switchTemplate = async () => {
 }
 
 .op {
-  margin-top: 8px;
+  margin-top: 2px;
 }
 
 .dropdown {

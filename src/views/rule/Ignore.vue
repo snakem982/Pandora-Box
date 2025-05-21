@@ -65,7 +65,7 @@ async function savaIgnore() {
 }
 
 .op {
-  margin-top: 12px;
+  margin-top: 6px;
 }
 
 :deep(.el-button) {

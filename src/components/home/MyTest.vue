@@ -313,7 +313,7 @@ onMounted(async () => {
 /* 整体卡片样式 */
 .t-card {
   width: calc(95% - 20px);
-  margin-top: 30px;
+  margin-top: 28px;
   padding: 10px 0 10px 0;
   border-radius: 8px;
   text-align: left;
