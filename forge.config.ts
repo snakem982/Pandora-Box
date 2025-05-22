@@ -18,7 +18,8 @@ const config: ForgeConfig = {
         extraResource,
         extendInfo: {
             LSMinimumSystemVersion: "10.13.0"
-        }
+        },
+        appBundleId: 'com.snakem982.pandora-box',
     },
     rebuildConfig: {},
     makers: [
@@ -28,7 +29,8 @@ const config: ForgeConfig = {
             icon: 'build/appicon.ico',
             ui: {
                 chooseDirectory: true,
-            }
+            },
+            upgradeCode: 'c1d377b2-2c61-4c5e-8773-8e3c703b8b41',
         }),
         new MakerDMG({
             icon: 'build/appicon.icns',
