@@ -23,6 +23,7 @@ func GetDBInstance() *bbolt.DB {
 	if err != nil {
 		panic(err)
 	}
+	_ = utils.SetPermissions(path)
 	_ = BDb.Batch(func(tx *bbolt.Tx) error {
 		_, err := tx.CreateBucketIfNotExists(BName)
 		if err != nil {
@@ -33,6 +34,18 @@ func GetDBInstance() *bbolt.DB {
 	})
 
 	return BDb
+}
+
+func GetMetaDB() {
+	path := utils.GetUserHomeDir("cache.db")
+
+	metaDB, err := bbolt.Open(path, os.ModePerm, nil)
+	if err != nil {
+		_ = utils.SetPermissions(path)
+		return
+	}
+	_ = metaDB.Close()
+	_ = utils.SetPermissions(path)
 }
 
 // Put 将任意类型的键值对存储到数据库中

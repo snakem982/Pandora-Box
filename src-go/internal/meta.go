@@ -48,10 +48,18 @@ func Init() {
 	if db == nil {
 		os.Exit(1)
 	}
+	cache.GetMetaDB()
 
 	// 输出日志
 	log.Infoln("[CacheDB] initialized")
 	log.Infoln("[HomePath] is %s", utils.GetUserHomeDir())
+
+	// 修改权限
+	pathTemp := utils.GetUserHomeDir("logs", "px-client.log")
+	_ = utils.SetPermissions(pathTemp)
+	pathTemp = utils.GetUserHomeDir("px-electron.db", "config.json")
+	_ = utils.SetPermissions(pathTemp)
+	log.Infoln("[Permission] is ok")
 
 	// 释放资源文件
 	_, _ = utils.SaveFile(utils.GetUserHomeDir("geoip.metadb"), GeoIp)

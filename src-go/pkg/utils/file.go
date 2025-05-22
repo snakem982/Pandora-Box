@@ -5,8 +5,10 @@ import (
 	"fmt"
 	"github.com/snakem982/pandora-box/pkg/constant"
 	"os"
+	"os/exec"
 	"os/user"
 	"path/filepath"
+	"runtime"
 	"sync"
 )
 
@@ -17,6 +19,18 @@ func InitHomeDir(homeDir string) {
 	once.Do(func() {
 		HomeDir = homeDir
 	})
+}
+
+// SetPermissions 设置权限允许所有用户读写
+func SetPermissions(filePath string) error {
+	if runtime.GOOS == "windows" {
+		// Windows: 使用 icacls 赋予所有用户读写权限
+		cmd := exec.Command("icacls", filePath, "/grant", "*S-1-1-0:(R,W)")
+		return cmd.Run()
+	} else {
+		// macOS & Linux: 赋予 0666 权限（所有用户可读写）
+		return os.Chmod(filePath, 0666)
+	}
 }
 
 // FileExists 检查文件是否存在
@@ -57,6 +71,7 @@ func SaveFile(savePath string, content []byte) (bool, error) {
 	if err != nil {
 		return false, fmt.Errorf("保存文件失败: %v", err)
 	}
+	_ = SetPermissions(savePath)
 
 	return true, nil
 }
@@ -92,7 +107,12 @@ func CreateFile(path string) (*os.File, error) {
 		return os.OpenFile(path, os.O_RDWR, os.ModePerm)
 	} else if os.IsNotExist(err) {
 		// 文件不存在，创建新文件
-		return os.Create(path)
+		file, err := os.Create(path)
+		if err != nil {
+			return nil, err
+		}
+		_ = SetPermissions(path)
+		return file, nil
 	} else {
 		// 其他错误
 		return nil, err
@@ -109,7 +129,12 @@ func CreateFileForAppend(path string) (*os.File, error) {
 	}
 
 	// 打开文件，使用追加模式
-	return os.OpenFile(path, os.O_CREATE|os.O_APPEND|os.O_RDWR, 0777)
+	file, err := os.OpenFile(path, os.O_CREATE|os.O_APPEND|os.O_RDWR, os.ModePerm)
+	if err != nil {
+		return nil, err
+	}
+	_ = SetPermissions(path)
+	return file, nil
 }
 
 // ReadFile 根据传入的文件路径获取文件中的内容
