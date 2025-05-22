@@ -225,7 +225,6 @@ watch(() => proxiesStore.now, async () => {
 <template>
   <MyLayout hr-show>
     <template #top>
-      <MySearch></MySearch>
       <el-space class="space">
         <div class="title">
           {{ $t("proxies.title") }}

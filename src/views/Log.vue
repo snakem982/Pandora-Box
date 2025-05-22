@@ -29,7 +29,6 @@ function filterData() {
 <template>
   <MyLayout>
     <template #top>
-      <MySearch></MySearch>
       <el-space class="space">
         <div class="title">
           {{ $t("log.title") }}

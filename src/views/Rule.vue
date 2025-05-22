@@ -18,7 +18,6 @@ const setActive = function (value: string) {
 <template>
   <MyLayout hr-show>
     <template #top>
-      <MySearch></MySearch>
       <el-space class="space">
         <div class="title">
           {{ $t('rule.title') }}

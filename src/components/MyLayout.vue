@@ -26,6 +26,7 @@ const upFromTop = function (distance: number) {
 
 <template>
   <div class="top" :style="{ '--layout-top-height': topHeight + 'px' }">
+    <MySearch></MySearch>
     <slot name="top"></slot>
     <MyHr :update="upFromTop" v-show="hrShow" style="margin-top: 10px"></MyHr>
   </div>

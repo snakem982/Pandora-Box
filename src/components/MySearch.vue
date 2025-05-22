@@ -290,4 +290,8 @@ async function changeProxy(now: any, name: any) {
   float: right;
 }
 
+input::placeholder {
+  color: var(--text-color);
+  opacity: 0.3;
+}
 </style>

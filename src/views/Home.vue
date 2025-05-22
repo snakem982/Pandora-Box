@@ -3,9 +3,6 @@
 
 <template>
   <MyLayout>
-    <template #top>
-      <MySearch></MySearch>
-    </template>
     <template #bottom>
       <MyChart></MyChart>
       <MyTest></MyTest>

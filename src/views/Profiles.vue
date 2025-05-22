@@ -349,7 +349,6 @@ watch(() => webStore.dProfile, async (pList) => {
 <template>
   <MyLayout>
     <template #top>
-      <MySearch></MySearch>
       <el-space class="space">
         <div class="title">
           {{ $t('profiles.title') }}

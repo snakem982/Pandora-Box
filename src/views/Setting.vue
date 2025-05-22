@@ -5,7 +5,6 @@ import MyConfig from "@/components/setting/MyConfig.vue";
 <template>
   <MyLayout>
     <template #top>
-      <MySearch></MySearch>
       <el-space class="space">
         <div class="title">
           {{ $t('setting.title') }}

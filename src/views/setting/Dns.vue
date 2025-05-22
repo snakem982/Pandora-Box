@@ -1,15 +1,8 @@
 <script setup lang="ts">
-import MyHr from "@/components/MyHr.vue";
 import MyEditor from "@/components/MyEditor.vue";
 import createApi from "@/api";
 import {pError, pSuccess} from "@/util/pLoad";
 import {useI18n} from "vue-i18n";
-
-// 调整顶部高度
-const distanceFromTop = ref(195);
-const upFromTop = function (distance: number) {
-  distanceFromTop.value = distance;
-};
 
 // 获取当前 Vue 实例的 proxy 对象
 const {proxy} = getCurrentInstance()!;
@@ -39,18 +32,13 @@ const save = async function (yamlContent: any) {
 </script>
 
 <template>
-  <MyLayout
-      :top-height="distanceFromTop - 15"
-      :bottom-height="distanceFromTop + 25"
-  >
+  <MyLayout>
     <template #top>
-      <MySearch></MySearch>
       <el-space class="space">
         <div class="title">
           {{ $t("dns.title") }}
         </div>
       </el-space>
-      <MyHr :update="upFromTop" v-show="false"></MyHr>
     </template>
     <template #bottom>
       <MyEditor :load="load" :save="save"></MyEditor>
