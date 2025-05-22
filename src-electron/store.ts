@@ -32,7 +32,7 @@ export const storeGet = (key: string) => {
 }
 
 // 往数据库存储数据
-export const storeSet = (key: string, value: string) => {
+export const storeSet = (key: string, value: any) => {
     if (store) {
         store.set(key, value);
     }

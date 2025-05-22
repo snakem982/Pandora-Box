@@ -2,13 +2,28 @@
 
 import {app, BrowserWindow, ipcMain, Menu, nativeImage, Tray} from 'electron';
 import path from "node:path";
+import {storeSet} from "./store";
 
 // 是否在开发模式
 const isDev = !app.isPackaged;
 
+// 托盘
+let tray: Tray;
+// 托盘菜单
+let currentMenu: any
+// 当前窗口
+let mainWindow: BrowserWindow
+
 // 退出app
 let isQuiting = false;
 export const doQuit = () => {
+    // 保存窗口位置和大小
+    if (mainWindow) {
+        const bounds = mainWindow.getBounds();
+        storeSet('windowBounds', bounds);
+    }
+
+    // 执行软件退出
     isQuiting = true;
     app.quit();
 }
@@ -81,14 +96,6 @@ const initMenu = () => createMenu([
         ]
     }
 ]);
-
-
-// 托盘
-let tray: Tray;
-// 托盘菜单
-let currentMenu: any
-// 当前窗口
-let mainWindow: BrowserWindow
 
 // 显示窗口
 export function showWindow() {

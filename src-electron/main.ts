@@ -1,14 +1,13 @@
-import {app, BrowserWindow, ipcMain} from 'electron';
+import {app, BrowserWindow, BrowserWindowConstructorOptions} from 'electron';
 import path from 'node:path';
 import {startServer, storeInfo} from "./server";
 import {doQuit, initTray, showWindow} from "./tray";
 import {startBackend} from "./admin";
 import log from './log';
-import {initStore} from "./store";
+import {initStore, storeGet} from "./store";
 
 // 是否在开发模式
 const isDev = !app.isPackaged;
-
 
 
 // 主窗口
@@ -16,11 +15,13 @@ let mainWindow: BrowserWindow;
 // 屏蔽安全警告
 process.env["ELECTRON_DISABLE_SECURITY_WARNINGS"] = "true";
 const createWindow = () => {
-    mainWindow = new BrowserWindow({
-        width: 1100,
-        height: 760,
+
+    // 窗口配置
+    let windowOptions: BrowserWindowConstructorOptions = {
         minWidth: 960,
         minHeight: 660,
+        width: 1100,
+        height: 760,
         center: true,
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),
@@ -32,7 +33,22 @@ const createWindow = () => {
         ...(process.platform !== 'darwin' ? {
             titleBarStyle: 'hidden'
         } : {titleBarStyle: 'hiddenInset'})
-    });
+    }
+
+    // 从 store 获取保存的窗口尺寸与位置
+    const savedBounds: any = storeGet('windowBounds');
+    if (savedBounds && savedBounds.x !== undefined && savedBounds.y !== undefined) {
+        windowOptions = {
+            ...windowOptions,
+            x: savedBounds.x,
+            y: savedBounds.y,
+            width: savedBounds.width,
+            height: savedBounds.height
+        }
+    }
+
+    // 创建窗口
+    mainWindow = new BrowserWindow(windowOptions);
 
     // 加载托盘
     initTray(mainWindow)
