@@ -69,6 +69,7 @@ jobs:
           $arch = "${{ matrix.arch }}"
           if ($arch -eq "amd64") {
             $arch = "x64"
+            npm install electron@25
           }
           Write-Host "Using arch: $arch"
           npm run make -- --arch=$arch

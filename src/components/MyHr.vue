@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import {defineProps, nextTick, onMounted, onUnmounted, ref} from 'vue';
-
 const targetHr = ref<HTMLElement | null>(null);
 const distanceFromTop = ref(0);
 let observer: MutationObserver | null = null;
