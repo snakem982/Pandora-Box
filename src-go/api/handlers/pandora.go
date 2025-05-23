@@ -8,6 +8,9 @@ import (
 	"github.com/metacubex/mihomo/tunnel/statistic"
 	"github.com/snakem982/pandora-box/api"
 	"github.com/snakem982/pandora-box/api/job"
+	"github.com/snakem982/pandora-box/api/models"
+	"github.com/snakem982/pandora-box/pkg/cache"
+	"github.com/snakem982/pandora-box/pkg/constant"
 	sys "github.com/snakem982/pandora-box/pkg/sys/proxy"
 	"github.com/snakem982/pandora-box/pkg/utils"
 	"net/http"
@@ -83,9 +86,9 @@ func checkAddressPort(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// 检测到Px相同地址端口则跳过
-	BindAddress := executor.GetGeneral().BindAddress
-	MixedPort := executor.GetGeneral().MixedPort
-	if BindAddress == mi.BindAddress && MixedPort == mi.MixedPort {
+	var mc models.Mihomo
+	_ = cache.Get(constant.Mihomo, &mc)
+	if mc.BindAddress == mi.BindAddress && mc.Port == mi.MixedPort {
 		render.NoContent(w, r)
 		return
 	}

@@ -1,3 +1,4 @@
+// @ts-ignore
 import SparkMD5 from "spark-md5";
 import {WebTest} from "@/types/webtest";
 

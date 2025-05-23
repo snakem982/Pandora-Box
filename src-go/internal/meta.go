@@ -72,6 +72,7 @@ func Init() {
 }
 
 var NowConfig *config.Config
+var havaStartCore bool
 var StartLock = sync.Mutex{}
 
 // startCore 函数用于启动核心功能
@@ -189,6 +190,8 @@ func startCore(profile models.Profile, reload bool) {
 	}
 	// 存储配置
 	_ = cache.Put(constant.Mihomo, mi)
+	// 更新启动标志
+	havaStartCore = true
 }
 
 // 获取统一规则分组模板
@@ -251,6 +254,10 @@ func SwitchProfile(reload bool) {
 		profile = profiles[0]
 		profile.Selected = true
 		_ = cache.Put(profile.Id, profile)
+	}
+
+	if !havaStartCore {
+		reload = false
 	}
 
 	startCore(profile, reload)

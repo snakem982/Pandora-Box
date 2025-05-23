@@ -59,6 +59,12 @@ async function doSwitch() {
         "bindAddress": settingStore.bindAddress,
         "port": settingStore.port,
       })
+      // 开启代理
+      await api.updateConfigs({
+        "allow-lan": true,
+        "mixed-port": settingStore.port,
+        "bind-address": settingStore.bindAddress,
+      })
       // 未被占用开启代理
       await api.enableProxy({
         "bindAddress": settingStore.bindAddress,
