@@ -77,8 +77,6 @@ var StartLock = sync.Mutex{}
 
 // startCore 函数用于启动核心功能
 func startCore(profile models.Profile, reload bool) {
-	StartLock.Lock()
-	defer StartLock.Unlock()
 
 	// 获取规则分组
 	useTemplate, templateBuf := getTemplate(profile)
@@ -231,6 +229,9 @@ func getTemplate(profile models.Profile) (bool, []byte) {
 
 // SwitchProfile 切换配置
 func SwitchProfile(reload bool) {
+	StartLock.Lock()
+	defer StartLock.Unlock()
+
 	// 应用配置
 	var profile models.Profile
 
