@@ -9,18 +9,39 @@
          v-show="isDropdownVisible"
          @mouseenter="cancelHide">
       <div class="dropdown-item"
-           @click="changeBackground(item)"
            v-for="(item,index) in theme"
            :key="index">
-        {{ t("bg." + item.id) }}
+        <span class="dropdown-label"
+              @click="changeBackground(item)">
+          {{ t("bg." + item.id) }}
+        </span>
+        <span v-if="item.allowUpload"
+              class="upload-button"
+              :title="t('bg.upload')"
+              :aria-label="t('bg.upload')"
+              @click.stop="triggerUpload(item)">
+          <icon-mdi-upload/>
+        </span>
       </div>
     </div>
+    <input ref="fileInput"
+           class="file-input"
+           type="file"
+           accept="image/*"
+           @change="handleFileChange"/>
   </div>
 </template>
 
 <script setup lang="ts">
 import {useI18n} from 'vue-i18n';
 import {useMenuStore} from "@/store/menuStore";
+
+interface ThemeOption {
+  id: string;
+  bg?: string | string[];
+  rand?: boolean;
+  allowUpload?: boolean;
+}
 
 // 存储背景主题
 const menuStore = useMenuStore()
@@ -57,22 +78,68 @@ function getRandom(arr: any[]) {
 }
 
 // 切换背景
-const changeBackground = (item: any) => {
-  let url = item.bg;
+const changeBackground = (item: ThemeOption) => {
+  if (item.allowUpload) {
+    const custom = localStorage.getItem(getCustomBackgroundKey(item.id));
+    if (custom) {
+      menuStore.setBackground(custom);
+      return;
+    }
+    triggerUpload(item);
+    return;
+  }
+  let url: string;
   if (Array.isArray(item.bg)) {
     url = getRandom(item.bg);
     if (item["rand"]) {
-      url = "url('" + url + "&date=" + Date.now() + "')"
+      url = "url('" + url + "&date=" + Date.now() + "')";
     }
+  } else if (typeof item.bg === "string") {
+    url = item.bg;
+  } else {
+    console.warn(`Theme "${item.id}" is missing a background definition.`);
+    return;
   }
-  menuStore.setBackground(url)
-}
+  menuStore.setBackground(url);
+};
 
-const theme = ref(null);
+const theme = ref<ThemeOption[]>([]);
+const fileInput = ref<HTMLInputElement | null>(null);
+const pendingThemeId = ref<string | null>(null);
+
+const getCustomBackgroundKey = (id: string) => `custom-bg-${id}`;
+
+const triggerUpload = (item: ThemeOption) => {
+  pendingThemeId.value = item.id;
+  fileInput.value?.click();
+};
+
+const handleFileChange = (event: Event) => {
+  const target = event.target as HTMLInputElement;
+  const file = target.files?.[0];
+  if (!file) {
+    target.value = '';
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = () => {
+    const result = reader.result;
+    if (typeof result === 'string' && pendingThemeId.value) {
+      const cssValue = `url('${result}')`;
+      menuStore.setBackground(cssValue);
+      localStorage.setItem(getCustomBackgroundKey(pendingThemeId.value), cssValue);
+    }
+  };
+  reader.onloadend = () => {
+    target.value = '';
+    pendingThemeId.value = null;
+  };
+  reader.readAsDataURL(file);
+};
 onMounted(async () => {
   try {
     const response = await fetch("/json/theme.json");
-    theme.value = await response.json();
+    theme.value = await response.json() as ThemeOption[];
   } catch (error) {
     console.error("获取 JSON 失败", error);
   }
@@ -113,13 +180,40 @@ onMounted(async () => {
 }
 
 .dropdown-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.dropdown-label {
+  flex: 1;
   padding: 5px 10px;
   border-radius: 3px;
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
 
-.dropdown-item:hover {
+.dropdown-label:hover {
   background-color: var(--skin-hover-color);
+}
+
+.upload-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  padding: 4px 6px;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.upload-button:hover {
+  background-color: var(--skin-hover-color);
+}
+
+.file-input {
+  display: none;
 }
 </style>

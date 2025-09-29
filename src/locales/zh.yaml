@@ -229,6 +229,8 @@ bg:
   comics: 二次元
   game: 游戏
   random: 随机
+  custom: 自定义图片
+  upload: 上传图片
 
 tray:
   show: 显示窗口

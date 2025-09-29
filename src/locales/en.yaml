@@ -229,6 +229,8 @@ bg:
   comics: Comics
   game: Game
   random: Random
+  custom: Custom image
+  upload: Upload image
 
 tray:
   show: Show window

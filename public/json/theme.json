@@ -86,5 +86,9 @@
       "https://cdn.seovx.com/ha/?mom=302"
     ],
     "rand": true
+  },
+  {
+    "id": "custom",
+    "allowUpload": true
   }
 ]
