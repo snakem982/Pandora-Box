@@ -11,17 +11,21 @@
       <div class="dropdown-item"
            v-for="(item,index) in theme"
            :key="index">
-        <span class="dropdown-label"
-              @click="changeBackground(item)">
+        <button class="dropdown-label"
+                type="button"
+                @click="changeBackground(item)">
           {{ t("bg." + item.id) }}
-        </span>
-        <span v-if="item.allowUpload"
-              class="upload-button"
-              :title="t('bg.upload')"
-              :aria-label="t('bg.upload')"
-              @click.stop="triggerUpload(item)">
-          <icon-mdi-upload/>
-        </span>
+        </button>
+        <button v-if="supportsUpload(item.id)"
+                class="dropdown-upload"
+                type="button"
+                :title="t('bg.upload')"
+                :aria-label="t('bg.upload')"
+                @click.stop="triggerUpload(item)">
+          <el-icon aria-hidden="true">
+            <icon-mdi-upload/>
+          </el-icon>
+        </button>
       </div>
     </div>
     <input ref="fileInput"
@@ -33,15 +37,20 @@
 </template>
 
 <script setup lang="ts">
+import {onMounted, ref} from 'vue';
 import {useI18n} from 'vue-i18n';
+import {ElMessage} from 'element-plus';
 import {useMenuStore} from "@/store/menuStore";
 
 interface ThemeOption {
   id: string;
   bg?: string | string[];
   rand?: boolean;
-  allowUpload?: boolean;
 }
+
+const uploadableThemeIds = new Set(['custom']);
+
+const supportsUpload = (id: string) => uploadableThemeIds.has(id);
 
 // 存储背景主题
 const menuStore = useMenuStore()
@@ -79,7 +88,7 @@ function getRandom(arr: any[]) {
 
 // 切换背景
 const changeBackground = (item: ThemeOption) => {
-  if (item.allowUpload) {
+  if (supportsUpload(item.id) && !item.bg) {
     const custom = localStorage.getItem(getCustomBackgroundKey(item.id));
     if (custom) {
       menuStore.setBackground(custom);
@@ -88,6 +97,15 @@ const changeBackground = (item: ThemeOption) => {
     triggerUpload(item);
     return;
   }
+
+  if (supportsUpload(item.id)) {
+    const custom = localStorage.getItem(getCustomBackgroundKey(item.id));
+    if (custom) {
+      menuStore.setBackground(custom);
+      return;
+    }
+  }
+
   let url: string;
   if (Array.isArray(item.bg)) {
     url = getRandom(item.bg);
@@ -114,11 +132,19 @@ const triggerUpload = (item: ThemeOption) => {
   fileInput.value?.click();
 };
 
+const MAX_IMAGE_SIZE = 1024 * 1024; // 1 MB
+
 const handleFileChange = (event: Event) => {
   const target = event.target as HTMLInputElement;
   const file = target.files?.[0];
   if (!file) {
     target.value = '';
+    return;
+  }
+  if (file.size > MAX_IMAGE_SIZE) {
+    ElMessage.error(t('bg.too-large'));
+    target.value = '';
+    pendingThemeId.value = null;
     return;
   }
   const reader = new FileReader();
@@ -127,7 +153,12 @@ const handleFileChange = (event: Event) => {
     if (typeof result === 'string' && pendingThemeId.value) {
       const cssValue = `url('${result}')`;
       menuStore.setBackground(cssValue);
-      localStorage.setItem(getCustomBackgroundKey(pendingThemeId.value), cssValue);
+      try {
+        localStorage.setItem(getCustomBackgroundKey(pendingThemeId.value), cssValue);
+      } catch (error) {
+        console.error('Failed to save custom background', error);
+        ElMessage.error(t('bg.storage-failed'));
+      }
     }
   };
   reader.onloadend = () => {
@@ -181,36 +212,52 @@ onMounted(async () => {
 
 .dropdown-item {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 4px;
 }
 
 .dropdown-label {
-  flex: 1;
   padding: 5px 10px;
+  border: none;
   border-radius: 3px;
+  background: transparent;
+  font: inherit;
+  color: var(--text-color);
   cursor: pointer;
   transition: background-color 0.3s ease;
+  width: 100%;
 }
 
-.dropdown-label:hover {
+.dropdown-label:hover,
+.dropdown-label:focus-visible {
   background-color: var(--skin-hover-color);
+  outline: none;
 }
 
-.upload-button {
+.dropdown-upload {
   display: flex;
   align-items: center;
   justify-content: center;
+  border: none;
+  background: transparent;
+  color: var(--text-color);
+  font: inherit;
   font-size: 16px;
-  padding: 4px 6px;
-  border-radius: 3px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  opacity: 0.8;
+  transition: opacity 0.3s ease;
+  width: 100%;
 }
 
-.upload-button:hover {
-  background-color: var(--skin-hover-color);
+.dropdown-upload .el-icon {
+  font-size: 1em;
+}
+
+.dropdown-upload:hover,
+.dropdown-upload:focus-visible {
+  opacity: 1;
+  outline: none;
 }
 
 .file-input {

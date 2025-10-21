@@ -229,8 +229,10 @@ bg:
   comics: 二次元
   game: 游戏
   random: 随机
-  custom: 自定义图片
+  custom: 自己的
   upload: 上传图片
+  too-large: 图片过大，请选择小于 1 MB 的文件。
+  storage-failed: 无法保存图片，本地存储空间已满。
 
 tray:
   show: 显示窗口

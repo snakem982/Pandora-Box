@@ -231,6 +231,8 @@ bg:
   random: Random
   custom: Custom image
   upload: Upload image
+  too-large: Image is too large. Please choose a file smaller than 1 MB.
+  storage-failed: Unable to save the image. Local storage is full.
 
 tray:
   show: Show window
