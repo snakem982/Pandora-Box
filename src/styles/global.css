@@ -24,7 +24,7 @@ input {
 @font-face {
     font-family: "Nunito";
     font-style: normal;
-    src: url("../assets/fonts/nunito-v16-latin-regular.woff2") format("woff2");
+    src: url("../assets/fonts/nunito-v32-cyrillic_latin-regular.woff2") format("woff2");
 }
 
 @font-face {
