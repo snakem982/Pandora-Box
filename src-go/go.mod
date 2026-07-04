@@ -6,8 +6,8 @@ require (
 	github.com/go-co-op/gocron v1.37.0
 	github.com/gobwas/ws v1.4.0
 	github.com/gofrs/flock v0.13.0
-	github.com/metacubex/bbolt v0.0.0-20250725135710-010dbbbb7a5b
-	github.com/metacubex/chi v0.1.0
+	github.com/metacubex/bbolt v0.0.0-20260628143611-ef0ff34681c8
+	github.com/metacubex/chi v0.1.1
 	github.com/metacubex/http v0.1.6
 	github.com/metacubex/mihomo v1.19.27
 	github.com/panjf2000/ants/v2 v2.12.1
@@ -99,7 +99,7 @@ require (
 	github.com/metacubex/tailscale v0.0.0-20260623094802-1ab893d4162c // indirect
 	github.com/metacubex/tailscale-wireguard-go v0.0.0-20260623093519-06ea214022e4 // indirect
 	github.com/metacubex/tfo-go v0.0.0-20260623020846-376a77860b8c // indirect
-	github.com/metacubex/tls v0.1.6 // indirect
+	github.com/metacubex/tls v0.1.7 // indirect
 	github.com/metacubex/utls v1.8.7 // indirect
 	github.com/metacubex/wireguard-go v0.0.0-20250820062549-a6cecdd7f57f // indirect
 	github.com/metacubex/yamux v0.0.0-20250918083631-dd5f17c0be49 // indirect
@@ -150,4 +150,4 @@ require (
 	google.golang.org/protobuf v1.36.11 // indirect
 )
 
-replace github.com/metacubex/mihomo => github.com/snakem982/mihomo v1.1.23-moshen
+replace github.com/metacubex/mihomo => github.com/snakem982/mihomo v1.1.24-moshen
