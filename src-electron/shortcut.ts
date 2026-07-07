@@ -1,5 +1,5 @@
-import { app, BrowserWindow, globalShortcut } from 'electron';
-import { onMsg, sendMsg } from "./common";
+import {app, BrowserWindow, globalShortcut} from 'electron';
+import {onMsg, sendMsg} from "./common";
 
 const scs = {
     "showOrHide": showOrHide
@@ -49,7 +49,13 @@ export function initShortcut(mainWindow: BrowserWindow) {
     });
 
     onMsg('shortcut:unregister-all', async () => {
-        globalShortcut.unregisterAll();
+        if (app.isReady()) {
+            try {
+                globalShortcut.unregisterAll();
+            } catch (error) {
+                console.error("Failed to unregisterAll shortcut:", error);
+            }
+        }
         return true;
     });
 }

@@ -144,7 +144,13 @@ export function showWindow() {
 
 export const doQuit = () => {
     if (mainWindow) storeSet('windowBounds', mainWindow.getBounds());
-    globalShortcut.unregisterAll();
+    if (app.isReady()) {
+        try {
+            globalShortcut.unregisterAll();
+        } catch (error) {
+            console.error("Failed to unregisterAll shortcut:", error);
+        }
+    }
     isQuiting = true;
     app.quit();
 }
