@@ -85,8 +85,8 @@ jobs:
           if ($arch -eq "amd64") {
             $arch = "x64"
           }
-          Compress-Archive -Path out\make\deb\$arch\* -DestinationPath "linux-${{ matrix.arch }}-deb.zip"
-          Compress-Archive -Path out\make\rpm\$arch\* -DestinationPath "linux-${{ matrix.arch }}-rpm.zip"
+          mv out\make\deb\$arch\*.deb "Pandora-Box-${{ env.VERSION }}-linux-${{ matrix.arch }}.deb"
+          mv out\make\rpm\$arch\*.rpm "Pandora-Box-${{ env.VERSION }}-linux-${{ matrix.arch }}.rpm"
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
@@ -96,7 +96,7 @@ jobs:
           draft: false
           prerelease: true
           files: |
-            linux-${{ matrix.arch }}-deb.zip
-            linux-${{ matrix.arch }}-rpm.zip
+            Pandora-Box-${{ env.VERSION }}-linux-${{ matrix.arch }}.deb
+            Pandora-Box-${{ env.VERSION }}-linux-${{ matrix.arch }}.rpm
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

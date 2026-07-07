@@ -85,8 +85,8 @@ jobs:
           if ($arch -eq "amd64") {
             $arch = "x64"
           }
-          Compress-Archive -Path out\Pandora-Box*\* -DestinationPath "windows-${{ matrix.arch }}-app.zip"
-          Compress-Archive -Path out\make\wix\$arch\* -DestinationPath "windows-${{ matrix.arch }}-msi.zip"
+          Compress-Archive -Path out\Pandora-Box*\* -DestinationPath "Pandora-Box-${{ env.VERSION }}-windows-${{ matrix.arch }}-app.zip"
+          Get-Item "out\make\wix\$arch\*\*.msi" | Move-Item -Destination "Pandora-Box-${{ env.VERSION }}-windows-${{ matrix.arch }}-setup.msi"
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
@@ -96,7 +96,7 @@ jobs:
           draft: false
           prerelease: true
           files: |
-            windows-${{ matrix.arch }}-app.zip
-            windows-${{ matrix.arch }}-msi.zip
+            Pandora-Box-${{ env.VERSION }}-windows-${{ matrix.arch }}-app.zip
+            Pandora-Box-${{ env.VERSION }}-windows-${{ matrix.arch }}-setup.msi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

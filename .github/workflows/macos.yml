@@ -82,7 +82,7 @@ jobs:
       - name: Compress Executable
         shell: pwsh
         run: |
-          Compress-Archive -Path out\make\* -DestinationPath "macos-${{ matrix.arch }}-dmg.zip"
+          mv out\make\*.dmg "Pandora-Box-${{ env.VERSION }}-macos-${{ matrix.arch }}.dmg"
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
@@ -92,6 +92,6 @@ jobs:
           draft: false
           prerelease: true
           files: |
-            macos-${{ matrix.arch }}-dmg.zip
+            Pandora-Box-${{ env.VERSION }}-macos-${{ matrix.arch }}.dmg
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
