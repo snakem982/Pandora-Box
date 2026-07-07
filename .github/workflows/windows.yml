@@ -86,7 +86,7 @@ jobs:
             $arch = "x64"
           }
           Compress-Archive -Path out\Pandora-Box*\* -DestinationPath "Pandora-Box-${{ env.VERSION }}-windows-${{ matrix.arch }}-app.zip"
-          (Get-ChildItem -Path "out\make" -Filter "*.msi" -Recurse).FullName | Move-Item -Destination "Pandora-Box-${{ env.VERSION }}-windows-${{ matrix.arch }}-setup.msi" -Force
+          (Get-ChildItem -Path "out\make" -Filter "*.msi" -Recurse).FullName | Move-Item -Destination "Pandora-Box-${{ env.VERSION }}-windows-${{ matrix.arch }}.msi" -Force
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
@@ -97,6 +97,6 @@ jobs:
           prerelease: true
           files: |
             Pandora-Box-${{ env.VERSION }}-windows-${{ matrix.arch }}-app.zip
-            Pandora-Box-${{ env.VERSION }}-windows-${{ matrix.arch }}-setup.msi
+            Pandora-Box-${{ env.VERSION }}-windows-${{ matrix.arch }}.msi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
