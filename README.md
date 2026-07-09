@@ -76,6 +76,7 @@ npm run start
 
 ## 🧭 More Information ｜ 更多信息 ｜ Дополнительная информация
 
+- ❤️ *Special thanks to [ZMTO](https://console.zmto.com/?affid=1579&oid=8) for providing the VPS hosting support for this project.*
 - ✅ [Project Issues](https://github.com/snakem982/Pandora-Box/issues)
 - 📄 [License (GPL-3.0)](./LICENSE)
 
