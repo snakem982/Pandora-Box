@@ -38,9 +38,7 @@
       "url('/images/woman2.jpg')",
       "url('/images/woman3.jpg')",
       "url('/images/woman4.jpg')",
-      "url('/images/woman5.jpg')",
-      "url('https://cdn.seovx.com/?mom=302')",
-      "url('https://cdn.seovx.com/ha/?mom=302')"
+      "url('/images/woman5.jpg')"
     ]
   },
   {
@@ -61,8 +59,6 @@
     "bg": [
       "https://www.loliapi.com/acg/pc/?a=1",
       "https://img.paulzzh.com/touhou/random?a=1",
-      "https://cdn.seovx.com/d/?mom=302",
-      "https://img.xjh.me/random_img.php?type=bg&return=302",
       "https://www.dmoe.cc/random.php?a=1",
       "https://t.alcy.cc/bd?a=1",
       "https://api.boxmoe.com/random.php?size=large"
