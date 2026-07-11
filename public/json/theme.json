@@ -1,58 +1,63 @@
 [
   {
     "id": "default",
-    "bg": "url('/images/default.jpg')"
+    "bg": "/images/default.jpg"
   },
   {
     "id": "harbor",
-    "bg": "url('/images/harbor.jpg')"
+    "bg": "/images/harbor.jpg"
   },
   {
     "id": "gradient",
     "bg": [
-      "url('/images/gradient1.png')",
-      "url('/images/gradient2.png')",
-      "url('/images/gradient3.png')",
-      "url('/images/gradient4.png')",
-      "url('/images/gradient5.png')",
-      "url('/images/gradient6.png')",
-      "url('/images/gradient7.png')",
-      "url('/images/gradient8.png')"
+      "/images/gradient1.png",
+      "/images/gradient2.png",
+      "/images/gradient3.png",
+      "/images/gradient4.png",
+      "/images/gradient5.png",
+      "/images/gradient6.png",
+      "/images/gradient7.png",
+      "/images/gradient8.png"
     ]
   },
   {
     "id": "sea",
     "bg": [
-      "url('/images/sea1.jpg')",
-      "url('/images/sea2.jpg')",
-      "url('/images/sea3.jpg')",
-      "url('/images/sea4.jpg')",
-      "url('/images/sea5.jpg')",
-      "url('/images/sea6.jpg')"
+      "/images/sea1.jpg",
+      "/images/sea2.jpg",
+      "/images/sea3.jpg",
+      "/images/sea4.jpg",
+      "/images/sea5.jpg",
+      "/images/sea6.jpg"
     ]
   },
   {
     "id": "women",
     "bg": [
-      "url('/images/woman1.jpg')",
-      "url('/images/woman2.jpg')",
-      "url('/images/woman3.jpg')",
-      "url('/images/woman4.jpg')",
-      "url('/images/woman5.jpg')"
+      "/images/woman1.jpg",
+      "https://v2.xxapi.cn/api/pcmeinvpic?return=302",
+      "/images/woman2.jpg",
+      "https://v2.xxapi.cn/api/pcmeinvpic?return=302",
+      "/images/woman3.jpg",
+      "https://v2.xxapi.cn/api/pcmeinvpic?return=302",
+      "/images/woman4.jpg",
+      "https://v2.xxapi.cn/api/pcmeinvpic?return=302",
+      "/images/woman5.jpg",
+      "https://v2.xxapi.cn/api/pcmeinvpic?return=302"
     ]
   },
   {
     "id": "stars",
     "bg": [
-      "url('/images/star1.jpg')",
-      "url('/images/star2.jpg')",
-      "url('/images/star3.jpg')",
-      "url('/images/star4.jpg')"
+      "/images/star1.jpg",
+      "/images/star2.jpg",
+      "/images/star3.jpg",
+      "/images/star4.jpg"
     ]
   },
   {
     "id": "handle",
-    "bg": "url('/images/handle.jpg')"
+    "bg": "/images/handle.jpg"
   },
   {
     "id": "comics",
@@ -61,16 +66,19 @@
       "https://img.paulzzh.com/touhou/random?a=1",
       "https://www.dmoe.cc/random.php?a=1",
       "https://t.alcy.cc/bd?a=1",
+      "https://api.elaina.cat/random/pc?a=1",
+      "https://random-api.czl.net/pic/ai?a=1",
+      "https://v2.xxapi.cn/api/randomAcgPic?type=pc&return=302",
       "https://api.boxmoe.com/random.php?size=large"
-    ],
-    "rand": true
+    ]
   },
   {
     "id": "game",
     "bg": [
-      "https://via.assets.so/game.jpg?w=1920&h=1080"
-    ],
-    "rand": true
+      "https://v2.xxapi.cn/api/random4kPic?type=acg&return=302",
+      "https://via.assets.so/game.jpg?w=1920&h=1080",
+      "https://v2.xxapi.cn/api/random4kPic?type=acg&return=302"
+    ]
   },
   {
     "id": "random",
@@ -80,8 +88,8 @@
       "https://img.fanpx.com/random2.php?resolution=regular",
       "https://img.fanpx.com/random3.php?resolution=regular",
       "https://img.fanpx.com/random5.php?resolution=regular",
+      "https://random-api.czl.net/pic/fj?a=1",
       "https://picsum.photos/1920/1080?a=1"
-    ],
-    "rand": true
+    ]
   }
 ]

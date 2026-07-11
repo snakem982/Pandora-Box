@@ -61,9 +61,13 @@ const changeBackground = (item: any) => {
   let url = item.bg;
   if (Array.isArray(item.bg)) {
     url = getRandom(item.bg);
-    if (item["rand"]) {
+    if (url.startsWith("http")) {
       url = "url('" + url + "&date=" + Date.now() + "')"
+    } else {
+      url = "url('" + url + "')"
     }
+  } else {
+    url = "url('" + url + "')"
   }
   menuStore.setBackground(url)
 }
