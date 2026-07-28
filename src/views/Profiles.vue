@@ -30,6 +30,29 @@ const addForm = reactive({
   content: '',
 })
 
+// 列表显示
+let profiles = reactive<any[]>([])
+
+async function getProfileList() {
+  if (profiles.length != 0) {
+    profiles.splice(0, profiles.length)
+  }
+  const list = await api.getProfileList()
+  if (list && list.length != 0) {
+    list.forEach(item => {
+      profiles.push(item)
+      if (item['selected']) {
+        setHeaderShow(item)
+      }
+    })
+
+    Events.Emit({
+      name: "profiles",
+      data: list
+    })
+  }
+}
+
 async function add() {
   if (!addForm.content) {
     return
@@ -50,6 +73,10 @@ async function add() {
     if (e['message']) {
       pError(e['message'])
     }
+
+    // 批量操作刷新列表
+    await getProfileList()
+    sendOrder(profiles)
   }
   isNowAdd.value = false
 }
@@ -97,30 +124,6 @@ function setHeaderShow(item: any) {
     headerShow.update = item['update']
   } else {
     headerShow.update = ''
-  }
-}
-
-// 列表显示
-let profiles = reactive<any[]>([])
-
-async function getProfileList() {
-  if (profiles.length != 0) {
-    profiles.splice(0, profiles.length)
-  }
-  const list = await api.getProfileList()
-  if (list && list.length != 0) {
-    list.forEach(item => {
-      profiles.push(item)
-      if (item['selected']) {
-        setHeaderShow(item)
-      }
-    })
-
-    Events.Emit({
-      name: "profiles",
-      data: list
-    })
-
   }
 }
 
