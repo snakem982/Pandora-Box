@@ -116,6 +116,9 @@ ipcMain.handle('select-directory', async (event, options = {}) => {
     return paths.length > 0 ? paths : null; // 返回 null 表示取消
 });
 
+// ⚠️ 必须放在 app.whenReady() 之前！否则开关不会生效 单位为字节 (200MB)
+app.commandLine.appendSwitch('disk-cache-size', '209715200');
+
 // 单例模式
 const gotTheLock = app.requestSingleInstanceLock();
 if (!gotTheLock) {
