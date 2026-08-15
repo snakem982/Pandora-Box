@@ -30,6 +30,10 @@
 - Go to `Settings` → `Enable Authorization` → Restart the app → When the authorization prompt appears, grant
   permission → TUN mode can then be enabled in the app
 
+## How to Enable LAN Access
+
+Simply change the Listen Address in Settings to 0.0.0.0
+
 ## Deeplink Profile Import
 
 Pandora-Box supports importing profiles via deeplink URLs, allowing users to easily add subscriptions from external sources.
@@ -50,22 +54,6 @@ pandora-box://install-config?url=SUBSCRIPTION_URL
 
 - See [mac.md](mac/mac.md)
 
-## Major Improvements in the Latest Version
-
-1. Redesigned interface with support for theme switching, language switching, and drag-and-drop import
-2. Search bar at the top to quickly switch between nodes in the current configuration
-3. Added support for minimizing to system tray
-4. Unified rule templates:
-    - Simple groups for lightweight users
-    - Multi-region groups
-    - Full rule groups for advanced users
-5. Web scraping and import/export modules from version 0.2 are not yet included
-
-## Todo / Future Plans
-
-- Web scraping module
-- Import/export module
-- Bug fixes
 
 ## Preview
 
