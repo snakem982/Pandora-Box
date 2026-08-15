@@ -85,7 +85,7 @@ jobs:
           mv out\make\*.dmg "Pandora-Box-${{ env.VERSION }}-macos-${{ matrix.arch }}.dmg"
 
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ env.VERSION }}
           name: ${{ env.VERSION }}

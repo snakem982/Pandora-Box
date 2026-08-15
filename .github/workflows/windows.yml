@@ -89,7 +89,7 @@ jobs:
           (Get-ChildItem -Path "out\make" -Filter "*.msi" -Recurse).FullName | Move-Item -Destination "Pandora-Box-${{ env.VERSION }}-windows-${{ matrix.arch }}.msi" -Force
 
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ env.VERSION }}
           name: ${{ env.VERSION }}
