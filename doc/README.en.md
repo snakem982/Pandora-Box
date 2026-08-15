@@ -17,7 +17,7 @@
 - Automatically adds minimal rule groups to unruly subscriptions
 - DNS overwrite option to prevent DNS leaks
 - Unified rules and group settings for all subscriptions
-- Supports TUN mode
+- Supports TUN mode and [Smart Group](https://github.com/vernesong/OpenClash/releases/tag/mihomo)
 
 ## Supported Platforms
 

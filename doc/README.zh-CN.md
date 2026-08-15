@@ -17,7 +17,7 @@
 - 对无规则订阅自动添加极简规则分组
 - 开启 DNS 覆写可防止 DNS 泄露
 - 支持统一所有订阅的规则和分组，支持自定义模版规则和分组
-- 支持 TUN 模式 和 Smart 智能分组
+- 支持 TUN 模式 和  [Smart 智能分组](https://github.com/vernesong/OpenClash/releases/tag/mihomo)
 
 ## 支持的系统平台
 
