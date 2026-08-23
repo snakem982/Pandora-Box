@@ -150,25 +150,26 @@ function tryRunAsAdmin(executable: string, args: string[], callback: (success: b
         }
 
         case 'linux': {
-            // Linux: 提权方式依次尝试 pkexec → gksudo → kdesudo → sudo
+            // Linux: 提权方式依次尝试 pkexec → kdesu → kdesudo → gksudo
             const env = {
                 ...process.env,
-                PATH: process.env.PATH || "/usr/bin:/bin:/usr/sbin:/sbin",
+                PATH: process.env.PATH || "/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin",
                 DISPLAY: process.env.DISPLAY,
                 XAUTHORITY: process.env.XAUTHORITY,
             };
 
+            // 剔除纯 sudo 避免无终端 TTY 时阻塞卡死，补充 kdesu 及 /bin 路径
             const methods = [
                 '/usr/bin/pkexec',
-                '/usr/bin/gksudo',
+                '/bin/pkexec',
+                '/usr/bin/kdesu',
                 '/usr/bin/kdesudo',
-                '/usr/bin/sudo',
+                '/usr/bin/gksudo',
                 'pkexec',
-                'gksudo',
+                'kdesu',
                 'kdesudo',
-                'sudo'
+                'gksudo'
             ];
-
 
             (function tryNext(index = 0) {
                 if (index >= methods.length) {
@@ -178,17 +179,18 @@ function tryRunAsAdmin(executable: string, args: string[], callback: (success: b
                 }
 
                 const method = methods[index];
-                if (!fs.existsSync(method) && !method.includes('/')) {
-                    // Skip fallback names like 'sudo' if not full path
+
+                // 只有带有 '/' 的绝对路径且文件不存在时才跳过，纯命令名留给 PATH 在运行时检索
+                if (method.includes('/') && !fs.existsSync(method)) {
                     return tryNext(index + 1);
                 }
 
                 log.info(`Trying to elevate with: ${method}`);
-
                 const elevated = spawn(method, [executable, ...args], {
                     env,
-                    stdio: 'inherit',
+                    stdio: 'ignore', // 避免父进程 stdio 挂载导致 GUI 无响应
                 });
+
                 log.info("[Admin] 启动px命令行：", elevated.spawnargs);
 
                 elevated.on('error', (err) => {
