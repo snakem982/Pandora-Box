@@ -111,7 +111,14 @@ func startCore(profile models.Profile, reload bool) {
 		}
 		if len(rawCfg.ProxyProvider) > 1 {
 			for key, value := range rawCfg.ProxyProvider {
-				value["override"] = map[string]string{"additional-suffix": "-" + key}
+				// 尝试获取现有的 override map
+				if existingOverride, ok := value["override"].(map[string]any); ok && existingOverride != nil {
+					existingOverride["additional-suffix"] = "-" + key
+				} else {
+					value["override"] = map[string]any{
+						"additional-suffix": "-" + key,
+					}
+				}
 			}
 		}
 		if len(proxy) > 0 {
