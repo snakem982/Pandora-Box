@@ -22,10 +22,10 @@ import (
 )
 
 // 分享链接
-var shareLinkReg = regexp.MustCompile("(vless|vmess|trojan|ss|ssr|tuic|hysteria|hysteria2|hy2|anytls|socks|socks5|socks5h)://[-A-Za-z0-9\u4e00-\u9ea5+&@#/%?=~_!:,.;]+[-A-Za-z0-9\u4e00-\u9ea5+&@#/%=~_]")
+var shareLinkReg = regexp.MustCompile(`(vless|vmess|trojan|ss|ssr|tuic|hysteria|hysteria2|hy2|anytls|socks|socks5|socks5h)://[^\s]+`)
 
 // 订阅地址
-var subReg = regexp.MustCompile("(https|http)://[-A-Za-z0-9\u4e00-\u9ea5+&@#/%?=~_!:,.;]+[-A-Za-z0-9\u4e00-\u9ea5+&@#/%=~_]")
+var subReg = regexp.MustCompile(`(https|http)://[^\s]+`)
 
 // ScanShareLinks 扫描分享链接
 func ScanShareLinks(content string) []string {
