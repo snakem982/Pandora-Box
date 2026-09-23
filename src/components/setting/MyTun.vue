@@ -38,7 +38,7 @@ watch(() => settingStore.stack, async () => {
   });
 });
 
-const options = ['Mixed', 'gVisor', 'System']
+const options = ['Mixed', 'gVisor', 'System', 'Mips']
 </script>
 
 <style scoped>
