@@ -1,6 +1,11 @@
 package job
 
 import (
+	"strconv"
+	"strings"
+	"sync"
+	"time"
+
 	"github.com/metacubex/mihomo/log"
 	"github.com/snakem982/pandora-box/api/models"
 	"github.com/snakem982/pandora-box/internal"
@@ -9,10 +14,6 @@ import (
 	"github.com/snakem982/pandora-box/pkg/cron"
 	"github.com/snakem982/pandora-box/pkg/proxy"
 	"github.com/snakem982/pandora-box/pkg/utils"
-	"strconv"
-	"strings"
-	"sync"
-	"time"
 )
 
 var refreshLock sync.Mutex
@@ -100,7 +101,9 @@ func DoRefresh() {
 // UpdateDb 更新数据库
 func UpdateDb(profile *models.Profile, kind int) {
 	profile.Type = kind
-	profile.SetUpdateTime()
+	if profile.Update == "" {
+		profile.SetUpdateTime()
+	}
 	if kind == 2 {
 		profile.Content = ""
 	}
