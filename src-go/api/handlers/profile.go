@@ -223,6 +223,7 @@ func refreshProfile(w http.ResponseWriter, r *http.Request) {
 		if title != "" {
 			profile.Title = title
 		}
+		profile.SetUpdateTime()
 		job.UpdateDb(profile, 1)
 
 		// 如果配置正在使用中  进行配置更新

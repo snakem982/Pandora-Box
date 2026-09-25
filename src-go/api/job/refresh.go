@@ -89,6 +89,7 @@ func DoRefresh() {
 			if title != "" {
 				profile.Title = title
 			}
+			profile.SetUpdateTime()
 			UpdateDb(profile, 1)
 
 			log.Infoln("[Refresh] job profile %v fresh success", profile.Title)
