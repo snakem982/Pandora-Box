@@ -1,21 +1,23 @@
 <!-- src/views/profiles/components/ProfileDialogs.vue -->
 <script setup lang="ts">
-import {ref, reactive} from 'vue'
+import {reactive, ref} from 'vue'
 import {useI18n} from 'vue-i18n'
 import {Profile} from '@/types/profile'
 import {pError, pSuccess} from '@/util/pLoad'
-import {isHttpOrHttps, getTemplateTitle} from '@/util/format'
+import {getTemplateTitle, isHttpOrHttps} from '@/util/format'
 import {Events} from '@/runtime'
+import {useMenuStore} from "@/store/menuStore";
 
 const props = defineProps<{
   api: any
   tList: any[]
   profiles: any[]
-  menuStore: any
 }>()
 
 const emit = defineEmits(['refreshList', 'updateSuccess'])
 const {t} = useI18n()
+
+const menuStore = useMenuStore()
 
 // 新增相关
 const addVisible = ref(false)
@@ -87,7 +89,7 @@ async function handleSaveEdit() {
   pSuccess(t('profiles.edit.success'))
 
   Events.Emit({name: 'profiles', data: props.profiles})
-  props.api.getRuleNum().then((res: any) => props.menuStore.setRuleNum(res))
+  props.api.getRuleNum().then((res: any) => menuStore.setRuleNum(res))
 }
 </script>
 

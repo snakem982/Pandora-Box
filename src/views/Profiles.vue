@@ -15,8 +15,8 @@ import {useRouter} from "vue-router";
 const router = useRouter()
 
 const {
-  api, t, profiles, headerShow, tList, profileStore,
-  menuStore, webStore, sendOrder, getProfileList, switchProfile, deleteProfile,
+  api, profiles, headerShow, tList, profileStore,
+  webStore, sendOrder, getProfileList, switchProfile, deleteProfile,
   refreshProfile, goHome, goSupport
 } = useProfiles()
 
@@ -141,7 +141,6 @@ onBeforeUnmount(() => {
       :api="api"
       :tList="tList"
       :profiles="profiles"
-      :menuStore="menuStore"
       @refreshList="getProfileList"
   />
 

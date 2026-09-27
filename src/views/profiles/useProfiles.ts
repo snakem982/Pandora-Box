@@ -180,7 +180,6 @@ export function useProfiles() {
 
     return {
         api,
-        t,
         profiles,
         headerShow,
         tList,
