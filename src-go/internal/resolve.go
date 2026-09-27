@@ -151,12 +151,12 @@ func Resolve(content string, profile *models.Profile, refresh bool) error {
 			rails, err1 := MapsToProxies(rawCfg.Proxy)
 			if err1 != nil {
 				return yamlError
-			} else {
-				// 去重
-				rails = Deduplicate(rails)
-				saveProfile(rails, profile)
-				return nil
 			}
+
+			// 去重
+			rails = Deduplicate(rails)
+			saveProfile(rails, profile)
+			return nil
 		}
 
 		// 保存yaml
@@ -164,10 +164,21 @@ func Resolve(content string, profile *models.Profile, refresh bool) error {
 			// 防止重排序，重新赋值
 			rawCfg, _ = config.UnmarshalRawConfig(tempBytes)
 			// 对 provider 进行路径替换
-			findProvider := changeProvidersPath("profiles", profile.Order, rawCfg)
+			findProxyProvider, findRuleProvider := changeProvidersPath("profiles", profile.Order, rawCfg)
 			var yml []byte
-			if findProvider {
-				yml, _ = yaml.Marshal(rawCfg)
+			if findProxyProvider || findRuleProvider {
+				var docNode yaml.Node
+				_ = yaml.Unmarshal(tempBytes, &docNode)
+
+				if findProxyProvider {
+					updateYAMLNodeField(&docNode, "proxy-providers", rawCfg.ProxyProvider)
+				}
+
+				if findRuleProvider {
+					updateYAMLNodeField(&docNode, "rule-providers", rawCfg.RuleProvider)
+				}
+
+				yml, _ = yaml.Marshal(&docNode)
 				profile.Path = fmt.Sprintf("./profiles/%s/%s.yaml", profile.Order, profile.Id)
 			} else {
 				yml = tempBytes
@@ -177,18 +188,15 @@ func Resolve(content string, profile *models.Profile, refresh bool) error {
 			savePath := utils.GetUserHomeDir(profile.Path)
 			_, _ = utils.SaveFile(savePath, yml)
 			return nil
-		} else {
-			return fmt.Errorf("proxy or provider is 0")
 		}
 
+		return fmt.Errorf("proxy or provider is 0")
 	}
 
 	return err
 }
 
-func changeProvidersPath(baseDir, subDir string, config *config.RawConfig) (findProvider bool) {
-	findProvider = false
-
+func changeProvidersPath(baseDir, subDir string, config *config.RawConfig) (findProxyProvider bool, findRuleProvider bool) {
 	dir := fmt.Sprintf("./%s/%s/", baseDir, subDir)
 	proxyProviders := config.ProxyProvider
 	for _, provider := range proxyProviders {
@@ -206,7 +214,7 @@ func changeProvidersPath(baseDir, subDir string, config *config.RawConfig) (find
 			}
 		}
 
-		findProvider = true
+		findProxyProvider = true
 	}
 
 	ruleProviders := config.RuleProvider
@@ -225,10 +233,27 @@ func changeProvidersPath(baseDir, subDir string, config *config.RawConfig) (find
 			}
 		}
 
-		findProvider = true
+		findRuleProvider = true
 	}
 
 	return
+}
+
+// 辅助函数：更新指定 key 对应的节点值（假设 key 必定存在）
+func updateYAMLNodeField(doc *yaml.Node, key string, newValue any) {
+	// 1. 将新数据编排为 Node
+	var valNode yaml.Node
+	valBytes, _ := yaml.Marshal(newValue)
+	_ = yaml.Unmarshal(valBytes, &valNode)
+
+	// 2. 遍历根节点的键值对列表（i 为 key，i+1 为 value）
+	rootMap := doc.Content[0]
+	for i := 0; i < len(rootMap.Content); i += 2 {
+		if rootMap.Content[i].Value == key {
+			rootMap.Content[i+1] = valNode.Content[0] // 替换 Value 节点
+			return
+		}
+	}
 }
 
 func getProviderBase(provider, path string) string {
