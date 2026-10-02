@@ -3,6 +3,7 @@ package internal
 import (
 	"fmt"
 	"io"
+	"maps"
 	"os"
 	"runtime"
 	"strings"
@@ -102,21 +103,21 @@ func startCore(profile models.Profile, reload bool) {
 		changeProvidersPath("template", templateId, rawCfg)
 		if len(provider) > 0 {
 			if len(rawCfg.ProxyProvider) > 0 {
-				for key, value := range provider {
-					rawCfg.ProxyProvider[key] = value
-				}
+				maps.Copy(rawCfg.ProxyProvider, provider)
 			} else {
 				rawCfg.ProxyProvider = provider
 			}
 		}
-		if len(rawCfg.ProxyProvider) > 1 {
+		if len(rawCfg.ProxyProvider) > 0 {
 			for key, value := range rawCfg.ProxyProvider {
 				// 尝试获取现有的 override map
 				if existingOverride, ok := value["override"].(map[string]any); ok && existingOverride != nil {
-					existingOverride["additional-suffix"] = "-" + key
+					if _, find := existingOverride["additional-suffix"]; !find {
+						existingOverride["additional-suffix"] = " | " + key
+					}
 				} else {
 					value["override"] = map[string]any{
-						"additional-suffix": "-" + key,
+						"additional-suffix": " | " + key,
 					}
 				}
 			}
