@@ -32,8 +32,8 @@ github.com/dunglas/httpsfv v1.1.1 h1:HoSs101zIE9I23DlqlmljJ/OIi7ILwrH347pXhRZdxI
 github.com/dunglas/httpsfv v1.1.1/go.mod h1:zID2mqw9mFsnt7YC3vYQ9/cjq30q41W+1AnDwH8TiMg=
 github.com/easytier/easytier/easytier-go v0.0.0-20260910071355-3d0c9c3ca5e2 h1:2/9iRUcMR3QPrT2XFf/i7QV5YoSHPFjkgBM5tP8xbcc=
 github.com/easytier/easytier/easytier-go v0.0.0-20260910071355-3d0c9c3ca5e2/go.mod h1:fCEi5+K2yt+sPDONSWO1uNpOifrwPgFGvm3J0YrFRvk=
-github.com/enfein/mieru/v3 v3.38.0 h1:+DuixHFoCGEYEopoEg8fHmDJ5Ak30PuXuf1GIh2Xpu0=
-github.com/enfein/mieru/v3 v3.38.0/go.mod h1:zJBUCsi5rxyvHM8fjFf+GLaEl4OEjjBXr1s5F6Qd3hM=
+github.com/enfein/mieru/v3 v3.38.1 h1:UZ5zAJi0caSmaOniVy33pyY7ANxyf4PmPeLSuYZpDro=
+github.com/enfein/mieru/v3 v3.38.1/go.mod h1:zJBUCsi5rxyvHM8fjFf+GLaEl4OEjjBXr1s5F6Qd3hM=
 github.com/ericlagergren/aegis v0.0.0-20250325060835-cd0defd64358 h1:kXYqH/sL8dS/FdoFjr12ePjnLPorPo2FsnrHNuXSDyo=
 github.com/ericlagergren/aegis v0.0.0-20250325060835-cd0defd64358/go.mod h1:hkIFzoiIPZYxdFOOLyDho59b7SrDfo+w3h+yWdlg45I=
 github.com/ericlagergren/polyval v0.0.0-20230805202542-18692a1b76f9 h1:NUmyvuwVoDsIFzOGFKW4zpCtQTbX2T4JpSn1jal64gM=
@@ -257,8 +257,8 @@ github.com/sina-ghaderi/rabbitio v0.0.0-20220730151941-9ce26f4f872e h1:ur8uMsPIF
 github.com/sina-ghaderi/rabbitio v0.0.0-20220730151941-9ce26f4f872e/go.mod h1:+e5fBW3bpPyo+3uLo513gIUblc03egGjMM0+5GKbzK8=
 github.com/sirupsen/logrus v1.10.1 h1:xi4336Zh11WpU14fXR6I67V3yaTPQYwRx2WEtHbRg4Q=
 github.com/sirupsen/logrus v1.10.1/go.mod h1:vsQHnG7xzNsxk3NrwboUiWPnIC3dmbjcGPykD7+tiHk=
-github.com/snakem982/mihomo v1.2.9-moshen h1:YqjXmICNF1deJcRyCdLPOs1fMv/H9UUDL5Sxd+61ko4=
-github.com/snakem982/mihomo v1.2.9-moshen/go.mod h1:9mGbV7OwYvgt2obuB6QeIRyaFl9WJDC4f/wwpvTgiEw=
+github.com/snakem982/mihomo v1.2.10-moshen h1:SGJDj4bTueFAssvoPVWWilZcewE72Rdsp7riJxztJmQ=
+github.com/snakem982/mihomo v1.2.10-moshen/go.mod h1:JouFeCxfjXDpBdWyDkIbP4M3ahg/B54mdSxXaRyfZOQ=
 github.com/stangelandcl/ppmd v0.1.1 h1:c25QazhlWUn5nmR1QOzafKhQxBicAr7GGCKER2aJ8H8=
 github.com/stangelandcl/ppmd v0.1.1/go.mod h1:Rrv7M+/2P5jYr/GMLhBl7Ug3uJ1bUiVzr5LbbaV6xgY=
 github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=

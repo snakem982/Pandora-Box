@@ -1,6 +1,6 @@
 module github.com/snakem982/pandora-box
 
-go 1.26.0
+go 1.27
 
 require (
 	github.com/go-co-op/gocron v1.37.0
@@ -32,7 +32,7 @@ require (
 	github.com/dlclark/regexp2 v1.12.0 // indirect
 	github.com/dunglas/httpsfv v1.1.1 // indirect
 	github.com/easytier/easytier/easytier-go v0.0.0-20260910071355-3d0c9c3ca5e2 // indirect
-	github.com/enfein/mieru/v3 v3.38.0 // indirect
+	github.com/enfein/mieru/v3 v3.38.1 // indirect
 	github.com/ericlagergren/aegis v0.0.0-20250325060835-cd0defd64358 // indirect
 	github.com/ericlagergren/polyval v0.0.0-20230805202542-18692a1b76f9 // indirect
 	github.com/ericlagergren/siv v0.0.0-20220507050439-0b757b3aa5f1 // indirect
@@ -150,4 +150,4 @@ require (
 	google.golang.org/protobuf v1.36.12 // indirect
 )
 
-replace github.com/metacubex/mihomo => github.com/snakem982/mihomo v1.2.9-moshen
+replace github.com/metacubex/mihomo => github.com/snakem982/mihomo v1.2.10-moshen
