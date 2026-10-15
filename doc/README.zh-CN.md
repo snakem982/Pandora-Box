@@ -12,6 +12,7 @@
 
 - 支持本地 HTTP/HTTPS/SOCKS 代理
 - 支持 Vmess, Vless, Shadowsocks, Trojan, Tuic, Hysteria, Hysteria2, Wireguard, Mieru 协议
+- 支持 AnyTLS, Sudoku, MASQUE, OpenVPN, TrustTunnel, ZeroTier, EasyTier, Tailscale 协议
 - 支持分享链接、订阅链接、Base64 格式、Yaml 格式、Json 格式的数据解析
 - 内置订阅转换，可将clash、v2ray、sing-box订阅转换为 mihomo 配置
 - 对无规则订阅自动添加极简规则分组

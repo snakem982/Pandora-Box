@@ -11,7 +11,8 @@
 ## Features
 
 - Supports local HTTP/HTTPS/SOCKS proxies
-- Supports Vmess, Vless, Shadowsocks, Trojan, Tuic, Hysteria, Hysteria2, Wireguard, and Mieru protocols
+- Supports Vmess, Vless, Shadowsocks, Trojan, Tuic, Hysteria, Hysteria2, Wireguard, Mieru protocols
+- Supports AnyTLS, Sudoku, MASQUE, OpenVPN, TrustTunnel, ZeroTier, EasyTier, Tailscale protocols
 - Supports parsing of share links, subscription links, Base64 format, and YAML format
 - Built-in subscription converter to convert various subscription types into Mihomo-compatible configurations
 - Automatically adds minimal rule groups to unruly subscriptions

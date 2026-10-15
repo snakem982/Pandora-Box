@@ -12,6 +12,7 @@
 
 - Поддержка локального HTTP/HTTPS/SOCKS прокси
 - Поддержка протоколов: Vmess, Vless, Shadowsocks, Trojan, Tuic, Hysteria, Hysteria2, Wireguard, Mieru
+- Поддержка протоколов: AnyTLS, Sudoku, MASQUE, OpenVPN, TrustTunnel, ZeroTier, EasyTier, Tailscale
 - Поддержка обмена ссылками, подписками, форматов Base64 и Yaml
 - Встроенная конвертация подписок для создания конфигурации Mihomo
 - Автоматическое добавление минимальных групп правил для неподготовленных подписок
