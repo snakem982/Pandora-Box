@@ -92,6 +92,11 @@ func DoRefresh() {
 			profile.SetUpdateTime()
 			UpdateDb(profile, 1)
 
+			// 如果更新的是当前正在使用的配置，立即重新加载内核
+			if profile.Selected {
+				internal.SwitchProfile(true)
+			}
+
 			log.Infoln("[Refresh] job profile %v fresh success", profile.Title)
 		} else {
 			log.Errorln("[Refresh] Sub=%s, URL = %s, Resolve Error:%v", title, sub, err)
