@@ -126,6 +126,7 @@ setting:
 proxies:
   title: Proxies
   test: Latency Test
+  locate: Locate current node
   hide-on: Display bad nodes 
   hide-off: Hide bad nodes
   sort-on: Sort by default

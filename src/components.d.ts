@@ -48,6 +48,7 @@ declare module 'vue' {
     IconMdiCog: typeof import('~icons/mdi/cog')['default']
     IconMdiCogOutline: typeof import('~icons/mdi/cog-outline')['default']
     IconMdiContentPaste: typeof import('~icons/mdi/content-paste')['default']
+    IconMdiCrosshairsGps: typeof import('~icons/mdi/crosshairs-gps')['default']
     IconMdiDotsHorizontal: typeof import('~icons/mdi/dots-horizontal')['default']
     IconMdiDrag: typeof import('~icons/mdi/drag')['default']
     IconMdiEye: typeof import('~icons/mdi/eye')['default']

@@ -127,6 +127,7 @@ setting:
 proxies:
   title: 代理
   test: 测试延迟
+  locate: 定位当前节点
   hide-on: 显示不可用节点
   hide-off: 隐藏不可用节点
   sort-on: 默认排序
