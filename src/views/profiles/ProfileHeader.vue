@@ -11,7 +11,7 @@ defineProps<{
   }
 }>()
 
-const emit = defineEmits(['add', 'paste', 'openFile'])
+const emit = defineEmits(['add', 'paste', 'openFile', 'locate'])
 const {t} = useI18n()
 </script>
 
@@ -32,6 +32,11 @@ const {t} = useI18n()
       <el-tooltip :content="t('profiles.open')" placement="top">
         <el-icon @click="emit('openFile')" class="profile-option-btn">
           <icon-mdi-folder-open/>
+        </el-icon>
+      </el-tooltip>
+      <el-tooltip :content="t('profiles.locate')" placement="top">
+        <el-icon @click="emit('locate')" class="profile-option-btn">
+          <icon-mdi-crosshairs-gps/>
         </el-icon>
       </el-tooltip>
     </div>

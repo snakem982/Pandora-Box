@@ -142,6 +142,7 @@ profiles:
   add: 添加订阅
   paste: 从剪贴板导入
   open: 从文件导入
+  locate: 定位当前订阅
   available: 可用
   use: 已用
   expire: 到期时间

@@ -22,6 +22,7 @@ const {
 
 const dialogsRef = ref<InstanceType<typeof ProfileDialogs>>()
 const canDrag = ref(false)
+const profileCardsContainer = ref<HTMLElement | null>(null)
 
 // 右键菜单相关
 const dropdownRef = ref<DropdownInstance>()
@@ -78,6 +79,12 @@ const openFile = () => {
   webStore.dSelect = true
 }
 
+const locateSelectedProfile = () => {
+  profileCardsContainer.value
+    ?.querySelector<HTMLElement>('.sub-card-select')
+    ?.scrollIntoView({behavior: 'smooth', block: 'center', inline: 'nearest'})
+}
+
 // 监听 Deeplink 导入事件
 function handleProfilesImported(event: Event) {
   const detail = (event as CustomEvent).detail
@@ -111,27 +118,30 @@ onBeforeUnmount(() => {
           @add="handleAdd"
           @paste="handlePaste"
           @openFile="openFile"
+          @locate="locateSelectedProfile"
       />
     </template>
 
     <template #bottom>
-      <VDContainer
-          :data="profiles"
-          @getData="sendOrder"
-          :gap="15"
-          :draggable="canDrag"
-          style="margin-left: 10px; width: 95%"
-      >
-        <template v-slot:VDC="{ data }">
-          <ProfileCard
-              :data="data"
-              @switch="switchProfile"
-              @contextmenu="handleContextmenu"
-              @dragStart="canDrag = true"
-              @dragEnd="canDrag = false"
-          />
-        </template>
-      </VDContainer>
+      <div ref="profileCardsContainer">
+        <VDContainer
+            :data="profiles"
+            @getData="sendOrder"
+            :gap="15"
+            :draggable="canDrag"
+            style="margin-left: 10px; width: 95%"
+        >
+          <template v-slot:VDC="{ data }">
+            <ProfileCard
+                :data="data"
+                @switch="switchProfile"
+                @contextmenu="handleContextmenu"
+                @dragStart="canDrag = true"
+                @dragEnd="canDrag = false"
+            />
+          </template>
+        </VDContainer>
+      </div>
     </template>
   </MyLayout>
 

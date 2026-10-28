@@ -141,6 +141,7 @@ profiles:
   add: Add
   paste: Import from Clipboard
   open: Import from file
+  locate: Locate active profile
   available: Available
   use: Used
   expire: Expiration
