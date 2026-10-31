@@ -89,23 +89,20 @@ export function startBackend(addr: string) {
                 return;
             }
 
-            // 只在 Windows 和 Linux 平台上弹出提权提示，macOS 也需要显示提权提示
-            if (process.platform !== 'darwin') {
-                const confirmed = dialog.showMessageBoxSync({
-                    type: 'info',
-                    buttons: ['继续', '取消'],
-                    defaultId: 0,
-                    cancelId: 1,
-                    title: AppName,
-                    message: getAuthTip(),
-                });
+            const confirmed = dialog.showMessageBoxSync({
+                type: 'info',
+                buttons: ['继续', '取消'],
+                defaultId: 0,
+                cancelId: 1,
+                title: AppName,
+                message: getAuthTip(),
+            });
 
-                if (confirmed === 1) {
-                    // 用户取消提权 → 普通模式启动
-                    log.info('用户取消了提权，使用普通权限启动');
-                    startNormally(backendPath, args);
-                    return;
-                }
+            if (confirmed === 1) {
+                // 用户取消提权 → 普通模式启动
+                log.info('用户取消了提权，使用普通权限启动');
+                startNormally(backendPath, args);
+                return;
             }
 
             // 尝试以管理员权限运行，失败则降级
@@ -124,10 +121,14 @@ function tryRunAsAdmin(executable: string, args: string[], callback: (success: b
     switch (process.platform) {
         case 'darwin': {
             // macOS 使用 AppleScript 提权
-            const command = `${[executable, ...args].map(escapeShell).join(' ')}`;
+            const command = [executable, ...args]
+                .map((arg) => `quoted form of ${appleScriptString(arg)}`)
+                .join(' & " " & ');
             // 使用 `with prompt` 来直接在授权对话框中显示提示信息
             const script = `
-                do shell script "${command}" with administrator privileges with prompt "${getAuthTip()}"
+                set shellCommand to "/bin/bash -c " & quoted form of ("exec " & ${command} & " </dev/null >/dev/null 2>&1 &")
+                set authPrompt to ${appleScriptString(getAuthTip())}
+                do shell script shellCommand with administrator privileges with prompt authPrompt
             `;
             const osa = spawn('osascript', ['-e', script]);
             log.info("[Admin] 启动px命令行：", osa.spawnargs);
@@ -238,6 +239,13 @@ function startNormally(executable: string, args: string[]) {
     backend.on('exit', (code) => log.info('Backend exited with code:', code));
 }
 
-function escapeShell(cmd: string): string {
-    return cmd.replace(/"/g, '\\"').replace(/\$/g, '\\$');
+function escapeAppleScript(value: string): string {
+    return value.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+}
+
+function appleScriptString(value: string): string {
+    return value
+        .split(/\r\n|\r|\n/)
+        .map((line) => `"${escapeAppleScript(line)}"`)
+        .join(' & return & ');
 }
