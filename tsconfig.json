@@ -4,10 +4,9 @@
       "vue",
       "vue-router"
     ],
-    "baseUrl": "./",
     "paths": {
       "@/*": [
-        "src/*"
+        "./src/*"
       ]
     },
     "lib": [
@@ -15,14 +14,14 @@
       "dom"
     ],
     "target": "ESNext",
-    "module": "commonjs",
+    "module": "preserve",
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
     "noImplicitAny": true,
     "sourceMap": true,
     "outDir": "dist",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "resolveJsonModule": true
   }
 }
