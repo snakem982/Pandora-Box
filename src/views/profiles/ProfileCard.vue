@@ -76,6 +76,26 @@ function getRandomChar(flag: number) {
   cursor: default;
 }
 
+.profile-card-flash {
+  animation: profile-card-flash 0.35s ease-in-out 0.2s 2;
+}
+
+.profile-card-flash * {
+  animation: profile-card-text-flash 0.35s ease-in-out 0.2s 2;
+}
+
+@keyframes profile-card-flash {
+  50% {
+    background-color: var(--text-color);
+  }
+}
+
+@keyframes profile-card-text-flash {
+  50% {
+    color: var(--left-item-selected-bg);
+  }
+}
+
 .sub-card .row {
   display: flex;
   align-items: center;

@@ -14,9 +14,19 @@ const emit = defineEmits<{
 const nodesContainer = ref<HTMLElement | null>(null);
 
 function locateSelected() {
-  nodesContainer.value
-    ?.querySelector<HTMLElement>(".proxy-node-select")
-    ?.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
+  const selectedNode = nodesContainer.value?.querySelector<HTMLElement>(".proxy-node-select");
+  if (!selectedNode) {
+    return;
+  }
+
+  selectedNode.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
+  selectedNode.classList.remove("proxy-node-flash");
+  selectedNode.addEventListener(
+    "animationend",
+    () => selectedNode.classList.remove("proxy-node-flash"),
+    {once: true}
+  );
+  requestAnimationFrame(() => selectedNode.classList.add("proxy-node-flash"));
 }
 
 defineExpose({locateSelected});
@@ -82,6 +92,26 @@ defineExpose({locateSelected});
 
 .proxy-node-select:hover {
   cursor: default;
+}
+
+.proxy-node-flash {
+  animation: proxy-node-flash 0.35s ease-in-out 0.2s 2;
+}
+
+.proxy-node-flash * {
+  animation: proxy-node-text-flash 0.35s ease-in-out 0.2s 2;
+}
+
+@keyframes proxy-node-flash {
+  50% {
+    background-color: var(--text-color);
+  }
+}
+
+@keyframes proxy-node-text-flash {
+  50% {
+    color: var(--left-item-selected-bg);
+  }
 }
 
 .proxy-nodes-title {

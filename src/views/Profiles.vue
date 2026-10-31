@@ -80,9 +80,23 @@ const openFile = () => {
 }
 
 const locateSelectedProfile = () => {
-  profileCardsContainer.value
-    ?.querySelector<HTMLElement>('.sub-card-select')
-    ?.scrollIntoView({behavior: 'smooth', block: 'center', inline: 'nearest'})
+  const selectedProfile = profileCardsContainer.value?.querySelector<HTMLElement>('.sub-card-select')
+  if (!selectedProfile) {
+    return
+  }
+
+  selectedProfile.scrollIntoView({behavior: 'smooth', block: 'center', inline: 'nearest'})
+  selectedProfile.classList.remove('profile-card-flash')
+  const removeFlashClass = (event: AnimationEvent) => {
+    if (event.target !== selectedProfile || event.animationName !== 'profile-card-flash') {
+      return
+    }
+
+    selectedProfile.classList.remove('profile-card-flash')
+    selectedProfile.removeEventListener('animationend', removeFlashClass)
+  }
+  selectedProfile.addEventListener('animationend', removeFlashClass)
+  requestAnimationFrame(() => selectedProfile.classList.add('profile-card-flash'))
 }
 
 // 监听 Deeplink 导入事件
