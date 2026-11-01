@@ -71,6 +71,8 @@ jobs:
 
       - name: Build Frontend for ${{ matrix.arch }}
         shell: pwsh
+        env:
+          ARCH: ${{ matrix.electron_arch }}
         run: |
           npm run make -- --mac dmg --${{ matrix.electron_arch }}
 

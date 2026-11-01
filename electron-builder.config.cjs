@@ -28,6 +28,8 @@ module.exports = {
         },
     ],
     electronFuses: {
+        resetAdHocDarwinSignature: process.platform === 'darwin'
+            && (process.env.ARCH ?? process.arch) === 'arm64',
         runAsNode: false,
         enableCookieEncryption: true,
         enableNodeOptionsEnvironmentVariable: false,
