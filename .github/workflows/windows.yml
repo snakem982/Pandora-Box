@@ -69,6 +69,8 @@ jobs:
 
       - name: Build Frontend for ${{ matrix.arch }}
         shell: pwsh
+        env:
+          ARCH: ${{ matrix.arch }}
         run: |
           $arch = "${{ matrix.arch }}"
           if ($arch -eq "amd64") {
@@ -81,12 +83,14 @@ jobs:
       - name: Compress Executables
         shell: pwsh
         run: |
-          $arch = "${{ matrix.arch }}"
-          if ($arch -eq "amd64") {
-            $arch = "x64"
-          }
           Compress-Archive -Path out\Pandora-Box*\* -DestinationPath "Pandora-Box-${{ env.VERSION }}-windows-${{ matrix.arch }}-app.zip"
-          (Get-ChildItem -Path "out\make" -Filter "*.msi" -Recurse).FullName | Move-Item -Destination "Pandora-Box-${{ env.VERSION }}-windows-${{ matrix.arch }}.msi" -Force
+          if ("${{ matrix.arch }}" -ne "arm64") {
+            $msi = Get-ChildItem -Path "out\make" -Filter "*.msi" -Recurse
+            if ($msi.Count -ne 1) {
+              throw "Expected exactly one MSI under out\make, found $($msi.Count)"
+            }
+            Move-Item -LiteralPath $msi[0].FullName -Destination "Pandora-Box-${{ env.VERSION }}-windows-${{ matrix.arch }}.msi" -Force
+          }
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
@@ -96,7 +100,6 @@ jobs:
           draft: false
           prerelease: true
           files: |
-            Pandora-Box-${{ env.VERSION }}-windows-${{ matrix.arch }}-app.zip
-            Pandora-Box-${{ env.VERSION }}-windows-${{ matrix.arch }}.msi
+            Pandora-Box-${{ env.VERSION }}-windows-${{ matrix.arch }}-*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

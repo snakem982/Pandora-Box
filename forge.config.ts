@@ -33,12 +33,16 @@ const config: ForgeConfig = {
     },
     rebuildConfig: {},
     makers: [
-        new MakerWix({
-            manufacturer: 'snakem982',
-            description: 'A Simple Mihomo GUI',
-            icon: 'build/appicon.ico',
-            ui: { chooseDirectory: true },
-        }),
+        ...(isWindows && arch !== 'arm64'
+            ? [
+                new MakerWix({
+                    manufacturer: 'snakem982',
+                    description: 'A Simple Mihomo GUI',
+                    icon: 'build/appicon.ico',
+                    ui: { chooseDirectory: true },
+                }),
+            ]
+            : []),
         new MakerDMG({
             icon: 'build/appicon.icns',
             title: `Pandora-Box-${arch}`,

@@ -79,10 +79,15 @@ jobs:
           npm prune
           npm run make -- --arch=$arch
 
-      - name: Compress Executable
+      - name: Rename DMG
         shell: pwsh
         run: |
-          mv out\make\*.dmg "Pandora-Box-${{ env.VERSION }}-macos-${{ matrix.arch }}.dmg"
+          $dmg = Get-ChildItem -Path "out/make/dmg" -Recurse -File -Filter "*.dmg"
+          if ($dmg.Count -ne 1) {
+            throw "Expected exactly one DMG under out/make/dmg, found $($dmg.Count)"
+          }
+          $target = "Pandora-Box-${{ env.VERSION }}-macos-${{ matrix.arch }}.dmg"
+          Move-Item -LiteralPath $dmg[0].FullName -Destination $target
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
