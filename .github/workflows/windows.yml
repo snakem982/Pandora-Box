@@ -78,7 +78,11 @@ jobs:
           }
           npm dedupe
           npm prune
-          npx electron-forge make --arch=$arch
+          if ($arch -eq "arm64") {
+            npx electron-forge package --arch=$arch
+          } else {
+            npx electron-forge make --arch=$arch
+          }
 
       - name: Compress Executables
         shell: pwsh
