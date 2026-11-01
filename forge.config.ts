@@ -1,5 +1,6 @@
 import type { ForgeConfig } from '@electron-forge/shared-types';
 import { MakerWix } from '@electron-forge/maker-wix';
+import { MakerZIP } from '@electron-forge/maker-zip';
 import { MakerDMG } from '@electron-forge/maker-dmg';
 import { MakerDeb } from '@electron-forge/maker-deb';
 import { MakerRpm } from '@electron-forge/maker-rpm';
@@ -43,6 +44,7 @@ const config: ForgeConfig = {
                 }),
             ]
             : []),
+        ...(isWindows && arch === 'arm64' ? [new MakerZIP()] : []),
         new MakerDMG({
             icon: 'build/appicon.icns',
             title: `Pandora-Box-${arch}`,
