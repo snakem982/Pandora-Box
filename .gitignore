@@ -89,7 +89,8 @@ typings/
 # Vite
 .vite/
 
-# Electron-Forge
+# Electron build output
 out/
+dist/
 
 src-go/px
