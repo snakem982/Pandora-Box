@@ -1,7 +1,5 @@
-import ColorThief from "colorthief";
+import {getColorSync, getPaletteSync} from "colorthief";
 import chroma from "chroma-js";
-
-const colorThief = new ColorThief();
 
 // ======================== 常量定义 ======================== //
 const RGB_MAX_VALUE = 255;
@@ -91,7 +89,7 @@ const getPerceivedLuminance = (rgb: number[]): number => {
  * @returns 平均亮度值。
  */
 const getAverageLuminance = (img: HTMLImageElement, colorCount: number = DEFAULT_COLOR_COUNT): number => {
-    const palette = colorThief.getPalette(img, colorCount);
+    const palette = getPaletteSync(img, {colorCount}).map((color) => color.array());
     const totalLuminance = palette.reduce((sum, color) => sum + getPerceivedLuminance(color), 0);
     return totalLuminance / palette.length;
 };
@@ -251,7 +249,7 @@ const adjustSubtitleColor = (
  * @returns 是否使用白色文本。
  */
 export const changeTheme = (img: HTMLImageElement): boolean => {
-    const baseColor = chroma(colorThief.getColor(img));
+    const baseColor = chroma(getColorSync(img).array());
     const [h, s, l] = baseColor.hsl();
 
     const useWhiteText = shouldUseWhiteText(img);

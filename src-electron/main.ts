@@ -33,7 +33,7 @@ const createWindow = (isBoot: boolean) => {
         show: false, // 先不显示窗口
         center: true,
         webPreferences: {
-            preload: path.join(__dirname, 'preload.js'),
+            preload: path.join(__dirname, 'preload.cjs'),
             contextIsolation: true,
             webSecurity: false,
             nodeIntegrationInWorker: true

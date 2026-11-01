@@ -50,7 +50,7 @@ If you want to contribute or build Pandora-Box locally, refer to the resources b
 
 ### 🔧 Prerequisites | 前置依赖 | Предварительные требования
 
-- [Node.js](https://nodejs.org/) ≥ 18 (for building UI components or tooling)
+- [Node.js](https://nodejs.org/) ≥ 22.17 (for building UI components or tooling)
 - [Go](https://go.dev/) ≥ 1.24 (for integration with Mihomo or backend modules)
 
 ### 🧪 Build Instructions | 构建指南 | Инструкции по сборке
