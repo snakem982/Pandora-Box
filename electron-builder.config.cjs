@@ -4,6 +4,7 @@ module.exports = {
     appId: 'com.snakem982.pandora-box',
     productName: 'Pandora-Box',
     asar: true,
+    electronLanguages: ['en-US', 'zh-CN', 'ru'],
     directories: {
         output: 'out',
     },
