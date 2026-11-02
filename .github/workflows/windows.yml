@@ -24,10 +24,7 @@ jobs:
       - name: Set Up Node.js
         uses: actions/setup-node@v5
         with:
-          node-version: 26.0.0
-
-      - name: Lock npm version
-        run: npm i -g npm@11.12.1
+          node-version: 26
 
       - name: Install Frontend Dependencies
         run: npm install
@@ -76,6 +73,19 @@ jobs:
         run: |
           npm run make -- --win nsis zip --${{ matrix.electron_arch }} --publish never
 
+      - name: Rename Windows artifacts for ${{ matrix.arch }}
+        shell: pwsh
+        run: |
+          $sourcePrefix = "out/Pandora-Box-${{ env.VERSION }}-windows-${{ matrix.electron_arch }}"
+          $destinationPrefix = "out/Pandora-Box-${{ env.VERSION }}-windows-${{ matrix.arch }}"
+          foreach ($suffix in @("-setup.exe", ".zip")) {
+            $source = "$sourcePrefix$suffix"
+            $destination = "$destinationPrefix$suffix"
+            if ($source -ne $destination) {
+              Move-Item -LiteralPath $source -Destination $destination
+            }
+          }
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
@@ -84,7 +94,7 @@ jobs:
           draft: false
           prerelease: true
           files: |
-            out/Pandora-Box-${{ env.VERSION }}-windows-${{ matrix.electron_arch }}-setup.exe
-            out/Pandora-Box-${{ env.VERSION }}-windows-${{ matrix.electron_arch }}.zip
+            out/Pandora-Box-${{ env.VERSION }}-windows-${{ matrix.arch }}-setup.exe
+            out/Pandora-Box-${{ env.VERSION }}-windows-${{ matrix.arch }}.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

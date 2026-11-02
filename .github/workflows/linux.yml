@@ -24,10 +24,7 @@ jobs:
       - name: Set Up Node.js
         uses: actions/setup-node@v5
         with:
-          node-version: 26.0.0
-
-      - name: Lock npm version
-        run: npm i -g npm@11.12.1
+          node-version: 26
 
       - name: Install Frontend Dependencies
         run: |

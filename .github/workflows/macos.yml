@@ -24,10 +24,7 @@ jobs:
       - name: Set Up Node.js
         uses: actions/setup-node@v5
         with:
-          node-version: 26.0.0
-
-      - name: Lock npm version
-        run: npm i -g npm@11.12.1
+          node-version: 26
 
       - name: Install Frontend Dependencies
         run: |
@@ -76,6 +73,15 @@ jobs:
         run: |
           npm run make -- --mac dmg --${{ matrix.electron_arch }} --publish never
 
+      - name: Rename MacOS artifact for ${{ matrix.arch }}
+        shell: pwsh
+        run: |
+          $source = "out/Pandora-Box-${{ env.VERSION }}-macos-${{ matrix.electron_arch }}.dmg"
+          $destination = "out/Pandora-Box-${{ env.VERSION }}-macos-${{ matrix.arch }}.dmg"
+          if ($source -ne $destination) {
+            Move-Item -LiteralPath $source -Destination $destination
+          }
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
@@ -84,6 +90,6 @@ jobs:
           draft: false
           prerelease: true
           files: |
-            out/Pandora-Box-${{ env.VERSION }}-macos-${{ matrix.electron_arch }}.dmg
+            out/Pandora-Box-${{ env.VERSION }}-macos-${{ matrix.arch }}.dmg
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
