@@ -68,9 +68,14 @@ cd ..
 # Build desktop app
 npm run package
 
+# Build installers and distributable archives
+npm run make
+
 # Run in dev mode
 npm run start
 ```
+
+`npm run package` creates an unpacked app in `out/`. `npm run make` creates platform installers; on Windows it produces an NSIS `.exe` installer and a `.zip` portable build.
 
 ---
 

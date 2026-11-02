@@ -11,7 +11,11 @@ jobs:
     permissions: write-all
     strategy:
       matrix:
-        arch: [amd64, arm64]
+        include:
+          - arch: amd64
+            electron_arch: x64
+          - arch: arm64
+            electron_arch: arm64
 
     steps:
       - name: Checkout Repository
@@ -65,28 +69,26 @@ jobs:
       - name: Sync VERSION to package.json
         run: node build/sync-version.js
 
+      - name: Install RPM build tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes rpm
 
       - name: Build Frontend for ${{ matrix.arch }}
         shell: pwsh
         run: |
-          $arch = "${{ matrix.arch }}"
-          if ($arch -eq "amd64") {
-            $arch = "x64"
-          }
-          Write-Host "Using arch: $arch"
-          npm dedupe
-          npm prune
-          npm run make -- --arch=$arch
+          npm run make -- --linux deb rpm --${{ matrix.electron_arch }}
 
-      - name: Compress Executable
+      - name: Normalize Linux artifact names
         shell: pwsh
         run: |
-          $arch = "${{ matrix.arch }}"
-          if ($arch -eq "amd64") {
-            $arch = "x64"
+          foreach ($extension in @("deb", "rpm")) {
+            $artifact = Get-ChildItem -Path "out" -Filter "*.$extension" -File
+            if ($artifact.Count -ne 1) {
+              throw "Expected exactly one .$extension artifact in out, found $($artifact.Count)"
+            }
+            Move-Item -LiteralPath $artifact[0].FullName -Destination "out/Pandora-Box-${{ env.VERSION }}-linux-${{ matrix.arch }}.$extension" -Force
           }
-          mv out\make\deb\$arch\*.deb "Pandora-Box-${{ env.VERSION }}-linux-${{ matrix.arch }}.deb"
-          mv out\make\rpm\$arch\*.rpm "Pandora-Box-${{ env.VERSION }}-linux-${{ matrix.arch }}.rpm"
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
@@ -96,7 +98,7 @@ jobs:
           draft: false
           prerelease: true
           files: |
-            Pandora-Box-${{ env.VERSION }}-linux-${{ matrix.arch }}.deb
-            Pandora-Box-${{ env.VERSION }}-linux-${{ matrix.arch }}.rpm
+            out/Pandora-Box-${{ env.VERSION }}-linux-${{ matrix.arch }}.deb
+            out/Pandora-Box-${{ env.VERSION }}-linux-${{ matrix.arch }}.rpm
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

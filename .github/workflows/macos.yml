@@ -11,7 +11,11 @@ jobs:
     permissions: write-all
     strategy:
       matrix:
-        arch: [amd64, arm64]
+        include:
+          - arch: amd64
+            electron_arch: x64
+          - arch: arm64
+            electron_arch: arm64
 
     steps:
       - name: Checkout Repository
@@ -68,26 +72,9 @@ jobs:
       - name: Build Frontend for ${{ matrix.arch }}
         shell: pwsh
         env:
-          ARCH: ${{ matrix.arch }}
+          ARCH: ${{ matrix.electron_arch }}
         run: |
-          $arch = "${{ matrix.arch }}"
-          if ($arch -eq "amd64") {
-            $arch = "x64"
-          }
-          Write-Host "Using arch: $arch"
-          npm dedupe
-          npm prune
-          npm run make -- --arch=$arch
-
-      - name: Rename DMG
-        shell: pwsh
-        run: |
-          $dmg = Get-ChildItem -Path "out/make/dmg" -Recurse -File -Filter "*.dmg"
-          if ($dmg.Count -ne 1) {
-            throw "Expected exactly one DMG under out/make/dmg, found $($dmg.Count)"
-          }
-          $target = "Pandora-Box-${{ env.VERSION }}-macos-${{ matrix.arch }}.dmg"
-          Move-Item -LiteralPath $dmg[0].FullName -Destination $target
+          npm run make -- --mac dmg --${{ matrix.electron_arch }}
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
@@ -97,6 +84,6 @@ jobs:
           draft: false
           prerelease: true
           files: |
-            Pandora-Box-${{ env.VERSION }}-macos-${{ matrix.arch }}.dmg
+            out/Pandora-Box-${{ env.VERSION }}-macos-${{ matrix.electron_arch }}.dmg
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

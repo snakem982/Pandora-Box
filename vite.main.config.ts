@@ -1,5 +1,16 @@
-// @ts-ignore
 import {defineConfig} from 'vite';
 
-// https://vitejs.dev/config
-export default defineConfig({});
+export default defineConfig({
+    build: {
+        ssr: 'src-electron/main.ts',
+        outDir: 'dist/electron',
+        emptyOutDir: false,
+        rollupOptions: {
+            external: (id) => !id.startsWith('.') && !id.startsWith('/') && !/^[A-Za-z]:[\\/]/.test(id),
+            output: {
+                format: 'cjs',
+                entryFileNames: 'main.cjs',
+            },
+        },
+    },
+});
