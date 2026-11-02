@@ -44,6 +44,7 @@ module.exports = {
         artifactName: 'Pandora-Box-v${version}-windows-${arch}.${ext}',
     },
     nsis: {
+        artifactName: 'Pandora-Box-v${version}-windows-${arch}-setup.${ext}',
         oneClick: false,
         allowToChangeInstallationDirectory: true,
     },

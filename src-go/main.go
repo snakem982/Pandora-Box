@@ -22,9 +22,15 @@ func main() {
 	// 回调地址
 	addr := flag.String("addr", "", "callback address")
 	home := flag.String("home", "", "home directory")
+	proxyUID := flag.String("uid", "", "desktop user ID for system proxy settings")
 
 	// 解析命令行参数
 	flag.Parse()
+	if *proxyUID != "" {
+		if err := os.Setenv("PX_PROXY_UID", *proxyUID); err != nil {
+			panic(err)
+		}
+	}
 
 	if addr == nil || *addr == "" {
 		panic("callback address is required")
@@ -55,13 +61,11 @@ func main() {
 
 	termSign := make(chan os.Signal, 1)
 	signal.Notify(termSign, syscall.SIGINT, syscall.SIGTERM)
-	select {
-	case <-termSign:
-		log.Warnln("received termination signal")
-		pandora.Release()
-		utils.UnlockSingleton()
-		executor.Shutdown()
-		sys.DisableProxy()
-	}
+	<-termSign
+	log.Warnln("received termination signal")
+	pandora.Release()
+	utils.UnlockSingleton()
+	executor.Shutdown()
+	sys.DisableProxy()
 
 }

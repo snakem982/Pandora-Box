@@ -62,6 +62,9 @@ function checkAdminRights(callback: any) {
 export function startBackend(addr: string) {
     const backendPath = getBackendPath();
     const args = ['-addr=' + addr, '-home=' + encodeURIComponent(log.getAppConfigDir())];
+    if (process.platform === 'linux' && process.getuid) {
+        args.push('-uid=' + process.getuid());
+    }
 
     // 检查管理权限
     checkAdminRights((isAdmin: boolean) => {

@@ -4,6 +4,9 @@ import (
 	"bytes"
 	"fmt"
 	sys "github.com/snakem982/pandora-box/pkg/sys/cmd"
+	"os"
+	"os/user"
+	"path/filepath"
 	"strconv"
 	"strings"
 )
@@ -227,7 +230,7 @@ func reset(sub, key string) error {
 	if sub != "" {
 		scheme = scheme + "." + sub
 	}
-	_, err := sys.Command("gsettings", "reset", scheme, key)
+	_, err := gsettings("reset", scheme, key)
 	return err
 }
 
@@ -236,7 +239,7 @@ func get(sub, key string) (string, error) {
 	if sub != "" {
 		scheme = scheme + "." + sub
 	}
-	out, err := sys.Command("gsettings", "get", scheme, key)
+	out, err := gsettings("get", scheme, key)
 	if err != nil {
 		return "", err
 	}
@@ -249,6 +252,34 @@ func set(sub, key string, val string) error {
 	if sub != "" {
 		scheme = scheme + "." + sub
 	}
-	_, err := sys.Command("gsettings", "set", scheme, key, val)
+	_, err := gsettings("set", scheme, key, val)
 	return err
+}
+
+func gsettings(args ...string) (string, error) {
+	uid := os.Getenv("PX_PROXY_UID")
+	if uid == "" {
+		uid = os.Getenv("PKEXEC_UID")
+	}
+	if uid == "" || uid == strconv.Itoa(os.Getuid()) {
+		return sys.Command("gsettings", args...)
+	}
+	if os.Geteuid() != 0 {
+		return "", fmt.Errorf("cannot set proxy for user %s without root privileges", uid)
+	}
+
+	target, err := user.LookupId(uid)
+	if err != nil {
+		return "", fmt.Errorf("look up desktop user %s: %w", uid, err)
+	}
+	runtimeDir := filepath.Join("/run/user", uid)
+	commandArgs := []string{
+		"-u", target.Username, "--", "env",
+		"HOME=" + target.HomeDir,
+		"XDG_RUNTIME_DIR=" + runtimeDir,
+		"DBUS_SESSION_BUS_ADDRESS=unix:path=" + filepath.Join(runtimeDir, "bus"),
+		"gsettings",
+	}
+	commandArgs = append(commandArgs, args...)
+	return sys.Command("runuser", commandArgs...)
 }
