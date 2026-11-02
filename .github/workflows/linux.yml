@@ -77,7 +77,7 @@ jobs:
       - name: Build Frontend for ${{ matrix.arch }}
         shell: pwsh
         run: |
-          npm run make -- --linux deb rpm --${{ matrix.electron_arch }}
+          npm run make -- --linux deb rpm --${{ matrix.electron_arch }} --publish never
 
       - name: Normalize Linux artifact names
         shell: pwsh

@@ -94,8 +94,11 @@ jobs:
         shell: bash
         run: |
           LATEST_TAG=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-            https://api.github.com/repos/${{ github.repository }}/releases/latest | jq -r .tag_name)
-          echo "PREV_TAG=$LATEST_TAG" >> $GITHUB_ENV
+            https://api.github.com/repos/${{ github.repository }}/releases/latest | jq -r '.tag_name // empty')
+          if [[ -z "$LATEST_TAG" ]]; then
+            LATEST_TAG=$(git describe --tags --abbrev=0 "${VERSION}^" 2>/dev/null || true)
+          fi
+          echo "PREV_TAG=$LATEST_TAG" >> "$GITHUB_ENV"
 
       - name: Generate Sorted & Deduplicated Changelog
         if: env.RESULT == 'all_success'
@@ -120,7 +123,11 @@ jobs:
           )
           
           # 获取所有提交，按时间顺序反转（老的在前）
-          git log "$PREV_TAG..$VERSION" --pretty=format:"%H %s" --date-order | tac > all_commits.txt
+          if [[ -n "$PREV_TAG" ]]; then
+            git log "$PREV_TAG..$VERSION" --pretty=format:"%H %s" --date-order
+          else
+            git log "$VERSION" --pretty=format:"%H %s" --date-order
+          fi | tac > all_commits.txt
           
           # 使用 commit message 去重（只保留第一次出现的）
           declare -A seen_messages

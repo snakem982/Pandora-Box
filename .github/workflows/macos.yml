@@ -74,7 +74,7 @@ jobs:
         env:
           ARCH: ${{ matrix.electron_arch }}
         run: |
-          npm run make -- --mac dmg --${{ matrix.electron_arch }}
+          npm run make -- --mac dmg --${{ matrix.electron_arch }} --publish never
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
