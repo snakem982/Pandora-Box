@@ -63,7 +63,7 @@ module.exports = {
         icon: 'build/appicon.png',
         category: 'Network',
         maintainer: 'snakem982 <127644738+snakem982@users.noreply.github.com>',
-        target: ['deb', 'rpm'],
+        target: ['deb', 'rpm', 'pacman'],
         artifactName: 'Pandora-Box-v${version}-linux-${arch}.${ext}',
     },
     deb: {
@@ -72,5 +72,8 @@ module.exports = {
     rpm: {
         vendor: 'snakem982',
         compression: 'gzip',
+    },
+    pacman: {
+        mimeTypes: ['x-scheme-handler/pandora-box'],
     },
 };
