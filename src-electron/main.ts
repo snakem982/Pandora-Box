@@ -1,4 +1,4 @@
-import {app, BrowserWindow, BrowserWindowConstructorOptions, ipcMain, session} from 'electron';
+import {app, BrowserWindow, BrowserWindowConstructorOptions, clipboard, ipcMain, session} from 'electron';
 import path from 'node:path';
 import {startServer, storeInfo} from "./server";
 import {doQuit, initTray, showWindow} from "./tray";
@@ -115,6 +115,9 @@ ipcMain.handle('select-directory', async (event, options = {}) => {
     const paths = await selectDirectory(win, options);
     return paths.length > 0 ? paths : null; // 返回 null 表示取消
 });
+
+// 获取剪贴板内容
+ipcMain.handle('clipboard:readText', () => clipboard.readText());
 
 // ⚠️ 必须放在 app.whenReady() 之前！否则开关不会生效 单位为字节 (200MB)
 app.commandLine.appendSwitch('disk-cache-size', '209715200');

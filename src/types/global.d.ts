@@ -21,8 +21,13 @@ declare module '@vue/runtime-core' {
 declare global {
     interface Window {
         pxOs?: () => string;
+        pxClipboard?: () => Promise<string>;
         pxDeepLink?: {
-            onImportProfile: (callback: (data: { rawUrl?: string; url?: string; name?: string } | string) => void) => void;
+            onImportProfile: (callback: (data: {
+                rawUrl?: string;
+                url?: string;
+                name?: string
+            } | string) => void) => void;
             notifyReady?: () => void | Promise<void>;
         };
         pxStore?: {
@@ -39,4 +44,3 @@ declare global {
         };
     }
 }
-

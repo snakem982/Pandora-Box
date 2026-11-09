@@ -2,6 +2,7 @@
 <script setup lang="ts">
 import {onBeforeUnmount, onMounted, ref} from 'vue'
 import {Clipboard} from '@/runtime'
+import {pError} from '@/util/pLoad'
 import {DropdownInstance} from 'element-plus'
 import {Delete, Edit, EditPen, HomeFilled, RefreshRight, Service} from '@element-plus/icons-vue'
 
@@ -73,7 +74,14 @@ const handleCommand = (command: string) => {
 
 // 头部事件触发
 const handleAdd = () => dialogsRef.value?.openAdd()
-const handlePaste = () => dialogsRef.value?.openAdd(Clipboard.Text())
+const handlePaste = async () => {
+  try {
+    dialogsRef.value?.openAdd(await Clipboard.Text())
+  } catch (error) {
+    dialogsRef.value?.openAdd()
+    pError(error instanceof Error ? error.message : String(error))
+  }
+}
 const openFile = () => {
   webStore.dnd = true
   webStore.dSelect = true

@@ -14,8 +14,15 @@ export const Events = {
 
 // 获取剪贴板内容
 export const Clipboard = {
-    // @ts-ignore
-    Text: window["pxClipboard"]
+    Text: async (): Promise<string> => {
+        if (typeof window.pxClipboard === 'function') {
+            return window.pxClipboard();
+        }
+        if (navigator.clipboard?.readText) {
+            return navigator.clipboard.readText();
+        }
+        throw new Error('Clipboard access is unavailable');
+    }
 }
 
 // 打开地址

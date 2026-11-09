@@ -1,6 +1,6 @@
 // @ts-nocheck
 
-import {clipboard, contextBridge, ipcRenderer, shell} from 'electron';
+import {contextBridge, ipcRenderer, shell} from 'electron';
 import os from 'os';
 
 // tray相关
@@ -52,7 +52,7 @@ contextBridge.exposeInMainWorld('openPxConfigDir', (url: string) => shell.openPa
 contextBridge.exposeInMainWorld('changePxConfigDir', (options = {}) => ipcRenderer.invoke('select-directory', options));
 
 // 获取剪贴板内容
-contextBridge.exposeInMainWorld('pxClipboard', () => clipboard.readText());
+contextBridge.exposeInMainWorld('pxClipboard', () => ipcRenderer.invoke('clipboard:readText'));
 
 // 打开外部URL地址
 contextBridge.exposeInMainWorld('pxOpen', (url: string) => shell.openExternal(url));
