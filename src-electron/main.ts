@@ -1,4 +1,12 @@
-import {app, BrowserWindow, BrowserWindowConstructorOptions, clipboard, ipcMain, session} from 'electron';
+import {
+    app,
+    BrowserWindow,
+    BrowserWindowConstructorOptions,
+    clipboard,
+    ipcMain,
+    powerSaveBlocker,
+    session
+} from 'electron';
 import path from 'node:path';
 import {startServer, storeInfo} from "./server";
 import {doQuit, initTray, showWindow} from "./tray";
@@ -21,6 +29,9 @@ log.initLog()
 
 // 主窗口
 let mainWindow: BrowserWindow;
+
+// 阻止系统挂起拦截器 ID（防止 macOS 后台 App Nap 节流主进程事件循环，导致后端 /pxAlive 心跳超时误判退出）
+let powerSaveBlockerId: number | null = null
 
 // 屏蔽安全警告
 process.env["ELECTRON_DISABLE_SECURITY_WARNINGS"] = "true";
@@ -148,6 +159,13 @@ if (!gotTheLock) {
     }
 
     app.whenReady().then(async () => {
+        // 仅在 macOS 下启用，保持主进程活跃，确保后台挂机时仍能正常响应本地 HTTP 心跳（不影响显示器自动息屏）
+        if (process.platform === 'darwin') {
+            if (powerSaveBlockerId === null || !powerSaveBlocker.isStarted(powerSaveBlockerId)) {
+                powerSaveBlockerId = powerSaveBlocker.start('prevent-app-suspension')
+            }
+        }
+
         // 判断是否开机启动
         const isBoot = await isBootAutoLaunch();
         log.info('是否开机启动:', isBoot);
