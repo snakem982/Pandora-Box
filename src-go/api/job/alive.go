@@ -4,16 +4,12 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"os"
 	"sync"
 	"time"
 
-	"github.com/metacubex/mihomo/hub/executor"
 	"github.com/metacubex/mihomo/log"
-	"github.com/snakem982/pandora-box/pkg/cache"
+	"github.com/snakem982/pandora-box/api"
 	"github.com/snakem982/pandora-box/pkg/cron"
-	sys "github.com/snakem982/pandora-box/pkg/sys/proxy"
-	"github.com/snakem982/pandora-box/pkg/utils"
 )
 
 var aliveLock sync.Mutex
@@ -62,7 +58,7 @@ func AliveJob(name string, server string) {
 			log.Warnln("[1]心跳检测失败 (%d/%d): %v", failCount, maxFailCount, err)
 			if failCount >= maxFailCount {
 				log.Warnln("[1]检测到父进程退出，准备退出...")
-				Exit(true)
+				api.Exit()
 			}
 			return
 		}
@@ -76,7 +72,7 @@ func AliveJob(name string, server string) {
 			log.Warnln("[2]读取心跳响应失败 (%d/%d): %v", failCount, maxFailCount, err)
 			if failCount >= maxFailCount {
 				log.Warnln("[2]检测到父进程退出，准备退出...")
-				Exit(true)
+				api.Exit()
 			}
 			return
 		}
@@ -86,23 +82,11 @@ func AliveJob(name string, server string) {
 			log.Warnln("[3]心跳响应异常 (%d/%d), status=%d, body=%s", failCount, maxFailCount, resp.StatusCode, string(body))
 			if failCount >= maxFailCount {
 				log.Warnln("[3]检测到父进程退出，准备退出...")
-				Exit(true)
+				api.Exit()
 			}
 			return
 		}
 
 		failCount = 0
 	})
-}
-
-func Exit(needExit bool) {
-	cache.Close()
-	utils.UnlockSingleton()
-	executor.Shutdown()
-	sys.DisableProxy()
-	if needExit {
-		// 给异步日志刷盘留出缓冲时间
-		time.Sleep(100 * time.Millisecond)
-		os.Exit(0)
-	}
 }

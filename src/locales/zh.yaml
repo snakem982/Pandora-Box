@@ -42,6 +42,7 @@ refresh: 刷新
 add: 添加
 edit: 编辑
 quit: 退出
+quit-countdown: 即将退出
 theme: 主题
 mini: 最小化
 max: 最大化

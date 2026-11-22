@@ -3,9 +3,7 @@ package handlers
 import (
 	"errors"
 	"net/netip"
-	"os"
 	"strings"
-	"time"
 
 	"github.com/metacubex/chi"
 	"github.com/metacubex/chi/render"
@@ -15,7 +13,6 @@ import (
 	"github.com/metacubex/mihomo/log"
 	"github.com/metacubex/mihomo/tunnel/statistic"
 	"github.com/snakem982/pandora-box/api"
-	"github.com/snakem982/pandora-box/api/job"
 	"github.com/snakem982/pandora-box/api/models"
 	"github.com/snakem982/pandora-box/pkg/cache"
 	"github.com/snakem982/pandora-box/pkg/constant"
@@ -132,10 +129,7 @@ func configDir(w http.ResponseWriter, r *http.Request) {
 }
 
 func exitPx(w http.ResponseWriter, r *http.Request) {
-	job.Exit(false)
-	go func() {
-		time.Sleep(time.Second)
-		os.Exit(0)
-	}()
 	render.PlainText(w, r, "ok")
+	log.Infoln("收到退出请求，准备退出...")
+	api.Exit()
 }

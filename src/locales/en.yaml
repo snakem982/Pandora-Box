@@ -42,6 +42,7 @@ refresh: Refresh
 add: Add
 edit: Edit
 quit: Quit
+quit-countdown: Exiting in
 theme: Theme
 mini: Minimize
 max: Maximize

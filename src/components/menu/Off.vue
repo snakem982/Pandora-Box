@@ -17,6 +17,7 @@
 
 <script setup lang="ts">
 import {useI18n} from 'vue-i18n';
+import {ElLoading} from "element-plus";
 import {Events} from "@/runtime";
 import createApi from "@/api";
 
@@ -50,16 +51,48 @@ const cancelHide = () => {
 };
 
 // 退出
+const isQuitting = ref(false);
+let quitInterval: ReturnType<typeof setInterval> | undefined;
+let quitLoading: ReturnType<typeof ElLoading.service> | undefined;
+
+const showQuitCountdown = (success: boolean) => {
+  let countdown = 3;
+  quitLoading = ElLoading.service({
+    lock: true,
+    fullscreen: true,
+    text: `${t('quit-countdown')} ${countdown}s`,
+    background: "color-mix(in srgb, var(--skin-bg-color) 72%, transparent)",
+    customClass: "quit-loading",
+  });
+
+  quitInterval = setInterval(() => {
+    countdown -= 1;
+    quitLoading?.setText(`${t('quit-countdown')} ${countdown}s`);
+    if (countdown <= 0) {
+      clearInterval(quitInterval);
+      quitInterval = undefined;
+      quitLoading?.close();
+      quitLoading = undefined;
+      Events.Emit({name: "doQuit", data: success});
+    }
+  }, 1000);
+};
+
 const quit = () => {
-  api.exit().then(() => {
-    Events.Emit({name: "doQuit", data: true})
-  }).catch(() => {
-    Events.Emit({name: "doQuit", data: false})
-  })
+  if (isQuitting.value) return;
+  isQuitting.value = true;
+
+  api.exit()
+      .then(() => showQuitCountdown(true))
+      .catch(() => showQuitCountdown(false));
 }
 
 // 监听准备退出
 onMounted(() => Events.On("readyToQuit", quit))
+onBeforeUnmount(() => {
+  if (quitInterval) clearInterval(quitInterval);
+  quitLoading?.close();
+})
 
 </script>
 
@@ -86,7 +119,7 @@ onMounted(() => Events.On("readyToQuit", quit))
   margin-left: 30px;
   transform: translateX(-50%);
   background-color: var(--skin-bg-color);
-  color: var(--text-color);;
+  color: var(--text-color);
   padding: 10px;
   border-radius: 5px;
   text-align: left;
@@ -103,5 +136,17 @@ onMounted(() => Events.On("readyToQuit", quit))
 
 .dropdown-item:hover {
   background-color: var(--skin-hover-color);
+}
+
+:global(.quit-loading) {
+  --el-color-primary: var(--text-color);
+}
+
+:global(.quit-loading .el-loading-text) {
+  color: var(--text-color) !important;
+}
+
+:global(.quit-loading .el-loading-spinner .path) {
+  stroke: var(--text-color) !important;
 }
 </style>
