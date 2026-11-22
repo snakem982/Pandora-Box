@@ -127,14 +127,18 @@ function tryRunAsAdmin(executable: string, args: string[], callback: (success: b
             const command = [executable, ...args]
                 .map((arg) => `quoted form of ${appleScriptString(arg)}`)
                 .join(' & " " & ');
+            const backendLogPath = path.join(log.getAppConfigDir(), "logs", "px-server.log");
             // 使用 `with prompt` 来直接在授权对话框中显示提示信息
             const script = `
-                set shellCommand to "/bin/bash -c " & quoted form of ("exec " & ${command} & " </dev/null >/dev/null 2>&1 &")
+                set quotedLogPath to quoted form of ${appleScriptString(backendLogPath)}
+                set backendCommand to "exec " & ${command} & " >/dev/null 2>> " & quotedLogPath & " </dev/null &"
+                set shellCommand to "/bin/bash -c " & quoted form of backendCommand
                 set authPrompt to ${appleScriptString(getAuthTip())}
                 do shell script shellCommand with administrator privileges with prompt authPrompt
             `;
             const osa = spawn('osascript', ['-e', script]);
             log.info("[Admin] 启动px命令行：", osa.spawnargs);
+            log.info("[Admin] 后端输出日志：", backendLogPath);
             osa.on('exit', (code) => callback(code === 0));
             osa.on('error', () => callback(false));
             break;
