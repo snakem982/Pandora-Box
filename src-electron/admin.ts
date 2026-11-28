@@ -123,15 +123,16 @@ export function startBackend(addr: string) {
 function tryRunAsAdmin(executable: string, args: string[], callback: (success: boolean) => void) {
     switch (process.platform) {
         case 'darwin': {
-            // macOS 使用 AppleScript 提权
+            // macOS 使用 AppleScript 提权，双 fork + setsid 彻底过继给 launchd (PPID=1)
             const command = [executable, ...args]
                 .map((arg) => `quoted form of ${appleScriptString(arg)}`)
                 .join(' & " " & ');
             const backendLogPath = path.join(log.getAppConfigDir(), "logs", "px-server.log");
-            // 使用 `with prompt` 来直接在授权对话框中显示提示信息
+            const perlCode = `exit if fork; POSIX::setsid(); exit if fork; $SIG{HUP}=q(IGNORE); open(STDIN, q(<), q(/dev/null)); open(STDOUT, q(>), q(/dev/null)); open(STDERR, q(>>), $ARGV[0]); shift @ARGV; exec @ARGV`;
             const script = `
                 set quotedLogPath to quoted form of ${appleScriptString(backendLogPath)}
-                set backendCommand to "exec " & ${command} & " >/dev/null 2>> " & quotedLogPath & " </dev/null &"
+                set quotedPerl to quoted form of ${appleScriptString(perlCode)}
+                set backendCommand to "/usr/bin/perl -MPOSIX -e " & quotedPerl & " -- " & quotedLogPath & " " & ${command}
                 set shellCommand to "/bin/bash -c " & quoted form of backendCommand
                 set authPrompt to ${appleScriptString(getAuthTip())}
                 do shell script shellCommand with administrator privileges with prompt authPrompt

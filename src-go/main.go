@@ -2,16 +2,17 @@ package main
 
 import (
 	"flag"
+	"net/url"
+	"os"
+	"os/signal"
+	"syscall"
+
 	"github.com/metacubex/mihomo/hub/executor"
 	"github.com/metacubex/mihomo/log"
 	"github.com/snakem982/pandora-box/pandora"
 	sys "github.com/snakem982/pandora-box/pkg/sys/proxy"
 	"github.com/snakem982/pandora-box/pkg/utils"
 	"go.uber.org/automaxprocs/maxprocs"
-	"net/url"
-	"os"
-	"os/signal"
-	"syscall"
 )
 
 func main() {
@@ -59,13 +60,15 @@ func main() {
 	// 开启后端api
 	pandora.StartCore(*addr)
 
-	termSign := make(chan os.Signal, 1)
+	// 明确忽略 SIGHUP，防止授权会话或终端断开时误杀后台进程
+	signal.Ignore(syscall.SIGHUP)
+
+	termSign := make(chan os.Signal, 2)
 	signal.Notify(termSign, syscall.SIGINT, syscall.SIGTERM)
-	<-termSign
-	log.Warnln("received termination signal")
+	sig := <-termSign
+	log.Warnln("received termination signal: %s (%d)", sig.String(), sig)
+	sys.DisableProxy()
+	executor.Shutdown()
 	pandora.Release()
 	utils.UnlockSingleton()
-	executor.Shutdown()
-	sys.DisableProxy()
-
 }
