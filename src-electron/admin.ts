@@ -123,16 +123,14 @@ export function startBackend(addr: string) {
 function tryRunAsAdmin(executable: string, args: string[], callback: (success: boolean) => void) {
     switch (process.platform) {
         case 'darwin': {
-            // macOS 使用 AppleScript 提权，双 fork + setsid 彻底过继给 launchd (PPID=1)
+            // macOS 使用 AppleScript 提权，由 /bin/bash 将进程放至后台，进程组/会话脱离由 px 内部 syscall.Setsid() 完成
             const command = [executable, ...args]
                 .map((arg) => `quoted form of ${appleScriptString(arg)}`)
                 .join(' & " " & ');
             const backendLogPath = path.join(log.getAppConfigDir(), "logs", "px-server.log");
-            const perlCode = `exit if fork; POSIX::setsid(); exit if fork; $SIG{HUP}=q(IGNORE); open(STDIN, q(<), q(/dev/null)); open(STDOUT, q(>), q(/dev/null)); open(STDERR, q(>>), $ARGV[0]); shift @ARGV; exec @ARGV`;
+            const quotedLogPath = `quoted form of ${appleScriptString(backendLogPath)}`;
             const script = `
-                set quotedLogPath to quoted form of ${appleScriptString(backendLogPath)}
-                set quotedPerl to quoted form of ${appleScriptString(perlCode)}
-                set backendCommand to "/usr/bin/perl -MPOSIX -e " & quotedPerl & " -- " & quotedLogPath & " " & ${command}
+                set backendCommand to ${command} & " >/dev/null 2>>" & ${quotedLogPath} & " </dev/null &"
                 set shellCommand to "/bin/bash -c " & quoted form of backendCommand
                 set authPrompt to ${appleScriptString(getAuthTip())}
                 do shell script shellCommand with administrator privileges with prompt authPrompt

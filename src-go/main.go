@@ -16,6 +16,8 @@ import (
 )
 
 func main() {
+	// 仅在 macOS 提权模式下脱离原进程组/会话并忽略 SIGHUP
+	pandora.InitProcessGroup()
 
 	// 优化线程资源配置
 	_, _ = maxprocs.Set(maxprocs.Logger(func(string, ...any) {}))
@@ -59,9 +61,6 @@ func main() {
 
 	// 开启后端api
 	pandora.StartCore(*addr)
-
-	// 明确忽略 SIGHUP，防止授权会话或终端断开时误杀后台进程
-	signal.Ignore(syscall.SIGHUP)
 
 	termSign := make(chan os.Signal, 2)
 	signal.Notify(termSign, syscall.SIGINT, syscall.SIGTERM)
